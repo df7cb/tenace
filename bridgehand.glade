@@ -848,7 +848,7 @@ D: W, V: NS
 	  <property name="show_arrow">True</property>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton3">
+	    <widget class="GtkToolButton" id="toolbutton_card_wipe">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
@@ -856,6 +856,7 @@ D: W, V: NS
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_toolbutton_card_wipe_clicked" last_modification_time="Fri, 30 Dec 2005 02:56:42 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -864,7 +865,7 @@ D: W, V: NS
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton4">
+	    <widget class="GtkToolButton" id="toolbutton_card_random">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Zufall</property>
 	      <property name="use_underline">True</property>
@@ -872,6 +873,7 @@ D: W, V: NS
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_toolbutton_card_random_clicked" last_modification_time="Fri, 30 Dec 2005 03:07:08 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
