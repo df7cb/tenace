@@ -9,6 +9,8 @@
 #include "support.h"
 #include "bridge.h"
 
+extern board *b;
+extern GtkWidget *card_button[52];
 
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
@@ -128,5 +130,39 @@ on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	new_card_seat = south;
+}
+
+
+void
+on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	int c;
+	for (c = 0; c < 52; c++) {
+		if (b->cards[c]) {
+			remove_card(b->hands[b->cards[c] - 1], c);
+			b->cards[c] = 0;
+			gtk_button_set_relief ((GtkButton*)card_button[c], GTK_RELIEF_NORMAL);
+		}
+	}
+	show_board(b);
+}
+
+
+void
+on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	int c = 0;
+	while (c < 52) {
+		if (b->cards[c] == 0) {
+			seat s = (rand() % 4) + 1;
+			if (give_card(b, s, c))
+				gtk_button_set_relief ((GtkButton*)card_button[c], GTK_RELIEF_NONE);
+		}
+		if (b->cards[c] != 0)
+			c++;
+	}
+	show_board(b);
 }
 

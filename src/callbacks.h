@@ -61,3 +61,11 @@ on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
 void
 on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);

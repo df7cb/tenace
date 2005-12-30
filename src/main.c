@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 
 #include <assert.h>
+#include <stdlib.h>
+#include <time.h>
 #include "interface.h"
 #include "support.h"
 #include "bridge.h"
@@ -29,25 +31,27 @@ void show_board (board *b)
 	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[3])->str);
 }
 
+void cardX_clicked (GtkButton *button, gpointer cxp)
+{
+	int dealt;
+	suit cx = *(suit *)cxp;
+
+	int i = 0;
+	while (i < 13) {
+		int c = cx * 13 + i;
+		if (b->cards[c] == 0) {
+			gtk_button_clicked((GtkButton*)card_button[c]);
+			return;
+		}
+		i++;
+	}
+}
+
 void card_clicked (GtkButton *button, gpointer cp)
 {
 	int dealt;
 	card c = *(card *)cp;
-	suit s = SUIT(c);
-	rank r = RANK(c);
-	assert (s && new_card_seat >= 1 && new_card_seat <= 4);
-
-	if (r == cardX) {
-		int i = 12;
-		while (i >= 0) {
-			if (b->cards[(4 - s) * 13 + i] == 0) {
-				gtk_button_clicked((GtkButton*)card_button[(4 - s) * 14 + i]);
-				return;
-			}
-			i--;
-		}
-		return;
-	}
+	assert (new_card_seat >= 1 && new_card_seat <= 4);
 
 	dealt = give_card(b, new_card_seat, c);
 	gtk_button_set_relief (button, dealt ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
@@ -57,20 +61,29 @@ void card_clicked (GtkButton *button, gpointer cp)
 static void fill_card_window (GtkWidget *w)
 {
 	GtkTable *table = (GtkTable*) lookup_widget(w, "table_cards");
-	static card c[56];
+	static card c[52];
+	static card cx[4];
 	card cr, cc;
-	int i = 0;
+	int i = 51;
 	for (cr = 0; cr <= 3; cr++) {
-		for (cc = 0; cc <= 13; cc++) {
+		for (cc = 0; cc <= 12; cc++) {
 			GtkWidget *b = gtk_button_new_with_label(rank_string(12-cc));
-			c[i] = ((4-cr)<<4) | (cc == 13 ? 13 : 12-cc);
+			c[i] = i;
 			g_signal_connect (b, "clicked", G_CALLBACK(card_clicked), (gpointer)(&c[i]));
 			gtk_button_set_focus_on_click ((GtkButton*)b, 0);
 			gtk_table_attach(table, b, cc+1, cc+2, cr, cr+1, 0, 0, 0, 0);
 			gtk_widget_show(b);
-			card_button[i] = cc != 13 ? b : NULL;
-			i++;
+			card_button[i] = b;
+			i--;
 		}
+	}
+	for (cr = 0; cr <= 3; cr++) {
+		GtkWidget *b = gtk_button_new_with_label("x");
+		cx[cr] = 3 - cr;
+		g_signal_connect (b, "clicked", G_CALLBACK(cardX_clicked), (gpointer)(&cx[cr]));
+		gtk_button_set_focus_on_click ((GtkButton*)b, 0);
+		gtk_table_attach(table, b, 14, 15, cr, cr+1, 0, 0, 0, 0);
+		gtk_widget_show(b);
 	}
 }
 
@@ -106,6 +119,8 @@ main (int argc, char *argv[])
   gtk_widget_show (window_card);
   window_bids = create_window_bids ();
   gtk_widget_show (window_bids);
+
+  srand(time(NULL));
 
   fill_card_window(window_card);
 

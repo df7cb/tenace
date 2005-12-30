@@ -513,8 +513,8 @@ create_window_card (void)
   GtkWidget *toolbar2;
   GtkIconSize tmp_toolbar_icon_size;
   GtkWidget *tmp_image;
-  GtkWidget *toolbutton3;
-  GtkWidget *toolbutton4;
+  GtkWidget *toolbutton_card_wipe;
+  GtkWidget *toolbutton_card_random;
   GtkWidget *separatortoolitem1;
   GSList *radiotoolbutton_west_group = NULL;
   GtkWidget *radiotoolbutton_west;
@@ -542,15 +542,15 @@ create_window_card (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-delete", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton3 = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
-  gtk_widget_show (toolbutton3);
-  gtk_container_add (GTK_CONTAINER (toolbar2), toolbutton3);
+  toolbutton_card_wipe = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
+  gtk_widget_show (toolbutton_card_wipe);
+  gtk_container_add (GTK_CONTAINER (toolbar2), toolbutton_card_wipe);
 
   tmp_image = gtk_image_new_from_stock ("gtk-select-color", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton4 = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Zufall"));
-  gtk_widget_show (toolbutton4);
-  gtk_container_add (GTK_CONTAINER (toolbar2), toolbutton4);
+  toolbutton_card_random = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Zufall"));
+  gtk_widget_show (toolbutton_card_random);
+  gtk_container_add (GTK_CONTAINER (toolbar2), toolbutton_card_random);
 
   separatortoolitem1 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem1);
@@ -625,6 +625,12 @@ create_window_card (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
 
+  g_signal_connect ((gpointer) toolbutton_card_wipe, "clicked",
+                    G_CALLBACK (on_toolbutton_card_wipe_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) toolbutton_card_random, "clicked",
+                    G_CALLBACK (on_toolbutton_card_random_clicked),
+                    NULL);
   g_signal_connect ((gpointer) radiotoolbutton_west, "clicked",
                     G_CALLBACK (on_radiotoolbutton_west_clicked),
                     NULL);
@@ -642,8 +648,8 @@ create_window_card (void)
   GLADE_HOOKUP_OBJECT_NO_REF (window_card, window_card, "window_card");
   GLADE_HOOKUP_OBJECT (window_card, vbox2, "vbox2");
   GLADE_HOOKUP_OBJECT (window_card, toolbar2, "toolbar2");
-  GLADE_HOOKUP_OBJECT (window_card, toolbutton3, "toolbutton3");
-  GLADE_HOOKUP_OBJECT (window_card, toolbutton4, "toolbutton4");
+  GLADE_HOOKUP_OBJECT (window_card, toolbutton_card_wipe, "toolbutton_card_wipe");
+  GLADE_HOOKUP_OBJECT (window_card, toolbutton_card_random, "toolbutton_card_random");
   GLADE_HOOKUP_OBJECT (window_card, separatortoolitem1, "separatortoolitem1");
   GLADE_HOOKUP_OBJECT (window_card, radiotoolbutton_west, "radiotoolbutton_west");
   GLADE_HOOKUP_OBJECT (window_card, radiotoolbutton_north, "radiotoolbutton_north");

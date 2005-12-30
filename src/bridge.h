@@ -9,11 +9,11 @@ typedef enum seat_e {
 } seat;
 
 typedef enum suit_e {
-	NT = 0,
-	spade = 4,
-	heart = 3,
-	diamond = 2,
-	club = 1,
+	NT = 5,
+	spade = 3,
+	heart = 2,
+	diamond = 1,
+	club = 0,
 } suit;
 
 typedef enum rank_e {
@@ -30,18 +30,17 @@ typedef enum rank_e {
 	cardQ,
 	cardK,
 	cardA,
-	cardX,
+	cardX = 0x80,
 } rank;
 
 typedef int card;
 
-#define SUIT(c) (((c) & 0x70) >> 4)
-#define RANK(c) ((c) & 0x0f)
-#define CARD_I(s, r) (51 - ((r) + 13 * ((s) - 1)))
+#define SUIT(c) ((int)((int)(c) / 13))
+#define RANK(c) ((c) % 13)
 
 typedef struct hand_t {
 	GString *name;
-	card cards[14]; // 0-terminated list
+	card cards[14]; // -1 terminated list
 } hand;
 
 typedef struct board_t {
