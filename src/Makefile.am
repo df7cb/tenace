@@ -12,7 +12,8 @@ bridgehand_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	bridge.c bridge.h
+	bridge.c bridge.h \
+	board.c board.h
 
 bridgehand_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

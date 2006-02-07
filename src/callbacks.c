@@ -8,6 +8,7 @@
 #include "interface.h"
 #include "support.h"
 #include "bridge.h"
+#include "board.h"
 
 extern board *b;
 extern GtkWidget *card_button[52];
@@ -164,5 +165,13 @@ on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
 			c++;
 	}
 	show_board(b);
+}
+
+
+void
+on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board_save(b);
 }
 

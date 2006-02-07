@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "bridge.h"
 
-hand *hand_new(void)
+hand *hand_new(char *name)
 {
 	hand *h = malloc(sizeof(hand));
 	assert(h);
-	h->name = g_string_new("New Hand");
+	h->name = g_string_new(name);
 	memset(h->cards, -1, sizeof(card) * 14);
 	return h;
 }
@@ -21,11 +21,12 @@ void hand_free(hand *h)
 board *board_new(void)
 {
 	int i;
+	char *names[] = {"West", "North", "East", "South"};
 	board *b = malloc(sizeof(board));
 	assert(b);
 	b->name = g_string_new("New Board");
 	for (i = 0; i < 4; i++) {
-		b->hands[i] = hand_new();
+		b->hands[i] = hand_new(names[i]);
 	}
 	bzero(b->cards, sizeof(seat) * 52);
 	return b;

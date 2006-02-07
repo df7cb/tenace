@@ -69,3 +69,12 @@ on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
 void
 on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+gboolean
+on_label12_button_press_event          (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);

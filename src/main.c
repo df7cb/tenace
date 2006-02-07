@@ -15,20 +15,47 @@ board *b;
 seat new_card_seat = west;
 GtkWidget *card_button[52];
 
+static void foo(GtkLabel *l, card *cp)
+{
+	printf("Foo: %s.\n", card_string(*cp)->str);
+}
+
 void show_board (board *b)
 {
 	GtkWidget *win = b->win;
 	GtkWidget *w;
 	w = lookup_widget(win, "label_board");
 	gtk_label_set_text((GtkLabel*) w, b->name->str);
+	w = lookup_widget(win, "label_west");
+	gtk_label_set_text((GtkLabel*) w, b->hands[0]->name->str);
+	w = lookup_widget(win, "label_north");
+	gtk_label_set_text((GtkLabel*) w, b->hands[1]->name->str);
+	w = lookup_widget(win, "label_east");
+	gtk_label_set_text((GtkLabel*) w, b->hands[2]->name->str);
+	w = lookup_widget(win, "label_south");
+	gtk_label_set_text((GtkLabel*) w, b->hands[3]->name->str);
+
 	w = lookup_widget(win, "text_west");
 	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[0])->str);
-	w = lookup_widget(win, "text_north");
-	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[1])->str);
+	//w = lookup_widget(win, "text_north");
+	//gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[1])->str);
 	w = lookup_widget(win, "text_east");
 	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[2])->str);
 	w = lookup_widget(win, "text_south");
 	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[3])->str);
+
+	//char *hboxes[] = {};
+
+	card *c = b->hands[1]->cards;
+	w = lookup_widget(win, "hbox_north_s");
+	for (; *c >= 0; c++) {
+		GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
+		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+		g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
+		gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
+		gtk_widget_show(wn);
+	}
+
 }
 
 void cardX_clicked (GtkButton *button, gpointer cxp)
@@ -114,11 +141,11 @@ main (int argc, char *argv[])
   window_hand = create_window_hand ();
   gtk_widget_show (window_hand);
   window_bid = create_window_bid ();
-  gtk_widget_show (window_bid);
+  //gtk_widget_show (window_bid);
   window_card = create_window_card ();
   gtk_widget_show (window_card);
   window_bids = create_window_bids ();
-  gtk_widget_show (window_bids);
+  //gtk_widget_show (window_bids);
 
   srand(time(NULL));
 

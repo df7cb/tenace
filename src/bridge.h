@@ -54,7 +54,7 @@ typedef struct board_t {
  * prototypes
  */
 
-hand *hand_new(void);
+hand *hand_new(char *name);
 void hand_free(hand *h);
 board *board_new(void);
 void board_free(board *b);

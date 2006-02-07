@@ -54,7 +54,7 @@ create_window_hand (void)
   GtkWidget *toolbar1;
   GtkIconSize tmp_toolbar_icon_size;
   GtkWidget *toolbutton1;
-  GtkWidget *toolbutton2;
+  GtkWidget *button_hand_save;
   GtkWidget *separatortoolitem2;
   GtkWidget *tmp_image;
   GtkWidget *toolbutton6;
@@ -72,7 +72,15 @@ create_window_hand (void)
   GtkWidget *label_east;
   GtkWidget *frame3;
   GtkWidget *alignment6;
-  GtkWidget *text_north;
+  GtkWidget *table_north;
+  GtkWidget *label8;
+  GtkWidget *label9;
+  GtkWidget *label10;
+  GtkWidget *label11;
+  GtkWidget *hbox_north_s;
+  GtkWidget *hbox_north_h;
+  GtkWidget *hbox_north_d;
+  GtkWidget *hbox_north_c;
   GtkWidget *label_north;
   GtkWidget *frame4;
   GtkWidget *alignment7;
@@ -184,9 +192,9 @@ create_window_hand (void)
   gtk_widget_show (toolbutton1);
   gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton1);
 
-  toolbutton2 = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-save");
-  gtk_widget_show (toolbutton2);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton2);
+  button_hand_save = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-save");
+  gtk_widget_show (button_hand_save);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_hand_save);
 
   separatortoolitem2 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem2);
@@ -280,12 +288,58 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (frame3), alignment6);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment6), 0, 0, 12, 0);
 
-  text_north = gtk_label_new (_("\342\231\240\n\342\231\245\n\342\231\246\n\342\231\243"));
-  gtk_widget_show (text_north);
-  gtk_container_add (GTK_CONTAINER (alignment6), text_north);
-  GTK_WIDGET_SET_FLAGS (text_north, GTK_CAN_FOCUS);
-  gtk_label_set_selectable (GTK_LABEL (text_north), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (text_north), 0, 0.5);
+  table_north = gtk_table_new (4, 2, FALSE);
+  gtk_widget_show (table_north);
+  gtk_container_add (GTK_CONTAINER (alignment6), table_north);
+
+  label8 = gtk_label_new (_("\342\231\240"));
+  gtk_widget_show (label8);
+  gtk_table_attach (GTK_TABLE (table_north), label8, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label8), 5, 0);
+
+  label9 = gtk_label_new (_("\342\231\245"));
+  gtk_widget_show (label9);
+  gtk_table_attach (GTK_TABLE (table_north), label9, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label10 = gtk_label_new (_("\342\231\246"));
+  gtk_widget_show (label10);
+  gtk_table_attach (GTK_TABLE (table_north), label10, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label11 = gtk_label_new (_("\342\231\243"));
+  gtk_widget_show (label11);
+  gtk_table_attach (GTK_TABLE (table_north), label11, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  hbox_north_s = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox_north_s);
+  gtk_table_attach (GTK_TABLE (table_north), hbox_north_s, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  hbox_north_h = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox_north_h);
+  gtk_table_attach (GTK_TABLE (table_north), hbox_north_h, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  hbox_north_d = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox_north_d);
+  gtk_table_attach (GTK_TABLE (table_north), hbox_north_d, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  hbox_north_c = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox_north_c);
+  gtk_table_attach (GTK_TABLE (table_north), hbox_north_c, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
 
   label_north = gtk_label_new (_("Nord"));
   gtk_widget_show (label_north);
@@ -415,6 +469,9 @@ create_window_hand (void)
   g_signal_connect ((gpointer) info1, "activate",
                     G_CALLBACK (on_info1_activate),
                     NULL);
+  g_signal_connect ((gpointer) button_hand_save, "clicked",
+                    G_CALLBACK (on_button_hand_save_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (window_hand, window_hand, "window_hand");
@@ -441,7 +498,7 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, info1, "info1");
   GLADE_HOOKUP_OBJECT (window_hand, toolbar1, "toolbar1");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton1, "toolbutton1");
-  GLADE_HOOKUP_OBJECT (window_hand, toolbutton2, "toolbutton2");
+  GLADE_HOOKUP_OBJECT (window_hand, button_hand_save, "button_hand_save");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem2, "separatortoolitem2");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton6, "toolbutton6");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton7, "toolbutton7");
@@ -458,7 +515,15 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, label_east, "label_east");
   GLADE_HOOKUP_OBJECT (window_hand, frame3, "frame3");
   GLADE_HOOKUP_OBJECT (window_hand, alignment6, "alignment6");
-  GLADE_HOOKUP_OBJECT (window_hand, text_north, "text_north");
+  GLADE_HOOKUP_OBJECT (window_hand, table_north, "table_north");
+  GLADE_HOOKUP_OBJECT (window_hand, label8, "label8");
+  GLADE_HOOKUP_OBJECT (window_hand, label9, "label9");
+  GLADE_HOOKUP_OBJECT (window_hand, label10, "label10");
+  GLADE_HOOKUP_OBJECT (window_hand, label11, "label11");
+  GLADE_HOOKUP_OBJECT (window_hand, hbox_north_s, "hbox_north_s");
+  GLADE_HOOKUP_OBJECT (window_hand, hbox_north_h, "hbox_north_h");
+  GLADE_HOOKUP_OBJECT (window_hand, hbox_north_d, "hbox_north_d");
+  GLADE_HOOKUP_OBJECT (window_hand, hbox_north_c, "hbox_north_c");
   GLADE_HOOKUP_OBJECT (window_hand, label_north, "label_north");
   GLADE_HOOKUP_OBJECT (window_hand, frame4, "frame4");
   GLADE_HOOKUP_OBJECT (window_hand, alignment7, "alignment7");
