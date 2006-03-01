@@ -88,6 +88,29 @@ GString *hand_string (hand *h)
 	return s;
 }
 
+GString *gib_string (hand *h)
+{
+	static GString *s = NULL;
+	char rank_char[] = {'2', '3', '4', '5', '6', '7', '8', '9', 't', 'j', 'q', 'k', 'a'};
+	if (!s)
+		s = g_string_new(NULL);
+	assert(h);
+	card *c = h->cards;
+	g_string_truncate(s, 0);
+	while (*c >= 0 && SUIT(*c) == spade)
+		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
+	g_string_append_printf(s, ".");
+	while (*c >= 0 && SUIT(*c) == heart)
+		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
+	g_string_append_printf(s, ".");
+	while (*c >= 0 && SUIT(*c) == diamond)
+		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
+	g_string_append_printf(s, ".");
+	while (*c >= 0 && SUIT(*c) == club)
+		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
+	return s;
+}
+
 void remove_card(hand *h, card c)
 {
 	card *p = h->cards;

@@ -61,6 +61,7 @@ void board_free(board *b);
 gchar *rank_string (rank r);
 GString *card_string (card c);
 GString *hand_string (hand *h);
+GString *gib_string (hand *h);
 void remove_card(hand *h, card c);
 void add_card(hand *h, card c);
 int give_card(board *b, seat s, card c);

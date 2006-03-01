@@ -175,3 +175,11 @@ on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
 	board_save(b);
 }
 
+
+void
+on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board_gib(b);
+}
+
