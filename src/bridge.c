@@ -121,7 +121,8 @@ void remove_card(hand *h, card c)
 		*p++ = *(p + 1);
 }
 
-void add_card(hand *h, card c)
+static void add_card(hand *h, card c)
+/* add card to hand and keep list sorted */
 {
 	card *p = h->cards;
 	while (*p >= 0)
@@ -141,21 +142,22 @@ void add_card(hand *h, card c)
 }
 
 int give_card(board *b, seat s, card c)
+/* return: 1 = card added, 0 = card removed */
 {
 	assert (c >= 0 && c < 52);
 	seat cs = b->cards[c];
 	//printf("s%d c%d cs%d\n", s, c, cs);
 	assert (cs >= 0 && cs <= 4);
-	if (cs == s) {
+	if (cs == s) { /* remove card from this hand */
 		remove_card(b->hands[s-1], c);
 		b->cards[c] = 0;
 		return 0;
 	}
-	if (b->hands[s-1]->cards[12] >= 0)
+	if (b->hands[s-1]->cards[12] >= 0) /* hand has already 13 cards */
 		return cs != 0;
-	if (cs)
+	if (cs) /* someone else has the card, remove it */
 		remove_card(b->hands[cs-1], c);
-	add_card(b->hands[s-1], c);
+	add_card(b->hands[s-1], c); /* add it here */
 	b->cards[c] = s;
 	return 1;
 }

@@ -15,9 +15,9 @@ board *b;
 seat new_card_seat = west;
 GtkWidget *card_button[52];
 
-static void foo(GtkLabel *l, card *cp)
+void foo(GtkLabel *l, card *cp)
 {
-	printf("Foo: %s.\n", card_string(*cp)->str);
+	printf("Clicked: %d %s.\n", *cp, card_string(*cp)->str);
 }
 
 void show_board (board *b)
@@ -35,17 +35,6 @@ void show_board (board *b)
 	w = lookup_widget(win, "label_south");
 	gtk_label_set_text((GtkLabel*) w, b->hands[3]->name->str);
 
-	w = lookup_widget(win, "text_west");
-	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[0])->str);
-	//w = lookup_widget(win, "text_north");
-	//gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[1])->str);
-	w = lookup_widget(win, "text_east");
-	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[2])->str);
-	w = lookup_widget(win, "text_south");
-	gtk_label_set_text((GtkLabel*) w, hand_string(b->hands[3])->str);
-
-	//char *hboxes[] = {};
-	
 	int label_i;
 	for (label_i = 0; label_i < 52 && b->card_label[label_i]; label_i++) {
 		gtk_widget_destroy(b->card_label[label_i]);
@@ -53,42 +42,64 @@ void show_board (board *b)
 	}
 	label_i = 0;
 
-	card *c = b->hands[1]->cards;
-	w = lookup_widget(win, "hbox_north_s");
-	for (; *c >= 0 && SUIT(*c) == spade; c++) {
-		GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-		g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-		gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-		gtk_widget_show(wn);
-		b->card_label[label_i++] = wn;
+	card *c;
+	int s;
+
+	c = b->hands[0]->cards;
+	char *box_array[] = {"hbox_west_c", "hbox_west_d", "hbox_west_h", "hbox_west_s"};
+	for (s = spade; s >= club; s--) {
+		w = lookup_widget(win, box_array[s]);
+		for (; *c >= 0 && SUIT(*c) == s; c++) {
+			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
+			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
+			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
+			gtk_widget_show(wn);
+			b->card_label[label_i++] = wn;
+		}
 	}
-	w = lookup_widget(win, "hbox_north_h");
-	for (; *c >= 0 && SUIT(*c) == heart; c++) {
-		GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-		g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-		gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-		gtk_widget_show(wn);
-		b->card_label[label_i++] = wn;
+
+	c = b->hands[1]->cards;
+	char *box_array1[] = {"hbox_north_c", "hbox_north_d", "hbox_north_h", "hbox_north_s"};
+	for (s = spade; s >= club; s--) {
+		w = lookup_widget(win, box_array1[s]);
+		for (; *c >= 0 && SUIT(*c) == s; c++) {
+			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
+			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
+			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
+			gtk_widget_show(wn);
+			b->card_label[label_i++] = wn;
+		}
 	}
-	w = lookup_widget(win, "hbox_north_d");
-	for (; *c >= 0 && SUIT(*c) == diamond; c++) {
-		GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-		g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-		gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-		gtk_widget_show(wn);
-		b->card_label[label_i++] = wn;
+
+	c = b->hands[2]->cards;
+	char *box_array2[] = {"hbox_east_c", "hbox_east_d", "hbox_east_h", "hbox_east_s"};
+	for (s = spade; s >= club; s--) {
+		w = lookup_widget(win, box_array2[s]);
+		for (; *c >= 0 && SUIT(*c) == s; c++) {
+			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
+			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
+			printf("c is %p %d\n", c, *c);
+			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
+			gtk_widget_show(wn);
+			b->card_label[label_i++] = wn;
+		}
 	}
-	w = lookup_widget(win, "hbox_north_c");
-	for (; *c >= 0 && SUIT(*c) == club; c++) {
-		GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-		g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-		gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-		gtk_widget_show(wn);
-		b->card_label[label_i++] = wn;
+
+	c = b->hands[3]->cards;
+	char *box_array3[] = {"hbox_south_c", "hbox_south_d", "hbox_south_h", "hbox_south_s"};
+	for (s = spade; s >= club; s--) {
+		w = lookup_widget(win, box_array3[s]);
+		for (; *c >= 0 && SUIT(*c) == s; c++) {
+			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
+			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
+			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
+			gtk_widget_show(wn);
+			b->card_label[label_i++] = wn;
+		}
 	}
 
 }

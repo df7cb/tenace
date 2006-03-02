@@ -8,6 +8,7 @@ typedef enum seat_e {
 	south,
 } seat;
 
+/* SA = 51, C2 = 0 */
 typedef enum suit_e {
 	NT = 5,
 	spade = 3,
@@ -40,15 +41,15 @@ typedef int card;
 
 typedef struct hand_t {
 	GString *name;
-	card cards[14]; // -1 terminated list
+	card cards[14]; // -1 terminated list, SA..S2..CA..C2
 } hand;
 
 typedef struct board_t {
 	GString *name;
 	hand *hands[4];
-	seat cards[52];
-	GtkWidget *win;
-	GtkWidget *card_label[52];
+	seat cards[52]; // 0 = not dealt
+	GtkWidget *win; // window showing this board
+	GtkWidget *card_label[52]; // clickable card labels
 } board;
 
 /*
@@ -64,7 +65,7 @@ GString *card_string (card c);
 GString *hand_string (hand *h);
 GString *gib_string (hand *h);
 void remove_card(hand *h, card c);
-void add_card(hand *h, card c);
+//void add_card(hand *h, card c);
 int give_card(board *b, seat s, card c);
 
 /*
