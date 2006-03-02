@@ -29,6 +29,7 @@ board *board_new(void)
 		b->hands[i] = hand_new(names[i]);
 	}
 	bzero(b->cards, sizeof(seat) * 52);
+	bzero(b->card_label, sizeof(GtkWidget*) * 52);
 	return b;
 }
 

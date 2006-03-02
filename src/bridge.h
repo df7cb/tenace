@@ -48,6 +48,7 @@ typedef struct board_t {
 	hand *hands[4];
 	seat cards[52];
 	GtkWidget *win;
+	GtkWidget *card_label[52];
 } board;
 
 /*

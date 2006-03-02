@@ -15,7 +15,7 @@ void board_save(board *b)
 
 void board_gib(board *b)
 {
-	char *h_char[] = {"w", "n", "s", "e"};
+	char *h_char[] = {"w", "n", "e", "s"};
 	int h;
 	FILE *f;
 	if (!(f = fopen("dd", "w"))) {
@@ -34,5 +34,5 @@ void board_gib(board *b)
 	}
 	fprintf(f, "-vd dd\n");
 	fclose(f);
-	system("wine /srv/bridge/gib/zip/bridge.exe -i dc");
+	system("wine /home/cb/projects/bridge/gib/zip/bridge.exe -i dc");
 }
