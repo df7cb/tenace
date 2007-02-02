@@ -2,6 +2,7 @@
 #  include <config.h>
 #endif
 
+#include <stdlib.h>
 #include <gtk/gtk.h>
 
 #include "callbacks.h"
@@ -17,23 +18,24 @@ void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	board_clear(b);
+	show_board(b);
 }
 
 
 void
-on___ffnen1_activate                   (GtkMenuItem     *menuitem,
+on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	if (!board_load("dd", b))
+		printf ("open failed.\n");
+	show_board(b);
 }
-
 
 void
 on_speichern1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
 }
 
 
@@ -49,7 +51,7 @@ void
 on_beenden1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	exit(0);
 }
 
 
@@ -180,6 +182,7 @@ void
 on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	board_gib(b);
+	board_dds(b);
 }
+
 

@@ -86,3 +86,7 @@ on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
 void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_open1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

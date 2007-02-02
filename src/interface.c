@@ -33,23 +33,22 @@ create_window_hand (void)
   GtkWidget *vbox1;
   GtkWidget *menubar1;
   GtkWidget *menuitem1;
-  GtkWidget *menu1;
+  GtkWidget *menuitem1_menu;
   GtkWidget *neu1;
-  GtkWidget *__ffnen1;
+  GtkWidget *open1;
   GtkWidget *speichern1;
   GtkWidget *speichern_unter1;
   GtkWidget *separatormenuitem1;
   GtkWidget *beenden1;
   GtkWidget *menuitem2;
-  GtkWidget *menu2;
+  GtkWidget *menuitem2_menu;
   GtkWidget *ausschneiden1;
   GtkWidget *kopieren1;
   GtkWidget *einf__gen1;
   GtkWidget *l__schen1;
   GtkWidget *menuitem3;
-  GtkWidget *menu3;
   GtkWidget *menuitem4;
-  GtkWidget *menu4;
+  GtkWidget *menuitem4_menu;
   GtkWidget *info1;
   GtkWidget *toolbar1;
   GtkIconSize tmp_toolbar_icon_size;
@@ -139,74 +138,71 @@ create_window_hand (void)
   gtk_widget_show (menuitem1);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem1);
 
-  menu1 = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem1), menu1);
+  menuitem1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem1), menuitem1_menu);
 
   neu1 = gtk_image_menu_item_new_from_stock ("gtk-new", accel_group);
   gtk_widget_show (neu1);
-  gtk_container_add (GTK_CONTAINER (menu1), neu1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), neu1);
 
-  __ffnen1 = gtk_image_menu_item_new_from_stock ("gtk-open", accel_group);
-  gtk_widget_show (__ffnen1);
-  gtk_container_add (GTK_CONTAINER (menu1), __ffnen1);
+  open1 = gtk_image_menu_item_new_from_stock ("gtk-open", accel_group);
+  gtk_widget_show (open1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), open1);
 
   speichern1 = gtk_image_menu_item_new_from_stock ("gtk-save", accel_group);
   gtk_widget_show (speichern1);
-  gtk_container_add (GTK_CONTAINER (menu1), speichern1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), speichern1);
 
   speichern_unter1 = gtk_image_menu_item_new_from_stock ("gtk-save-as", accel_group);
   gtk_widget_show (speichern_unter1);
-  gtk_container_add (GTK_CONTAINER (menu1), speichern_unter1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), speichern_unter1);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separatormenuitem1);
-  gtk_container_add (GTK_CONTAINER (menu1), separatormenuitem1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), separatormenuitem1);
   gtk_widget_set_sensitive (separatormenuitem1, FALSE);
 
   beenden1 = gtk_image_menu_item_new_from_stock ("gtk-quit", accel_group);
   gtk_widget_show (beenden1);
-  gtk_container_add (GTK_CONTAINER (menu1), beenden1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), beenden1);
 
   menuitem2 = gtk_menu_item_new_with_mnemonic (_("_Bearbeiten"));
   gtk_widget_show (menuitem2);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem2);
 
-  menu2 = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem2), menu2);
+  menuitem2_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem2), menuitem2_menu);
 
   ausschneiden1 = gtk_image_menu_item_new_from_stock ("gtk-cut", accel_group);
   gtk_widget_show (ausschneiden1);
-  gtk_container_add (GTK_CONTAINER (menu2), ausschneiden1);
+  gtk_container_add (GTK_CONTAINER (menuitem2_menu), ausschneiden1);
 
   kopieren1 = gtk_image_menu_item_new_from_stock ("gtk-copy", accel_group);
   gtk_widget_show (kopieren1);
-  gtk_container_add (GTK_CONTAINER (menu2), kopieren1);
+  gtk_container_add (GTK_CONTAINER (menuitem2_menu), kopieren1);
 
   einf__gen1 = gtk_image_menu_item_new_from_stock ("gtk-paste", accel_group);
   gtk_widget_show (einf__gen1);
-  gtk_container_add (GTK_CONTAINER (menu2), einf__gen1);
+  gtk_container_add (GTK_CONTAINER (menuitem2_menu), einf__gen1);
 
   l__schen1 = gtk_image_menu_item_new_from_stock ("gtk-delete", accel_group);
   gtk_widget_show (l__schen1);
-  gtk_container_add (GTK_CONTAINER (menu2), l__schen1);
+  gtk_container_add (GTK_CONTAINER (menuitem2_menu), l__schen1);
 
   menuitem3 = gtk_menu_item_new_with_mnemonic (_("_Ansicht"));
   gtk_widget_show (menuitem3);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem3);
 
-  menu3 = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem3), menu3);
-
   menuitem4 = gtk_menu_item_new_with_mnemonic (_("_Hilfe"));
   gtk_widget_show (menuitem4);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem4);
 
-  menu4 = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem4), menu4);
+  menuitem4_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem4), menuitem4_menu);
 
   info1 = gtk_menu_item_new_with_mnemonic (_("_Info"));
   gtk_widget_show (info1);
-  gtk_container_add (GTK_CONTAINER (menu4), info1);
+  gtk_container_add (GTK_CONTAINER (menuitem4_menu), info1);
 
   toolbar1 = gtk_toolbar_new ();
   gtk_widget_show (toolbar1);
@@ -614,8 +610,8 @@ create_window_hand (void)
   g_signal_connect ((gpointer) neu1, "activate",
                     G_CALLBACK (on_neu1_activate),
                     NULL);
-  g_signal_connect ((gpointer) __ffnen1, "activate",
-                    G_CALLBACK (on___ffnen1_activate),
+  g_signal_connect ((gpointer) open1, "activate",
+                    G_CALLBACK (on_open1_activate),
                     NULL);
   g_signal_connect ((gpointer) speichern1, "activate",
                     G_CALLBACK (on_speichern1_activate),
@@ -653,23 +649,22 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, vbox1, "vbox1");
   GLADE_HOOKUP_OBJECT (window_hand, menubar1, "menubar1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem1, "menuitem1");
-  GLADE_HOOKUP_OBJECT (window_hand, menu1, "menu1");
+  GLADE_HOOKUP_OBJECT (window_hand, menuitem1_menu, "menuitem1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, neu1, "neu1");
-  GLADE_HOOKUP_OBJECT (window_hand, __ffnen1, "__ffnen1");
+  GLADE_HOOKUP_OBJECT (window_hand, open1, "open1");
   GLADE_HOOKUP_OBJECT (window_hand, speichern1, "speichern1");
   GLADE_HOOKUP_OBJECT (window_hand, speichern_unter1, "speichern_unter1");
   GLADE_HOOKUP_OBJECT (window_hand, separatormenuitem1, "separatormenuitem1");
   GLADE_HOOKUP_OBJECT (window_hand, beenden1, "beenden1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2, "menuitem2");
-  GLADE_HOOKUP_OBJECT (window_hand, menu2, "menu2");
+  GLADE_HOOKUP_OBJECT (window_hand, menuitem2_menu, "menuitem2_menu");
   GLADE_HOOKUP_OBJECT (window_hand, ausschneiden1, "ausschneiden1");
   GLADE_HOOKUP_OBJECT (window_hand, kopieren1, "kopieren1");
   GLADE_HOOKUP_OBJECT (window_hand, einf__gen1, "einf__gen1");
   GLADE_HOOKUP_OBJECT (window_hand, l__schen1, "l__schen1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem3, "menuitem3");
-  GLADE_HOOKUP_OBJECT (window_hand, menu3, "menu3");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4, "menuitem4");
-  GLADE_HOOKUP_OBJECT (window_hand, menu4, "menu4");
+  GLADE_HOOKUP_OBJECT (window_hand, menuitem4_menu, "menuitem4_menu");
   GLADE_HOOKUP_OBJECT (window_hand, info1, "info1");
   GLADE_HOOKUP_OBJECT (window_hand, toolbar1, "toolbar1");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton1, "toolbutton1");

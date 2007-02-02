@@ -59,8 +59,11 @@ typedef struct board_t {
 hand *hand_new(char *name);
 void hand_free(hand *h);
 board *board_new(void);
+void board_clear(board *b);
 void board_free(board *b);
 gchar *rank_string (rank r);
+char rank_char (rank r);
+rank parse_rank_char (char c);
 GString *card_string (card c);
 GString *hand_string (hand *h);
 GString *gib_string (hand *h);

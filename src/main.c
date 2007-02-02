@@ -14,10 +14,27 @@
 board *b;
 seat new_card_seat = west;
 GtkWidget *card_button[52];
+GtkWidget *card_label[52];
+GtkWidget *card_label_container[52];
 
-void foo(GtkLabel *l, card *cp)
+void label_clicked(GtkLabel *l, void *foo, card *cp)
 {
-	printf("Clicked: %d %s.\n", *cp, card_string(*cp)->str);
+	printf("Clicked: %s.\n", card_string(*cp)->str);
+}
+
+static void create_card_labels ()
+{
+	static card cards[52];
+	card c;
+	for (c = 0; c < 52; c++) {
+		GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
+		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+		cards[c] = c;
+		g_signal_connect (wn, "button_press_event", G_CALLBACK(label_clicked), &cards[c]);
+		card_label[c] = wn;
+		card_label_container[c] = NULL;
+		g_object_ref(wn); // create reference so labels are not deleted when moved around
+	}
 }
 
 void show_board (board *b)
@@ -42,66 +59,30 @@ void show_board (board *b)
 	}
 	label_i = 0;
 
-	card *c;
-	int s;
+	int c;
+	GtkWidget *box;
 
-	c = b->hands[0]->cards;
-	char *box_array[] = {"hbox_west_c", "hbox_west_d", "hbox_west_h", "hbox_west_s"};
-	for (s = spade; s >= club; s--) {
-		w = lookup_widget(win, box_array[s]);
-		for (; *c >= 0 && SUIT(*c) == s; c++) {
-			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-			gtk_widget_show(wn);
-			b->card_label[label_i++] = wn;
+	char *box_array[4][4] = {{"hbox_west_c", "hbox_west_d", "hbox_west_h", "hbox_west_s"},
+		{"hbox_north_c", "hbox_north_d", "hbox_north_h", "hbox_north_s"},
+		{"hbox_east_c", "hbox_east_d", "hbox_east_h", "hbox_east_s"},
+		{"hbox_south_c", "hbox_south_d", "hbox_south_h", "hbox_south_s"}};
+
+	for (c = 51; c >= 0; c--) {
+		int h = b->cards[c];
+		int s = SUIT(c);
+
+		GtkWidget *lab = card_label[c];
+		if (card_label_container[c]) {
+			gtk_container_remove(GTK_CONTAINER(card_label_container[c]), lab);
+			card_label_container[c] = NULL;
+		}
+		if (h) {
+			box = lookup_widget(win, box_array[h-1][s]);
+			gtk_box_pack_start (GTK_BOX (box), lab, FALSE, FALSE, FALSE);
+			gtk_widget_show(lab);
+			card_label_container[c] = box;
 		}
 	}
-
-	c = b->hands[1]->cards;
-	char *box_array1[] = {"hbox_north_c", "hbox_north_d", "hbox_north_h", "hbox_north_s"};
-	for (s = spade; s >= club; s--) {
-		w = lookup_widget(win, box_array1[s]);
-		for (; *c >= 0 && SUIT(*c) == s; c++) {
-			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-			gtk_widget_show(wn);
-			b->card_label[label_i++] = wn;
-		}
-	}
-
-	c = b->hands[2]->cards;
-	char *box_array2[] = {"hbox_east_c", "hbox_east_d", "hbox_east_h", "hbox_east_s"};
-	for (s = spade; s >= club; s--) {
-		w = lookup_widget(win, box_array2[s]);
-		for (; *c >= 0 && SUIT(*c) == s; c++) {
-			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-			printf("c is %p %d\n", c, *c);
-			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-			gtk_widget_show(wn);
-			b->card_label[label_i++] = wn;
-		}
-	}
-
-	c = b->hands[3]->cards;
-	char *box_array3[] = {"hbox_south_c", "hbox_south_d", "hbox_south_h", "hbox_south_s"};
-	for (s = spade; s >= club; s--) {
-		w = lookup_widget(win, box_array3[s]);
-		for (; *c >= 0 && SUIT(*c) == s; c++) {
-			GtkWidget *wn = gtk_label_new(rank_string(RANK(*c)));
-			gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-			g_signal_connect (wn, "button_press_event", G_CALLBACK(foo), c);
-			gtk_box_pack_start (GTK_BOX (w), wn, FALSE, FALSE, FALSE);
-			gtk_widget_show(wn);
-			b->card_label[label_i++] = wn;
-		}
-	}
-
 }
 
 void cardX_clicked (GtkButton *button, gpointer cxp)
@@ -195,6 +176,7 @@ main (int argc, char *argv[])
 
   srand(time(NULL));
 
+  create_card_labels();
   fill_card_window(window_card);
 
   b = board_new();

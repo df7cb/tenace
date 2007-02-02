@@ -1,13 +1,20 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bridge.h"
+
+void hand_clear(hand *h)
+{
+	//g_string_truncate(h->name, 0);
+	memset(h->cards, -1, sizeof(card) * 14);
+}
 
 hand *hand_new(char *name)
 {
 	hand *h = malloc(sizeof(hand));
 	assert(h);
 	h->name = g_string_new(name);
-	memset(h->cards, -1, sizeof(card) * 14);
+	hand_clear(h);
 	return h;
 }
 
@@ -16,6 +23,11 @@ void hand_free(hand *h)
 	assert(h);
 	g_string_free(h->name, TRUE);
 	free(h);
+}
+
+void board_clear_cards(board *b)
+{
+	memset(b->cards, 0, sizeof(seat) * 52);
 }
 
 board *board_new(void)
@@ -28,9 +40,18 @@ board *board_new(void)
 	for (i = 0; i < 4; i++) {
 		b->hands[i] = hand_new(names[i]);
 	}
-	bzero(b->cards, sizeof(seat) * 52);
-	bzero(b->card_label, sizeof(GtkWidget*) * 52);
+	board_clear_cards(b);
+	memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
 	return b;
+}
+
+void board_clear(board *b)
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		hand_clear(b->hands[i]);
+	}
+	board_clear_cards(b);
 }
 
 void board_free(board *b)
@@ -47,6 +68,38 @@ gchar *rank_string (rank r)
 {
 	static gchar *label[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 	return label[r];
+}
+
+char rank_char (rank r)
+{
+	static char label[] = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+	return label[r];
+}
+
+rank parse_rank_char (char c)
+{
+	switch (tolower(c)) {
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			return tolower(c) - '2';
+		case 't':
+			return card10;
+		case 'j':
+			return cardJ;
+		case 'q':
+			return cardQ;
+		case 'k':
+			return cardK;
+		case 'a':
+			return cardA;
+	}
+	return -1;
 }
 
 GString *card_string (card c)
