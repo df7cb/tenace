@@ -90,3 +90,95 @@ on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_dealer_west1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_north1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_east1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_item3_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_declarer_west1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_declarer_north1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_declarer_east1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_declarer_south1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_contract_no_trump1_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_contract_spades1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_contract_hearts1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_contract_diamonds1_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_contract_clubs1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level2_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level3_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level4_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level5_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level6_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level7_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level_doubled1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_board1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

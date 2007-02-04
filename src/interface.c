@@ -40,6 +40,36 @@ create_window_hand (void)
   GtkWidget *speichern_unter1;
   GtkWidget *separatormenuitem1;
   GtkWidget *beenden1;
+  GtkWidget *contract1;
+  GtkWidget *contract1_menu;
+  GSList *declarer_west1_group = NULL;
+  GtkWidget *declarer_west1;
+  GtkWidget *declarer_north1;
+  GtkWidget *declarer_east1;
+  GtkWidget *declarer_south1;
+  GtkWidget *trennlinie1;
+  GSList *contract_no_trump1_group = NULL;
+  GtkWidget *contract_no_trump1;
+  GtkWidget *contract_spades1;
+  GtkWidget *contract_hearts1;
+  GtkWidget *contract_diamonds1;
+  GtkWidget *contract_clubs1;
+  GtkWidget *trennlinie2;
+  GtkWidget *level_menu1;
+  GtkWidget *level_menu1_menu;
+  GSList *level1_group = NULL;
+  GtkWidget *level1;
+  GtkWidget *level2;
+  GtkWidget *level3;
+  GtkWidget *level4;
+  GtkWidget *level5;
+  GtkWidget *level6;
+  GtkWidget *level7;
+  GtkWidget *level_doubled1;
+  GtkWidget *level_redoubled1;
+  GtkWidget *board_menu1;
+  GtkWidget *board_menu1_menu;
+  GtkWidget *board1;
   GtkWidget *menuitem2;
   GtkWidget *menuitem2_menu;
   GtkWidget *ausschneiden1;
@@ -63,53 +93,53 @@ create_window_hand (void)
   GtkWidget *separatortoolitem3;
   GtkWidget *handbutton_gib;
   GtkWidget *table1;
-  GtkWidget *frame1;
+  GtkWidget *frame_w;
   GtkWidget *alignment4;
   GtkWidget *table6;
   GtkWidget *label16;
   GtkWidget *label17;
-  GtkWidget *label18;
-  GtkWidget *label19;
   GtkWidget *hbox_west_s;
   GtkWidget *hbox_west_h;
   GtkWidget *hbox_west_d;
   GtkWidget *hbox_west_c;
+  GtkWidget *label27;
+  GtkWidget *label28;
   GtkWidget *label_west;
-  GtkWidget *frame2;
+  GtkWidget *frame_e;
   GtkWidget *alignment5;
   GtkWidget *table7;
   GtkWidget *label20;
-  GtkWidget *label21;
-  GtkWidget *label22;
-  GtkWidget *label23;
   GtkWidget *hbox_east_s;
   GtkWidget *hbox_east_h;
   GtkWidget *hbox_east_d;
   GtkWidget *hbox_east_c;
+  GtkWidget *label24;
+  GtkWidget *label29;
+  GtkWidget *label32;
   GtkWidget *label_east;
-  GtkWidget *frame3;
+  GtkWidget *frame_n;
   GtkWidget *alignment6;
   GtkWidget *table_north;
   GtkWidget *label8;
-  GtkWidget *label9;
-  GtkWidget *label10;
-  GtkWidget *label11;
   GtkWidget *hbox_north_s;
   GtkWidget *hbox_north_h;
   GtkWidget *hbox_north_d;
   GtkWidget *hbox_north_c;
+  GtkWidget *label26;
+  GtkWidget *label30;
+  GtkWidget *label34;
   GtkWidget *label_north;
-  GtkWidget *frame4;
+  GtkWidget *frame_s;
   GtkWidget *alignment7;
   GtkWidget *table5;
   GtkWidget *label12;
-  GtkWidget *label13;
-  GtkWidget *label14;
-  GtkWidget *label15;
   GtkWidget *hbox_south_s;
   GtkWidget *hbox_south_h;
   GtkWidget *hbox_south_d;
   GtkWidget *hbox_south_c;
+  GtkWidget *label25;
+  GtkWidget *label31;
+  GtkWidget *label33;
   GtkWidget *label_south;
   GtkWidget *label_tricks;
   GtkWidget *label_board;
@@ -165,6 +195,132 @@ create_window_hand (void)
   beenden1 = gtk_image_menu_item_new_from_stock ("gtk-quit", accel_group);
   gtk_widget_show (beenden1);
   gtk_container_add (GTK_CONTAINER (menuitem1_menu), beenden1);
+
+  contract1 = gtk_menu_item_new_with_mnemonic (_("Contract"));
+  gtk_widget_show (contract1);
+  gtk_container_add (GTK_CONTAINER (menubar1), contract1);
+
+  contract1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (contract1), contract1_menu);
+
+  declarer_west1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("West"));
+  declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_west1));
+  gtk_widget_show (declarer_west1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_west1);
+
+  declarer_north1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("North"));
+  declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_north1));
+  gtk_widget_show (declarer_north1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_north1);
+
+  declarer_east1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("East"));
+  declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_east1));
+  gtk_widget_show (declarer_east1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_east1);
+
+  declarer_south1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("South"));
+  declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_south1));
+  gtk_widget_show (declarer_south1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_south1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_south1), TRUE);
+
+  trennlinie1 = gtk_separator_menu_item_new ();
+  gtk_widget_show (trennlinie1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), trennlinie1);
+  gtk_widget_set_sensitive (trennlinie1, FALSE);
+
+  contract_no_trump1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("No Trump"));
+  contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_no_trump1));
+  gtk_widget_show (contract_no_trump1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), contract_no_trump1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_no_trump1), TRUE);
+
+  contract_spades1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\240 Spades"));
+  contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_spades1));
+  gtk_widget_show (contract_spades1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), contract_spades1);
+
+  contract_hearts1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\245 Hearts"));
+  contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_hearts1));
+  gtk_widget_show (contract_hearts1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), contract_hearts1);
+
+  contract_diamonds1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\246 Diamonds"));
+  contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_diamonds1));
+  gtk_widget_show (contract_diamonds1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), contract_diamonds1);
+
+  contract_clubs1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\243 Clubs"));
+  contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_clubs1));
+  gtk_widget_show (contract_clubs1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), contract_clubs1);
+
+  trennlinie2 = gtk_separator_menu_item_new ();
+  gtk_widget_show (trennlinie2);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), trennlinie2);
+  gtk_widget_set_sensitive (trennlinie2, FALSE);
+
+  level_menu1 = gtk_menu_item_new_with_mnemonic (_("Level"));
+  gtk_widget_show (level_menu1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), level_menu1);
+
+  level_menu1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (level_menu1), level_menu1_menu);
+
+  level1 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("1"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level1));
+  gtk_widget_show (level1);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level1), TRUE);
+
+  level2 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("2"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level2));
+  gtk_widget_show (level2);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level2);
+
+  level3 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("3"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level3));
+  gtk_widget_show (level3);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level3);
+
+  level4 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("4"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level4));
+  gtk_widget_show (level4);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level4);
+
+  level5 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("5"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level5));
+  gtk_widget_show (level5);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level5);
+
+  level6 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("6"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level6));
+  gtk_widget_show (level6);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level6);
+
+  level7 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("7"));
+  level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level7));
+  gtk_widget_show (level7);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level7);
+
+  level_doubled1 = gtk_check_menu_item_new_with_mnemonic (_("X Doubled"));
+  gtk_widget_show (level_doubled1);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_doubled1);
+
+  level_redoubled1 = gtk_check_menu_item_new_with_mnemonic (_("XX Redoubled"));
+  gtk_widget_show (level_redoubled1);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_redoubled1);
+
+  board_menu1 = gtk_menu_item_new_with_mnemonic (_("Board"));
+  gtk_widget_show (board_menu1);
+  gtk_container_add (GTK_CONTAINER (menubar1), board_menu1);
+
+  board_menu1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (board_menu1), board_menu1_menu);
+
+  board1 = gtk_menu_item_new_with_mnemonic (_("Board 1"));
+  gtk_widget_show (board1);
+  gtk_container_add (GTK_CONTAINER (board_menu1_menu), board1);
 
   menuitem2 = gtk_menu_item_new_with_mnemonic (_("_Bearbeiten"));
   gtk_widget_show (menuitem2);
@@ -258,16 +414,16 @@ create_window_hand (void)
   gtk_widget_show (table1);
   gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
 
-  frame1 = gtk_frame_new (NULL);
-  gtk_widget_show (frame1);
-  gtk_table_attach (GTK_TABLE (table1), frame1, 0, 1, 1, 2,
+  frame_w = gtk_frame_new (NULL);
+  gtk_widget_show (frame_w);
+  gtk_table_attach (GTK_TABLE (table1), frame_w, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame1), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_w), 5);
 
   alignment4 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment4);
-  gtk_container_add (GTK_CONTAINER (frame1), alignment4);
+  gtk_container_add (GTK_CONTAINER (frame_w), alignment4);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment4), 0, 0, 0, 5);
 
   table6 = gtk_table_new (4, 2, FALSE);
@@ -281,23 +437,12 @@ create_window_hand (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label16), 5, 0);
 
-  label17 = gtk_label_new (_("\342\231\245"));
+  label17 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
   gtk_widget_show (label17);
   gtk_table_attach (GTK_TABLE (table6), label17, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-
-  label18 = gtk_label_new (_("\342\231\246"));
-  gtk_widget_show (label18);
-  gtk_table_attach (GTK_TABLE (table6), label18, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label19 = gtk_label_new (_("\342\231\243"));
-  gtk_widget_show (label19);
-  gtk_table_attach (GTK_TABLE (table6), label19, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label17), TRUE);
 
   hbox_west_s = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox_west_s);
@@ -323,21 +468,35 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
+  label27 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
+  gtk_widget_show (label27);
+  gtk_table_attach (GTK_TABLE (table6), label27, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label27), TRUE);
+
+  label28 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
+  gtk_widget_show (label28);
+  gtk_table_attach (GTK_TABLE (table6), label28, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label28), TRUE);
+
   label_west = gtk_label_new (_("West"));
   gtk_widget_show (label_west);
-  gtk_frame_set_label_widget (GTK_FRAME (frame1), label_west);
+  gtk_frame_set_label_widget (GTK_FRAME (frame_w), label_west);
   gtk_label_set_use_markup (GTK_LABEL (label_west), TRUE);
 
-  frame2 = gtk_frame_new (NULL);
-  gtk_widget_show (frame2);
-  gtk_table_attach (GTK_TABLE (table1), frame2, 2, 3, 1, 2,
+  frame_e = gtk_frame_new (NULL);
+  gtk_widget_show (frame_e);
+  gtk_table_attach (GTK_TABLE (table1), frame_e, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame2), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_e), 5);
 
   alignment5 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment5);
-  gtk_container_add (GTK_CONTAINER (frame2), alignment5);
+  gtk_container_add (GTK_CONTAINER (frame_e), alignment5);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment5), 0, 0, 0, 5);
 
   table7 = gtk_table_new (4, 2, FALSE);
@@ -350,24 +509,6 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label20), 5, 0);
-
-  label21 = gtk_label_new (_("\342\231\245"));
-  gtk_widget_show (label21);
-  gtk_table_attach (GTK_TABLE (table7), label21, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label22 = gtk_label_new (_("\342\231\246"));
-  gtk_widget_show (label22);
-  gtk_table_attach (GTK_TABLE (table7), label22, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label23 = gtk_label_new (_("\342\231\243"));
-  gtk_widget_show (label23);
-  gtk_table_attach (GTK_TABLE (table7), label23, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
 
   hbox_east_s = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox_east_s);
@@ -393,21 +534,42 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
+  label24 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
+  gtk_widget_show (label24);
+  gtk_table_attach (GTK_TABLE (table7), label24, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label24), TRUE);
+
+  label29 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
+  gtk_widget_show (label29);
+  gtk_table_attach (GTK_TABLE (table7), label29, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label29), TRUE);
+
+  label32 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
+  gtk_widget_show (label32);
+  gtk_table_attach (GTK_TABLE (table7), label32, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label32), TRUE);
+
   label_east = gtk_label_new (_("Ost"));
   gtk_widget_show (label_east);
-  gtk_frame_set_label_widget (GTK_FRAME (frame2), label_east);
+  gtk_frame_set_label_widget (GTK_FRAME (frame_e), label_east);
   gtk_label_set_use_markup (GTK_LABEL (label_east), TRUE);
 
-  frame3 = gtk_frame_new (NULL);
-  gtk_widget_show (frame3);
-  gtk_table_attach (GTK_TABLE (table1), frame3, 1, 2, 0, 1,
+  frame_n = gtk_frame_new (NULL);
+  gtk_widget_show (frame_n);
+  gtk_table_attach (GTK_TABLE (table1), frame_n, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame3), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_n), 5);
 
   alignment6 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment6);
-  gtk_container_add (GTK_CONTAINER (frame3), alignment6);
+  gtk_container_add (GTK_CONTAINER (frame_n), alignment6);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment6), 0, 0, 0, 5);
 
   table_north = gtk_table_new (4, 2, FALSE);
@@ -420,24 +582,6 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label8), 5, 0);
-
-  label9 = gtk_label_new (_("\342\231\245"));
-  gtk_widget_show (label9);
-  gtk_table_attach (GTK_TABLE (table_north), label9, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label10 = gtk_label_new (_("\342\231\246"));
-  gtk_widget_show (label10);
-  gtk_table_attach (GTK_TABLE (table_north), label10, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label11 = gtk_label_new (_("\342\231\243"));
-  gtk_widget_show (label11);
-  gtk_table_attach (GTK_TABLE (table_north), label11, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
 
   hbox_north_s = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox_north_s);
@@ -463,21 +607,42 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
+  label26 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
+  gtk_widget_show (label26);
+  gtk_table_attach (GTK_TABLE (table_north), label26, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label26), TRUE);
+
+  label30 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
+  gtk_widget_show (label30);
+  gtk_table_attach (GTK_TABLE (table_north), label30, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label30), TRUE);
+
+  label34 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
+  gtk_widget_show (label34);
+  gtk_table_attach (GTK_TABLE (table_north), label34, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label34), TRUE);
+
   label_north = gtk_label_new (_("Nord"));
   gtk_widget_show (label_north);
-  gtk_frame_set_label_widget (GTK_FRAME (frame3), label_north);
+  gtk_frame_set_label_widget (GTK_FRAME (frame_n), label_north);
   gtk_label_set_use_markup (GTK_LABEL (label_north), TRUE);
 
-  frame4 = gtk_frame_new (NULL);
-  gtk_widget_show (frame4);
-  gtk_table_attach (GTK_TABLE (table1), frame4, 1, 2, 2, 3,
+  frame_s = gtk_frame_new (NULL);
+  gtk_widget_show (frame_s);
+  gtk_table_attach (GTK_TABLE (table1), frame_s, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame4), 5);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_s), 5);
 
   alignment7 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment7);
-  gtk_container_add (GTK_CONTAINER (frame4), alignment7);
+  gtk_container_add (GTK_CONTAINER (frame_s), alignment7);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment7), 0, 0, 0, 5);
 
   table5 = gtk_table_new (4, 2, FALSE);
@@ -490,24 +655,6 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label12), 5, 0);
-
-  label13 = gtk_label_new (_("\342\231\245"));
-  gtk_widget_show (label13);
-  gtk_table_attach (GTK_TABLE (table5), label13, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label14 = gtk_label_new (_("\342\231\246"));
-  gtk_widget_show (label14);
-  gtk_table_attach (GTK_TABLE (table5), label14, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  label15 = gtk_label_new (_("\342\231\243"));
-  gtk_widget_show (label15);
-  gtk_table_attach (GTK_TABLE (table5), label15, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
 
   hbox_south_s = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox_south_s);
@@ -533,9 +680,30 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
+  label25 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
+  gtk_widget_show (label25);
+  gtk_table_attach (GTK_TABLE (table5), label25, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label25), TRUE);
+
+  label31 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
+  gtk_widget_show (label31);
+  gtk_table_attach (GTK_TABLE (table5), label31, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label31), TRUE);
+
+  label33 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
+  gtk_widget_show (label33);
+  gtk_table_attach (GTK_TABLE (table5), label33, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label33), TRUE);
+
   label_south = gtk_label_new (_("S\303\274d"));
   gtk_widget_show (label_south);
-  gtk_frame_set_label_widget (GTK_FRAME (frame4), label_south);
+  gtk_frame_set_label_widget (GTK_FRAME (frame_s), label_south);
   gtk_label_set_use_markup (GTK_LABEL (label_south), TRUE);
 
   label_tricks = gtk_label_new (_("NS: 0\nOW: 0"));
@@ -563,7 +731,7 @@ create_window_hand (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-  card_south = gtk_label_new (_("\342\231\2459"));
+  card_south = gtk_label_new ("");
   gtk_widget_show (card_south);
   gtk_table_attach (GTK_TABLE (table4), card_south, 0, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -572,7 +740,7 @@ create_window_hand (void)
   gtk_label_set_justify (GTK_LABEL (card_south), GTK_JUSTIFY_CENTER);
   gtk_label_set_selectable (GTK_LABEL (card_south), TRUE);
 
-  card_west = gtk_label_new (_("\342\231\245A"));
+  card_west = gtk_label_new ("");
   gtk_widget_show (card_west);
   gtk_table_attach (GTK_TABLE (table4), card_west, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -582,7 +750,7 @@ create_window_hand (void)
   gtk_label_set_selectable (GTK_LABEL (card_west), TRUE);
   gtk_misc_set_alignment (GTK_MISC (card_west), 0.49, 0.5);
 
-  card_east = gtk_label_new (_("\342\231\2454"));
+  card_east = gtk_label_new ("");
   gtk_widget_show (card_east);
   gtk_table_attach (GTK_TABLE (table4), card_east, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -591,7 +759,7 @@ create_window_hand (void)
   gtk_label_set_justify (GTK_LABEL (card_east), GTK_JUSTIFY_CENTER);
   gtk_label_set_selectable (GTK_LABEL (card_east), TRUE);
 
-  card_north = gtk_label_new (_("\342\231\2452"));
+  card_north = gtk_label_new ("");
   gtk_widget_show (card_north);
   gtk_table_attach (GTK_TABLE (table4), card_north, 0, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -621,6 +789,63 @@ create_window_hand (void)
                     NULL);
   g_signal_connect ((gpointer) beenden1, "activate",
                     G_CALLBACK (on_beenden1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) declarer_west1, "activate",
+                    G_CALLBACK (on_declarer_west1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) declarer_north1, "activate",
+                    G_CALLBACK (on_declarer_north1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) declarer_east1, "activate",
+                    G_CALLBACK (on_declarer_east1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) declarer_south1, "activate",
+                    G_CALLBACK (on_declarer_south1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) contract_no_trump1, "activate",
+                    G_CALLBACK (on_contract_no_trump1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) contract_spades1, "activate",
+                    G_CALLBACK (on_contract_spades1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) contract_hearts1, "activate",
+                    G_CALLBACK (on_contract_hearts1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) contract_diamonds1, "activate",
+                    G_CALLBACK (on_contract_diamonds1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) contract_clubs1, "activate",
+                    G_CALLBACK (on_contract_clubs1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level1, "activate",
+                    G_CALLBACK (on_level1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level2, "activate",
+                    G_CALLBACK (on_level2_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level3, "activate",
+                    G_CALLBACK (on_level3_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level4, "activate",
+                    G_CALLBACK (on_level4_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level5, "activate",
+                    G_CALLBACK (on_level5_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level6, "activate",
+                    G_CALLBACK (on_level6_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level7, "activate",
+                    G_CALLBACK (on_level7_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level_doubled1, "activate",
+                    G_CALLBACK (on_level_doubled1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level_redoubled1, "activate",
+                    G_CALLBACK (on_level_redoubled1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) board1, "activate",
+                    G_CALLBACK (on_board1_activate),
                     NULL);
   g_signal_connect ((gpointer) ausschneiden1, "activate",
                     G_CALLBACK (on_ausschneiden1_activate),
@@ -656,6 +881,33 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, speichern_unter1, "speichern_unter1");
   GLADE_HOOKUP_OBJECT (window_hand, separatormenuitem1, "separatormenuitem1");
   GLADE_HOOKUP_OBJECT (window_hand, beenden1, "beenden1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract1, "contract1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract1_menu, "contract1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, declarer_west1, "declarer_west1");
+  GLADE_HOOKUP_OBJECT (window_hand, declarer_north1, "declarer_north1");
+  GLADE_HOOKUP_OBJECT (window_hand, declarer_east1, "declarer_east1");
+  GLADE_HOOKUP_OBJECT (window_hand, declarer_south1, "declarer_south1");
+  GLADE_HOOKUP_OBJECT (window_hand, trennlinie1, "trennlinie1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract_no_trump1, "contract_no_trump1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract_spades1, "contract_spades1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract_hearts1, "contract_hearts1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract_diamonds1, "contract_diamonds1");
+  GLADE_HOOKUP_OBJECT (window_hand, contract_clubs1, "contract_clubs1");
+  GLADE_HOOKUP_OBJECT (window_hand, trennlinie2, "trennlinie2");
+  GLADE_HOOKUP_OBJECT (window_hand, level_menu1, "level_menu1");
+  GLADE_HOOKUP_OBJECT (window_hand, level_menu1_menu, "level_menu1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, level1, "level1");
+  GLADE_HOOKUP_OBJECT (window_hand, level2, "level2");
+  GLADE_HOOKUP_OBJECT (window_hand, level3, "level3");
+  GLADE_HOOKUP_OBJECT (window_hand, level4, "level4");
+  GLADE_HOOKUP_OBJECT (window_hand, level5, "level5");
+  GLADE_HOOKUP_OBJECT (window_hand, level6, "level6");
+  GLADE_HOOKUP_OBJECT (window_hand, level7, "level7");
+  GLADE_HOOKUP_OBJECT (window_hand, level_doubled1, "level_doubled1");
+  GLADE_HOOKUP_OBJECT (window_hand, level_redoubled1, "level_redoubled1");
+  GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
+  GLADE_HOOKUP_OBJECT (window_hand, board_menu1_menu, "board_menu1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, board1, "board1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2, "menuitem2");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2_menu, "menuitem2_menu");
   GLADE_HOOKUP_OBJECT (window_hand, ausschneiden1, "ausschneiden1");
@@ -677,53 +929,53 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem3, "separatortoolitem3");
   GLADE_HOOKUP_OBJECT (window_hand, handbutton_gib, "handbutton_gib");
   GLADE_HOOKUP_OBJECT (window_hand, table1, "table1");
-  GLADE_HOOKUP_OBJECT (window_hand, frame1, "frame1");
+  GLADE_HOOKUP_OBJECT (window_hand, frame_w, "frame_w");
   GLADE_HOOKUP_OBJECT (window_hand, alignment4, "alignment4");
   GLADE_HOOKUP_OBJECT (window_hand, table6, "table6");
   GLADE_HOOKUP_OBJECT (window_hand, label16, "label16");
   GLADE_HOOKUP_OBJECT (window_hand, label17, "label17");
-  GLADE_HOOKUP_OBJECT (window_hand, label18, "label18");
-  GLADE_HOOKUP_OBJECT (window_hand, label19, "label19");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_west_s, "hbox_west_s");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_west_h, "hbox_west_h");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_west_d, "hbox_west_d");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_west_c, "hbox_west_c");
+  GLADE_HOOKUP_OBJECT (window_hand, label27, "label27");
+  GLADE_HOOKUP_OBJECT (window_hand, label28, "label28");
   GLADE_HOOKUP_OBJECT (window_hand, label_west, "label_west");
-  GLADE_HOOKUP_OBJECT (window_hand, frame2, "frame2");
+  GLADE_HOOKUP_OBJECT (window_hand, frame_e, "frame_e");
   GLADE_HOOKUP_OBJECT (window_hand, alignment5, "alignment5");
   GLADE_HOOKUP_OBJECT (window_hand, table7, "table7");
   GLADE_HOOKUP_OBJECT (window_hand, label20, "label20");
-  GLADE_HOOKUP_OBJECT (window_hand, label21, "label21");
-  GLADE_HOOKUP_OBJECT (window_hand, label22, "label22");
-  GLADE_HOOKUP_OBJECT (window_hand, label23, "label23");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_east_s, "hbox_east_s");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_east_h, "hbox_east_h");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_east_d, "hbox_east_d");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_east_c, "hbox_east_c");
+  GLADE_HOOKUP_OBJECT (window_hand, label24, "label24");
+  GLADE_HOOKUP_OBJECT (window_hand, label29, "label29");
+  GLADE_HOOKUP_OBJECT (window_hand, label32, "label32");
   GLADE_HOOKUP_OBJECT (window_hand, label_east, "label_east");
-  GLADE_HOOKUP_OBJECT (window_hand, frame3, "frame3");
+  GLADE_HOOKUP_OBJECT (window_hand, frame_n, "frame_n");
   GLADE_HOOKUP_OBJECT (window_hand, alignment6, "alignment6");
   GLADE_HOOKUP_OBJECT (window_hand, table_north, "table_north");
   GLADE_HOOKUP_OBJECT (window_hand, label8, "label8");
-  GLADE_HOOKUP_OBJECT (window_hand, label9, "label9");
-  GLADE_HOOKUP_OBJECT (window_hand, label10, "label10");
-  GLADE_HOOKUP_OBJECT (window_hand, label11, "label11");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_north_s, "hbox_north_s");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_north_h, "hbox_north_h");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_north_d, "hbox_north_d");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_north_c, "hbox_north_c");
+  GLADE_HOOKUP_OBJECT (window_hand, label26, "label26");
+  GLADE_HOOKUP_OBJECT (window_hand, label30, "label30");
+  GLADE_HOOKUP_OBJECT (window_hand, label34, "label34");
   GLADE_HOOKUP_OBJECT (window_hand, label_north, "label_north");
-  GLADE_HOOKUP_OBJECT (window_hand, frame4, "frame4");
+  GLADE_HOOKUP_OBJECT (window_hand, frame_s, "frame_s");
   GLADE_HOOKUP_OBJECT (window_hand, alignment7, "alignment7");
   GLADE_HOOKUP_OBJECT (window_hand, table5, "table5");
   GLADE_HOOKUP_OBJECT (window_hand, label12, "label12");
-  GLADE_HOOKUP_OBJECT (window_hand, label13, "label13");
-  GLADE_HOOKUP_OBJECT (window_hand, label14, "label14");
-  GLADE_HOOKUP_OBJECT (window_hand, label15, "label15");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_south_s, "hbox_south_s");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_south_h, "hbox_south_h");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_south_d, "hbox_south_d");
   GLADE_HOOKUP_OBJECT (window_hand, hbox_south_c, "hbox_south_c");
+  GLADE_HOOKUP_OBJECT (window_hand, label25, "label25");
+  GLADE_HOOKUP_OBJECT (window_hand, label31, "label31");
+  GLADE_HOOKUP_OBJECT (window_hand, label33, "label33");
   GLADE_HOOKUP_OBJECT (window_hand, label_south, "label_south");
   GLADE_HOOKUP_OBJECT (window_hand, label_tricks, "label_tricks");
   GLADE_HOOKUP_OBJECT (window_hand, label_board, "label_board");
@@ -867,23 +1119,26 @@ create_window_card (void)
                     (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
 
-  label2 = gtk_label_new (_("\342\231\245"));
+  label2 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
   gtk_widget_show (label2);
   gtk_table_attach (GTK_TABLE (table_cards), label2, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label2), TRUE);
 
-  label3 = gtk_label_new (_("\342\231\246"));
+  label3 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
   gtk_widget_show (label3);
   gtk_table_attach (GTK_TABLE (table_cards), label3, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label3), TRUE);
 
-  label4 = gtk_label_new (_("\342\231\243"));
+  label4 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
   gtk_widget_show (label4);
   gtk_table_attach (GTK_TABLE (table_cards), label4, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label4), TRUE);
 
   g_signal_connect ((gpointer) toolbutton_card_wipe, "clicked",
                     G_CALLBACK (on_toolbutton_card_wipe_clicked),

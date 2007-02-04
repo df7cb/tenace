@@ -10,6 +10,8 @@
 #include "support.h"
 #include "bridge.h"
 #include "board.h"
+#include "solve.h"
+#include "main.h"
 
 extern board *b;
 extern GtkWidget *card_button[52];
@@ -183,6 +185,182 @@ on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board_dds(b);
+	solve_board(b);
+}
+
+void
+on_declarer_west1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->declarer = west;
+	board_reset(b);
+	show_board(b);
+}
+
+
+void
+on_declarer_north1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->declarer = north;
+	board_reset(b);
+	show_board(b);
+}
+
+
+void
+on_declarer_east1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->declarer = east;
+	board_reset(b);
+	show_board(b);
+}
+
+
+void
+on_declarer_south1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->declarer = south;
+	board_reset(b);
+	show_board(b);
+}
+
+
+void
+on_contract_no_trump1_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->trumps = NT;
+	show_board(b);
+}
+
+
+void
+on_contract_spades1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->trumps = spade;
+	show_board(b);
+}
+
+
+void
+on_contract_hearts1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->trumps = heart;
+	show_board(b);
+}
+
+
+void
+on_contract_diamonds1_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->trumps = diamond;
+	show_board(b);
+}
+
+
+void
+on_contract_clubs1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->trumps = club;
+	show_board(b);
+}
+
+
+void
+on_level1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 1;
+	show_board(b);
+}
+
+
+void
+on_level2_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 2;
+	show_board(b);
+}
+
+
+void
+on_level3_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 3;
+	show_board(b);
+}
+
+
+void
+on_level4_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 4;
+	show_board(b);
+}
+
+
+void
+on_level5_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 5;
+	show_board(b);
+}
+
+
+void
+on_level6_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 6;
+	show_board(b);
+}
+
+
+void
+on_level7_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->level = 7;
+	show_board(b);
+}
+
+
+void
+on_level_doubled1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	GtkWidget *check = lookup_widget(b->win, "redouble1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(check), FALSE);
+	b->doubled = 1;
+	show_board(b);
+}
+
+
+void
+on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	GtkWidget *check = lookup_widget(b->win, "double1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(check), FALSE);
+	b->doubled = 2;
+	show_board(b);
+}
+
+void
+on_board1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
 }
 
 

@@ -1,7 +1,9 @@
 #include <assert.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include "bridge.h"
+#include "support.h"
 
 void hand_clear(hand *h)
 {
@@ -30,6 +32,18 @@ void board_clear_cards(board *b)
 	memset(b->cards, 0, sizeof(seat) * 52);
 }
 
+void board_reset(board *b)
+{
+	int i;
+	for (i = 0; i < b->n_played_cards; i++)
+		give_card(b, b->played_cards_seat[i], b->played_cards[i]);
+	memset(b->played_cards, 0, sizeof(card) * 52);
+	memset(b->played_cards_seat, 0, sizeof(seat) * 52);
+	b->current_lead = b->declarer == south ? west : b->declarer + 1;
+
+	b->tricks_ns = b->tricks_ew = 0;
+}
+
 board *board_new(void)
 {
 	int i;
@@ -41,7 +55,13 @@ board *board_new(void)
 		b->hands[i] = hand_new(names[i]);
 	}
 	board_clear_cards(b);
-	memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
+	b->trumps = NT;
+	b->declarer = south;
+	b->level = 1;
+	b->doubled = 0;
+	b->n_played_cards = 0;
+	board_reset(b);
+	//memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
 	return b;
 }
 
@@ -105,7 +125,6 @@ rank parse_rank_char (char c)
 GString *card_string (card c)
 {
 	gchar *suit = NULL;
-	gchar *rank = NULL;
 	static GString *s = NULL;
 	if (!s)
 		s = g_string_new(NULL);
@@ -165,13 +184,24 @@ GString *gib_string (hand *h)
 	return s;
 }
 
+int has_suit(hand *h, suit s)
+{
+	card *p;
+	for (p = h->cards; *p >= 0; p++)
+		if (SUIT(*p) == s)
+			return 1;
+	return 0;
+}
+
 void remove_card(hand *h, card c)
 {
 	card *p = h->cards;
 	while (*p >= 0 && *p != c)
 		p++;
-	while (*p >= 0)
-		*p++ = *(p + 1);
+	while (*p >= 0) {
+		*p = *(p + 1);
+		p++;
+	}
 }
 
 static void add_card(hand *h, card c)
@@ -212,5 +242,81 @@ int give_card(board *b, seat s, card c)
 		remove_card(b->hands[cs-1], c);
 	add_card(b->hands[s-1], c); /* add it here */
 	b->cards[c] = s;
+	return 1;
+}
+
+char *contract_string(int level, suit trumps, seat declarer, int doubled)
+{
+	static char buf[20];
+	char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
+	char *declarer_str[] = {0, "W", "N", "E", "S"};
+	sprintf(buf, "%d%s %s%s", level, trump_str[trumps], declarer_str[declarer],
+		doubled == 2 ? " XX" :
+			doubled == 1 ? " X" : "");
+	return buf;
+}
+
+int play_card(board *b, seat s, card c)
+{
+	GtkStatusbar *statusbar;
+	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
+	static guint id = 0;
+	if (!id)
+		id = gtk_statusbar_get_context_id(statusbar, "play_card");
+	gtk_statusbar_pop(statusbar, id);
+
+	int i;
+	if (b->cards[c] != b->current_lead) {
+		gtk_statusbar_push(statusbar, id, "Not your turn");
+		return 0;
+	}
+
+	int firstcard;
+	card lead;
+	if (b->n_played_cards % 4 != 0) { /* must follow suit */
+		firstcard = b->n_played_cards - (b->n_played_cards % 4);
+		lead = b->played_cards[firstcard];
+		if (SUIT(c) != SUIT(lead) && has_suit(b->hands[s - 1], SUIT(lead))) {
+			gtk_statusbar_push(statusbar, id, "Please follow suit");
+			return 0;
+		}
+	}
+
+	i = give_card(b, s, c);
+	assert(i == 0);
+	b->played_cards[b->n_played_cards] = c;
+	b->played_cards_seat[b->n_played_cards] = s;
+
+	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
+	if (b->n_played_cards % 4 == 0)
+		for (i = west; i <= south; i++) {
+			GtkWidget *label = lookup_widget(b->win, labels[i]);
+			gtk_label_set_text(GTK_LABEL(label), "");
+		}
+	GtkWidget *label = lookup_widget(b->win, labels[s]);
+	gtk_label_set_text(GTK_LABEL(label), card_string(c)->str);
+
+	if (b->n_played_cards % 4 == 3) { /* trick complete */
+		seat leader = b->played_cards_seat[firstcard];
+		card wincard = lead;
+		b->current_lead = leader;
+		for (i = 1; i <= 3; i++) {
+			card thiscard = b->played_cards[firstcard + i];
+			if ((SUIT(thiscard) == b->trumps && SUIT(wincard) != b->trumps) ||
+			    (SUIT(thiscard) == SUIT(wincard) && RANK(thiscard) > RANK(wincard))) {
+				wincard = thiscard;
+				b->current_lead = leader + i > south ? leader + i - 4 : leader + i;
+			}
+		}
+		if (b->current_lead % 2 == 0)
+			b->tricks_ns++;
+		else
+			b->tricks_ew++;
+	} else {
+		b->current_lead = b->current_lead == south ? west : b->current_lead + 1;
+	}
+
+	b->n_played_cards++;
+
 	return 1;
 }

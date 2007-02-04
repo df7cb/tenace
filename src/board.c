@@ -1,5 +1,6 @@
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h> /* system */
 
 #include "bridge.h"
 
@@ -56,7 +57,7 @@ int board_parse_line(char *line, board *b, char handsep, char suitsep)
 			if (give_card(b, se, (su * 13) + ra) != 1)
 				printf("could not give card?\n");
 		} else {
-			printf ("parse error at char %d: %s\n", c - line + 1, line);
+			printf ("parse error at char %ld: %s\n", c - line + 1, line);
 			return 0;
 		}
 		c++;
@@ -116,6 +117,9 @@ void board_dds(board *b)
 		perror("dd");
 		return;
 	}
+	char tr[] = { 'c', 'd', 'h', 's', 'n'};
+	char le[] = { 0, 'w', 'n', 'e', 's' };
+	fprintf(f, "{ name=dd trumps=%c leader=%c }\n", tr[b->trumps], le[b->current_lead]);
 	s = board_format_line(b, ' ', '.');
 	fprintf(f, "%s\n", s->str);
 	fclose(f);

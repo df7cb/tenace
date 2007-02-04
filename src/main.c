@@ -10,6 +10,7 @@
 #include "interface.h"
 #include "support.h"
 #include "bridge.h"
+#include "solve.h"
 
 board *b;
 seat new_card_seat = west;
@@ -17,47 +18,54 @@ GtkWidget *card_button[52];
 GtkWidget *card_label[52];
 GtkWidget *card_label_container[52];
 
-void label_clicked(GtkLabel *l, void *foo, card *cp)
-{
-	printf("Clicked: %s.\n", card_string(*cp)->str);
-}
-
-static void create_card_labels ()
-{
-	static card cards[52];
-	card c;
-	for (c = 0; c < 52; c++) {
-		GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
-		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-		cards[c] = c;
-		g_signal_connect (wn, "button_press_event", G_CALLBACK(label_clicked), &cards[c]);
-		card_label[c] = wn;
-		card_label_container[c] = NULL;
-		g_object_ref(wn); // create reference so labels are not deleted when moved around
-	}
-}
-
 void show_board (board *b)
 {
 	GtkWidget *win = b->win;
 	GtkWidget *w;
-	w = lookup_widget(win, "label_board");
-	gtk_label_set_text((GtkLabel*) w, b->name->str);
-	w = lookup_widget(win, "label_west");
-	gtk_label_set_text((GtkLabel*) w, b->hands[0]->name->str);
-	w = lookup_widget(win, "label_north");
-	gtk_label_set_text((GtkLabel*) w, b->hands[1]->name->str);
-	w = lookup_widget(win, "label_east");
-	gtk_label_set_text((GtkLabel*) w, b->hands[2]->name->str);
-	w = lookup_widget(win, "label_south");
-	gtk_label_set_text((GtkLabel*) w, b->hands[3]->name->str);
+	GString *str;
 
+	w = lookup_widget(win, "label_board");
+	str = g_string_new(b->name->str);
+	g_string_append_printf(str, "\n%s",
+		contract_string(b->level, b->trumps, b->declarer, b->doubled));
+	gtk_label_set_text((GtkLabel*) w, str->str);
+	w = lookup_widget(win, "label_west");
+	g_string_printf(str, "%s%s%s",
+		b->current_lead == west ? "<b>" : "",
+		b->hands[0]->name->str,
+		b->current_lead == west ? "</b>" : "");
+	gtk_label_set_markup((GtkLabel*) w, str->str);
+	w = lookup_widget(win, "label_north");
+	g_string_printf(str, "%s%s%s",
+		b->current_lead == north ? "<b>" : "",
+		b->hands[1]->name->str,
+		b->current_lead == north ? "</b>" : "");
+	gtk_label_set_markup((GtkLabel*) w, str->str);
+	w = lookup_widget(win, "label_east");
+	g_string_printf(str, "%s%s%s",
+		b->current_lead == east ? "<b>" : "",
+		b->hands[2]->name->str,
+		b->current_lead == east ? "</b>" : "");
+	gtk_label_set_markup((GtkLabel*) w, str->str);
+	w = lookup_widget(win, "label_south");
+	g_string_printf(str, "%s%s%s",
+		b->current_lead == south ? "<b>" : "",
+		b->hands[3]->name->str,
+		b->current_lead == south ? "</b>" : "");
+	gtk_label_set_markup((GtkLabel*) w, str->str);
+
+	w = lookup_widget(win, "label_tricks");
+	g_string_printf(str, "NS: %d\nEW: %d", b->tricks_ns, b->tricks_ew);
+	gtk_label_set_markup((GtkLabel*) w, str->str);
+
+	/*
 	int label_i;
 	for (label_i = 0; label_i < 52 && b->card_label[label_i]; label_i++) {
 		gtk_widget_destroy(b->card_label[label_i]);
 		b->card_label[label_i] = 0;
 	}
 	label_i = 0;
+	*/
 
 	int c;
 	GtkWidget *box;
@@ -83,11 +91,39 @@ void show_board (board *b)
 			card_label_container[c] = box;
 		}
 	}
+	gtk_widget_show_all(win);
+}
+
+void label_set_markup(card c, char *text)
+{
+	gtk_label_set_markup(GTK_LABEL(card_label[c]), text);
+}
+
+void label_clicked(GtkLabel *l, void *foo, card *cp)
+{
+	printf("Clicked: %s.\n", card_string(*cp)->str);
+	//gtk_label_set_markup(l, "<span background=\"red\">J</span>");
+	if (play_card(b, b->cards[*cp], *cp))
+		show_board(b);
+}
+
+static void create_card_labels ()
+{
+	static card cards[52];
+	card c;
+	for (c = 0; c < 52; c++) {
+		GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
+		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+		cards[c] = c;
+		g_signal_connect (wn, "button_press_event", G_CALLBACK(label_clicked), &cards[c]);
+		card_label[c] = wn;
+		card_label_container[c] = NULL;
+		g_object_ref(wn); // create reference so labels are not deleted when moved around
+	}
 }
 
 void cardX_clicked (GtkButton *button, gpointer cxp)
 {
-	int dealt;
 	suit cx = *(suit *)cxp;
 
 	int i = 0;
@@ -159,6 +195,8 @@ main (int argc, char *argv[])
   gtk_init (&argc, &argv);
 
   add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+
+  init_solve();
 
   /*
    * The following code was added by Glade to create one of each component

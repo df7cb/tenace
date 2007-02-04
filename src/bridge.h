@@ -1,3 +1,6 @@
+#ifndef BRIDGE_H
+#define BRIDGE_H
+
 #include <glib.h>
 #include <gtk/gtk.h>
 
@@ -10,7 +13,7 @@ typedef enum seat_e {
 
 /* SA = 51, C2 = 0 */
 typedef enum suit_e {
-	NT = 5,
+	NT = 4,
 	spade = 3,
 	heart = 2,
 	diamond = 1,
@@ -46,10 +49,22 @@ typedef struct hand_t {
 
 typedef struct board_t {
 	GString *name;
+	seat declarer;
+	suit trumps;
+	int level;
+	int doubled;
+
 	hand *hands[4];
 	seat cards[52]; // 0 = not dealt
+	int n_played_cards;
+	card played_cards[52];
+	seat played_cards_seat[52];
+	seat current_lead;
+
+	int tricks_ns, tricks_ew;
+
 	GtkWidget *win; // window showing this board
-	GtkWidget *card_label[52]; // clickable card labels
+	//GtkWidget *card_label[52]; // clickable card labels
 } board;
 
 /*
@@ -58,6 +73,7 @@ typedef struct board_t {
 
 hand *hand_new(char *name);
 void hand_free(hand *h);
+void board_reset(board *b);
 board *board_new(void);
 void board_clear(board *b);
 void board_free(board *b);
@@ -70,9 +86,13 @@ GString *gib_string (hand *h);
 void remove_card(hand *h, card c);
 //void add_card(hand *h, card c);
 int give_card(board *b, seat s, card c);
+char *contract_string(int level, suit trumps, seat declarer, int doubled);
+int play_card(board *b, seat s, card c);
 
 /*
  * global variables
  */
 
 extern seat new_card_seat;
+
+#endif
