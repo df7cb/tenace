@@ -278,6 +278,7 @@ on_level1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 1;
+	calculate_target(b);
 	show_board(b);
 }
 
@@ -287,6 +288,7 @@ on_level2_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 2;
+	calculate_target(b);
 	show_board(b);
 }
 
@@ -296,6 +298,7 @@ on_level3_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 3;
+	calculate_target(b);
 	show_board(b);
 }
 
@@ -305,6 +308,7 @@ on_level4_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 4;
+	calculate_target(b);
 	show_board(b);
 }
 
@@ -314,6 +318,7 @@ on_level5_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 5;
+	calculate_target(b);
 	show_board(b);
 }
 
@@ -323,6 +328,7 @@ on_level6_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 6;
+	calculate_target(b);
 	show_board(b);
 }
 
@@ -332,6 +338,7 @@ on_level7_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->level = 7;
+	calculate_target(b);
 	show_board(b);
 }
 

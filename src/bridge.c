@@ -9,6 +9,7 @@ void hand_clear(hand *h)
 {
 	//g_string_truncate(h->name, 0);
 	memset(h->cards, -1, sizeof(card) * 14);
+	h->ncards = 0;
 }
 
 hand *hand_new(char *name)
@@ -39,9 +40,17 @@ void board_reset(board *b)
 		give_card(b, b->played_cards_seat[i], b->played_cards[i]);
 	memset(b->played_cards, 0, sizeof(card) * 52);
 	memset(b->played_cards_seat, 0, sizeof(seat) * 52);
+	memset(b->card_score, -1, sizeof(int) * 52);
 	b->current_lead = b->declarer == south ? west : b->declarer + 1;
 
-	b->tricks_ns = b->tricks_ew = 0;
+	b->tricks[0] = b->tricks[1] = 0;
+}
+
+void calculate_target(board *b)
+{
+	int side = b->declarer % 2;
+	b->target[side] = b->level + 6;
+	b->target[1 - side] = 14 - b->target[side]; /* 1 more to beat contract */
 }
 
 board *board_new(void)
@@ -61,6 +70,7 @@ board *board_new(void)
 	b->doubled = 0;
 	b->n_played_cards = 0;
 	board_reset(b);
+	calculate_target(b);
 	//memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
 	return b;
 }
@@ -139,6 +149,12 @@ GString *card_string (card c)
 	return s;
 }
 
+char *seat_string (seat s)
+{
+	char *str[] = {0, "West", "North", "East", "South"};
+	return str[s];
+}
+
 GString *hand_string (hand *h)
 {
 	static GString *s = NULL;
@@ -202,6 +218,7 @@ void remove_card(hand *h, card c)
 		*p = *(p + 1);
 		p++;
 	}
+	h->ncards--;
 }
 
 static void add_card(hand *h, card c)
@@ -222,6 +239,7 @@ static void add_card(hand *h, card c)
 			break;
 		p--;
 	} while (1);
+	h->ncards++;
 }
 
 int give_card(board *b, seat s, card c)
@@ -308,10 +326,7 @@ int play_card(board *b, seat s, card c)
 				b->current_lead = leader + i > south ? leader + i - 4 : leader + i;
 			}
 		}
-		if (b->current_lead % 2 == 0)
-			b->tricks_ns++;
-		else
-			b->tricks_ew++;
+		b->tricks[b->current_lead % 2]++;
 	} else {
 		b->current_lead = b->current_lead == south ? west : b->current_lead + 1;
 	}

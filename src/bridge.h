@@ -45,6 +45,7 @@ typedef int card;
 typedef struct hand_t {
 	GString *name;
 	card cards[14]; // -1 terminated list, SA..S2..CA..C2
+	int ncards;
 } hand;
 
 typedef struct board_t {
@@ -59,9 +60,11 @@ typedef struct board_t {
 	int n_played_cards;
 	card played_cards[52];
 	seat played_cards_seat[52];
+	int card_score[52];
 	seat current_lead;
 
-	int tricks_ns, tricks_ew;
+	int tricks[2]; /* 0 = NS, 1 = EW */
+	int target[2]; /* sum might be less than 13 for partial deals */
 
 	GtkWidget *win; // window showing this board
 	//GtkWidget *card_label[52]; // clickable card labels
@@ -74,6 +77,7 @@ typedef struct board_t {
 hand *hand_new(char *name);
 void hand_free(hand *h);
 void board_reset(board *b);
+void calculate_target(board *b);
 board *board_new(void);
 void board_clear(board *b);
 void board_free(board *b);
@@ -81,6 +85,7 @@ gchar *rank_string (rank r);
 char rank_char (rank r);
 rank parse_rank_char (char c);
 GString *card_string (card c);
+char *seat_string (seat s);
 GString *hand_string (hand *h);
 GString *gib_string (hand *h);
 void remove_card(hand *h, card c);

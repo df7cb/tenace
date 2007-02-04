@@ -38,7 +38,15 @@ void solve_board(board *b)
 	static guint id = 0;
 	if (!id)
 		id = gtk_statusbar_get_context_id(statusbar, "solve");
-	gtk_statusbar_pop(statusbar, id);
+
+	for (i = north; i <= south; i++)
+		if (b->hands[i-1]->ncards != b->hands[west-1]->ncards) {
+			snprintf(str, 99, "Error: %s has %d cards while %s has %d",
+				seat_string(west), b->hands[west-1]->ncards,
+				seat_string(i), b->hands[i-1]->ncards);
+			gtk_statusbar_push(statusbar, id, str);
+			return;
+		}
 
 	d.trump = b->trumps == NT ? NT : 3 - b->trumps;
 	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
@@ -56,31 +64,37 @@ void solve_board(board *b)
 		}
 	}
 
-	//SolveBoard(d, int target, int solutions,  int mode, struct futureTricks *futp);
+	gtk_statusbar_push(statusbar, id, "Thinking...");
+	gtk_main_iteration_do(TRUE); // TODO: fixme
 	i = SolveBoard(d, -1, 3, 1, &fut);
 	if (i <= 0) {
 		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
 		gtk_statusbar_push(statusbar, id, str);
 		return;
 	}
+	gtk_statusbar_pop(statusbar, id);
 	printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
+
+	int side = b->current_lead % 2;
+	printf("%d has %d tricks, needs %d\n", side, b->tricks[side], b->target[side]);
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
-		printf("card: %d %d %s (%d) = %d\n", fut.suit[i], fut.rank[i], card_string(c)->str, fut.equals[i], fut.score[i]);
-		char *color = (fut.score[i] >= 7 - b->level) ^
-			((b->current_lead % 2) != (b->declarer %2)) ? "green" : "red";
+		printf("card: %s (%x) = %d\n", card_string(c)->str, fut.equals[i], fut.score[i]);
+		b->card_score[c] = fut.score[i];
+
+		char *color = b->tricks[side] + fut.score[i] >= b->target[side] ? "green" : "red";
+		char *weight = fut.score[i] == fut.score[0] ? " weight=\"bold\"" : "";
 		snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
-			color,
-			fut.score[i] == fut.score[0] ? " weight=\"bold\"" : "",
-			rank_string(fut.rank[i]-2));
+			color, weight, rank_string(fut.rank[i]-2));
 		label_set_markup(c, str);
-		for (j = 0; j < 13; j++) { /* equals */
+		for (j = fut.rank[i] - 2; j >= 0; j--) { /* equals */
 			if (fut.equals[i] & card_bits[j]) {
+				c = 13 * (3 - fut.suit[i]) + j;
+				b->card_score[c] = fut.score[i];
+
 				snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
-					color,
-					fut.score[i] == fut.score[0] ? " weight=\"bold\"" : "",
-					rank_string(j));
-				label_set_markup(13 * (3 - fut.suit[i]) + j, str);
+					color, weight, rank_string(j));
+				label_set_markup(c, str);
 			}
 		}
 	}

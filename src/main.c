@@ -55,7 +55,7 @@ void show_board (board *b)
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
 	w = lookup_widget(win, "label_tricks");
-	g_string_printf(str, "NS: %d\nEW: %d", b->tricks_ns, b->tricks_ew);
+	g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
 	/*
@@ -107,6 +107,11 @@ void label_clicked(GtkLabel *l, void *foo, card *cp)
 		show_board(b);
 }
 
+void label_entered(GtkLabel *l, void *foo, card *cp)
+{
+	printf("Entered: %s.\n", card_string(*cp)->str);
+}
+
 static void create_card_labels ()
 {
 	static card cards[52];
@@ -115,7 +120,8 @@ static void create_card_labels ()
 		GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
 		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
 		cards[c] = c;
-		g_signal_connect (wn, "button_press_event", G_CALLBACK(label_clicked), &cards[c]);
+		g_signal_connect (wn, "button-press-event", G_CALLBACK(label_clicked), &cards[c]);
+		g_signal_connect (wn, "enter", G_CALLBACK(label_entered), &cards[c]);
 		card_label[c] = wn;
 		card_label_container[c] = NULL;
 		g_object_ref(wn); // create reference so labels are not deleted when moved around
