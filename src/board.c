@@ -112,17 +112,60 @@ void board_gib(board *b)
 void board_dds(board *b)
 {
 	FILE *f;
-	GString *s;
 	if (!(f = fopen("dd", "w"))) {
 		perror("dd");
 		return;
 	}
 	char tr[] = { 'c', 'd', 'h', 's', 'n'};
 	char le[] = { 0, 'w', 'n', 'e', 's' };
-	fprintf(f, "{ name=dd trumps=%c leader=%c }\n", tr[b->trumps], le[b->current_lead]);
-	s = board_format_line(b, ' ', '.');
-	fprintf(f, "%s\n", s->str);
+
+	card fulldeal[52];
+	int i;
+	for (i = 0; i < 52; i++)
+		fulldeal[i] = b->cards[i];
+	for (i = 0; i < b->n_played_cards; i++)
+		fulldeal[b->played_cards[i]] = b->played_cards_seat[i];
+
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_lead :
+		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
+	fprintf(f, "{ name=dd trumps=%c leader=%c ", tr[b->trumps], le[leader]);
+	if (b->n_played_cards)
+		fprintf(f, "played=");
+	for (i = 0; i < b->n_played_cards; i++) {
+		fprintf(f, "%c%c", tr[SUIT(b->played_cards[i])], tolower(rank_char(RANK(b->played_cards[i]))));
+		if (i % 4 == 3)
+			fprintf(f, "-");
+		else
+			fprintf(f, ".");
+	}
+	fprintf(f, "}\n");
+
+	int h;
+	int n_cards[4] = {0, 0, 0, 0};
+	char hands[4][13];
+	GString *out = g_string_new(NULL);
+
+	for (i = 51; i >= 0; i--) {
+		int h = fulldeal[i] - 1;
+		hands[h][n_cards[h]++] = i;
+	}
+
+	for (h = 0; h < 4; h++) {
+		int s;
+		i = 0;
+		for (s = spade; s >= club; s--) {
+			while (i < n_cards[h] && SUIT(hands[h][i]) == s) {
+				g_string_append_printf(out, "%c", rank_char(RANK(hands[h][i++])));
+			}
+			if (s > club)
+				g_string_append_printf(out, "%c", '.');
+		}
+		if (h < 3)
+			g_string_append_printf(out, "%c", ' ');
+	}
+
+	fprintf(f, "%s\n", out->str);
 	fclose(f);
-	g_string_free(s, TRUE);
+	g_string_free(out, TRUE);
 	system("dds dd");
 }

@@ -93,6 +93,7 @@ void remove_card(hand *h, card c);
 int give_card(board *b, seat s, card c);
 char *contract_string(int level, suit trumps, seat declarer, int doubled);
 int play_card(board *b, seat s, card c);
+char *overtricks (int i);
 
 /*
  * global variables

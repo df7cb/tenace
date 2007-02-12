@@ -335,3 +335,14 @@ int play_card(board *b, seat s, card c)
 
 	return 1;
 }
+
+char *overtricks (int i)
+{
+	static char buf[4];
+	if (i == 0)
+		snprintf(buf, 3, "=");
+	else
+		snprintf(buf, 3, "%+d", i);
+	return buf;
+}
+

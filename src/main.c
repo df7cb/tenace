@@ -16,6 +16,7 @@ board *b;
 seat new_card_seat = west;
 GtkWidget *card_button[52];
 GtkWidget *card_label[52];
+GtkWidget *card_label_child[52];
 GtkWidget *card_label_container[52];
 
 void show_board (board *b)
@@ -96,7 +97,20 @@ void show_board (board *b)
 
 void label_set_markup(card c, char *text)
 {
-	gtk_label_set_markup(GTK_LABEL(card_label[c]), text);
+	//gtk_label_set_markup(GTK_LABEL(card_label[c]), text);
+	gtk_label_set_markup(GTK_LABEL(card_label_child[c]), text);
+}
+
+void label_clear_markups()
+{
+	int c;
+	for (c = 0; c < 52; c++) {
+		if (card_label_container[c]) {
+			char buf[3];
+			snprintf(buf, 2, "%s", rank_string(RANK(c)));
+			label_set_markup(c, buf);
+		}
+	}
 }
 
 void label_clicked(GtkLabel *l, void *foo, card *cp)
@@ -107,9 +121,36 @@ void label_clicked(GtkLabel *l, void *foo, card *cp)
 		show_board(b);
 }
 
-void label_entered(GtkLabel *l, void *foo, card *cp)
+GtkStatusbar *statusbar;
+static guint statusbar_id = 0;
+
+void label_entered(GtkLabel *l, card *cp)
 {
-	printf("Entered: %s.\n", card_string(*cp)->str);
+	char buf[100];
+
+	if (b->card_score[*cp] < 0)
+		return;
+
+	//GtkStatusbar *statusbar;
+	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
+	//static guint id = 0;
+	if (!statusbar_id)
+		statusbar_id = gtk_statusbar_get_context_id(statusbar, "mouseover");
+
+	snprintf(buf, 99, "%s: %s %s",
+		card_string(*cp)->str,
+		contract_string(b->level, b->trumps, b->declarer, b->doubled),
+		overtricks(7 - b->level - b->card_score[*cp]));
+	gtk_statusbar_push(statusbar, statusbar_id, buf);
+}
+
+void label_left(GtkLabel *l, card *cp)
+{
+	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
+	if (!statusbar_id)
+		statusbar_id = gtk_statusbar_get_context_id(statusbar, "mouseover");
+
+	gtk_statusbar_pop(statusbar, statusbar_id);
 }
 
 static void create_card_labels ()
@@ -117,12 +158,20 @@ static void create_card_labels ()
 	static card cards[52];
 	card c;
 	for (c = 0; c < 52; c++) {
-		GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
-		gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+		//GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
+		GtkWidget *lab = gtk_label_new(rank_string(RANK(c)));
+		gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
+		GtkWidget *wn = gtk_button_new();
+		gtk_container_add(GTK_CONTAINER(wn), lab);
+		//gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
+		gtk_container_set_border_width(GTK_CONTAINER(wn), 0);
+		gtk_button_set_focus_on_click(GTK_BUTTON(wn), FALSE);
 		cards[c] = c;
 		g_signal_connect (wn, "button-press-event", G_CALLBACK(label_clicked), &cards[c]);
 		g_signal_connect (wn, "enter", G_CALLBACK(label_entered), &cards[c]);
+		g_signal_connect (wn, "leave", G_CALLBACK(label_left), &cards[c]);
 		card_label[c] = wn;
+		card_label_child[c] = lab;
 		card_label_container[c] = NULL;
 		g_object_ref(wn); // create reference so labels are not deleted when moved around
 	}

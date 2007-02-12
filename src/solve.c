@@ -39,6 +39,7 @@ void solve_board(board *b)
 	if (!id)
 		id = gtk_statusbar_get_context_id(statusbar, "solve");
 
+	/*
 	for (i = north; i <= south; i++)
 		if (b->hands[i-1]->ncards != b->hands[west-1]->ncards) {
 			snprintf(str, 99, "Error: %s has %d cards while %s has %d",
@@ -47,10 +48,13 @@ void solve_board(board *b)
 			gtk_statusbar_push(statusbar, id, str);
 			return;
 		}
+		*/
 
 	d.trump = b->trumps == NT ? NT : 3 - b->trumps;
 	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
-	d.first = (b->current_lead + 2) % 4;
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_lead :
+		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
+	d.first = (leader + 2) % 4;
 	for (i = 0; i < 4; i++) {
 		d.currentTrickSuit[i] = 0;
 		d.currentTrickRank[i] = 0;
@@ -62,6 +66,11 @@ void solve_board(board *b)
 		if (b->cards[c]) {
 			d.remainCards[(b->cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
 		}
+	}
+	for (i = 0; i < b->n_played_cards % 4; i++) {
+		card c = b->played_cards[b->n_played_cards - (b->n_played_cards % 4) + i];
+		d.currentTrickSuit[i] = 3 - SUIT(c);
+		d.currentTrickRank[i] = RANK(c) + 2;
 	}
 
 	gtk_statusbar_push(statusbar, id, "Thinking...");
@@ -75,11 +84,13 @@ void solve_board(board *b)
 	gtk_statusbar_pop(statusbar, id);
 	printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
 
+	label_clear_markups();
+
 	int side = b->current_lead % 2;
 	printf("%d has %d tricks, needs %d\n", side, b->tricks[side], b->target[side]);
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
-		printf("card: %s (%x) = %d\n", card_string(c)->str, fut.equals[i], fut.score[i]);
+		printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);
 		b->card_score[c] = fut.score[i];
 
 		char *color = b->tricks[side] + fut.score[i] >= b->target[side] ? "green" : "red";
@@ -90,6 +101,7 @@ void solve_board(board *b)
 		for (j = fut.rank[i] - 2; j >= 0; j--) { /* equals */
 			if (fut.equals[i] & card_bits[j]) {
 				c = 13 * (3 - fut.suit[i]) + j;
+				printf("      %s = %d\n", card_string(c)->str, fut.score[i]);
 				b->card_score[c] = fut.score[i];
 
 				snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
@@ -100,8 +112,8 @@ void solve_board(board *b)
 	}
 
 	assert(fut.cards);
-	snprintf(str, 99, "DD: %s %+d",
+	snprintf(str, 99, "DD: %s %s",
 		contract_string(b->level, b->trumps, b->declarer, b->doubled),
-		7 - b->level - fut.score[0]);
+		overtricks(7 - b->level - fut.score[0]));
 	gtk_statusbar_push(statusbar, id, str);
 }
