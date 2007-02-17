@@ -182,3 +182,31 @@ on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
 void
 on_board1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_double_dummy1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_parscore1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_vuln_none_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_vuln_ns_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_vuln_ew_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_vuln_all_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_set_par1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

@@ -371,3 +371,73 @@ on_board1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
+
+void
+on_double_dummy1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_dds(b);
+	solve_board(b);
+}
+
+
+void
+on_parscore1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	parscore(b);
+}
+
+
+void
+on_vuln_none_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->vuln[0] = 0;
+	b->vuln[1] = 0;
+	show_board(b);
+}
+
+
+void
+on_vuln_ns_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->vuln[0] = 1;
+	b->vuln[1] = 0;
+	show_board(b);
+}
+
+
+void
+on_vuln_ew_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->vuln[0] = 0;
+	b->vuln[1] = 1;
+	show_board(b);
+}
+
+
+void
+on_vuln_all_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->vuln[0] = 1;
+	b->vuln[1] = 1;
+	show_board(b);
+}
+
+
+void
+on_set_par1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	b->trumps = b->par_suit;
+	b->level = b->par_level;
+	b->declarer = b->par_dec;
+	// FIXME: set current_lead
+	b->doubled = b->par_tricks < b->par_level + 6;
+	show_board(b);
+}
+

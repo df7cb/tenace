@@ -31,28 +31,28 @@ void show_board (board *b)
 		contract_string(b->level, b->trumps, b->declarer, b->doubled));
 	gtk_label_set_text((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_west");
-	g_string_printf(str, "%s%s%s",
-		b->current_lead == west ? "<b>" : "",
-		b->hands[0]->name->str,
-		b->current_lead == west ? "</b>" : "");
+	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+		b->vuln[1] ? "red" : "green",
+		b->current_lead == west ? " weight=\"bold\"" : "",
+		b->hands[0]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_north");
-	g_string_printf(str, "%s%s%s",
-		b->current_lead == north ? "<b>" : "",
-		b->hands[1]->name->str,
-		b->current_lead == north ? "</b>" : "");
+	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+		b->vuln[0] ? "red" : "green",
+		b->current_lead == north ? " weight=\"bold\"" : "",
+		b->hands[1]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_east");
-	g_string_printf(str, "%s%s%s",
-		b->current_lead == east ? "<b>" : "",
-		b->hands[2]->name->str,
-		b->current_lead == east ? "</b>" : "");
+	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+		b->vuln[1] ? "red" : "green",
+		b->current_lead == east ? " weight=\"bold\"" : "",
+		b->hands[2]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_south");
-	g_string_printf(str, "%s%s%s",
-		b->current_lead == south ? "<b>" : "",
-		b->hands[3]->name->str,
-		b->current_lead == south ? "</b>" : "");
+	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+		b->vuln[0] ? "red" : "green",
+		b->current_lead == south ? " weight=\"bold\"" : "",
+		b->hands[3]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
 	w = lookup_widget(win, "label_tricks");

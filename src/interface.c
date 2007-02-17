@@ -67,9 +67,21 @@ create_window_hand (void)
   GtkWidget *level7;
   GtkWidget *level_doubled1;
   GtkWidget *level_redoubled1;
+  GtkWidget *vulnerable1;
+  GtkWidget *vulnerable1_menu;
+  GSList *vuln_none_group = NULL;
+  GtkWidget *vuln_none;
+  GtkWidget *vuln_ns;
+  GtkWidget *vuln_ew;
+  GtkWidget *vuln_all;
   GtkWidget *board_menu1;
   GtkWidget *board_menu1_menu;
   GtkWidget *board1;
+  GtkWidget *score1;
+  GtkWidget *score1_menu;
+  GtkWidget *double_dummy1;
+  GtkWidget *parscore1;
+  GtkWidget *set_par1;
   GtkWidget *menuitem2;
   GtkWidget *menuitem2_menu;
   GtkWidget *ausschneiden1;
@@ -142,12 +154,13 @@ create_window_hand (void)
   GtkWidget *label33;
   GtkWidget *label_south;
   GtkWidget *label_tricks;
-  GtkWidget *label_board;
   GtkWidget *table4;
   GtkWidget *card_south;
   GtkWidget *card_west;
   GtkWidget *card_east;
   GtkWidget *card_north;
+  GtkWidget *par_label;
+  GtkWidget *label_board;
   GtkWidget *statusbar1;
   GtkAccelGroup *accel_group;
 
@@ -271,7 +284,6 @@ create_window_hand (void)
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level1));
   gtk_widget_show (level1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level1), TRUE);
 
   level2 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("2"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level2));
@@ -302,6 +314,7 @@ create_window_hand (void)
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level7));
   gtk_widget_show (level7);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level7);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level7), TRUE);
 
   level_doubled1 = gtk_check_menu_item_new_with_mnemonic (_("X Doubled"));
   gtk_widget_show (level_doubled1);
@@ -310,6 +323,34 @@ create_window_hand (void)
   level_redoubled1 = gtk_check_menu_item_new_with_mnemonic (_("XX Redoubled"));
   gtk_widget_show (level_redoubled1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_redoubled1);
+
+  vulnerable1 = gtk_menu_item_new_with_mnemonic (_("Vulnerable"));
+  gtk_widget_show (vulnerable1);
+  gtk_container_add (GTK_CONTAINER (contract1_menu), vulnerable1);
+
+  vulnerable1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (vulnerable1), vulnerable1_menu);
+
+  vuln_none = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("None"));
+  vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_none));
+  gtk_widget_show (vuln_none);
+  gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_none);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_none), TRUE);
+
+  vuln_ns = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("North-South"));
+  vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ns));
+  gtk_widget_show (vuln_ns);
+  gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_ns);
+
+  vuln_ew = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("East-West"));
+  vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ew));
+  gtk_widget_show (vuln_ew);
+  gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_ew);
+
+  vuln_all = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("All"));
+  vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_all));
+  gtk_widget_show (vuln_all);
+  gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_all);
 
   board_menu1 = gtk_menu_item_new_with_mnemonic (_("Board"));
   gtk_widget_show (board_menu1);
@@ -321,6 +362,25 @@ create_window_hand (void)
   board1 = gtk_menu_item_new_with_mnemonic (_("Board 1"));
   gtk_widget_show (board1);
   gtk_container_add (GTK_CONTAINER (board_menu1_menu), board1);
+
+  score1 = gtk_menu_item_new_with_mnemonic (_("Score"));
+  gtk_widget_show (score1);
+  gtk_container_add (GTK_CONTAINER (menubar1), score1);
+
+  score1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (score1), score1_menu);
+
+  double_dummy1 = gtk_menu_item_new_with_mnemonic (_("Double dummy"));
+  gtk_widget_show (double_dummy1);
+  gtk_container_add (GTK_CONTAINER (score1_menu), double_dummy1);
+
+  parscore1 = gtk_menu_item_new_with_mnemonic (_("Parscore"));
+  gtk_widget_show (parscore1);
+  gtk_container_add (GTK_CONTAINER (score1_menu), parscore1);
+
+  set_par1 = gtk_menu_item_new_with_mnemonic (_("Set par"));
+  gtk_widget_show (set_par1);
+  gtk_container_add (GTK_CONTAINER (score1_menu), set_par1);
 
   menuitem2 = gtk_menu_item_new_with_mnemonic (_("_Bearbeiten"));
   gtk_widget_show (menuitem2);
@@ -716,15 +776,6 @@ create_window_hand (void)
   gtk_label_set_selectable (GTK_LABEL (label_tricks), TRUE);
   gtk_misc_set_alignment (GTK_MISC (label_tricks), 1, 1);
 
-  label_board = gtk_label_new (_("Board 1\nD: W, V: NS\n4\342\231\246X S"));
-  gtk_widget_show (label_board);
-  gtk_table_attach (GTK_TABLE (table1), label_board, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 5, 0);
-  GTK_WIDGET_SET_FLAGS (label_board, GTK_CAN_FOCUS);
-  gtk_label_set_selectable (GTK_LABEL (label_board), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label_board), 0, 0);
-
   table4 = gtk_table_new (3, 2, FALSE);
   gtk_widget_show (table4);
   gtk_table_attach (GTK_TABLE (table1), table4, 1, 2, 1, 2,
@@ -767,6 +818,24 @@ create_window_hand (void)
   GTK_WIDGET_SET_FLAGS (card_north, GTK_CAN_FOCUS);
   gtk_label_set_justify (GTK_LABEL (card_north), GTK_JUSTIFY_CENTER);
   gtk_label_set_selectable (GTK_LABEL (card_north), TRUE);
+
+  par_label = gtk_label_new ("");
+  gtk_widget_show (par_label);
+  gtk_table_attach (GTK_TABLE (table1), par_label, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 5, 0);
+  GTK_WIDGET_SET_FLAGS (par_label, GTK_CAN_FOCUS);
+  gtk_label_set_selectable (GTK_LABEL (par_label), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (par_label), 0, 1);
+
+  label_board = gtk_label_new (_("Bd 1\n4\342\231\246X S"));
+  gtk_widget_show (label_board);
+  gtk_table_attach (GTK_TABLE (table1), label_board, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 5, 0);
+  GTK_WIDGET_SET_FLAGS (label_board, GTK_CAN_FOCUS);
+  gtk_label_set_selectable (GTK_LABEL (label_board), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label_board), 0, 0);
 
   statusbar1 = gtk_statusbar_new ();
   gtk_widget_show (statusbar1);
@@ -844,8 +913,29 @@ create_window_hand (void)
   g_signal_connect ((gpointer) level_redoubled1, "activate",
                     G_CALLBACK (on_level_redoubled1_activate),
                     NULL);
+  g_signal_connect ((gpointer) vuln_none, "activate",
+                    G_CALLBACK (on_vuln_none_activate),
+                    NULL);
+  g_signal_connect ((gpointer) vuln_ns, "activate",
+                    G_CALLBACK (on_vuln_ns_activate),
+                    NULL);
+  g_signal_connect ((gpointer) vuln_ew, "activate",
+                    G_CALLBACK (on_vuln_ew_activate),
+                    NULL);
+  g_signal_connect ((gpointer) vuln_all, "activate",
+                    G_CALLBACK (on_vuln_all_activate),
+                    NULL);
   g_signal_connect ((gpointer) board1, "activate",
                     G_CALLBACK (on_board1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) double_dummy1, "activate",
+                    G_CALLBACK (on_double_dummy1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) parscore1, "activate",
+                    G_CALLBACK (on_parscore1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) set_par1, "activate",
+                    G_CALLBACK (on_set_par1_activate),
                     NULL);
   g_signal_connect ((gpointer) ausschneiden1, "activate",
                     G_CALLBACK (on_ausschneiden1_activate),
@@ -905,9 +995,20 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, level7, "level7");
   GLADE_HOOKUP_OBJECT (window_hand, level_doubled1, "level_doubled1");
   GLADE_HOOKUP_OBJECT (window_hand, level_redoubled1, "level_redoubled1");
+  GLADE_HOOKUP_OBJECT (window_hand, vulnerable1, "vulnerable1");
+  GLADE_HOOKUP_OBJECT (window_hand, vulnerable1_menu, "vulnerable1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, vuln_none, "vuln_none");
+  GLADE_HOOKUP_OBJECT (window_hand, vuln_ns, "vuln_ns");
+  GLADE_HOOKUP_OBJECT (window_hand, vuln_ew, "vuln_ew");
+  GLADE_HOOKUP_OBJECT (window_hand, vuln_all, "vuln_all");
   GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
   GLADE_HOOKUP_OBJECT (window_hand, board_menu1_menu, "board_menu1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, board1, "board1");
+  GLADE_HOOKUP_OBJECT (window_hand, score1, "score1");
+  GLADE_HOOKUP_OBJECT (window_hand, score1_menu, "score1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, double_dummy1, "double_dummy1");
+  GLADE_HOOKUP_OBJECT (window_hand, parscore1, "parscore1");
+  GLADE_HOOKUP_OBJECT (window_hand, set_par1, "set_par1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2, "menuitem2");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2_menu, "menuitem2_menu");
   GLADE_HOOKUP_OBJECT (window_hand, ausschneiden1, "ausschneiden1");
@@ -978,12 +1079,13 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, label33, "label33");
   GLADE_HOOKUP_OBJECT (window_hand, label_south, "label_south");
   GLADE_HOOKUP_OBJECT (window_hand, label_tricks, "label_tricks");
-  GLADE_HOOKUP_OBJECT (window_hand, label_board, "label_board");
   GLADE_HOOKUP_OBJECT (window_hand, table4, "table4");
   GLADE_HOOKUP_OBJECT (window_hand, card_south, "card_south");
   GLADE_HOOKUP_OBJECT (window_hand, card_west, "card_west");
   GLADE_HOOKUP_OBJECT (window_hand, card_east, "card_east");
   GLADE_HOOKUP_OBJECT (window_hand, card_north, "card_north");
+  GLADE_HOOKUP_OBJECT (window_hand, par_label, "par_label");
+  GLADE_HOOKUP_OBJECT (window_hand, label_board, "label_board");
   GLADE_HOOKUP_OBJECT (window_hand, statusbar1, "statusbar1");
 
   gtk_window_add_accel_group (GTK_WINDOW (window_hand), accel_group);

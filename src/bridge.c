@@ -68,9 +68,12 @@ board *board_new(void)
 	b->declarer = south;
 	b->level = 1;
 	b->doubled = 0;
+	b->vuln[0] = b->vuln[1] = 0;
 	b->n_played_cards = 0;
 	board_reset(b);
 	calculate_target(b);
+	b->par_score = 0;
+	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;
 	//memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
 	return b;
 }
@@ -94,9 +97,9 @@ void board_free(board *b)
 	}
 }
 
-gchar *rank_string (rank r)
+char *rank_string (rank r)
 {
-	static gchar *label[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+	static char *label[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 	return label[r];
 }
 
@@ -344,5 +347,37 @@ char *overtricks (int i)
 	else
 		snprintf(buf, 3, "%+d", i);
 	return buf;
+}
+
+int score (int level, suit s, int doubled, int vuln, int tricks)
+{
+	/* doubled: 0 / 1 (double) / 2 (FIXME) / -1 (auto-double down contracts) */
+	int nv_double[] = { 100, 300, 500, 800, 1100, 1400, 1700, 2000, 2300, 2600, 2900, 3200, 3500 };
+	int v_double[] = { 200, 500, 800, 1100, 1400, 1700, 2000, 2300, 2600, 2900, 3200, 3500, 3800 };
+	if (tricks < level + 6) {
+		if (doubled != 0) {
+			if (vuln) {
+				return -v_double[level + 5 - tricks];
+			} else {
+				return -nv_double[level + 5 - tricks];
+			}
+		} else {
+			return (tricks - level - 6) * 50 * (vuln + 1);
+		}
+	} else {
+		if (doubled < 0)
+			doubled = 0;
+		// FIXME: notrump
+		int trick_score = ((s >= heart) ? 30 : 20) * (doubled + 1);
+		int overtricks = tricks - level - 6;
+
+		int base_score = level * trick_score;
+		int overtrick_score = overtricks * (doubled ? 100 * (vuln + 1) : trick_score);
+		int game_bonus = vuln ? 450 : 250;
+		return 50 * (doubled + 1) + base_score + overtrick_score
+			+ (base_score >= 100 ? game_bonus : 0)
+			+ (level >= 6 ? (vuln ? 750 : 500) : 0)
+			+ (level == 7 ? (vuln ? 750 : 500) : 0);
+	}
 }
 

@@ -54,6 +54,7 @@ typedef struct board_t {
 	suit trumps;
 	int level;
 	int doubled;
+	int vuln[2]; /* 0 = NS, 1 = EW */
 
 	hand *hands[4];
 	seat cards[52]; // 0 = not dealt
@@ -65,6 +66,9 @@ typedef struct board_t {
 
 	int tricks[2]; /* 0 = NS, 1 = EW */
 	int target[2]; /* sum might be less than 13 for partial deals */
+
+	int par_score;
+	int par_dec, par_suit, par_level, par_tricks;
 
 	GtkWidget *win; // window showing this board
 	//GtkWidget *card_label[52]; // clickable card labels
@@ -81,7 +85,7 @@ void calculate_target(board *b);
 board *board_new(void);
 void board_clear(board *b);
 void board_free(board *b);
-gchar *rank_string (rank r);
+char *rank_string (rank r);
 char rank_char (rank r);
 rank parse_rank_char (char c);
 GString *card_string (card c);
@@ -94,6 +98,7 @@ int give_card(board *b, seat s, card c);
 char *contract_string(int level, suit trumps, seat declarer, int doubled);
 int play_card(board *b, seat s, card c);
 char *overtricks (int i);
+int score (int level, suit s, int doubled, int vuln, int tricks);
 
 /*
  * global variables
