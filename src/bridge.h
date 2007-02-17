@@ -67,8 +67,9 @@ typedef struct board_t {
 	int tricks[2]; /* 0 = NS, 1 = EW */
 	int target[2]; /* sum might be less than 13 for partial deals */
 
-	int par_score;
+	int par_score; /* -1 = other par_ fields invalid */
 	int par_dec, par_suit, par_level, par_tricks;
+	int par_arr[4][5];
 
 	GtkWidget *win; // window showing this board
 	//GtkWidget *card_label[52]; // clickable card labels

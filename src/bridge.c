@@ -72,7 +72,7 @@ board *board_new(void)
 	b->n_played_cards = 0;
 	board_reset(b);
 	calculate_target(b);
-	b->par_score = 0;
+	b->par_score = -1;
 	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;
 	//memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
 	return b;

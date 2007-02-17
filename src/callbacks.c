@@ -348,15 +348,25 @@ on_level7_activate                     (GtkMenuItem     *menuitem,
 	show_board(b);
 }
 
+static int double_update_in_progress = 0;
 
 void
 on_level_doubled1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	GtkWidget *check = lookup_widget(b->win, "redouble1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(check), FALSE);
-	b->doubled = 1;
+	if (double_update_in_progress++)
+		return;
+
+	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_doubled1"));
+	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_redoubled1"));
+	if (gtk_check_menu_item_get_active(x)) {
+		b->doubled = 1;
+		gtk_check_menu_item_set_active(xx, FALSE);
+	} else
+		b->doubled = 0;
+
 	show_board(b);
+	double_update_in_progress = 0;
 }
 
 
@@ -364,10 +374,19 @@ void
 on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	GtkWidget *check = lookup_widget(b->win, "double1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(check), FALSE);
-	b->doubled = 2;
+	if (double_update_in_progress++)
+		return;
+
+	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_doubled1"));
+	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_redoubled1"));
+	if (gtk_check_menu_item_get_active(xx)) {
+		b->doubled = 2;
+		gtk_check_menu_item_set_active(x, FALSE);
+	} else
+		b->doubled = 0;
+
 	show_board(b);
+	double_update_in_progress = 0;
 }
 
 void
@@ -478,7 +497,6 @@ on_window_imps_delete_event            (GtkWidget       *widget,
 	window_imps = NULL;
 	return FALSE;
 }
-
 
 
 void

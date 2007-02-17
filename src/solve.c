@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <dds.h>
+#include <stdlib.h> /* system */
 #include "support.h" /* lookup_widget */
 #include "board.h"
 #include "main.h"
@@ -26,12 +27,74 @@ static const char *dds_error[] = {
 };
 
 static const int card_bits[] = {0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
+static const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
 
 static guint status_id = 0;
 
 static int dds_suit_conv(int s) /* works both ways */
 {
 	return s == NT ? NT : 3 - s;
+}
+
+void board_dds(board *b)
+{
+	FILE *f;
+	if (!(f = fopen("dd", "w"))) {
+		perror("dd");
+		return;
+	}
+	char tr[] = { 'c', 'd', 'h', 's', 'n'};
+	char le[] = { 0, 'w', 'n', 'e', 's' };
+
+	card fulldeal[52];
+	int i;
+	for (i = 0; i < 52; i++)
+		fulldeal[i] = b->cards[i];
+	for (i = 0; i < b->n_played_cards; i++)
+		fulldeal[b->played_cards[i]] = b->played_cards_seat[i];
+
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_lead :
+		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
+	fprintf(f, "{ name=dd trumps=%c leader=%c ", tr[b->trumps], le[leader]);
+	if (b->n_played_cards)
+		fprintf(f, "played=");
+	for (i = 0; i < b->n_played_cards; i++) {
+		fprintf(f, "%c%c", tr[SUIT(b->played_cards[i])], tolower(rank_char(RANK(b->played_cards[i]))));
+		if (i % 4 == 3)
+			fprintf(f, "-");
+		else
+			fprintf(f, ".");
+	}
+	fprintf(f, "}\n");
+
+	int h;
+	int n_cards[4] = {0, 0, 0, 0};
+	char hands[4][13];
+	GString *out = g_string_new(NULL);
+
+	for (i = 51; i >= 0; i--) {
+		int h = fulldeal[i] - 1;
+		hands[h][n_cards[h]++] = i;
+	}
+
+	for (h = 0; h < 4; h++) {
+		int s;
+		i = 0;
+		for (s = spade; s >= club; s--) {
+			while (i < n_cards[h] && SUIT(hands[h][i]) == s) {
+				g_string_append_printf(out, "%c", rank_char(RANK(hands[h][i++])));
+			}
+			if (s > club)
+				g_string_append_printf(out, "%c", '.');
+		}
+		if (h < 3)
+			g_string_append_printf(out, "%c", ' ');
+	}
+
+	fprintf(f, "%s\n", out->str);
+	fclose(f);
+	g_string_free(out, TRUE);
+	system("dds dd&");
 }
 
 void solve_board(board *b)
@@ -82,7 +145,8 @@ void solve_board(board *b)
 	}
 
 	gtk_statusbar_push(statusbar, status_id, "Thinking...");
-	gtk_main_iteration_do(TRUE); // TODO: fixme
+	while (gtk_events_pending ())
+		gtk_main_iteration();
 	i = SolveBoard(d, -1, 3, 1, &fut);
 	if (i <= 0) {
 		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
@@ -127,7 +191,7 @@ void solve_board(board *b)
 	gtk_statusbar_push(statusbar, status_id, str);
 }
 
-void parscore(board *b)
+static void compute_par_arr(board *b)
 {
 	int i, j, c;
 	struct deal d;
@@ -151,52 +215,76 @@ void parscore(board *b)
 		}
 	}
 
+	GtkStatusbar *statusbar;
+	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
+	if (!status_id)
+		status_id = gtk_statusbar_get_context_id(statusbar, "solve");
+
 	int h, t;
-	int tricks[4][5];
-	for (t = 0; t < 5; t++) {
+	for (t = 4; t >= 0; t--) {
+		snprintf(str, 99, "Thinking... %s", trump_str[t]);
+		gtk_statusbar_push(statusbar, status_id, str);
+		while (gtk_events_pending ())
+			gtk_main_iteration();
+
 		for (h = 0; h < 4; h++) {
 			d.trump = dds_suit_conv(t);
 			d.first = h;
 			i = SolveBoard(d, -1, 1, 0, &fut);
 			if (i <= 0) {
-				GtkStatusbar *statusbar;
-				statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
-				if (!status_id)
-					status_id = gtk_statusbar_get_context_id(statusbar, "solve");
 				snprintf(str, 99, "DD Error: %s", dds_error[-i]);
 				gtk_statusbar_push(statusbar, status_id, str);
 				return;
 			}
-			tricks[h][t] = 13 - fut.score[0];
+			b->par_arr[h][t] = 13 - fut.score[0];
 			printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
 		}
+
+		gtk_statusbar_pop(statusbar, status_id);
 	}
-	system("dds -tricks dd&");
+	//system("dds -tricks dd&");
+}
+
+void parscore(board *b)
+{
+	int l, t;
+
+	if (b->par_score == -1)
+		compute_par_arr(b);
 
 	b->par_score = 0;
 
-	for (i = 1; i <= 7; i++) {
+	for (l = 1; l <= 7; l++) {
 		for (t = club; t <= NT; t++) {
-			// FIXME: beide partner betrachten
-			int sc = score(i, t, -1, b->vuln[0], tricks[1][t]);
-			printf("%s %d\n", contract_string(i, t, north, 0), sc);
+			int ha = north, tr = b->par_arr[1][t];
+			if (b->par_arr[3][t] > b->par_arr[1][t]) {
+				ha = south;
+				tr = b->par_arr[1][t];
+			}
+			int sc = score(l, t, -1, b->vuln[0], tr);
+			//printf("%s %d\n", contract_string(l, t, north, 0), sc);
 			if (sc > b->par_score) {
 				b->par_score = sc;
-				b->par_level = i;
+				b->par_level = l;
 				b->par_suit = t;
-				b->par_dec = north;
-				b->par_tricks = tricks[1][t];
-				printf("  new par\n");
+				b->par_dec = ha;
+				b->par_tricks = tr;
+				//printf("  new par\n");
 			}
-			sc = -score(i, t, -1, b->vuln[1], tricks[0][t]);
-			printf("%s %d\n", contract_string(i, t, east, 0), sc);
+			ha = east, tr = b->par_arr[2][t];
+			if (b->par_arr[0][t] > b->par_arr[2][t]) {
+				ha = south;
+				tr = b->par_arr[0][t];
+			}
+			sc = -score(l, t, -1, b->vuln[1], tr);
+			//printf("%s %d\n", contract_string(l, t, east, 0), sc);
 			if (sc < b->par_score) {
 				b->par_score = sc;
-				b->par_level = i;
+				b->par_level = l;
 				b->par_suit = t;
-				b->par_dec = east;
-				b->par_tricks = tricks[0][t];
-				printf("  new par\n");
+				b->par_dec = ha;
+				b->par_tricks = tr;
+				//printf("  new par\n");
 			}
 		}
 	}
@@ -209,18 +297,17 @@ void parscore(board *b)
 				b->par_tricks < b->par_level + 6),
 			overtricks(b->par_tricks - b->par_level - 6));
 
-	char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
 	for (t = 4; t >= 0; t--) {
 		g_string_append_printf(par, "%s: ", trump_str[t]);
-		if (tricks[1][t] == tricks[3][t])
-			g_string_append_printf(par, "NS%d ", tricks[1][t]);
+		if (b->par_arr[1][t] == b->par_arr[3][t])
+			g_string_append_printf(par, "NS<b>%d</b> ", b->par_arr[1][t]);
 		else
-			g_string_append_printf(par, "N%dS%d ", tricks[3][t], tricks[1][t]);
-		if (tricks[0][t] == tricks[2][t])
-			g_string_append_printf(par, "EW%d", tricks[0][t]);
+			g_string_append_printf(par, "N<b>%d</b>S<b>%d</b> ", b->par_arr[1][t], b->par_arr[3][t]);
+		if (b->par_arr[0][t] == b->par_arr[2][t])
+			g_string_append_printf(par, "EW<b>%d</b>", b->par_arr[2][t]);
 		else
-			g_string_append_printf(par, "E%dW%d", tricks[2][t], tricks[0][t]);
-		if (t >= 0)
+			g_string_append_printf(par, "E<b>%d</b>W<b>%d</b>", b->par_arr[2][t], b->par_arr[0][t]);
+		if (t > 0)
 			g_string_append_printf(par, "\n");
 	}
 
