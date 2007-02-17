@@ -16,6 +16,9 @@
 extern board *b;
 extern GtkWidget *card_button[52];
 
+static GtkWindow *window_imps = NULL;
+static GtkWindow *window_info = NULL;
+
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -93,7 +96,10 @@ void
 on_info1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	if (!window_info) {
+		window_info = create_window_info ();
+		gtk_widget_show (window_info);
+	}
 }
 
 
@@ -440,4 +446,58 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
 	b->doubled = b->par_tricks < b->par_level + 6;
 	show_board(b);
 }
+
+
+void
+on_imp_table1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (!window_imps) {
+		window_imps = create_window_imps ();
+		gtk_widget_show (window_imps);
+	}
+}
+
+
+void
+on_imps_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	if (window_imps) {
+		gtk_widget_destroy(GTK_WIDGET(window_imps));
+		window_imps = NULL;
+	}
+}
+
+
+gboolean
+on_window_imps_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	window_imps = NULL;
+	return FALSE;
+}
+
+
+
+void
+on_info_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	if (window_info) {
+		gtk_widget_destroy(GTK_WIDGET(window_info));
+		window_info = NULL;
+	}
+}
+
+gboolean
+on_window_info_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	window_info = NULL;
+	return FALSE;
+}
+
 

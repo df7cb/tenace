@@ -210,3 +210,34 @@ on_vuln_all_activate                   (GtkMenuItem     *menuitem,
 void
 on_set_par1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_imp_table1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_imps_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_imps_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_window_imps_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+gboolean
+on_window_imps_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+gboolean
+on_window_info_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+void
+on_info_ok_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);

@@ -59,7 +59,7 @@ board *board_new(void)
 	char *names[] = {"West", "North", "East", "South"};
 	board *b = malloc(sizeof(board));
 	assert(b);
-	b->name = g_string_new("New Board");
+	b->name = g_string_new("Board 1");
 	for (i = 0; i < 4; i++) {
 		b->hands[i] = hand_new(names[i]);
 	}
