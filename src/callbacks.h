@@ -241,3 +241,7 @@ on_window_info_delete_event            (GtkWidget       *widget,
 void
 on_info_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_rewind_button_clicked               (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);

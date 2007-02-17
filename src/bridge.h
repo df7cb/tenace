@@ -58,13 +58,17 @@ typedef struct board_t {
 
 	hand *hands[4];
 	seat cards[52]; // 0 = not dealt
+	int n_dealt_cards;
+	seat dealt_cards[52]; // 0 = not dealt
+	int hand_cards[4];
+
 	int n_played_cards;
 	card played_cards[52];
 	seat played_cards_seat[52];
-	int card_score[52];
-	seat current_lead;
-
+	seat current_turn;
 	int tricks[2]; /* 0 = NS, 1 = EW */
+
+	int card_score[52];
 	int target[2]; /* sum might be less than 13 for partial deals */
 
 	int par_score; /* -1 = other par_ fields invalid */
@@ -81,30 +85,14 @@ typedef struct board_t {
 
 hand *hand_new(char *name);
 void hand_free(hand *h);
-void board_reset(board *b);
+void board_rewind(board *b);
 void calculate_target(board *b);
 board *board_new(void);
 void board_clear(board *b);
 void board_free(board *b);
-char *rank_string (rank r);
-char rank_char (rank r);
-rank parse_rank_char (char c);
-GString *card_string (card c);
-char *seat_string (seat s);
-GString *hand_string (hand *h);
-GString *gib_string (hand *h);
 void remove_card(hand *h, card c);
 //void add_card(hand *h, card c);
 int give_card(board *b, seat s, card c);
-char *contract_string(int level, suit trumps, seat declarer, int doubled);
 int play_card(board *b, seat s, card c);
-char *overtricks (int i);
-int score (int level, suit s, int doubled, int vuln, int tricks);
-
-/*
- * global variables
- */
-
-extern seat new_card_seat;
 
 #endif

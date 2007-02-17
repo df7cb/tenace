@@ -596,7 +596,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton6">
+	    <widget class="GtkToolButton" id="rewind_button">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Rewind play</property>
 	      <property name="label" translatable="yes">Anfang</property>
@@ -605,6 +605,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_rewind_button_clicked" last_modification_time="Sat, 17 Feb 2007 19:03:15 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>

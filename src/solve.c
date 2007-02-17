@@ -3,6 +3,7 @@
 #include <stdlib.h> /* system */
 #include "support.h" /* lookup_widget */
 #include "board.h"
+#include "functions.h"
 #include "main.h"
 
 void init_solve()
@@ -28,6 +29,7 @@ static const char *dds_error[] = {
 
 static const int card_bits[] = {0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
 static const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
+static const char seat_char[] = {'E', 'S', 'W', 'N'};
 
 static guint status_id = 0;
 
@@ -53,7 +55,7 @@ void board_dds(board *b)
 	for (i = 0; i < b->n_played_cards; i++)
 		fulldeal[b->played_cards[i]] = b->played_cards_seat[i];
 
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_lead :
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn :
 		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
 	fprintf(f, "{ name=dd trumps=%c leader=%c ", tr[b->trumps], le[leader]);
 	if (b->n_played_cards)
@@ -123,7 +125,7 @@ void solve_board(board *b)
 
 	d.trump = dds_suit_conv(b->trumps);
 	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_lead :
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn :
 		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
 	d.first = (leader + 2) % 4;
 	for (i = 0; i < 4; i++) {
@@ -158,7 +160,7 @@ void solve_board(board *b)
 
 	label_clear_markups();
 
-	int side = b->current_lead % 2;
+	int side = b->current_turn % 2;
 	printf("%d has %d tricks, needs %d\n", side, b->tricks[side], b->target[side]);
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
@@ -199,7 +201,7 @@ static void compute_par_arr(board *b)
 	char str[100];
 
 	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_lead :
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn :
 		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
 	d.first = (leader + 2) % 4;
 	for (i = 0; i < 4; i++) {
@@ -222,12 +224,12 @@ static void compute_par_arr(board *b)
 
 	int h, t;
 	for (t = 4; t >= 0; t--) {
-		snprintf(str, 99, "Thinking... %s", trump_str[t]);
-		gtk_statusbar_push(statusbar, status_id, str);
-		while (gtk_events_pending ())
-			gtk_main_iteration();
-
 		for (h = 0; h < 4; h++) {
+			snprintf(str, 99, "Thinking... %s%c", trump_str[t], seat_char[h]);
+			gtk_statusbar_push(statusbar, status_id, str);
+			while (gtk_events_pending ())
+				gtk_main_iteration();
+
 			d.trump = dds_suit_conv(t);
 			d.first = h;
 			i = SolveBoard(d, -1, 1, 0, &fut);
@@ -238,9 +240,9 @@ static void compute_par_arr(board *b)
 			}
 			b->par_arr[h][t] = 13 - fut.score[0];
 			printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
-		}
 
-		gtk_statusbar_pop(statusbar, status_id);
+			gtk_statusbar_pop(statusbar, status_id);
+		}
 	}
 	//system("dds -tricks dd&");
 }

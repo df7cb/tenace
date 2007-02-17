@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "bridge.h"
+#include "functions.h"
 #include "support.h"
 
 board *b; /* currently visible board */
@@ -27,25 +28,25 @@ void show_board (board *b)
 	w = lookup_widget(win, "label_west");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
-		b->current_lead == west ? " weight=\"bold\"" : "",
+		b->current_turn == west ? " weight=\"bold\"" : "",
 		b->hands[0]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_north");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
-		b->current_lead == north ? " weight=\"bold\"" : "",
+		b->current_turn == north ? " weight=\"bold\"" : "",
 		b->hands[1]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_east");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
-		b->current_lead == east ? " weight=\"bold\"" : "",
+		b->current_turn == east ? " weight=\"bold\"" : "",
 		b->hands[2]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_south");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
-		b->current_lead == south ? " weight=\"bold\"" : "",
+		b->current_turn == south ? " weight=\"bold\"" : "",
 		b->hands[3]->name->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
@@ -86,7 +87,23 @@ void show_board (board *b)
 			card_label_container[c] = box;
 		}
 	}
+
+	// FIXME: clear/show played cards
+
 	gtk_widget_show_all(win);
+}
+
+void show_played_card(board *b, seat s, card c)
+{
+	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
+	int i;
+	if (b->n_played_cards % 4 == 0)
+		for (i = west; i <= south; i++) {
+			GtkWidget *label = lookup_widget(b->win, labels[i]);
+			gtk_label_set_text(GTK_LABEL(label), "");
+		}
+	GtkWidget *label = lookup_widget(b->win, labels[s]);
+	gtk_label_set_text(GTK_LABEL(label), card_string(c)->str);
 }
 
 void label_set_markup(card c, char *text)
@@ -164,84 +181,6 @@ void create_card_labels ()
 		card_label_container[c] = NULL;
 		g_object_ref(wn); // create reference so labels are not deleted when moved around
 	}
-}
-
-static GString *board_format_line(board *b, char handsep, char suitsep)
-{
-	int h;
-	GString *out = g_string_new(NULL);
-
-	for (h = 0; h < 4; h++) {
-		int s;
-		card *c = b->hands[h]->cards;
-		for (s = spade; s >= club; s--) {
-			while (*c >= 0 && SUIT(*c) == s) {
-				g_string_append_printf(out, "%c", rank_char(RANK(*c++)));
-			}
-			if (s > club)
-				g_string_append_printf(out, "%c", suitsep);
-		}
-		if (h < 3)
-			g_string_append_printf(out, "%c", handsep);
-	}
-	return out;
-}
-
-void board_save(board *b)
-{
-	int h;
-	printf("%s\n", b->name->str);
-
-	for (h = 0; h < 4; h++) {
-		printf("%s\n", b->hands[h]->name->str);
-		printf("%s\n", hand_string(b->hands[h])->str);
-	}
-}
-
-static int board_parse_line(char *line, board *b, char handsep, char suitsep)
-{
-	seat se = west;
-	char *c = line;
-	int su = spade;
-	while (*c && *c != '\n') {
-		rank ra;
-		if (*c == suitsep) {
-			su--;
-			if (su < 0)
-				return 0;
-		} else if (*c == handsep) {
-			se++;
-			su = spade;
-			if (se > south)
-				return 0;
-		} else if ((ra = parse_rank_char(*c)) >= 0) {
-			if (give_card(b, se, (su * 13) + ra) != 1)
-				printf("could not give card?\n");
-		} else {
-			printf ("parse error at char %ld: %s\n", c - line + 1, line);
-			return 0;
-		}
-		c++;
-	}
-	return 1;
-}
-
-int board_load(char *fname, board *b)
-{
-	FILE *f;
-	char buf[100];
-	if (!(f = fopen(fname, "r"))) {
-		perror(fname);
-		return 0;
-	}
-	if (fgets(buf, 99, f) == NULL)
-		return 0;
-	fclose(f);
-	//printf("board is %s\n", buf);
-	board_clear(b);
-	if (!board_parse_line(buf, b, ' ', '.'))
-		return 0;
-	return 1;
 }
 
 

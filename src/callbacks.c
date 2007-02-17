@@ -10,14 +10,15 @@
 #include "support.h"
 #include "bridge.h"
 #include "board.h"
-#include "solve.h"
 #include "main.h"
+#include "solve.h"
+#include "window_card.h"
 
 extern board *b;
 extern GtkWidget *card_button[52];
 
-static GtkWindow *window_imps = NULL;
-static GtkWindow *window_info = NULL;
+static GtkWidget *window_imps = NULL;
+static GtkWidget *window_info = NULL;
 
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
@@ -148,14 +149,8 @@ void
 on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	int c;
-	for (c = 0; c < 52; c++) {
-		if (b->cards[c]) {
-			remove_card(b->hands[b->cards[c] - 1], c);
-			b->cards[c] = 0;
-			gtk_button_set_relief ((GtkButton*)card_button[c], GTK_RELIEF_NORMAL);
-		}
-	}
+	board_clear(b);
+	card_window_update(b->dealt_cards);
 	show_board(b);
 }
 
@@ -164,16 +159,9 @@ void
 on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	int c = 0;
-	while (c < 52) {
-		if (b->cards[c] == 0) {
-			seat s = (rand() % 4) + 1;
-			if (give_card(b, s, c))
-				gtk_button_set_relief ((GtkButton*)card_button[c], GTK_RELIEF_NONE);
-		}
-		if (b->cards[c] != 0)
-			c++;
-	}
+	board_rewind(b);
+	deal_random(b);
+	card_window_update(b->dealt_cards);
 	show_board(b);
 }
 
@@ -199,7 +187,7 @@ on_declarer_west1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->declarer = west;
-	board_reset(b);
+	board_rewind(b);
 	show_board(b);
 }
 
@@ -209,7 +197,7 @@ on_declarer_north1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->declarer = north;
-	board_reset(b);
+	board_rewind(b);
 	show_board(b);
 }
 
@@ -219,7 +207,7 @@ on_declarer_east1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->declarer = east;
-	board_reset(b);
+	board_rewind(b);
 	show_board(b);
 }
 
@@ -229,7 +217,7 @@ on_declarer_south1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	b->declarer = south;
-	board_reset(b);
+	board_rewind(b);
 	show_board(b);
 }
 
@@ -461,7 +449,7 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
 	b->trumps = b->par_suit;
 	b->level = b->par_level;
 	b->declarer = b->par_dec;
-	// FIXME: set current_lead
+	// FIXME: set current_turn
 	b->doubled = b->par_tricks < b->par_level + 6;
 	show_board(b);
 }
@@ -518,4 +506,13 @@ on_window_info_delete_event            (GtkWidget       *widget,
 	return FALSE;
 }
 
+
+
+void
+on_rewind_button_clicked               (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board_rewind(b);
+	show_board(b);
+}
 

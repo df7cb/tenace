@@ -99,7 +99,7 @@ create_window_hand (void)
   GtkWidget *button_hand_save;
   GtkWidget *separatortoolitem2;
   GtkWidget *tmp_image;
-  GtkWidget *toolbutton6;
+  GtkWidget *rewind_button;
   GtkWidget *toolbutton7;
   GtkWidget *toolbutton8;
   GtkWidget *toolbutton9;
@@ -453,10 +453,10 @@ create_window_hand (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-previous", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton6 = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Anfang"));
-  gtk_widget_show (toolbutton6);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton6);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton6), tooltips, _("Rewind play"), NULL);
+  rewind_button = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Anfang"));
+  gtk_widget_show (rewind_button);
+  gtk_container_add (GTK_CONTAINER (toolbar1), rewind_button);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (rewind_button), tooltips, _("Rewind play"), NULL);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-rewind", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
@@ -975,6 +975,9 @@ create_window_hand (void)
   g_signal_connect ((gpointer) button_hand_save, "clicked",
                     G_CALLBACK (on_button_hand_save_clicked),
                     NULL);
+  g_signal_connect ((gpointer) rewind_button, "clicked",
+                    G_CALLBACK (on_rewind_button_clicked),
+                    NULL);
   g_signal_connect ((gpointer) handbutton_gib, "clicked",
                     G_CALLBACK (on_handbutton_gib_clicked),
                     NULL);
@@ -1044,7 +1047,7 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton1, "toolbutton1");
   GLADE_HOOKUP_OBJECT (window_hand, button_hand_save, "button_hand_save");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem2, "separatortoolitem2");
-  GLADE_HOOKUP_OBJECT (window_hand, toolbutton6, "toolbutton6");
+  GLADE_HOOKUP_OBJECT (window_hand, rewind_button, "rewind_button");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton7, "toolbutton7");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton8, "toolbutton8");
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton9, "toolbutton9");
