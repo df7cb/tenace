@@ -66,6 +66,7 @@ board *board_new(void)
 	b->name = g_string_new("Board 1");
 	for (i = 0; i < 4; i++) {
 		b->hands[i] = hand_new(names[i]);
+		b->hand_name[i] = g_string_new(names[i]);
 	}
 	board_clear_cards(b);
 	b->trumps = NT;
@@ -152,19 +153,18 @@ int give_card(board *b, seat s, card c)
 	//printf("s%d c%d cs%d\n", s, c, cs);
 	assert (cs >= 0 && cs <= 4);
 	if (cs == s) { /* remove card from this hand */
-		remove_card(b->hands[s-1], c);
+		//remove_card(b->hands[s-1], c);
 		b->cards[c] = 0;
 		b->dealt_cards[c] = 0;
 		b->hand_cards[s-1]--;
 		return 0;
 	}
-	if (b->hands[s-1]->cards[12] >= 0) /* hand has already 13 cards */
+	if (b->hand_cards[s-1] == 13) /* hand has already 13 cards */
 		return cs != 0;
 	if (cs) {/* someone else has the card, remove it */
-		remove_card(b->hands[cs-1], c);
 		b->hand_cards[cs-1]--;
 	}
-	add_card(b->hands[s-1], c); /* add it here */
+	//add_card(b->hands[s-1], c); /* add it here */
 	b->cards[c] = s;
 	b->dealt_cards[c] = s;
 	b->hand_cards[s-1]++;

@@ -50,6 +50,7 @@ typedef struct hand_t {
 
 typedef struct board_t {
 	GString *name;
+	GString *hand_name[4];
 	seat declarer;
 	suit trumps;
 	int level;

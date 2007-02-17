@@ -15,7 +15,6 @@
 #include "window_card.h"
 
 extern board *b;
-extern GtkWidget *card_button[52];
 
 static GtkWidget *window_imps = NULL;
 static GtkWidget *window_info = NULL;
@@ -403,6 +402,14 @@ on_parscore1_activate                  (GtkMenuItem     *menuitem,
 
 
 void
+on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	parscore(b);
+}
+
+
+void
 on_vuln_none_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -515,4 +522,5 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 	board_rewind(b);
 	show_board(b);
 }
+
 

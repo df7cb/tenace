@@ -245,3 +245,7 @@ on_info_ok_clicked                     (GtkButton       *button,
 void
 on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);

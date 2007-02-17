@@ -64,25 +64,29 @@ char *seat_string (seat s)
 	return str[s];
 }
 
-GString *hand_string (hand *h)
+GString *hand_string (board *b, seat h)
 {
 	static GString *s = NULL;
 	if (!s)
 		s = g_string_new(NULL);
-	assert(h);
-	card *c = h->cards;
+
+	int c;
 	g_string_printf(s, "♠");
-	while (*c >= 0 && SUIT(*c) == spade)
-		g_string_append_printf(s, "%s", rank_string(RANK(*c++)));
+	for (c = 51; c >= 39; c--)
+		if (b->dealt_cards[c] == h)
+			g_string_append_printf(s, "%s", rank_string(RANK(c)));
 	g_string_append_printf(s, "\n♥");
-	while (*c >= 0 && SUIT(*c) == heart)
-		g_string_append_printf(s, "%s", rank_string(RANK(*c++)));
+	for (c = 38; c >= 26; c--)
+		if (b->dealt_cards[c] == h)
+			g_string_append_printf(s, "%s", rank_string(RANK(c)));
 	g_string_append_printf(s, "\n♦");
-	while (*c >= 0 && SUIT(*c) == diamond)
-		g_string_append_printf(s, "%s", rank_string(RANK(*c++)));
+	for (c = 25; c >= 13; c--)
+		if (b->dealt_cards[c] == h)
+			g_string_append_printf(s, "%s", rank_string(RANK(c)));
 	g_string_append_printf(s, "\n♣");
-	while (*c >= 0 && SUIT(*c) == club)
-		g_string_append_printf(s, "%s", rank_string(RANK(*c++)));
+	for (c = 12; c >= 0; c--)
+		if (b->dealt_cards[c] == h)
+			g_string_append_printf(s, "%s", rank_string(RANK(c)));
 	return s;
 }
 

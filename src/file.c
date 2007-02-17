@@ -4,22 +4,30 @@
 #include "bridge.h"
 #include "functions.h"
 
-static GString *board_format_line(board *b, char handsep, char suitsep)
+GString *board_format_line(board *b, char handsep, char suitsep)
 {
-	int h;
 	GString *out = g_string_new(NULL);
 
-	for (h = 0; h < 4; h++) {
-		int s;
-		card *c = b->hands[h]->cards;
-		for (s = spade; s >= club; s--) {
-			while (*c >= 0 && SUIT(*c) == s) {
-				g_string_append_printf(out, "%c", rank_char(RANK(*c++)));
-			}
-			if (s > club)
-				g_string_append_printf(out, "%c", suitsep);
-		}
-		if (h < 3)
+	int h;
+	for (h = 1; h < 5; h++) {
+		int c;
+		for (c = 51; c >= 39; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+		g_string_append_printf(out, "%c", suitsep);
+		for (c = 38; c >= 26; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+		g_string_append_printf(out, "%c", suitsep);
+		for (c = 25; c >= 13; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+		g_string_append_printf(out, "%c", suitsep);
+		for (c = 12; c >= 0; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+
+		if (h < 4)
 			g_string_append_printf(out, "%c", handsep);
 	}
 	return out;
@@ -30,9 +38,9 @@ void board_save(board *b)
 	int h;
 	printf("%s\n", b->name->str);
 
-	for (h = 0; h < 4; h++) {
-		printf("%s\n", b->hands[h]->name->str);
-		printf("%s\n", hand_string(b->hands[h])->str);
+	for (h = 1; h < 5; h++) {
+		printf("%s\n", b->hand_name[h-1]->str);
+		printf("%s\n", hand_string(b, h)->str);
 	}
 }
 

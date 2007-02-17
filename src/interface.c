@@ -74,14 +74,14 @@ create_window_hand (void)
   GtkWidget *vuln_ns;
   GtkWidget *vuln_ew;
   GtkWidget *vuln_all;
-  GtkWidget *board_menu1;
-  GtkWidget *board_menu1_menu;
-  GtkWidget *board1;
   GtkWidget *score1;
   GtkWidget *score1_menu;
   GtkWidget *double_dummy1;
   GtkWidget *parscore1;
   GtkWidget *set_par1;
+  GtkWidget *board_menu1;
+  GtkWidget *board_menu1_menu;
+  GtkWidget *board1;
   GtkWidget *menuitem2;
   GtkWidget *menuitem2_menu;
   GtkWidget *ausschneiden1;
@@ -105,6 +105,7 @@ create_window_hand (void)
   GtkWidget *toolbutton9;
   GtkWidget *separatortoolitem3;
   GtkWidget *handbutton_gib;
+  GtkWidget *handbutton_par;
   GtkWidget *table1;
   GtkWidget *frame_w;
   GtkWidget *alignment4;
@@ -356,17 +357,6 @@ create_window_hand (void)
   gtk_widget_show (vuln_all);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_all);
 
-  board_menu1 = gtk_menu_item_new_with_mnemonic (_("Board"));
-  gtk_widget_show (board_menu1);
-  gtk_container_add (GTK_CONTAINER (menubar1), board_menu1);
-
-  board_menu1_menu = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (board_menu1), board_menu1_menu);
-
-  board1 = gtk_menu_item_new_with_mnemonic (_("Board 1"));
-  gtk_widget_show (board1);
-  gtk_container_add (GTK_CONTAINER (board_menu1_menu), board1);
-
   score1 = gtk_menu_item_new_with_mnemonic (_("Score"));
   gtk_widget_show (score1);
   gtk_container_add (GTK_CONTAINER (menubar1), score1);
@@ -377,7 +367,7 @@ create_window_hand (void)
   double_dummy1 = gtk_menu_item_new_with_mnemonic (_("Double dummy"));
   gtk_widget_show (double_dummy1);
   gtk_container_add (GTK_CONTAINER (score1_menu), double_dummy1);
-  gtk_tooltips_set_tip (tooltips, double_dummy1, _("Double dummy analysis of current contract"), NULL);
+  gtk_tooltips_set_tip (tooltips, double_dummy1, _("Double dummy analysis"), NULL);
 
   parscore1 = gtk_menu_item_new_with_mnemonic (_("Parscore"));
   gtk_widget_show (parscore1);
@@ -388,6 +378,17 @@ create_window_hand (void)
   gtk_widget_show (set_par1);
   gtk_container_add (GTK_CONTAINER (score1_menu), set_par1);
   gtk_tooltips_set_tip (tooltips, set_par1, _("Set contract to computed par contract"), NULL);
+
+  board_menu1 = gtk_menu_item_new_with_mnemonic (_("Board"));
+  gtk_widget_show (board_menu1);
+  gtk_container_add (GTK_CONTAINER (menubar1), board_menu1);
+
+  board_menu1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (board_menu1), board_menu1_menu);
+
+  board1 = gtk_menu_item_new_with_mnemonic (_("Board 1"));
+  gtk_widget_show (board1);
+  gtk_container_add (GTK_CONTAINER (board_menu1_menu), board1);
 
   menuitem2 = gtk_menu_item_new_with_mnemonic (_("_Bearbeiten"));
   gtk_widget_show (menuitem2);
@@ -486,6 +487,11 @@ create_window_hand (void)
   gtk_widget_show (handbutton_gib);
   gtk_container_add (GTK_CONTAINER (toolbar1), handbutton_gib);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (handbutton_gib), tooltips, _("Double dummy analysis"), NULL);
+
+  handbutton_par = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-find");
+  gtk_widget_show (handbutton_par);
+  gtk_container_add (GTK_CONTAINER (toolbar1), handbutton_par);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (handbutton_par), tooltips, _("Par score"), NULL);
 
   table1 = gtk_table_new (3, 3, FALSE);
   gtk_widget_show (table1);
@@ -942,9 +948,6 @@ create_window_hand (void)
   g_signal_connect ((gpointer) vuln_all, "activate",
                     G_CALLBACK (on_vuln_all_activate),
                     NULL);
-  g_signal_connect ((gpointer) board1, "activate",
-                    G_CALLBACK (on_board1_activate),
-                    NULL);
   g_signal_connect ((gpointer) double_dummy1, "activate",
                     G_CALLBACK (on_double_dummy1_activate),
                     NULL);
@@ -953,6 +956,9 @@ create_window_hand (void)
                     NULL);
   g_signal_connect ((gpointer) set_par1, "activate",
                     G_CALLBACK (on_set_par1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) board1, "activate",
+                    G_CALLBACK (on_board1_activate),
                     NULL);
   g_signal_connect ((gpointer) ausschneiden1, "activate",
                     G_CALLBACK (on_ausschneiden1_activate),
@@ -980,6 +986,9 @@ create_window_hand (void)
                     NULL);
   g_signal_connect ((gpointer) handbutton_gib, "clicked",
                     G_CALLBACK (on_handbutton_gib_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) handbutton_par, "clicked",
+                    G_CALLBACK (on_handbutton_par_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -1024,14 +1033,14 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, vuln_ns, "vuln_ns");
   GLADE_HOOKUP_OBJECT (window_hand, vuln_ew, "vuln_ew");
   GLADE_HOOKUP_OBJECT (window_hand, vuln_all, "vuln_all");
-  GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
-  GLADE_HOOKUP_OBJECT (window_hand, board_menu1_menu, "board_menu1_menu");
-  GLADE_HOOKUP_OBJECT (window_hand, board1, "board1");
   GLADE_HOOKUP_OBJECT (window_hand, score1, "score1");
   GLADE_HOOKUP_OBJECT (window_hand, score1_menu, "score1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, double_dummy1, "double_dummy1");
   GLADE_HOOKUP_OBJECT (window_hand, parscore1, "parscore1");
   GLADE_HOOKUP_OBJECT (window_hand, set_par1, "set_par1");
+  GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
+  GLADE_HOOKUP_OBJECT (window_hand, board_menu1_menu, "board_menu1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, board1, "board1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2, "menuitem2");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2_menu, "menuitem2_menu");
   GLADE_HOOKUP_OBJECT (window_hand, ausschneiden1, "ausschneiden1");
@@ -1053,6 +1062,7 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, toolbutton9, "toolbutton9");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem3, "separatortoolitem3");
   GLADE_HOOKUP_OBJECT (window_hand, handbutton_gib, "handbutton_gib");
+  GLADE_HOOKUP_OBJECT (window_hand, handbutton_par, "handbutton_par");
   GLADE_HOOKUP_OBJECT (window_hand, table1, "table1");
   GLADE_HOOKUP_OBJECT (window_hand, frame_w, "frame_w");
   GLADE_HOOKUP_OBJECT (window_hand, alignment4, "alignment4");
