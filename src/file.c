@@ -61,7 +61,7 @@ static int board_parse_line(char *line, board *b, char handsep, char suitsep)
 			if (se > south)
 				return 0;
 		} else if ((ra = parse_rank_char(*c)) >= 0) {
-			if (give_card(b, se, (su * 13) + ra) != 1)
+			if (add_card(b, se, (su * 13) + ra) != 1)
 				printf("could not give card?\n");
 		} else {
 			printf ("parse error at char %ld: %s\n", c - line + 1, line);

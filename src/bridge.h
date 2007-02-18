@@ -42,12 +42,6 @@ typedef int card;
 #define SUIT(c) ((int)((int)(c) / 13))
 #define RANK(c) ((c) % 13)
 
-typedef struct hand_t {
-	GString *name;
-	card cards[14]; // -1 terminated list, SA..S2..CA..C2
-	int ncards;
-} hand;
-
 typedef struct board_t {
 	GString *name;
 	GString *hand_name[4];
@@ -57,7 +51,6 @@ typedef struct board_t {
 	int doubled;
 	int vuln[2]; /* 0 = NS, 1 = EW */
 
-	hand *hands[4];
 	seat cards[52]; // 0 = not dealt
 	int n_dealt_cards;
 	seat dealt_cards[52]; // 0 = not dealt
@@ -65,7 +58,7 @@ typedef struct board_t {
 
 	int n_played_cards;
 	card played_cards[52];
-	seat played_cards_seat[52];
+	//seat played_cards_seat[52];
 	seat current_turn;
 	int tricks[2]; /* 0 = NS, 1 = EW */
 
@@ -84,16 +77,18 @@ typedef struct board_t {
  * prototypes
  */
 
-hand *hand_new(char *name);
-void hand_free(hand *h);
-void board_rewind(board *b);
+void board_statusbar(GtkWidget *win, char *text);
 void calculate_target(board *b);
 board *board_new(void);
 void board_clear(board *b);
 void board_free(board *b);
-void remove_card(hand *h, card c);
-//void add_card(hand *h, card c);
-int give_card(board *b, seat s, card c);
+int assert_board(board *b);
+int add_card(board *b, seat s, card c);
+int remove_card(board *b, seat s, card c);
 int play_card(board *b, seat s, card c);
+int rewind_card(board *b);
+void board_rewind(board *b);
+int next_card(board *b);
+void board_fast_forward(board *b);
 
 #endif

@@ -3,6 +3,7 @@
 #include <stdlib.h> /* system */
 #include "support.h" /* lookup_widget */
 #include "board.h"
+#include "file.h" /* board_format_line */
 #include "functions.h"
 #include "main.h"
 
@@ -31,7 +32,20 @@ static const int card_bits[] = {0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 
 static const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
 static const char seat_char[] = {'E', 'S', 'W', 'N'};
 
-static guint status_id = 0;
+int run_dd = 0;
+
+static void solve_statusbar(GtkWidget *win, char *text)
+{
+	GtkStatusbar *statusbar;
+	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));
+	static guint id = 0;
+	if (!id)
+		id = gtk_statusbar_get_context_id(statusbar, "solve_c");
+	gtk_statusbar_pop(statusbar, id);
+
+	if (text)
+		gtk_statusbar_push(statusbar, id, text);
+}
 
 static int dds_suit_conv(int s) /* works both ways */
 {
@@ -50,8 +64,8 @@ void board_dds(board *b)
 		return;
 	}
 
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn :
-		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
+	card lead = b->played_cards[b->n_played_cards - (b->n_played_cards % 4)];
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn : b->dealt_cards[lead];
 	fprintf(f, "{ name=dd trumps=%c leader=%c ", tr[b->trumps], le[leader]);
 	if (b->n_played_cards)
 		fprintf(f, "played=");
@@ -71,35 +85,23 @@ void board_dds(board *b)
 	system("dds dd&");
 }
 
-void solve_board(board *b)
+void compute_dd_scores(board *b)
 {
 	int i, j, c;
 	struct deal d;
 	struct futureTricks fut;
 	char str[100];
 
-	GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
-	if (!status_id)
-		status_id = gtk_statusbar_get_context_id(statusbar, "solve");
+	if (!assert_board(b)) { /* FIXME: do not call this every time */
+		board_statusbar(b->win, "Error: hands have different numbers of cards");
+		return;
+	}
 
-	/*
-	FIXME: update check for partially played tricks
-	for (i = north; i <= south; i++)
-		if (b->hands[i-1]->ncards != b->hands[west-1]->ncards) {
-			snprintf(str, 99, "Error: %s has %d cards while %s has %d",
-				seat_string(west), b->hands[west-1]->ncards,
-				seat_string(i), b->hands[i-1]->ncards);
-			gtk_statusbar_push(statusbar, status_id, str);
-			return;
-		}
-		*/
-
-	d.trump = dds_suit_conv(b->trumps);
 	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn :
-		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
+	card lead = b->played_cards[b->n_played_cards - (b->n_played_cards % 4)];
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn : b->dealt_cards[lead];
 	d.first = (leader + 2) % 4;
+	d.trump = dds_suit_conv(b->trumps);
 	for (i = 0; i < 4; i++) {
 		d.currentTrickSuit[i] = 0;
 		d.currentTrickRank[i] = 0;
@@ -118,51 +120,64 @@ void solve_board(board *b)
 		d.currentTrickRank[i] = RANK(c) + 2;
 	}
 
-	gtk_statusbar_push(statusbar, status_id, "Thinking...");
+	solve_statusbar(b->win, "Thinking...");
 	while (gtk_events_pending ())
 		gtk_main_iteration();
 	i = SolveBoard(d, -1, 3, 1, &fut);
+	solve_statusbar(b->win, NULL);
 	if (i <= 0) {
 		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
-		gtk_statusbar_push(statusbar, status_id, str);
+		board_statusbar(b->win, str);
 		return;
 	}
-	gtk_statusbar_pop(statusbar, status_id);
 	printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
 
-	label_clear_markups();
-
 	int side = b->current_turn % 2;
-	printf("%d has %d tricks, needs %d\n", side, b->tricks[side], b->target[side]);
+	//printf("%d has %d tricks, needs %d\n", side, b->tricks[side], b->target[side]);
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
 		printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);
 		b->card_score[c] = fut.score[i];
 
-		char *color = b->tricks[side] + fut.score[i] >= b->target[side] ? "green" : "red";
-		char *weight = fut.score[i] == fut.score[0] ? " weight=\"bold\"" : "";
-		snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
-			color, weight, rank_string(fut.rank[i]-2));
-		label_set_markup(c, str);
 		for (j = fut.rank[i] - 2; j >= 0; j--) { /* equals */
 			if (fut.equals[i] & card_bits[j]) {
 				c = 13 * (3 - fut.suit[i]) + j;
 				printf("      %s = %d\n", card_string(c)->str, fut.score[i]);
 				b->card_score[c] = fut.score[i];
-
-				snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
-					color, weight, rank_string(j));
-				label_set_markup(c, str);
 			}
 		}
 	}
+}
 
+void hilight_dd_scores(board *b)
+{
+	char str[100];
+	int c;
+
+	compute_dd_scores(b); // FIXME: call when needed
+
+	label_clear_markups();
+
+	for (c = 51; c >= 0; c--) {
+		if (b->card_score[c] <= 0)
+			continue;
+
+		int side = b->current_turn % 2;
+		char *color = b->tricks[side] + b->card_score[c] >= b->target[side] ? "green" : "red";
+		char *weight = b->card_score[c] == 123 ? " weight=\"bold\"" : ""; // FIXME
+		snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
+			color, weight, rank_string(RANK(c)));
+		label_set_markup(c, str);
+	}
+
+	/*
 	assert(fut.cards);
 	snprintf(str, 99, "DD: %s %s (%d)",
 		contract_string(b->level, b->trumps, b->declarer, b->doubled),
 		overtricks(7 - b->level - fut.score[0]),
 		score(b->level, b->trumps, b->doubled, b->vuln[b->declarer % 2], 13 - fut.score[0]));
-	gtk_statusbar_push(statusbar, status_id, str);
+	solve_statusbar(b->win, str);
+	*/
 }
 
 static void compute_par_arr(board *b)
@@ -172,8 +187,8 @@ static void compute_par_arr(board *b)
 	struct futureTricks fut;
 
 	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn :
-		b->played_cards_seat[b->n_played_cards - (b->n_played_cards % 4)];
+	card lead = b->played_cards[b->n_played_cards - (b->n_played_cards % 4)];
+	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn : b->dealt_cards[lead];
 	d.first = (leader + 2) % 4;
 	for (i = 0; i < 4; i++) {
 		d.currentTrickSuit[i] = 0;
@@ -188,19 +203,14 @@ static void compute_par_arr(board *b)
 		}
 	}
 
-	GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
-	if (!status_id)
-		status_id = gtk_statusbar_get_context_id(statusbar, "solve");
 	GString *str = g_string_new("Thinking...");
-
 	int h, t;
 	for (t = 4; t >= 0; t--) {
 		g_string_append_printf(str, " %s ", trump_str[t]);
 
 		for (h = 0; h < 4; h++) {
 			g_string_append_printf(str, "%c", seat_char[h]);
-			gtk_statusbar_push(statusbar, status_id, str->str);
+			solve_statusbar(b->win, str->str);
 			while (gtk_events_pending ())
 				gtk_main_iteration();
 
@@ -209,17 +219,17 @@ static void compute_par_arr(board *b)
 			i = SolveBoard(d, -1, 1, 0, &fut);
 			if (i <= 0) {
 				g_string_printf(str, "DD Error: %s", dds_error[-i]);
-				gtk_statusbar_push(statusbar, status_id, str->str);
+				solve_statusbar(b->win, NULL);
+				board_statusbar(b->win, str->str);
 				g_string_free(str, TRUE);
 				return;
 			}
 			b->par_arr[h][t] = 13 - fut.score[0];
-			printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
-
-			gtk_statusbar_pop(statusbar, status_id);
+			//printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
 		}
 	}
 
+	solve_statusbar(b->win, NULL);
 	g_string_free(str, TRUE);
 	//system("dds -tricks dd&");
 }
@@ -228,8 +238,13 @@ void parscore(board *b)
 {
 	int l, t;
 
-	if (b->par_score == -1)
+	if (b->par_score == -1) {
+		if (!assert_board(b)) {
+			board_statusbar(b->win, "Error: hands have different numbers of cards");
+			return;
+		}
 		compute_par_arr(b);
+	}
 
 	b->par_score = 0;
 
@@ -268,13 +283,13 @@ void parscore(board *b)
 		}
 	}
 
-	GString *par = g_string_new("Par: PASS\n");
+	GString *par = g_string_new("Par: PASS (0)\n");
 	if (b->par_score != 0)
-		g_string_printf(par, "Par: %d %s %s\n",
-			b->par_score,
+		g_string_printf(par, "Par: %s %s (%+d)\n",
 			contract_string(b->par_level, b->par_suit, b->par_dec,
 				b->par_tricks < b->par_level + 6),
-			overtricks(b->par_tricks - b->par_level - 6));
+			overtricks(b->par_tricks - b->par_level - 6),
+			b->par_score);
 
 	for (t = 4; t >= 0; t--) {
 		g_string_append_printf(par, "%s: ", trump_str[t]);

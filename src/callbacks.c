@@ -158,7 +158,6 @@ void
 on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	board_rewind(b);
 	deal_random(b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
@@ -178,7 +177,7 @@ on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board_dds(b);
-	solve_board(b);
+	hilight_dd_scores(b);
 }
 
 void
@@ -389,7 +388,7 @@ on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board_dds(b);
-	solve_board(b);
+	hilight_dd_scores(b);
 }
 
 
@@ -523,4 +522,39 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 	show_board(b);
 }
 
+
+
+void
+on_button_back_clicked                 (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	rewind_card(b);
+	show_board(b);
+}
+
+
+void
+on_button_next_clicked                 (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	next_card(b);
+	show_board(b);
+}
+
+
+void
+on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board_fast_forward(b);
+	show_board(b);
+}
+
+
+void
+on_button_dd_toggled                   (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data)
+{
+	run_dd = gtk_toggle_tool_button_get_active(toggletoolbutton);
+}
 

@@ -6,19 +6,36 @@
 static GtkWidget *card_button[52];
 seat new_card_seat = west;
 
+void card_window_update (seat *cards)
+{
+	int c;
+	for (c = 0; c < 52; c++)
+		gtk_button_set_relief ((GtkButton*)card_button[c],
+			cards[c] ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
+}
+
 void cardX_clicked (GtkButton *button, gpointer cxp)
 {
 	suit cx = *(suit *)cxp;
 
-	int i = 0;
-	while (i < 13) {
+	if (b->hand_cards[new_card_seat-1] == 13) {
+		board_statusbar(b->win, "Hand has already 13 cards");
+		return;
+	}
+
+	int i;
+	for (i = 0; i < 13; i++) {
 		int c = cx * 13 + i;
-		if (b->cards[c] == 0) {
-			gtk_button_clicked((GtkButton*)card_button[c]);
+		if (b->dealt_cards[c] == 0) {
+			add_card(b, new_card_seat, c);
+
+			board_statusbar(b->win, NULL);
+			card_window_update(b->dealt_cards);
+			show_board(b);
 			return;
 		}
-		i++;
 	}
+	board_statusbar(b->win, "All cards of that suit dealt");
 }
 
 void card_clicked (GtkButton *button, gpointer cp)
@@ -27,8 +44,26 @@ void card_clicked (GtkButton *button, gpointer cp)
 	card c = *(card *)cp;
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
 
-	dealt = give_card(b, new_card_seat, c);
-	gtk_button_set_relief (button, dealt ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
+	if (b->dealt_cards[c] && !b->cards[c]) {
+		board_statusbar(b->win, "Card is in play and cannot be removed");
+		return;
+	}
+
+	if (b->dealt_cards[c] == new_card_seat)
+		remove_card(b, new_card_seat, c);
+	else {
+		if (b->hand_cards[new_card_seat-1] == 13) {
+			board_statusbar(b->win, "Hand has already 13 cards");
+			return;
+		}
+
+		if (b->dealt_cards[c])
+			remove_card(b, b->dealt_cards[c], c);
+		add_card(b, new_card_seat, c);
+	}
+
+	board_statusbar(b->win, NULL);
+	card_window_update(b->dealt_cards);
 	show_board(b);
 }
 
@@ -61,14 +96,6 @@ void fill_card_window (GtkWidget *w)
 	}
 }
 
-void card_window_update (seat *cards)
-{
-	int c;
-	for (c = 0; c < 52; c++)
-		gtk_button_set_relief ((GtkButton*)card_button[c],
-			cards[c] ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
-}
-
 void deal_random(board *b)
 {
 	seat s;
@@ -76,7 +103,7 @@ void deal_random(board *b)
 		while (b->hand_cards[s-1] < 13) {
 			int c = rand() % 52;
 			if (b->dealt_cards[c] == 0)
-				give_card(b, s, c);
+				add_card(b, s, c);
 		}
 	}
 }

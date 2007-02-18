@@ -100,11 +100,12 @@ create_window_hand (void)
   GtkWidget *separatortoolitem2;
   GtkWidget *tmp_image;
   GtkWidget *rewind_button;
-  GtkWidget *toolbutton7;
-  GtkWidget *toolbutton8;
-  GtkWidget *toolbutton9;
+  GtkWidget *button_back;
+  GtkWidget *button_next;
+  GtkWidget *button_fast_forward;
   GtkWidget *separatortoolitem3;
   GtkWidget *handbutton_gib;
+  GtkWidget *button_dd;
   GtkWidget *handbutton_par;
   GtkWidget *table1;
   GtkWidget *frame_w;
@@ -461,23 +462,24 @@ create_window_hand (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-rewind", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton7 = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Zur\303\274ck"));
-  gtk_widget_show (toolbutton7);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton7);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton7), tooltips, _("Undo card play"), NULL);
+  button_back = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Zur\303\274ck"));
+  gtk_widget_show (button_back);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_back);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_back), tooltips, _("Undo card play"), NULL);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton8 = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Vor"));
-  gtk_widget_show (toolbutton8);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton8);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton8), tooltips, _("Play next card"), NULL);
+  button_next = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Vor"));
+  gtk_widget_show (button_next);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_next);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_next), tooltips, _("Play next card"), NULL);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-next", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton9 = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
-  gtk_widget_show (toolbutton9);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton9);
+  button_fast_forward = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
+  gtk_widget_show (button_fast_forward);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_fast_forward);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_fast_forward), tooltips, _("Play all cards"), NULL);
 
   separatortoolitem3 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem3);
@@ -487,6 +489,15 @@ create_window_hand (void)
   gtk_widget_show (handbutton_gib);
   gtk_container_add (GTK_CONTAINER (toolbar1), handbutton_gib);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (handbutton_gib), tooltips, _("Double dummy analysis"), NULL);
+
+  button_dd = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (button_dd), "");
+  tmp_image = gtk_image_new_from_stock ("gtk-convert", tmp_toolbar_icon_size);
+  gtk_widget_show (tmp_image);
+  gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (button_dd), tmp_image);
+  gtk_widget_show (button_dd);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_dd);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_dd), tooltips, _("Double dummy analysis"), NULL);
 
   handbutton_par = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-find");
   gtk_widget_show (handbutton_par);
@@ -984,8 +995,20 @@ create_window_hand (void)
   g_signal_connect ((gpointer) rewind_button, "clicked",
                     G_CALLBACK (on_rewind_button_clicked),
                     NULL);
+  g_signal_connect ((gpointer) button_back, "clicked",
+                    G_CALLBACK (on_button_back_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) button_next, "clicked",
+                    G_CALLBACK (on_button_next_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) button_fast_forward, "clicked",
+                    G_CALLBACK (on_button_fast_forward_clicked),
+                    NULL);
   g_signal_connect ((gpointer) handbutton_gib, "clicked",
                     G_CALLBACK (on_handbutton_gib_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) button_dd, "toggled",
+                    G_CALLBACK (on_button_dd_toggled),
                     NULL);
   g_signal_connect ((gpointer) handbutton_par, "clicked",
                     G_CALLBACK (on_handbutton_par_clicked),
@@ -1057,11 +1080,12 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, button_hand_save, "button_hand_save");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem2, "separatortoolitem2");
   GLADE_HOOKUP_OBJECT (window_hand, rewind_button, "rewind_button");
-  GLADE_HOOKUP_OBJECT (window_hand, toolbutton7, "toolbutton7");
-  GLADE_HOOKUP_OBJECT (window_hand, toolbutton8, "toolbutton8");
-  GLADE_HOOKUP_OBJECT (window_hand, toolbutton9, "toolbutton9");
+  GLADE_HOOKUP_OBJECT (window_hand, button_back, "button_back");
+  GLADE_HOOKUP_OBJECT (window_hand, button_next, "button_next");
+  GLADE_HOOKUP_OBJECT (window_hand, button_fast_forward, "button_fast_forward");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem3, "separatortoolitem3");
   GLADE_HOOKUP_OBJECT (window_hand, handbutton_gib, "handbutton_gib");
+  GLADE_HOOKUP_OBJECT (window_hand, button_dd, "button_dd");
   GLADE_HOOKUP_OBJECT (window_hand, handbutton_par, "handbutton_par");
   GLADE_HOOKUP_OBJECT (window_hand, table1, "table1");
   GLADE_HOOKUP_OBJECT (window_hand, frame_w, "frame_w");

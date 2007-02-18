@@ -384,28 +384,6 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="board_menu1">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Board</property>
-	      <property name="use_underline">True</property>
-
-	      <child>
-		<widget class="GtkMenu" id="board_menu1_menu">
-
-		  <child>
-		    <widget class="GtkMenuItem" id="board1">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Board 1</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_board1_activate" last_modification_time="Sat, 03 Feb 2007 21:01:34 GMT"/>
-		    </widget>
-		  </child>
-		</widget>
-	      </child>
-	    </widget>
-	  </child>
-
-	  <child>
 	    <widget class="GtkMenuItem" id="score1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Score</property>
@@ -417,7 +395,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="double_dummy1">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">Double dummy analysis of current contract</property>
+		      <property name="tooltip" translatable="yes">Double dummy analysis</property>
 		      <property name="label" translatable="yes">Double dummy</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_double_dummy1_activate" last_modification_time="Fri, 16 Feb 2007 22:28:46 GMT"/>
@@ -441,6 +419,28 @@
 		      <property name="label" translatable="yes">Set par</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_set_par1_activate" last_modification_time="Sat, 17 Feb 2007 01:27:52 GMT"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="board_menu1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Board</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="board_menu1_menu">
+
+		  <child>
+		    <widget class="GtkMenuItem" id="board1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Board 1</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_board1_activate" last_modification_time="Sat, 03 Feb 2007 21:01:34 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
@@ -614,7 +614,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton7">
+	    <widget class="GtkToolButton" id="button_back">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Undo card play</property>
 	      <property name="label" translatable="yes">Zurück</property>
@@ -623,6 +623,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_button_back_clicked" last_modification_time="Sat, 17 Feb 2007 20:28:38 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -631,7 +632,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton8">
+	    <widget class="GtkToolButton" id="button_next">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Play next card</property>
 	      <property name="label" translatable="yes">Vor</property>
@@ -640,6 +641,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_button_next_clicked" last_modification_time="Sat, 17 Feb 2007 20:28:53 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -648,14 +650,16 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton9">
+	    <widget class="GtkToolButton" id="button_fast_forward">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Play all cards</property>
 	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-media-next</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_button_fast_forward_clicked" last_modification_time="Sat, 17 Feb 2007 23:22:51 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -685,6 +689,41 @@
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
 	      <signal name="clicked" handler="on_handbutton_gib_clicked" last_modification_time="Wed, 01 Mar 2006 19:50:33 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkToggleToolButton" id="button_dd">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Double dummy analysis</property>
+	      <property name="label" translatable="yes"></property>
+	      <property name="use_underline">True</property>
+	      <property name="stock_id">gtk-convert</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
+	      <property name="active">False</property>
+	      <signal name="toggled" handler="on_button_dd_toggled" last_modification_time="Sun, 18 Feb 2007 00:53:33 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkToolButton" id="handbutton_par">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Par score</property>
+	      <property name="stock_id">gtk-find</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_handbutton_par_clicked" last_modification_time="Sat, 17 Feb 2007 19:48:00 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>

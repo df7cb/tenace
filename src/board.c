@@ -3,6 +3,7 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "solve.h"
 #include "support.h"
 
 board *b; /* currently visible board */
@@ -29,25 +30,25 @@ void show_board (board *b)
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
 		b->current_turn == west ? " weight=\"bold\"" : "",
-		b->hands[0]->name->str);
+		b->hand_name[0]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_north");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
 		b->current_turn == north ? " weight=\"bold\"" : "",
-		b->hands[1]->name->str);
+		b->hand_name[1]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_east");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
 		b->current_turn == east ? " weight=\"bold\"" : "",
-		b->hands[2]->name->str);
+		b->hand_name[2]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	w = lookup_widget(win, "label_south");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
 		b->current_turn == south ? " weight=\"bold\"" : "",
-		b->hands[3]->name->str);
+		b->hand_name[3]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
 	w = lookup_widget(win, "label_tricks");
@@ -88,22 +89,36 @@ void show_board (board *b)
 		}
 	}
 
-	// FIXME: clear/show played cards
-
 	gtk_widget_show_all(win);
-}
 
-void show_played_card(board *b, seat s, card c)
-{
 	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
 	int i;
-	if (b->n_played_cards % 4 == 0)
-		for (i = west; i <= south; i++) {
-			GtkWidget *label = lookup_widget(b->win, labels[i]);
-			gtk_label_set_text(GTK_LABEL(label), "");
+	for (i = west; i <= south; i++) {
+		GtkWidget *label = lookup_widget(b->win, labels[i]);
+		gtk_label_set_text(GTK_LABEL(label), "");
+	}
+	if (b->n_played_cards) {
+		int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
+		for (i = trick_start; i < b->n_played_cards; i++) {
+			card c = b->played_cards[i];
+			seat s = b->dealt_cards[c];
+			g_string_printf(str, "<span%s>%s</span>",
+				i == trick_start ? " underline=\"low\"" : "",
+				card_string(c)->str);
+			GtkWidget *label = lookup_widget(b->win, labels[s]);
+			gtk_label_set_markup(GTK_LABEL(label), str->str);
 		}
-	GtkWidget *label = lookup_widget(b->win, labels[s]);
-	gtk_label_set_text(GTK_LABEL(label), card_string(c)->str);
+	}
+
+	g_string_free(str, TRUE);
+
+	if (b->par_score == -1) {
+		w = lookup_widget(b->win, "par_label");
+		gtk_label_set_text(GTK_LABEL(w), "");
+	}
+
+	if (run_dd)
+		hilight_dd_scores(b);
 }
 
 void label_set_markup(card c, char *text)
@@ -122,10 +137,9 @@ void label_clear_markups()
 	}
 }
 
-static void label_clicked(GtkLabel *l, void *foo, card *cp)
+static void label_clicked(GtkLabel *l, card *cp)
 {
 	printf("Clicked: %s.\n", card_string(*cp)->str);
-	//gtk_label_set_markup(l, "<span background=\"red\">J</span>");
 	if (play_card(b, b->cards[*cp], *cp))
 		show_board(b);
 }
@@ -134,29 +148,21 @@ static void label_entered(GtkLabel *l, card *cp)
 {
 	char buf[100];
 
+	board_statusbar(b->win, NULL);
+
 	if (b->card_score[*cp] < 0)
 		return;
-
-	//GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
-	//static guint id = 0;
-	if (!statusbar_id)
-		statusbar_id = gtk_statusbar_get_context_id(statusbar, "mouseover");
 
 	snprintf(buf, 99, "%s: %s %s",
 		card_string(*cp)->str,
 		contract_string(b->level, b->trumps, b->declarer, b->doubled),
 		overtricks(7 - b->level - b->card_score[*cp]));
-	gtk_statusbar_push(statusbar, statusbar_id, buf);
+	board_statusbar(b->win, buf);
 }
 
 static void label_left(GtkLabel *l, card *cp)
 {
-	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
-	if (!statusbar_id)
-		statusbar_id = gtk_statusbar_get_context_id(statusbar, "mouseover");
-
-	gtk_statusbar_pop(statusbar, statusbar_id);
+	board_statusbar(b->win, NULL);
 }
 
 void create_card_labels ()
@@ -173,7 +179,7 @@ void create_card_labels ()
 		gtk_container_set_border_width(GTK_CONTAINER(wn), 0);
 		gtk_button_set_focus_on_click(GTK_BUTTON(wn), FALSE);
 		cards[c] = c;
-		g_signal_connect (wn, "button-press-event", G_CALLBACK(label_clicked), &cards[c]);
+		g_signal_connect (wn, "clicked", G_CALLBACK(label_clicked), &cards[c]);
 		g_signal_connect (wn, "enter", G_CALLBACK(label_entered), &cards[c]);
 		g_signal_connect (wn, "leave", G_CALLBACK(label_left), &cards[c]);
 		card_label[c] = wn;

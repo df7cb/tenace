@@ -7,47 +7,17 @@
 #include "functions.h"
 #include "support.h"
 
-void hand_clear(hand *h)
+void board_statusbar(GtkWidget *win, char *text)
 {
-	//g_string_truncate(h->name, 0);
-	memset(h->cards, -1, sizeof(card) * 14);
-	h->ncards = 0;
-}
+	GtkStatusbar *statusbar;
+	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));
+	static guint id = 0;
+	if (!id)
+		id = gtk_statusbar_get_context_id(statusbar, "bridge_c");
+	gtk_statusbar_pop(statusbar, id);
 
-hand *hand_new(char *name)
-{
-	hand *h = malloc(sizeof(hand));
-	assert(h);
-	h->name = g_string_new(name);
-	hand_clear(h);
-	return h;
-}
-
-void hand_free(hand *h)
-{
-	assert(h);
-	g_string_free(h->name, TRUE);
-	free(h);
-}
-
-void board_clear_cards(board *b)
-{
-	memset(b->cards, 0, sizeof(seat) * 52);
-	b->n_dealt_cards = 0;
-	memset(b->dealt_cards, 0, sizeof(seat) * 52);
-}
-
-void board_rewind(board *b)
-{
-	int i;
-	for (i = 0; i < b->n_played_cards; i++)
-		give_card(b, b->played_cards_seat[i], b->played_cards[i]);
-	memset(b->played_cards, 0, sizeof(card) * 52);
-	memset(b->played_cards_seat, 0, sizeof(seat) * 52);
-	memset(b->card_score, -1, sizeof(int) * 52);
-	b->current_turn = seat_mod(b->declarer + 1);
-
-	b->tricks[0] = b->tricks[1] = 0;
+	if (text)
+		gtk_statusbar_push(statusbar, id, text);
 }
 
 void calculate_target(board *b)
@@ -55,6 +25,34 @@ void calculate_target(board *b)
 	int side = b->declarer % 2;
 	b->target[side] = b->level + 6;
 	b->target[1 - side] = 14 - b->target[side]; /* 1 more to beat contract */
+}
+
+void board_clear(board *b)
+{
+	b->n_dealt_cards = 0;
+	int i;
+	for (i = 0; i < 52; i++) {
+		b->cards[i] = 0;
+		b->dealt_cards[i] = 0;
+		b->card_score[i] = -1;
+		b->played_cards[i] = -1;
+	}
+	for (i = 0; i < 4; i++)
+		b->hand_cards[i] = 0;
+	b->current_turn = seat_mod(b->declarer + 1);
+
+	b->par_score = -1;
+	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;
+}
+
+void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled)
+{
+	b->level = level;
+	b->trumps = trump;
+	b->declarer = declarer;
+	b->current_turn = seat_mod(declarer + 1);
+	b->doubled = doubled;
+	calculate_target(b);
 }
 
 board *board_new(void)
@@ -65,32 +63,14 @@ board *board_new(void)
 	assert(b);
 	b->name = g_string_new("Board 1");
 	for (i = 0; i < 4; i++) {
-		b->hands[i] = hand_new(names[i]);
 		b->hand_name[i] = g_string_new(names[i]);
 	}
-	board_clear_cards(b);
-	b->trumps = NT;
-	b->declarer = south;
-	b->level = 1;
-	b->doubled = 0;
-	b->vuln[0] = b->vuln[1] = 0;
-	b->n_played_cards = 0;
-	memset(b->hand_cards, 0, sizeof(int) * 4);
-	board_rewind(b);
-	calculate_target(b);
-	b->par_score = -1;
-	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;
-	//memset(b->card_label, 0, sizeof(GtkWidget*) * 52);
-	return b;
-}
 
-void board_clear(board *b)
-{
-	int i;
-	for (i = 0; i < 4; i++) {
-		hand_clear(b->hands[i]);
-	}
-	board_clear_cards(b);
+	board_set_contract(b, 1, NT, south, 0);
+	board_clear(b);
+	b->vuln[0] = b->vuln[1] = 0;
+
+	return b;
 }
 
 void board_free(board *b)
@@ -99,8 +79,52 @@ void board_free(board *b)
 	assert(b);
 	g_string_free(b->name, TRUE);
 	for (i = 0; i < 4; i++) {
-		hand_free(b->hands[i]);
+		g_string_free(b->hand_name[i], TRUE);
 	}
+}
+
+/* dealing with cards */
+
+int assert_board(board *b) /* check proper number of cards in hands */
+{
+	int i;
+	for (i = 1; i < 4; i++)
+		if (b->hand_cards[0] != b->hand_cards[i])
+			return 0;
+	return 1;
+}
+
+int add_card(board *b, seat s, card c)
+/* return: 1 = card added */
+{
+	assert (b->dealt_cards[c] == 0);
+	if (b->hand_cards[s-1] == 13) {
+		return 0;
+	}
+
+	b->cards[c] = s;
+	b->dealt_cards[c] = s;
+	b->n_dealt_cards++;
+	b->hand_cards[s-1]++;
+
+	b->par_score = -1;
+
+	return 1;
+}
+
+int remove_card(board *b, seat s, card c)
+/* return: 1 = card removed */
+{
+	assert (b->dealt_cards[c] == s);
+
+	b->cards[c] = 0;
+	b->dealt_cards[c] = 0;
+	b->n_dealt_cards--;
+	b->hand_cards[s-1]--;
+
+	b->par_score = -1;
+
+	return 1;
 }
 
 static int has_suit(seat *cards, seat h, suit s)
@@ -112,77 +136,24 @@ static int has_suit(seat *cards, seat h, suit s)
 	return 0;
 }
 
-void remove_card(hand *h, card c)
+static void play_card_0(board *b, seat s, card c)
 {
-	card *p = h->cards;
-	while (*p >= 0 && *p != c)
-		p++;
-	while (*p >= 0) {
-		*p = *(p + 1);
-		p++;
-	}
-	h->ncards--;
-}
+	assert (s);
+	assert (b->dealt_cards[c] == s);
+	assert (b->cards[c] == s);
 
-static void add_card(hand *h, card c)
-/* add card to hand and keep list sorted */
-{
-	card *p = h->cards;
-	while (*p >= 0)
-		p++;
-	*p = c;
-	*(p+1) = -1;
-	do {
-		if (*p < *(p+1)) {
-			card tmp = *(p+1);
-			*(p+1) = *p;
-			*p = tmp;
-		}
-		if (p == h->cards)
-			break;
-		p--;
-	} while (1);
-	h->ncards++;
-}
+	b->cards[c] = 0;
 
-int give_card(board *b, seat s, card c)
-/* return: 1 = card added, 0 = card removed */
-{
-	assert (c >= 0 && c < 52);
-	seat cs = b->dealt_cards[c];
-	//printf("s%d c%d cs%d\n", s, c, cs);
-	assert (cs >= 0 && cs <= 4);
-	if (cs == s) { /* remove card from this hand */
-		//remove_card(b->hands[s-1], c);
-		b->cards[c] = 0;
-		b->dealt_cards[c] = 0;
-		b->hand_cards[s-1]--;
-		return 0;
-	}
-	if (b->hand_cards[s-1] == 13) /* hand has already 13 cards */
-		return cs != 0;
-	if (cs) {/* someone else has the card, remove it */
-		b->hand_cards[cs-1]--;
-	}
-	//add_card(b->hands[s-1], c); /* add it here */
-	b->cards[c] = s;
-	b->dealt_cards[c] = s;
-	b->hand_cards[s-1]++;
-	return 1;
+	b->played_cards[b->n_played_cards] = c;
+	b->n_played_cards++;
 }
 
 int play_card(board *b, seat s, card c)
 {
-	GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(b->win, "statusbar1"));
-	static guint id = 0;
-	if (!id)
-		id = gtk_statusbar_get_context_id(statusbar, "play_card");
-	gtk_statusbar_pop(statusbar, id);
+	board_statusbar(b->win, NULL);
 
-	int i;
 	if (b->cards[c] != b->current_turn) {
-		gtk_statusbar_push(statusbar, id, "Not your turn");
+		board_statusbar(b->win, "Not your turn");
 		return 0;
 	}
 
@@ -192,22 +163,18 @@ int play_card(board *b, seat s, card c)
 		firstcard = b->n_played_cards - (b->n_played_cards % 4);
 		lead = b->played_cards[firstcard];
 		if (SUIT(c) != SUIT(lead) && has_suit(b->cards, s, SUIT(lead))) {
-			gtk_statusbar_push(statusbar, id, "Please follow suit");
+			board_statusbar(b->win, "Please follow suit");
 			return 0;
 		}
 	}
 
-	i = give_card(b, s, c);
-	assert(i == 0);
-	b->played_cards[b->n_played_cards] = c;
-	b->played_cards_seat[b->n_played_cards] = s;
+	play_card_0(b, s, c);
 
-	show_played_card(b, s, c);
-
-	if (b->n_played_cards % 4 == 3) { /* trick complete */
-		seat leader = b->played_cards_seat[firstcard];
+	if (b->n_played_cards % 4 == 0) { /* trick complete */
+		seat leader = b->dealt_cards[lead];
 		card wincard = lead;
 		b->current_turn = leader;
+		int i;
 		for (i = 1; i <= 3; i++) {
 			card thiscard = b->played_cards[firstcard + i];
 			if ((SUIT(thiscard) == b->trumps && SUIT(wincard) != b->trumps) ||
@@ -221,8 +188,57 @@ int play_card(board *b, seat s, card c)
 		b->current_turn = seat_mod(b->current_turn + 1);
 	}
 
-	b->n_played_cards++;
+	return 1;
+}
+
+int rewind_card(board *b)
+{
+	if (b->n_played_cards == 0) {
+		board_statusbar(b->win, "Nothing to undo");
+		return 0;
+	}
+
+	b->n_played_cards--;
+
+	if (b->n_played_cards % 4 == 3)
+		b->tricks[b->current_turn % 2]--;
+
+	card c = b->played_cards[b->n_played_cards];
+	assert (b->cards[c] == 0);
+	b->current_turn = b->cards[c] = b->dealt_cards[c];
 
 	return 1;
 }
 
+void board_rewind(board *b)
+{
+	do {
+		rewind_card(b);
+	} while (b->n_played_cards);
+}
+
+int next_card(board *b)
+{
+	if (b->n_played_cards >= b->n_dealt_cards) {
+		board_statusbar(b->win, "No cards left to play");
+		return 0;
+	}
+	if (b->played_cards[b->n_played_cards] == -1) {
+		board_statusbar(b->win, "Which card should I play?");
+		return 0;
+	}
+	if (b->cards[b->played_cards[b->n_played_cards]] == 0) {
+		board_statusbar(b->win, "Card was already played");
+		return 0;
+	}
+	if (b->cards[b->played_cards[b->n_played_cards]] != b->current_turn) {
+		board_statusbar(b->win, "Card belongs to wrong player");
+		return 0;
+	}
+	return play_card(b, b->current_turn, b->played_cards[b->n_played_cards]);
+}
+
+void board_fast_forward(board *b)
+{
+	while (next_card(b));
+}

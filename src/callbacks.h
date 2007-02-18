@@ -249,3 +249,19 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 void
 on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_button_back_clicked                 (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_button_next_clicked                 (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_button_dd_toggled                   (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data);
