@@ -212,9 +212,8 @@ int rewind_card(board *b)
 
 void board_rewind(board *b)
 {
-	do {
+	while (b->n_played_cards)
 		rewind_card(b);
-	} while (b->n_played_cards);
 }
 
 int next_card(board *b)

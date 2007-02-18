@@ -159,7 +159,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">No Trump</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <signal name="activate" handler="on_contract_no_trump1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
 		  </child>
@@ -202,7 +202,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♣ Clubs</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_clubs1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -228,7 +228,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">1</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_level1_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
 			  </child>
@@ -293,7 +293,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">7</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level7_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -337,7 +337,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">None</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_vuln_none_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
 			  </child>
@@ -369,7 +369,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">All</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">vuln_none</property>
 			      <signal name="activate" handler="on_vuln_all_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
@@ -416,9 +416,54 @@
 		    <widget class="GtkMenuItem" id="set_par1">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Set contract to computed par contract</property>
-		      <property name="label" translatable="yes">Set par</property>
+		      <property name="label" translatable="yes">Play par</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_set_par1_activate" last_modification_time="Sat, 17 Feb 2007 01:27:52 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="positive_for1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Positive for</property>
+		      <property name="use_underline">True</property>
+
+		      <child>
+			<widget class="GtkMenu" id="positive_for1_menu">
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="pos_north_south">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">North-South</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">True</property>
+			      <signal name="activate" handler="on_pos_north_south_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="pos_declarer">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Declarer</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">pos_north_south</property>
+			      <signal name="activate" handler="on_pos_declarer_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="pos_current_lead">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Current lead</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">pos_north_south</property>
+			      <signal name="activate" handler="on_pos_current_lead_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 		</widget>

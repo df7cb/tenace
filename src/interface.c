@@ -79,6 +79,12 @@ create_window_hand (void)
   GtkWidget *double_dummy1;
   GtkWidget *parscore1;
   GtkWidget *set_par1;
+  GtkWidget *positive_for1;
+  GtkWidget *positive_for1_menu;
+  GSList *pos_north_south_group = NULL;
+  GtkWidget *pos_north_south;
+  GtkWidget *pos_declarer;
+  GtkWidget *pos_current_lead;
   GtkWidget *board_menu1;
   GtkWidget *board_menu1_menu;
   GtkWidget *board1;
@@ -252,7 +258,6 @@ create_window_hand (void)
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_no_trump1));
   gtk_widget_show (contract_no_trump1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_no_trump1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_no_trump1), TRUE);
 
   contract_spades1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\240 Spades"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_spades1));
@@ -273,6 +278,7 @@ create_window_hand (void)
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_clubs1));
   gtk_widget_show (contract_clubs1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_clubs1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_clubs1), TRUE);
 
   trennlinie2 = gtk_separator_menu_item_new ();
   gtk_widget_show (trennlinie2);
@@ -290,7 +296,6 @@ create_window_hand (void)
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level1));
   gtk_widget_show (level1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level1), TRUE);
 
   level2 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("2"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level2));
@@ -321,6 +326,7 @@ create_window_hand (void)
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level7));
   gtk_widget_show (level7);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level7);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level7), TRUE);
 
   level_doubled1 = gtk_check_menu_item_new_with_mnemonic (_("X Doubled"));
   gtk_widget_show (level_doubled1);
@@ -341,7 +347,6 @@ create_window_hand (void)
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_none));
   gtk_widget_show (vuln_none);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_none);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_none), TRUE);
 
   vuln_ns = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("North-South"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ns));
@@ -357,6 +362,7 @@ create_window_hand (void)
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_all));
   gtk_widget_show (vuln_all);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_all);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_all), TRUE);
 
   score1 = gtk_menu_item_new_with_mnemonic (_("Score"));
   gtk_widget_show (score1);
@@ -375,10 +381,33 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (score1_menu), parscore1);
   gtk_tooltips_set_tip (tooltips, parscore1, _("Compute par score and contract"), NULL);
 
-  set_par1 = gtk_menu_item_new_with_mnemonic (_("Set par"));
+  set_par1 = gtk_menu_item_new_with_mnemonic (_("Play par"));
   gtk_widget_show (set_par1);
   gtk_container_add (GTK_CONTAINER (score1_menu), set_par1);
   gtk_tooltips_set_tip (tooltips, set_par1, _("Set contract to computed par contract"), NULL);
+
+  positive_for1 = gtk_menu_item_new_with_mnemonic (_("Positive for"));
+  gtk_widget_show (positive_for1);
+  gtk_container_add (GTK_CONTAINER (score1_menu), positive_for1);
+
+  positive_for1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (positive_for1), positive_for1_menu);
+
+  pos_north_south = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("North-South"));
+  pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_north_south));
+  gtk_widget_show (pos_north_south);
+  gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_north_south);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (pos_north_south), TRUE);
+
+  pos_declarer = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("Declarer"));
+  pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_declarer));
+  gtk_widget_show (pos_declarer);
+  gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_declarer);
+
+  pos_current_lead = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("Current lead"));
+  pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_current_lead));
+  gtk_widget_show (pos_current_lead);
+  gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_current_lead);
 
   board_menu1 = gtk_menu_item_new_with_mnemonic (_("Board"));
   gtk_widget_show (board_menu1);
@@ -968,6 +997,15 @@ create_window_hand (void)
   g_signal_connect ((gpointer) set_par1, "activate",
                     G_CALLBACK (on_set_par1_activate),
                     NULL);
+  g_signal_connect ((gpointer) pos_north_south, "activate",
+                    G_CALLBACK (on_pos_north_south_activate),
+                    NULL);
+  g_signal_connect ((gpointer) pos_declarer, "activate",
+                    G_CALLBACK (on_pos_declarer_activate),
+                    NULL);
+  g_signal_connect ((gpointer) pos_current_lead, "activate",
+                    G_CALLBACK (on_pos_current_lead_activate),
+                    NULL);
   g_signal_connect ((gpointer) board1, "activate",
                     G_CALLBACK (on_board1_activate),
                     NULL);
@@ -1061,6 +1099,11 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, double_dummy1, "double_dummy1");
   GLADE_HOOKUP_OBJECT (window_hand, parscore1, "parscore1");
   GLADE_HOOKUP_OBJECT (window_hand, set_par1, "set_par1");
+  GLADE_HOOKUP_OBJECT (window_hand, positive_for1, "positive_for1");
+  GLADE_HOOKUP_OBJECT (window_hand, positive_for1_menu, "positive_for1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, pos_north_south, "pos_north_south");
+  GLADE_HOOKUP_OBJECT (window_hand, pos_declarer, "pos_declarer");
+  GLADE_HOOKUP_OBJECT (window_hand, pos_current_lead, "pos_current_lead");
   GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
   GLADE_HOOKUP_OBJECT (window_hand, board_menu1_menu, "board_menu1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, board1, "board1");

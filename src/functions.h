@@ -12,5 +12,8 @@ char *contract_string(int level, suit trumps, seat declarer, int doubled);
 seat seat_mod(seat s);
 char *overtricks (int i);
 int score (int level, suit s, int doubled, int vuln, int tricks);
+char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln, int tricks, seat lead);
+
+extern int pos_score_for;
 
 #endif

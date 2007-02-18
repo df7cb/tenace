@@ -10,6 +10,7 @@
 #include "support.h"
 #include "bridge.h"
 #include "board.h"
+#include "functions.h"
 #include "main.h"
 #include "solve.h"
 #include "window_card.h"
@@ -184,8 +185,9 @@ void
 on_declarer_west1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->declarer = west;
 	board_rewind(b);
+	b->declarer = west;
+	b->current_turn = seat_mod(west + 1);
 	show_board(b);
 }
 
@@ -194,8 +196,9 @@ void
 on_declarer_north1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->declarer = north;
 	board_rewind(b);
+	b->declarer = north;
+	b->current_turn = seat_mod(north + 1);
 	show_board(b);
 }
 
@@ -204,8 +207,9 @@ void
 on_declarer_east1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->declarer = east;
 	board_rewind(b);
+	b->declarer = east;
+	b->current_turn = seat_mod(east + 1);
 	show_board(b);
 }
 
@@ -214,8 +218,9 @@ void
 on_declarer_south1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->declarer = south;
 	board_rewind(b);
+	b->declarer = south;
+	b->current_turn = seat_mod(south + 1);
 	show_board(b);
 }
 
@@ -414,6 +419,7 @@ on_vuln_none_activate                  (GtkMenuItem     *menuitem,
 {
 	b->vuln[0] = 0;
 	b->vuln[1] = 0;
+	b->par_score = -1;
 	show_board(b);
 }
 
@@ -424,6 +430,7 @@ on_vuln_ns_activate                    (GtkMenuItem     *menuitem,
 {
 	b->vuln[0] = 1;
 	b->vuln[1] = 0;
+	b->par_score = -1;
 	show_board(b);
 }
 
@@ -434,6 +441,7 @@ on_vuln_ew_activate                    (GtkMenuItem     *menuitem,
 {
 	b->vuln[0] = 0;
 	b->vuln[1] = 1;
+	b->par_score = -1;
 	show_board(b);
 }
 
@@ -444,6 +452,7 @@ on_vuln_all_activate                   (GtkMenuItem     *menuitem,
 {
 	b->vuln[0] = 1;
 	b->vuln[1] = 1;
+	b->par_score = -1;
 	show_board(b);
 }
 
@@ -455,7 +464,7 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
 	b->trumps = b->par_suit;
 	b->level = b->par_level;
 	b->declarer = b->par_dec;
-	// FIXME: set current_turn
+	b->current_turn = seat_mod(b->declarer + 1);
 	b->doubled = b->par_tricks < b->par_level + 6;
 	show_board(b);
 }
@@ -518,6 +527,7 @@ void
 on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	rewind_card(b); /* extra call to show warning if there's nothing to do */
 	board_rewind(b);
 	show_board(b);
 }
@@ -556,5 +566,29 @@ on_button_dd_toggled                   (GtkToggleToolButton *toggletoolbutton,
                                         gpointer         user_data)
 {
 	run_dd = gtk_toggle_tool_button_get_active(toggletoolbutton);
+}
+
+
+void
+on_pos_north_south_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	pos_score_for = 0;
+}
+
+
+void
+on_pos_declarer_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	pos_score_for = 1;
+}
+
+
+void
+on_pos_current_lead_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	pos_score_for = 2;
 }
 

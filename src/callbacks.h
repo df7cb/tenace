@@ -265,3 +265,15 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 void
 on_button_dd_toggled                   (GtkToggleToolButton *toggletoolbutton,
                                         gpointer         user_data);
+
+void
+on_pos_north_south_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_pos_declarer_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_pos_current_lead_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

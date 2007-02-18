@@ -153,12 +153,11 @@ static void label_entered(GtkLabel *l, card *cp)
 	if (b->card_score[*cp] < 0)
 		return;
 
-	snprintf(buf, 99, "%s: %s %s (%+d)",
+	snprintf(buf, 99, "%s: %s",
 		card_string(*cp)->str,
-		contract_string(b->level, b->trumps, b->declarer, b->doubled),
-		overtricks(7 - b->level - b->card_score[*cp]),
-		score(b->level, b->trumps, b->doubled, b->vuln[b->declarer % 2], 13 - b->card_score[*cp]));
-	// FIXME card_score always for declarer?
+		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
+			b->card_score[*cp],
+			b->current_turn));
 	board_statusbar(b->win, buf);
 }
 

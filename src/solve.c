@@ -85,6 +85,14 @@ void board_dds(board *b)
 	system("dds dd&");
 }
 
+static int score_to_tricks(board *b, int score) /* result: tricks for declarer */
+{
+	score += b->tricks[b->current_turn % 2];
+	if ((b->current_turn % 2) != (b->declarer % 2))
+		score = 13 - score;
+	return score;
+}
+
 void compute_dd_scores(board *b)
 {
 	int i, j, c;
@@ -113,6 +121,7 @@ void compute_dd_scores(board *b)
 		if (b->cards[c]) {
 			d.remainCards[(b->cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
 		}
+		b->card_score[c] - 1; // FIXME: remember scores for undo?
 	}
 	for (i = 0; i < b->n_played_cards % 4; i++) {
 		card c = b->played_cards[b->n_played_cards - (b->n_played_cards % 4) + i];
@@ -137,16 +146,18 @@ void compute_dd_scores(board *b)
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
 		printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);
-		b->card_score[c] = fut.score[i];
+		b->card_score[c] = score_to_tricks(b, fut.score[i]);
 
 		for (j = fut.rank[i] - 2; j >= 0; j--) { /* equals */
 			if (fut.equals[i] & card_bits[j]) {
 				c = 13 * (3 - fut.suit[i]) + j;
 				printf("      %s = %d\n", card_string(c)->str, fut.score[i]);
-				b->card_score[c] = fut.score[i];
+				b->card_score[c] = score_to_tricks(b, fut.score[i]);
 			}
 		}
 	}
+
+	b->best_score = score_to_tricks(b, fut.score[0]);
 }
 
 void hilight_dd_scores(board *b)
@@ -159,25 +170,26 @@ void hilight_dd_scores(board *b)
 	label_clear_markups();
 
 	for (c = 51; c >= 0; c--) {
-		if (b->card_score[c] <= 0)
-			continue;
-
 		int side = b->current_turn % 2;
-		char *color = b->tricks[side] + b->card_score[c] >= b->target[side] ? "green" : "red";
-		char *weight = b->card_score[c] == 123 ? " weight=\"bold\"" : ""; // FIXME
-		snprintf(str, 99, "<span background=\"%s\"%s>%s</span>",
+		char *color = "";
+		if (b->card_score[c] >= 0) {
+			if (side == (b->declarer % 2))
+				color = b->card_score[c] >= b->target[side] ?
+					" background=\"green\"" : " background=\"red\"";
+			else
+				color = b->card_score[c] < b->target[side] ?
+					" background=\"green\"" : " background=\"red\"";
+		}
+		char *weight = b->card_score[c] == b->best_score ? " weight=\"bold\"" : "";
+		snprintf(str, 99, "<span%s%s>%s</span>",
 			color, weight, rank_string(RANK(c)));
 		label_set_markup(c, str);
 	}
 
-	/*
-	assert(fut.cards);
-	snprintf(str, 99, "DD: %s %s (%d)",
-		contract_string(b->level, b->trumps, b->declarer, b->doubled),
-		overtricks(7 - b->level - fut.score[0]),
-		score(b->level, b->trumps, b->doubled, b->vuln[b->declarer % 2], 13 - fut.score[0]));
+	snprintf(str, 99, "DD: %s",
+		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
+			b->best_score, b->current_turn));
 	solve_statusbar(b->win, str);
-	*/
 }
 
 static void compute_par_arr(board *b)

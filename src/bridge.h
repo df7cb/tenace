@@ -63,6 +63,7 @@ typedef struct board_t {
 	int tricks[2]; /* 0 = NS, 1 = EW */
 
 	int card_score[52];
+	int best_score;
 	int target[2]; /* sum might be less than 13 for partial deals */
 
 	int par_score; /* -1 = other par_ fields invalid */

@@ -2,6 +2,8 @@
 
 #include "bridge.h"
 
+int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
+
 char *rank_string (rank r)
 {
 	static char *label[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -178,3 +180,24 @@ int score (int level, suit s, int doubled, int vuln, int tricks)
 	}
 }
 
+char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln, int tricks, seat lead)
+{
+	static char buf[25];
+	int flip;
+	switch (pos_score_for) {
+		case 0: /* NS */
+			(declarer % 2) == 1 ? -1 : 1;
+			break;
+		case 1: /* declarer */
+			flip = 1;
+			break;
+		case 2: /* current lead */
+			(declarer % 2) == (lead % 2) ? 1 : -1;
+			break;
+	}
+	snprintf(buf, 24, "%s %s (%+d)",
+		contract_string(level, trumps, declarer, doubled),
+		overtricks(tricks - 6 - level),
+		flip * score(level, trumps, doubled, vuln, tricks));
+	return buf;
+}
