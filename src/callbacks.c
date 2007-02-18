@@ -174,14 +174,6 @@ on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
 
 
 void
-on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board_dds(b);
-	hilight_dd_scores(b);
-}
-
-void
 on_declarer_west1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -558,6 +550,15 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 {
 	board_fast_forward(b);
 	show_board(b);
+}
+
+
+void
+on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board_dds(b);
+	hilight_dd_scores(b);
 }
 
 

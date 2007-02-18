@@ -121,7 +121,7 @@ void compute_dd_scores(board *b)
 		if (b->cards[c]) {
 			d.remainCards[(b->cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
 		}
-		b->card_score[c] - 1; // FIXME: remember scores for undo?
+		b->card_score[c] = -1; // FIXME: remember scores for undo?
 	}
 	for (i = 0; i < b->n_played_cards % 4; i++) {
 		card c = b->played_cards[b->n_played_cards - (b->n_played_cards % 4) + i];
@@ -167,23 +167,24 @@ void hilight_dd_scores(board *b)
 
 	compute_dd_scores(b); // FIXME: call when needed
 
-	label_clear_markups();
+	button_clear_markups();
 
 	for (c = 51; c >= 0; c--) {
+		if (b->card_score[c] < 0)
+			continue;
+
 		int side = b->current_turn % 2;
 		char *color = "";
-		if (b->card_score[c] >= 0) {
-			if (side == (b->declarer % 2))
-				color = b->card_score[c] >= b->target[side] ?
-					" background=\"green\"" : " background=\"red\"";
-			else
-				color = b->card_score[c] < b->target[side] ?
-					" background=\"green\"" : " background=\"red\"";
-		}
+		if (side == (b->declarer % 2))
+			color = b->card_score[c] >= b->target[side] ?
+				" background=\"green\"" : " background=\"red\"";
+		else
+			color = b->card_score[c] < b->target[side] ?
+				" background=\"green\"" : " background=\"red\"";
 		char *weight = b->card_score[c] == b->best_score ? " weight=\"bold\"" : "";
 		snprintf(str, 99, "<span%s%s>%s</span>",
 			color, weight, rank_string(RANK(c)));
-		label_set_markup(c, str);
+		button_set_markup(c, str);
 	}
 
 	snprintf(str, 99, "DD: %s",
@@ -317,7 +318,7 @@ void parscore(board *b)
 			g_string_append_printf(par, "\n");
 	}
 
-	GtkLabel *par_label = lookup_widget(b->win, "par_label");
+	GtkLabel *par_label = GTK_LABEL(lookup_widget(b->win, "par_label"));
 	gtk_label_set_markup(par_label, par->str);
 	g_string_free(par, TRUE);
 }

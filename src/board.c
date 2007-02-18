@@ -8,9 +8,9 @@
 
 board *b; /* currently visible board */
 
-static GtkWidget *card_label[52];
-static GtkWidget *card_label_child[52];
-static GtkWidget *card_label_container[52]; /* non-NULL if button is shown */
+static GtkWidget *card_button[52];
+static GtkWidget *card_button_child[52];
+static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
 
 static GtkStatusbar *statusbar;
 static guint statusbar_id = 0;
@@ -76,16 +76,16 @@ void show_board (board *b)
 		int h = b->cards[c];
 		int s = SUIT(c);
 
-		GtkWidget *lab = card_label[c];
-		if (card_label_container[c]) {
-			gtk_container_remove(GTK_CONTAINER(card_label_container[c]), lab);
-			card_label_container[c] = NULL;
+		GtkWidget *lab = card_button[c];
+		if (card_button_container[c]) {
+			gtk_container_remove(GTK_CONTAINER(card_button_container[c]), lab);
+			card_button_container[c] = NULL;
 		}
 		if (h) {
 			box = lookup_widget(win, box_array[h-1][s]);
 			gtk_box_pack_start (GTK_BOX (box), lab, FALSE, FALSE, FALSE);
 			gtk_widget_show(lab);
-			card_label_container[c] = box;
+			card_button_container[c] = box;
 		}
 	}
 
@@ -121,30 +121,29 @@ void show_board (board *b)
 		hilight_dd_scores(b);
 }
 
-void label_set_markup(card c, char *text)
+void button_set_markup(card c, char *text)
 {
-	//gtk_label_set_markup(GTK_LABEL(card_label[c]), text);
-	gtk_label_set_markup(GTK_LABEL(card_label_child[c]), text);
+	gtk_label_set_markup(GTK_LABEL(card_button_child[c]), text);
 }
 
-void label_clear_markups()
+void button_clear_markups()
 {
 	int c;
 	for (c = 0; c < 52; c++) {
-		if (card_label_container[c]) {
-			label_set_markup(c, rank_string(RANK(c)));
+		if (card_button_container[c]) {
+			button_set_markup(c, rank_string(RANK(c)));
 		}
 	}
 }
 
-static void label_clicked(GtkLabel *l, card *cp)
+static void button_clicked(GtkButton *l, card *cp)
 {
 	printf("Clicked: %s.\n", card_string(*cp)->str);
 	if (play_card(b, b->cards[*cp], *cp))
 		show_board(b);
 }
 
-static void label_entered(GtkLabel *l, card *cp)
+static void button_entered(GtkButton *l, card *cp)
 {
 	char buf[100];
 
@@ -156,37 +155,35 @@ static void label_entered(GtkLabel *l, card *cp)
 	snprintf(buf, 99, "%s: %s",
 		card_string(*cp)->str,
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
-			b->card_score[*cp],
-			b->current_turn));
+			b->card_score[*cp], b->current_turn));
 	board_statusbar(b->win, buf);
 }
 
-static void label_left(GtkLabel *l, card *cp)
+static void button_left(GtkButton *l, card *cp)
 {
 	board_statusbar(b->win, NULL);
 }
 
-void create_card_labels ()
+void create_card_buttons ()
 {
-	static card cards[52];
+	static card card_data[52];
 	card c;
 	for (c = 0; c < 52; c++) {
-		//GtkWidget *wn = gtk_label_new(rank_string(RANK(c)));
 		GtkWidget *lab = gtk_label_new(rank_string(RANK(c)));
 		gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
-		GtkWidget *wn = gtk_button_new();
-		gtk_container_add(GTK_CONTAINER(wn), lab);
-		//gtk_label_set_selectable (GTK_LABEL (wn), TRUE);
-		gtk_container_set_border_width(GTK_CONTAINER(wn), 0);
-		gtk_button_set_focus_on_click(GTK_BUTTON(wn), FALSE);
-		cards[c] = c;
-		g_signal_connect (wn, "clicked", G_CALLBACK(label_clicked), &cards[c]);
-		g_signal_connect (wn, "enter", G_CALLBACK(label_entered), &cards[c]);
-		g_signal_connect (wn, "leave", G_CALLBACK(label_left), &cards[c]);
-		card_label[c] = wn;
-		card_label_child[c] = lab;
-		card_label_container[c] = NULL;
-		g_object_ref(wn); // create reference so labels are not deleted when moved around
+		GtkWidget *but = gtk_button_new();
+		gtk_container_add(GTK_CONTAINER(but), lab);
+		//gtk_container_set_border_width(GTK_CONTAINER(but), 0);
+		gtk_button_set_focus_on_click(GTK_BUTTON(but), FALSE);
+
+		card_data[c] = c;
+		g_signal_connect (but, "clicked", G_CALLBACK(button_clicked), &card_data[c]);
+		g_signal_connect (but, "enter", G_CALLBACK(button_entered), &card_data[c]);
+		g_signal_connect (but, "leave", G_CALLBACK(button_left), &card_data[c]);
+		card_button[c] = but;
+		card_button_child[c] = lab;
+		card_button_container[c] = NULL;
+		g_object_ref(but); // create reference so buttons are not deleted when moved around
 	}
 }
 

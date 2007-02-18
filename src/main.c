@@ -45,7 +45,7 @@ main (int argc, char *argv[])
 
   srand(time(NULL));
 
-  create_card_labels();
+  create_card_buttons();
   fill_card_window(window_card);
 
   b = board_new();
