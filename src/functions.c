@@ -143,30 +143,35 @@ char *overtricks (int i)
 
 int score (int level, suit s, int doubled, int vuln, int tricks)
 {
-	/* doubled: 0 / 1 (double) / 2 (FIXME) / -1 (auto-double down contracts) */
+	/* doubled: 0 / 1 (double) / 2 (redouble) / -1 (auto-double down contracts) */
 	int nv_double[] = { 100, 300, 500, 800, 1100, 1400, 1700, 2000, 2300, 2600, 2900, 3200, 3500 };
 	int v_double[] = { 200, 500, 800, 1100, 1400, 1700, 2000, 2300, 2600, 2900, 3200, 3500, 3800 };
+
 	if (tricks < level + 6) {
-		if (doubled != 0) {
+		if (doubled < 0)
+			doubled = 1;
+
+		if (doubled)
 			if (vuln) {
-				return -v_double[level + 5 - tricks];
+				return -v_double[level + 5 - tricks] * doubled;
 			} else {
-				return -nv_double[level + 5 - tricks];
+				return -nv_double[level + 5 - tricks] * doubled;
 			}
-		} else {
-			return (tricks - level - 6) * 50 * (vuln + 1);
-		}
+		return (tricks - level - 6) * 50 * (vuln + 1);
+
 	} else {
 		if (doubled < 0)
 			doubled = 0;
-		// FIXME: notrump
-		int trick_score = ((s >= heart) ? 30 : 20) * (doubled + 1);
-		int overtricks = tricks - level - 6;
 
-		int base_score = level * trick_score;
-		int overtrick_score = overtricks * (doubled ? 100 * (vuln + 1) : trick_score);
+		int trick_score = (s >= heart) ? 30 : 20;
+		int base_score = (level * trick_score + (s == NT ? 10 : 0)) * (1 << doubled);
+
+		int per_overtrick = doubled ? 100 * (vuln + 1) * doubled : trick_score;
+		int overtrick_score = (tricks - level - 6) * per_overtrick;
+
 		int game_bonus = vuln ? 450 : 250;
-		return 50 * (doubled + 1) + base_score + overtrick_score
+		return base_score + overtrick_score
+			+ 50 * (1 + doubled)
 			+ (base_score >= 100 ? game_bonus : 0)
 			+ (level >= 6 ? (vuln ? 750 : 500) : 0)
 			+ (level == 7 ? (vuln ? 750 : 500) : 0);
