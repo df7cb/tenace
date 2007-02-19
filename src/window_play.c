@@ -1,0 +1,44 @@
+#include <assert.h>
+
+#include "bridge.h"
+#include "functions.h"
+#include "interface.h"
+#include "support.h"
+
+static GtkWidget *window_play;
+static GtkWidget *play_table;
+static GtkWidget *play_label[52];
+
+void window_play_init ()
+{
+	window_play = create_window_play();
+	gtk_widget_show(window_play);
+	play_table = lookup_widget(window_play, "play_table");
+	assert (play_table);
+	int cr, cc;
+	for (cr = 0; cr <= 12; cr++) {
+		char str[5];
+		snprintf(str, 5, " %d ", cr+1);
+		GtkWidget *lab = gtk_label_new(str);
+		gtk_table_attach(play_table, lab, 0, 1, cr, cr+1, 0, 0, 0, 0);
+		for (cc = 0; cc <= 3; cc++) {
+			GtkWidget *lab = gtk_label_new(NULL);
+			gtk_table_attach(play_table, lab, cc+1, cc+2, cr, cr+1, 0, 0, 0, 0);
+			play_label[4 * cr + cc] = lab;
+		}
+	}
+	gtk_widget_show_all(window_play);
+}
+
+void window_play_update (board *b)
+{
+	int c;
+	for (c = 0; c < 52; c++) {
+		if (b->played_cards[c] == -1)
+			gtk_label_set_markup(play_label[c], "");
+		else {
+			gtk_label_set_markup(play_label[c], card_string(b->played_cards[c])->str);
+			gtk_widget_set_sensitive(play_label[c], c < b->n_played_cards);
+		}
+	}
+}

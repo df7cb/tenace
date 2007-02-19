@@ -595,6 +595,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table6), label16, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label16, -1, 28);
   gtk_misc_set_padding (GTK_MISC (label16), 5, 0);
 
   label17 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
@@ -602,6 +603,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table6), label17, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label17, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label17), TRUE);
 
   hbox_west_s = gtk_hbox_new (FALSE, 0);
@@ -633,6 +635,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table6), label27, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label27, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label27), TRUE);
 
   label28 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
@@ -640,6 +643,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table6), label28, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label28, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label28), TRUE);
 
   label_west = gtk_label_new (_("West"));
@@ -668,6 +672,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table7), label20, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label20, -1, 28);
   gtk_misc_set_padding (GTK_MISC (label20), 5, 0);
 
   hbox_east_s = gtk_hbox_new (FALSE, 0);
@@ -699,6 +704,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table7), label24, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label24, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label24), TRUE);
 
   label29 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
@@ -706,6 +712,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table7), label29, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label29, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label29), TRUE);
 
   label32 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
@@ -713,6 +720,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table7), label32, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label32, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label32), TRUE);
 
   label_east = gtk_label_new (_("Ost"));
@@ -741,6 +749,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table_north), label8, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label8, -1, 28);
   gtk_misc_set_padding (GTK_MISC (label8), 5, 0);
 
   hbox_north_s = gtk_hbox_new (FALSE, 0);
@@ -772,6 +781,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table_north), label26, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label26, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label26), TRUE);
 
   label30 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
@@ -779,6 +789,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table_north), label30, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label30, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label30), TRUE);
 
   label34 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
@@ -786,6 +797,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table_north), label34, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label34, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label34), TRUE);
 
   label_north = gtk_label_new (_("Nord"));
@@ -814,6 +826,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table5), label12, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label12, -1, 28);
   gtk_misc_set_padding (GTK_MISC (label12), 5, 0);
 
   hbox_south_s = gtk_hbox_new (FALSE, 0);
@@ -845,6 +858,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table5), label25, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label25, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label25), TRUE);
 
   label31 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
@@ -852,6 +866,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table5), label31, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label31, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label31), TRUE);
 
   label33 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
@@ -859,6 +874,7 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table5), label33, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label33, -1, 28);
   gtk_label_set_use_markup (GTK_LABEL (label33), TRUE);
 
   label_south = gtk_label_new (_("S\303\274d"));
@@ -1449,17 +1465,17 @@ create_window_bids (void)
   GtkIconSize tmp_toolbar_icon_size;
   GtkWidget *toolbutton5;
   GtkWidget *hbuttonbox1;
-  GtkWidget *button1;
+  GtkWidget *bid_pass;
   GtkWidget *alignment1;
   GtkWidget *hbox1;
   GtkWidget *image1;
   GtkWidget *label5;
-  GtkWidget *button2;
+  GtkWidget *bid_x;
   GtkWidget *alignment2;
   GtkWidget *hbox2;
   GtkWidget *image2;
   GtkWidget *label6;
-  GtkWidget *button3;
+  GtkWidget *bid_xx;
   GtkWidget *alignment3;
   GtkWidget *hbox3;
   GtkWidget *image3;
@@ -1487,14 +1503,14 @@ create_window_bids (void)
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (vbox3), hbuttonbox1, FALSE, TRUE, 0);
 
-  button1 = gtk_button_new ();
-  gtk_widget_show (button1);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), button1);
-  GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
+  bid_pass = gtk_button_new ();
+  gtk_widget_show (bid_pass);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), bid_pass);
+  GTK_WIDGET_SET_FLAGS (bid_pass, GTK_CAN_DEFAULT);
 
   alignment1 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_show (alignment1);
-  gtk_container_add (GTK_CONTAINER (button1), alignment1);
+  gtk_container_add (GTK_CONTAINER (bid_pass), alignment1);
 
   hbox1 = gtk_hbox_new (FALSE, 2);
   gtk_widget_show (hbox1);
@@ -1508,14 +1524,14 @@ create_window_bids (void)
   gtk_widget_show (label5);
   gtk_box_pack_start (GTK_BOX (hbox1), label5, FALSE, FALSE, 0);
 
-  button2 = gtk_button_new ();
-  gtk_widget_show (button2);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), button2);
-  GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
+  bid_x = gtk_button_new ();
+  gtk_widget_show (bid_x);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), bid_x);
+  GTK_WIDGET_SET_FLAGS (bid_x, GTK_CAN_DEFAULT);
 
   alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_show (alignment2);
-  gtk_container_add (GTK_CONTAINER (button2), alignment2);
+  gtk_container_add (GTK_CONTAINER (bid_x), alignment2);
 
   hbox2 = gtk_hbox_new (FALSE, 2);
   gtk_widget_show (hbox2);
@@ -1525,18 +1541,18 @@ create_window_bids (void)
   gtk_widget_show (image2);
   gtk_box_pack_start (GTK_BOX (hbox2), image2, FALSE, FALSE, 0);
 
-  label6 = gtk_label_new_with_mnemonic (_("Kontra"));
+  label6 = gtk_label_new_with_mnemonic (_("X"));
   gtk_widget_show (label6);
   gtk_box_pack_start (GTK_BOX (hbox2), label6, FALSE, FALSE, 0);
 
-  button3 = gtk_button_new ();
-  gtk_widget_show (button3);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), button3);
-  GTK_WIDGET_SET_FLAGS (button3, GTK_CAN_DEFAULT);
+  bid_xx = gtk_button_new ();
+  gtk_widget_show (bid_xx);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), bid_xx);
+  GTK_WIDGET_SET_FLAGS (bid_xx, GTK_CAN_DEFAULT);
 
   alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_show (alignment3);
-  gtk_container_add (GTK_CONTAINER (button3), alignment3);
+  gtk_container_add (GTK_CONTAINER (bid_xx), alignment3);
 
   hbox3 = gtk_hbox_new (FALSE, 2);
   gtk_widget_show (hbox3);
@@ -1546,7 +1562,7 @@ create_window_bids (void)
   gtk_widget_show (image3);
   gtk_box_pack_start (GTK_BOX (hbox3), image3, FALSE, FALSE, 0);
 
-  label7 = gtk_label_new_with_mnemonic (_("Rekontra"));
+  label7 = gtk_label_new_with_mnemonic (_("XX"));
   gtk_widget_show (label7);
   gtk_box_pack_start (GTK_BOX (hbox3), label7, FALSE, FALSE, 0);
 
@@ -1560,17 +1576,17 @@ create_window_bids (void)
   GLADE_HOOKUP_OBJECT (window_bids, toolbar3, "toolbar3");
   GLADE_HOOKUP_OBJECT (window_bids, toolbutton5, "toolbutton5");
   GLADE_HOOKUP_OBJECT (window_bids, hbuttonbox1, "hbuttonbox1");
-  GLADE_HOOKUP_OBJECT (window_bids, button1, "button1");
+  GLADE_HOOKUP_OBJECT (window_bids, bid_pass, "bid_pass");
   GLADE_HOOKUP_OBJECT (window_bids, alignment1, "alignment1");
   GLADE_HOOKUP_OBJECT (window_bids, hbox1, "hbox1");
   GLADE_HOOKUP_OBJECT (window_bids, image1, "image1");
   GLADE_HOOKUP_OBJECT (window_bids, label5, "label5");
-  GLADE_HOOKUP_OBJECT (window_bids, button2, "button2");
+  GLADE_HOOKUP_OBJECT (window_bids, bid_x, "bid_x");
   GLADE_HOOKUP_OBJECT (window_bids, alignment2, "alignment2");
   GLADE_HOOKUP_OBJECT (window_bids, hbox2, "hbox2");
   GLADE_HOOKUP_OBJECT (window_bids, image2, "image2");
   GLADE_HOOKUP_OBJECT (window_bids, label6, "label6");
-  GLADE_HOOKUP_OBJECT (window_bids, button3, "button3");
+  GLADE_HOOKUP_OBJECT (window_bids, bid_xx, "bid_xx");
   GLADE_HOOKUP_OBJECT (window_bids, alignment3, "alignment3");
   GLADE_HOOKUP_OBJECT (window_bids, hbox3, "hbox3");
   GLADE_HOOKUP_OBJECT (window_bids, image3, "image3");
@@ -2118,5 +2134,32 @@ create_window_line_entry (void)
   GLADE_HOOKUP_OBJECT (window_line_entry, line_entry_ok, "line_entry_ok");
 
   return window_line_entry;
+}
+
+GtkWidget*
+create_window_play (void)
+{
+  GtkWidget *window_play;
+  GtkWidget *vbox6;
+  GtkWidget *play_table;
+
+  window_play = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window_play), _("Play"));
+  gtk_window_set_default_size (GTK_WINDOW (window_play), 150, -1);
+
+  vbox6 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox6);
+  gtk_container_add (GTK_CONTAINER (window_play), vbox6);
+
+  play_table = gtk_table_new (13, 5, TRUE);
+  gtk_widget_show (play_table);
+  gtk_box_pack_start (GTK_BOX (vbox6), play_table, TRUE, TRUE, 0);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (window_play, window_play, "window_play");
+  GLADE_HOOKUP_OBJECT (window_play, vbox6, "vbox6");
+  GLADE_HOOKUP_OBJECT (window_play, play_table, "play_table");
+
+  return window_play;
 }
 

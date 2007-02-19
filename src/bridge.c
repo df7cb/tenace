@@ -29,7 +29,7 @@ void calculate_target(board *b)
 
 void board_clear(board *b)
 {
-	b->n_dealt_cards = 0;
+	b->n_dealt_cards = b->n_played_cards = 0;
 	int i;
 	for (i = 0; i < 52; i++) {
 		b->cards[i] = 0;

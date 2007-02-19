@@ -12,6 +12,7 @@
 #include "board.h"
 #include "solve.h"
 #include "window_card.h"
+#include "window_play.h"
 
 int
 main (int argc, char *argv[])
@@ -42,7 +43,9 @@ main (int argc, char *argv[])
   //gtk_widget_show (window_bid);
   //window_bids = create_window_bids ();
   //gtk_widget_show (window_bids);
-  gtk_widget_show (create_window_line_entry());
+  //gtk_widget_show (create_window_line_entry());
+
+  window_play_init ();
 
   srand(time(NULL));
 

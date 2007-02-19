@@ -5,6 +5,7 @@
 #include "functions.h"
 #include "solve.h"
 #include "support.h"
+#include "window_play.h"
 
 board *b; /* currently visible board */
 
@@ -119,6 +120,8 @@ void show_board (board *b)
 
 	if (run_dd)
 		hilight_dd_scores(b);
+
+	window_play_update(b);
 }
 
 void button_set_markup(card c, char *text)

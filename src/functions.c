@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <ctype.h>
 
 #include "bridge.h"
 
@@ -153,12 +154,13 @@ int score (int level, suit s, int doubled, int vuln, int tricks)
 		if (doubled < 0)
 			doubled = 1;
 
-		if (doubled)
+		if (doubled) {
 			if (vuln) {
 				return -v_double[level + 5 - tricks] * doubled;
 			} else {
 				return -nv_double[level + 5 - tricks] * doubled;
 			}
+		}
 		return (tricks - level - 6) * 50 * (vuln + 1);
 
 	} else {
@@ -186,13 +188,13 @@ char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln,
 	int flip;
 	switch (pos_score_for) {
 		case 0: /* NS */
-			(declarer % 2) == 1 ? -1 : 1;
+			flip = (declarer % 2) == 1 ? -1 : 1;
 			break;
 		case 1: /* declarer */
 			flip = 1;
 			break;
 		case 2: /* current lead */
-			(declarer % 2) == (lead % 2) ? 1 : -1;
+			flip = (declarer % 2) == (lead % 2) ? 1 : -1;
 			break;
 	}
 	snprintf(buf, 24, "%s %s (%+d)",

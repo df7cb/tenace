@@ -854,6 +854,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label16">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">♠</property>
 			  <property name="use_underline">False</property>
@@ -882,6 +883,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label17">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;red&quot;&gt;♥&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -989,6 +991,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label27">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;orange&quot;&gt;♦&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1017,6 +1020,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label28">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;darkgreen&quot;&gt;♣&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1109,6 +1113,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label20">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">♠</property>
 			  <property name="use_underline">False</property>
@@ -1216,6 +1221,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label24">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;red&quot;&gt;♥&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1244,6 +1250,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label29">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;darkgreen&quot;&gt;♣&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1272,6 +1279,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label32">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;orange&quot;&gt;♦&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1365,6 +1373,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label8">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">♠</property>
 			  <property name="use_underline">False</property>
@@ -1472,6 +1481,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label26">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;red&quot;&gt;♥&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1500,6 +1510,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label30">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;darkgreen&quot;&gt;♣&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1528,6 +1539,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label34">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;orange&quot;&gt;♦&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1620,6 +1632,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label12">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">♠</property>
 			  <property name="use_underline">False</property>
@@ -1727,6 +1740,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label25">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;red&quot;&gt;♥&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1755,6 +1769,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label31">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;darkgreen&quot;&gt;♣&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -1783,6 +1798,7 @@
 
 		      <child>
 			<widget class="GtkLabel" id="label33">
+			  <property name="height_request">28</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">&lt;span foreground=&quot;orange&quot;&gt;♦&lt;/span&gt;</property>
 			  <property name="use_underline">False</property>
@@ -2494,7 +2510,7 @@ EW: 0</property>
 	  <property name="spacing">0</property>
 
 	  <child>
-	    <widget class="GtkButton" id="button1">
+	    <widget class="GtkButton" id="bid_pass">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -2568,7 +2584,7 @@ EW: 0</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button2">
+	    <widget class="GtkButton" id="bid_x">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -2613,7 +2629,7 @@ EW: 0</property>
 		      <child>
 			<widget class="GtkLabel" id="label6">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Kontra</property>
+			  <property name="label" translatable="yes">X</property>
 			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2642,7 +2658,7 @@ EW: 0</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button3">
+	    <widget class="GtkButton" id="bid_xx">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -2687,7 +2703,7 @@ EW: 0</property>
 		      <child>
 			<widget class="GtkLabel" id="label7">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Rekontra</property>
+			  <property name="label" translatable="yes">XX</property>
 			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4299,6 +4315,48 @@ EW: 0</property>
 	  <property name="padding">0</property>
 	  <property name="expand">False</property>
 	  <property name="fill">False</property>
+	</packing>
+      </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="window_play">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Play</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="default_width">150</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
+
+  <child>
+    <widget class="GtkVBox" id="vbox6">
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
+
+      <child>
+	<widget class="GtkTable" id="play_table">
+	  <property name="visible">True</property>
+	  <property name="n_rows">13</property>
+	  <property name="n_columns">5</property>
+	  <property name="homogeneous">True</property>
+	  <property name="row_spacing">0</property>
+	  <property name="column_spacing">0</property>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
 	</packing>
       </child>
     </widget>

@@ -17,7 +17,8 @@ bridgehand_SOURCES = \
 	file.c file.h \
 	functions.c functions.h \
 	solve.c solve.h \
-	window_card.c window_card.h
+	window_card.c window_card.h \
+	window_play.c window_play.h
 
 bridgehand_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds
 

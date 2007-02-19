@@ -165,7 +165,19 @@ void hilight_dd_scores(board *b)
 	char str[100];
 	int c;
 
+	if (b->n_played_cards == 52)
+		return;
+
 	compute_dd_scores(b); // FIXME: call when needed
+
+	if (b->played_cards[b->n_played_cards] == -1) { // FIXME: update when different card is played?
+		for (c = 51; c >= 0; c--) {
+			if (b->card_score[c] == b->best_score) {
+				b->played_cards[b->n_played_cards] = c;
+				break;
+			}
+		}
+	}
 
 	button_clear_markups();
 
@@ -179,7 +191,7 @@ void hilight_dd_scores(board *b)
 			color = b->card_score[c] >= b->target[side] ?
 				" background=\"green\"" : " background=\"red\"";
 		else
-			color = b->card_score[c] < b->target[side] ?
+			color = 13 - b->card_score[c] >= b->target[side] ?
 				" background=\"green\"" : " background=\"red\"";
 		char *weight = b->card_score[c] == b->best_score ? " weight=\"bold\"" : "";
 		snprintf(str, 99, "<span%s%s>%s</span>",
