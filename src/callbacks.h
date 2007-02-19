@@ -277,3 +277,11 @@ on_pos_declarer_activate               (GtkMenuItem     *menuitem,
 void
 on_pos_current_lead_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_deal_random_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_deal_line_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

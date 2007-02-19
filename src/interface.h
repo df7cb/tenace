@@ -8,3 +8,4 @@ GtkWidget* create_window_card (void);
 GtkWidget* create_window_bids (void);
 GtkWidget* create_window_imps (void);
 GtkWidget* create_window_info (void);
+GtkWidget* create_window_line_entry (void);

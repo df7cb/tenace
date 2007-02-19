@@ -97,6 +97,37 @@
 	  </child>
 
 	  <child>
+	    <widget class="GtkMenuItem" id="deal1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Deal</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="deal1_menu">
+
+		  <child>
+		    <widget class="GtkMenuItem" id="deal_random">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Random</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_deal_random_activate" last_modification_time="Mon, 19 Feb 2007 01:09:50 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="deal_line">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Line</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_deal_line_activate" last_modification_time="Mon, 19 Feb 2007 01:09:50 GMT"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
 	    <widget class="GtkMenuItem" id="contract1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Contract</property>
@@ -110,7 +141,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">West</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <signal name="activate" handler="on_declarer_west1_activate" last_modification_time="Sat, 03 Feb 2007 20:43:59 GMT"/>
 		    </widget>
 		  </child>
@@ -120,7 +151,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">North</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">declarer_west1</property>
 		      <signal name="activate" handler="on_declarer_north1_activate" last_modification_time="Sat, 03 Feb 2007 20:43:59 GMT"/>
 		    </widget>
@@ -131,7 +162,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">East</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">declarer_west1</property>
 		      <signal name="activate" handler="on_declarer_east1_activate" last_modification_time="Sat, 03 Feb 2007 20:43:59 GMT"/>
 		    </widget>
@@ -159,7 +190,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">No Trump</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <signal name="activate" handler="on_contract_no_trump1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
 		  </child>
@@ -169,7 +200,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♠ Spades</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_spades1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -180,7 +211,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♥ Hearts</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_hearts1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -191,7 +222,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♦ Diamonds</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_diamonds1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -228,7 +259,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">1</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <signal name="activate" handler="on_level1_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
 			  </child>
@@ -238,7 +269,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">2</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level2_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -249,7 +280,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">3</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level3_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -260,7 +291,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">4</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level4_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -271,7 +302,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">5</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level5_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -282,7 +313,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">6</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level6_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -337,7 +368,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">None</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <signal name="activate" handler="on_vuln_none_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
 			  </child>
@@ -347,7 +378,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">North-South</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">vuln_none</property>
 			      <signal name="activate" handler="on_vuln_ns_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
@@ -358,7 +389,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">East-West</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">vuln_none</property>
 			      <signal name="activate" handler="on_vuln_ew_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
@@ -446,7 +477,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">Declarer</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">pos_north_south</property>
 			      <signal name="activate" handler="on_pos_declarer_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
 			    </widget>
@@ -457,7 +488,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">Current lead</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">pos_north_south</property>
 			      <signal name="activate" handler="on_pos_current_lead_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
 			    </widget>
@@ -4208,6 +4239,66 @@ EW: 0</property>
 	  <property name="padding">5</property>
 	  <property name="expand">True</property>
 	  <property name="fill">True</property>
+	</packing>
+      </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="window_line_entry">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Hand Line</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
+
+  <child>
+    <widget class="GtkHBox" id="hbox4">
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
+
+      <child>
+	<widget class="GtkEntry" id="line_entry">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="editable">True</property>
+	  <property name="visibility">True</property>
+	  <property name="max_length">0</property>
+	  <property name="text" translatable="yes">63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853</property>
+	  <property name="has_frame">True</property>
+	  <property name="invisible_char">*</property>
+	  <property name="activates_default">False</property>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="line_entry_ok">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label">gtk-ok</property>
+	  <property name="use_stock">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <property name="focus_on_click">True</property>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">False</property>
 	</packing>
       </child>
     </widget>
