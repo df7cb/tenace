@@ -70,6 +70,11 @@ board *board_new(void)
 	board_clear(b);
 	b->vuln[0] = b->vuln[1] = 0;
 
+	b->bidding = calloc(4, sizeof(card));
+	assert(b->bidding);
+	b->n_bids = 0;
+	b->n_bid_alloc = 4;
+
 	return b;
 }
 
@@ -81,6 +86,7 @@ void board_free(board *b)
 	for (i = 0; i < 4; i++) {
 		g_string_free(b->hand_name[i], TRUE);
 	}
+	free(b->bidding);
 }
 
 /* dealing with cards */
@@ -140,6 +146,8 @@ void deal_random(board *b)
 		}
 	}
 }
+
+/* playing */
 
 static int has_suit(seat *cards, seat h, suit s)
 {
@@ -254,4 +262,16 @@ int next_card(board *b)
 void board_fast_forward(board *b)
 {
 	while (next_card(b));
+}
+
+/* bidding */
+
+void board_append_bid(board *b, card bid)
+{
+	if (b->n_bids >= b->n_bid_alloc) {
+		b->n_bid_alloc <<= 2;
+		b->bidding = realloc(b->bidding, b->n_bid_alloc);
+		assert(b->bidding);
+	}
+	b->bidding[b->n_bids++] = bid;
 }

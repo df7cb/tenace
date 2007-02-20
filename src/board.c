@@ -120,6 +120,8 @@ void show_board (board *b)
 		hilight_dd_scores(b);
 
 	window_play_update(b);
+	for (i = 0; i < b->n_bids; i++)
+		printf ("%s\n", bid_string(b->bidding[i])->str);
 	line_entry_set_from_board(b);
 }
 

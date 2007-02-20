@@ -52,7 +52,9 @@ int board_parse_lin(const char *line, board *b)
 	char *l = strdup(line);
 	char *saveptr;
 	char *tok;
-	int c = 0;
+	int card_nr = 0;
+	int contract = 0;
+	int doubled = 0;
 	for (tok = strtok_r(l, "|", &saveptr); tok; tok = STRTOK) {
 		if (!strcmp(tok, "pn")) { /* SWNE */
 			g_string_printf(b->hand_name[south-1], "%s", strtok_r(NULL, ",|", &saveptr));
@@ -66,21 +68,17 @@ int board_parse_lin(const char *line, board *b)
 			suit su = spade;
 			b->dealer = seat_mod(*tok - '0' - 1);
 			for (c = tok + 1; *c; c++) {
-				rank ra;
-				switch (*c) {
-					case 'S': su = spade; break;
-					case 'H': su = heart; break;
-					case 'D': su = diamond; break;
-					case 'C': su = club; break;
-					case ',': se = seat_mod(se + 1); break;
-					default:
-						if ((ra = parse_rank_char(*c)) >= 0) {
-							if (add_card(b, se, (su * 13) + ra) != 1)
-								return 0;
-							break;
-						}
-						printf("Parse error: %s", tok);
+				int i;
+				if ((i = parse_suit(*c)) != -1) {
+					su = i;
+				} else if ((i = parse_rank_char(*c)) != -1) {
+					if (add_card(b, se, (su * 13) + i) != 1)
 						return 0;
+				} else if (*c == ',') {
+					se = seat_mod(se + 1);
+				} else {
+					printf("Parse error: %s", tok);
+					return 0;
 				}
 			}
 			deal_random(b); /* compute east hand */
@@ -96,20 +94,26 @@ int board_parse_lin(const char *line, board *b)
 				default: printf("Unknown vulnerability: %s\n", tok);
 			}
 		} else if (!strcmp(tok, "mb")) {
-			// TODO: parse bidding
-			STRTOK;
-		} else if (!strcmp(tok, "pc")) {
-			tok = STRTOK;
-			suit su;
-			switch (*tok) {
-				case 'S': su = spade; break;
-				case 'H': su = heart; break;
-				case 'D': su = diamond; break;
-				case 'C': su = club; break;
+			int bid = parse_bid(tok = STRTOK);
+			if (bid == -1) {
+				printf("Invalid bid %s\n", tok);
+				return 0;
 			}
-			rank ra = parse_rank_char(tok[1]);
-			if (c < 52)
-				b->played_cards[c++] = 13 * su + ra;
+			board_append_bid(b, bid);
+			if (bid > bid_xx) {
+				contract = bid;
+				doubled = 0;
+			} else if (bid == bid_x || bid == bid_xx) {
+				doubled = bid;
+			}
+		} else if (!strcmp(tok, "pc")) {
+			int c = parse_card(tok = STRTOK);
+			if (c == -1) {
+				printf("Invalid card %s\n", tok);
+				return 0;
+			}
+			if (card_nr < 52)
+				b->played_cards[card_nr++] = c;
 		} else if (!strcmp(tok, "st")) {
 		} else if (!strcmp(tok, "rh")) {
 		} else if (!strcmp(tok, "pg")) {
@@ -120,6 +124,9 @@ int board_parse_lin(const char *line, board *b)
 			printf("Unknown token '%s'\n", tok);
 		}
 	}
+	if (b->played_cards[0] != -1)
+		board_set_contract(b, LEVEL(contract), DENOM(contract),
+			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled);
 	return 1;
 }
 #undef STRTOK

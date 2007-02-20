@@ -11,7 +11,7 @@ typedef enum seat_e {
 	south,
 } seat;
 
-/* SA = 51, C2 = 0 */
+/* cards: SA = 51, C2 = 0, bids: 1C = 5, 7NT = 39 */
 typedef enum suit_e {
 	NT = 4,
 	spade = 3,
@@ -35,12 +35,18 @@ typedef enum rank_e {
 	cardK,
 	cardA,
 	cardX = 0x80,
+	bid_pass = 0,
+	bid_x = 1,
+	bid_xx = 2,
 } rank;
 
 typedef int card;
 
 #define SUIT(c) ((int)((int)(c) / 13))
 #define RANK(c) ((c) % 13)
+
+#define LEVEL(c) ((int)((int)(c) / 5))
+#define DENOM(c) ((c) % 5)
 
 typedef struct board_t {
 	GString *name;
@@ -60,9 +66,12 @@ typedef struct board_t {
 
 	int n_played_cards;
 	card played_cards[52];
-	//seat played_cards_seat[52];
 	seat current_turn;
 	int tricks[2]; /* 0 = NS, 1 = EW */
+
+	card *bidding;
+	int n_bids;
+	int n_bid_alloc;
 
 	int card_score[52];
 	int best_score;
@@ -81,17 +90,22 @@ typedef struct board_t {
 
 void board_statusbar(GtkWidget *win, char *text);
 void calculate_target(board *b);
-board *board_new(void);
 void board_clear(board *b);
+void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled);
+board *board_new(void);
 void board_free(board *b);
+
 int assert_board(board *b);
 int add_card(board *b, seat s, card c);
 int remove_card(board *b, seat s, card c);
 void deal_random(board *b);
+
 int play_card(board *b, seat s, card c);
 int rewind_card(board *b);
 void board_rewind(board *b);
 int next_card(board *b);
 void board_fast_forward(board *b);
+
+void board_append_bid(board *b, card bid);
 
 #endif

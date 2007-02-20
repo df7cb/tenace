@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "bridge.h"
 
@@ -47,21 +48,88 @@ rank parse_rank_char (char c)
 	return -1;
 }
 
+int parse_suit(char c)
+{
+	switch (tolower(c)) {
+		case 'n': return NT; break;
+		case 's': return spade; break;
+		case 'h': return heart; break;
+		case 'd': return diamond; break;
+		case 'c': return club; break;
+	}
+	return -1;
+}
+
+int parse_card(char *tok)
+{
+	if (strlen(tok) != 2)
+		return -1;
+
+	int su = parse_suit(tok[0]);
+	int ra = parse_rank_char(tok[1]);
+	if (su == -1 || ra == -1)
+		return -1;
+	return 13 * su + ra;
+}
+
+int parse_bid(char *tok)
+{
+	if (!strcasecmp(tok, "p"))
+		return bid_pass;
+	if (!strcasecmp(tok, "x") || !strcasecmp(tok, "d"))
+		return bid_x;
+	if (!strcasecmp(tok, "xx") || !strcasecmp(tok, "r"))
+		return bid_x;
+	if (strlen(tok) != 2)
+		return -1;
+
+	int le = tok[0] - '0';
+	int su = parse_suit(tok[1]);
+	if (le < 1 || le > 7 || su == -1)
+		return -1;
+	return 5 * le + su;
+}
 
 GString *card_string (card c)
 {
-	gchar *suit = NULL;
+	char *su = NULL;
 	static GString *s = NULL;
 	if (!s)
 		s = g_string_new(NULL);
 
 	switch (SUIT(c)) {
-		case spade: suit = "♠"; break;
-		case heart: suit = "♥"; break;
-		case diamond: suit = "♦"; break;
-		case club: suit = "♣"; break;
+		case spade: su = "♠"; break;
+		case heart: su = "♥"; break;
+		case diamond: su = "♦"; break;
+		case club: su = "♣"; break;
 	}
-	g_string_printf(s, "%s%s", suit, rank_string(RANK(c)));
+	g_string_printf(s, "%s%s", su, rank_string(RANK(c)));
+	return s;
+}
+
+GString *bid_string (card c)
+{
+	char *su = NULL;
+	static GString *s = NULL;
+	if (!s)
+		s = g_string_new(NULL);
+
+	if (c == bid_pass) {
+		g_string_printf(s, "-");
+	} else if (c == bid_x) {
+		g_string_printf(s, "X");
+	} else if (c == bid_x) {
+		g_string_printf(s, "XX");
+	} else {
+		switch (DENOM(c)) {
+			case NT: su = "NT"; break;
+			case spade: su = "♠"; break;
+			case heart: su = "♥"; break;
+			case diamond: su = "♦"; break;
+			case club: su = "♣"; break;
+		}
+		g_string_printf(s, "%d%s", LEVEL(c), su);
+	}
 	return s;
 }
 

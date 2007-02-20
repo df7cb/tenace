@@ -28,6 +28,7 @@ on_neu1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board_clear(b);
+	card_window_update(b->dealt_cards);
 	show_board(b);
 }
 
@@ -38,6 +39,7 @@ on_open1_activate                      (GtkMenuItem     *menuitem,
 {
 	if (!board_load("2pik.lin", b))
 		printf ("open failed.\n");
+	card_window_update(b->dealt_cards);
 	show_board(b);
 }
 
