@@ -18,9 +18,9 @@ int
 main (int argc, char *argv[])
 {
   GtkWidget *window_hand;
-  GtkWidget *window_bid;
+  //GtkWidget *window_bid;
   GtkWidget *window_card;
-  GtkWidget *window_bids;
+  //GtkWidget *window_bids;
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -34,9 +34,14 @@ main (int argc, char *argv[])
   add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
 
   init_solve();
+  srand(time(NULL));
+
+  b = board_new();
 
   window_hand = create_window_hand ();
+  b->win = window_hand;
   gtk_widget_show (window_hand);
+
   window_card = create_window_card ();
   gtk_widget_show (window_card);
   //window_bid = create_window_bid ();
@@ -47,13 +52,9 @@ main (int argc, char *argv[])
 
   window_play_init ();
 
-  srand(time(NULL));
-
   create_card_buttons();
   fill_card_window(window_card);
 
-  b = board_new();
-  b->win = window_hand;
   show_board(b);
 
   gtk_main ();

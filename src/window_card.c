@@ -1,6 +1,8 @@
 #include <assert.h>
+#include <stdlib.h>
 
 #include "board.h"
+#include "functions.h"
 #include "support.h"
 
 static GtkWidget *card_button[52];
@@ -40,7 +42,6 @@ void cardX_clicked (GtkButton *button, gpointer cxp)
 
 void card_clicked (GtkButton *button, gpointer cp)
 {
-	int dealt;
 	card c = *(card *)cp;
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
 
@@ -96,14 +97,3 @@ void fill_card_window (GtkWidget *w)
 	}
 }
 
-void deal_random(board *b)
-{
-	seat s;
-	for (s = west; s <= south; s++) {
-		while (b->hand_cards[s-1] < 13) {
-			int c = rand() % 52;
-			if (b->dealt_cards[c] == 0)
-				add_card(b, s, c);
-		}
-	}
-}

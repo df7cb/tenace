@@ -97,10 +97,10 @@ int assert_board(board *b) /* check proper number of cards in hands */
 int add_card(board *b, seat s, card c)
 /* return: 1 = card added */
 {
-	assert (b->dealt_cards[c] == 0);
-	if (b->hand_cards[s-1] == 13) {
+	if (b->dealt_cards[c] != 0)
 		return 0;
-	}
+	if (b->hand_cards[s-1] == 13)
+		return 0;
 
 	b->cards[c] = s;
 	b->dealt_cards[c] = s;
@@ -125,6 +125,20 @@ int remove_card(board *b, seat s, card c)
 	b->par_score = -1;
 
 	return 1;
+}
+
+void deal_random(board *b)
+{
+	seat s;
+	for (s = west; s <= south; s++) {
+		while (b->hand_cards[s-1] < 13) {
+			int c = rand() % 52;
+			if (b->dealt_cards[c] == 0) {
+				int ret = add_card(b, s, c);
+				assert(ret);
+			}
+		}
+	}
 }
 
 static int has_suit(seat *cards, seat h, suit s)

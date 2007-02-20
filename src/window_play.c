@@ -6,14 +6,14 @@
 #include "support.h"
 
 static GtkWidget *window_play;
-static GtkWidget *play_table;
-static GtkWidget *play_label[52];
+static GtkTable *play_table;
+static GtkLabel *play_label[52];
 
 void window_play_init ()
 {
 	window_play = create_window_play();
 	gtk_widget_show(window_play);
-	play_table = lookup_widget(window_play, "play_table");
+	play_table = GTK_TABLE(lookup_widget(window_play, "play_table"));
 	assert (play_table);
 	int cr, cc;
 	for (cr = 0; cr <= 12; cr++) {
@@ -24,7 +24,7 @@ void window_play_init ()
 		for (cc = 0; cc <= 3; cc++) {
 			GtkWidget *lab = gtk_label_new(NULL);
 			gtk_table_attach(play_table, lab, cc+1, cc+2, cr, cr+1, 0, 0, 0, 0);
-			play_label[4 * cr + cc] = lab;
+			play_label[4 * cr + cc] = GTK_LABEL(lab);
 		}
 	}
 	gtk_widget_show_all(window_play);
@@ -38,7 +38,7 @@ void window_play_update (board *b)
 			gtk_label_set_markup(play_label[c], "");
 		else {
 			gtk_label_set_markup(play_label[c], card_string(b->played_cards[c])->str);
-			gtk_widget_set_sensitive(play_label[c], c < b->n_played_cards);
+			gtk_widget_set_sensitive(GTK_WIDGET(play_label[c]), c < b->n_played_cards);
 		}
 	}
 }

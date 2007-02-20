@@ -1,6 +1,8 @@
 #include <assert.h>
+#include <ctype.h>
 #include <dds.h>
 #include <stdlib.h> /* system */
+
 #include "support.h" /* lookup_widget */
 #include "board.h"
 #include "file.h" /* board_format_line */
@@ -93,7 +95,7 @@ static int score_to_tricks(board *b, int score) /* result: tricks for declarer *
 	return score;
 }
 
-void compute_dd_scores(board *b)
+static void compute_dd_scores(board *b)
 {
 	int i, j, c;
 	struct deal d;
@@ -141,8 +143,6 @@ void compute_dd_scores(board *b)
 	}
 	printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
 
-	int side = b->current_turn % 2;
-	//printf("%d has %d tricks, needs %d\n", side, b->tricks[side], b->target[side]);
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
 		printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);

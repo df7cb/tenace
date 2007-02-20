@@ -2,6 +2,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
@@ -10,10 +11,12 @@
 #include "support.h"
 #include "bridge.h"
 #include "board.h"
+#include "file.h"
 #include "functions.h"
 #include "main.h"
 #include "solve.h"
 #include "window_card.h"
+#include "window_line_entry.h"
 
 extern board *b;
 
@@ -33,7 +36,7 @@ void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (!board_load("dd", b))
+	if (!board_load("2pik.lin", b))
 		printf ("open failed.\n");
 	show_board(b);
 }
@@ -595,10 +598,22 @@ on_pos_current_lead_activate           (GtkMenuItem     *menuitem,
 
 
 void
+on_deal_clear_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_clear(b);
+	card_window_update(b->dealt_cards);
+	show_board(b);
+}
+
+
+void
 on_deal_random_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	deal_random(b);
+	card_window_update(b->dealt_cards);
+	show_board(b);
 }
 
 
@@ -606,6 +621,32 @@ void
 on_deal_line_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	window_line_entry_init(b);
+}
 
+
+void
+on_line_entry_activate                 (GtkEntry        *entry,
+                                        gpointer         user_data)
+{
+	board_set_from_line_entry(b);
+}
+
+
+void
+on_line_entry_ok_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	board_set_from_line_entry(b);
+}
+
+
+gboolean
+on_window_line_entry_delete_event      (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	window_line_entry = NULL;
+	return FALSE;
 }
 

@@ -5,6 +5,7 @@
 #include "functions.h"
 #include "solve.h"
 #include "support.h"
+#include "window_line_entry.h"
 #include "window_play.h"
 
 board *b; /* currently visible board */
@@ -12,9 +13,6 @@ board *b; /* currently visible board */
 static GtkWidget *card_button[52];
 static GtkWidget *card_button_child[52];
 static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
-
-static GtkStatusbar *statusbar;
-static guint statusbar_id = 0;
 
 void show_board (board *b)
 {
@@ -122,6 +120,7 @@ void show_board (board *b)
 		hilight_dd_scores(b);
 
 	window_play_update(b);
+	line_entry_set_from_board(b);
 }
 
 void button_set_markup(card c, char *text)

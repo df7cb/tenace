@@ -5,9 +5,9 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	@PACKAGE_CFLAGS@
 
-bin_PROGRAMS = bridgehand
+bin_PROGRAMS = tenace
 
-bridgehand_SOURCES = \
+tenace_SOURCES = \
 	main.c main.h \
 	support.c support.h \
 	interface.c interface.h \
@@ -18,7 +18,8 @@ bridgehand_SOURCES = \
 	functions.c functions.h \
 	solve.c solve.h \
 	window_card.c window_card.h \
+	window_line_entry.c window_line_entry.h \
 	window_play.c window_play.h
 
-bridgehand_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds
+tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds
 

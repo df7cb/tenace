@@ -44,17 +44,19 @@ typedef int card;
 
 typedef struct board_t {
 	GString *name;
-	GString *hand_name[4];
-	seat declarer;
-	suit trumps;
-	int level;
-	int doubled;
 	int vuln[2]; /* 0 = NS, 1 = EW */
+	seat dealer;
 
 	seat cards[52]; // 0 = not dealt
 	int n_dealt_cards;
 	seat dealt_cards[52]; // 0 = not dealt
 	int hand_cards[4];
+
+	GString *hand_name[4];
+	seat declarer;
+	suit trumps;
+	int level;
+	int doubled;
 
 	int n_played_cards;
 	card played_cards[52];
@@ -71,7 +73,6 @@ typedef struct board_t {
 	int par_arr[4][5];
 
 	GtkWidget *win; // window showing this board
-	//GtkWidget *card_label[52]; // clickable card labels
 } board;
 
 /*
@@ -86,6 +87,7 @@ void board_free(board *b);
 int assert_board(board *b);
 int add_card(board *b, seat s, card c);
 int remove_card(board *b, seat s, card c);
+void deal_random(board *b);
 int play_card(board *b, seat s, card c);
 int rewind_card(board *b);
 void board_rewind(board *b);

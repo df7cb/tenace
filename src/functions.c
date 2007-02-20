@@ -30,10 +30,14 @@ rank parse_rank_char (char c)
 		case '9':
 			return tolower(c) - '2';
 		case 't':
+		case 'z':
+		case '1':
 			return card10;
 		case 'j':
+		case 'b':
 			return cardJ;
 		case 'q':
+		case 'd':
 			return cardQ;
 		case 'k':
 			return cardK;
