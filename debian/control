@@ -1,0 +1,19 @@
+Source: tenace
+Section: games
+Priority: extra
+Maintainer: Christoph Berg <myon@debian.org>
+Build-Depends: debhelper (>> 5), libgtk2.0-dev, libdds-dev (>> 1.0.4)
+Standards-Version: 3.7.2
+
+Package: tenace
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: bridge hand viewer and editor
+ Tenace is a bridge hand viewer and editor.
+ .
+  * load, edit, and write hand records in .lin, .pbn, and ad-hoc formats
+  * play cards
+  * double dummy analysis, parscore computation
+  * random dealing using conditons
+ .
+ http://www.df7cb.de/bridge/tenace/
