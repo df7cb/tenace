@@ -1,6 +1,8 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
+#include "board.h"
 #include "bridge.h"
 #include "functions.h"
 #include "solve.h"
@@ -10,6 +12,8 @@
 
 board *b; /* currently visible board */
 
+struct win_t win; /* currently visible window */
+
 static GtkWidget *card_button[52];
 static GtkWidget *card_button_child[52];
 static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
@@ -18,31 +22,39 @@ void show_board (board *b)
 {
 	GtkWidget *win = b->win;
 	GtkWidget *w;
-	GString *str;
+	GString *str = g_string_new(NULL);
+
+	char *fname = b->filename ? strrchr(b->filename->str, '/') + 1 : "";
+	g_string_printf(str, "Tenace - %s%s%s", b->name->str,
+		b->filename ? " - " : "", fname ? fname : "");
+	gtk_window_set_title(GTK_WINDOW(win), str->str);
 
 	w = lookup_widget(win, "label_board");
-	str = g_string_new(b->name->str);
-	g_string_append_printf(str, "\n%s",
+	g_string_printf(str, "%s\n%s", b->name->str,
 		contract_string(b->level, b->trumps, b->declarer, b->doubled));
 	gtk_label_set_text((GtkLabel*) w, str->str);
+
 	w = lookup_widget(win, "label_west");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
 		b->current_turn == west ? " weight=\"bold\"" : "",
 		b->hand_name[0]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
+
 	w = lookup_widget(win, "label_north");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
 		b->current_turn == north ? " weight=\"bold\"" : "",
 		b->hand_name[1]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
+
 	w = lookup_widget(win, "label_east");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
 		b->current_turn == east ? " weight=\"bold\"" : "",
 		b->hand_name[2]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
+
 	w = lookup_widget(win, "label_south");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",

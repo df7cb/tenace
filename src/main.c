@@ -55,6 +55,13 @@ main (int argc, char *argv[])
   create_card_buttons();
   fill_card_window(window_card);
 
+  if (argc > 1) {
+	if (!board_load(argv[1], b))
+		printf ("open failed.\n");
+	card_window_update(b->dealt_cards);
+	show_board(b);
+  }
+
   show_board(b);
 
   gtk_main ();

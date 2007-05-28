@@ -241,7 +241,8 @@ static void compute_par_arr(board *b)
 
 			d.trump = dds_suit_conv(t);
 			d.first = h;
-			i = SolveBoard(d, -1, 1, 0, &fut);
+			i = SolveBoard(d, -1 /* target */, 1 /* solutions */,
+					h == 0 ? 1 : 2 /* mode */, &fut);
 			if (i <= 0) {
 				g_string_printf(str, "DD Error: %s", dds_error[-i]);
 				solve_statusbar(b->win, NULL);

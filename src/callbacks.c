@@ -37,16 +37,14 @@ void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (!board_load("2pik.lin", b))
-		printf ("open failed.\n");
-	card_window_update(b->dealt_cards);
-	show_board(b);
+	board_load_dialog(b);
 }
 
 void
 on_speichern1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board_save_dialog(b, 0);
 }
 
 
@@ -54,7 +52,7 @@ void
 on_speichern_unter1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	board_save_dialog(b, 1);
 }
 
 
@@ -174,7 +172,7 @@ void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	board_save(b);
+	board_save_dialog(b, 0);
 }
 
 

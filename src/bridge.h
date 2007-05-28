@@ -35,6 +35,7 @@ typedef enum rank_e {
 	cardK,
 	cardA,
 	cardX = 0x80,
+	claim_rest = 0x81,
 	bid_pass = 0,
 	bid_x = 1,
 	bid_xx = 2,
@@ -50,6 +51,7 @@ typedef int card;
 
 typedef struct board_t {
 	GString *name;
+	GString *filename;
 	int vuln[2]; /* 0 = NS, 1 = EW */
 	seat dealer;
 

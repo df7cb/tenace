@@ -36,6 +36,8 @@ void window_play_update (board *b)
 	for (c = 0; c < 52; c++) {
 		if (b->played_cards[c] == -1)
 			gtk_label_set_markup(play_label[c], "");
+		else if (b->played_cards[c] == claim_rest)
+			gtk_label_set_markup(play_label[c], "CL");
 		else {
 			gtk_label_set_markup(play_label[c], card_string(b->played_cards[c])->str);
 			gtk_widget_set_sensitive(GTK_WIDGET(play_label[c]), c < b->n_played_cards);
