@@ -38,7 +38,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 			CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, 20);
 
-	printf ("rendering %x %f %f %f %f\n", hand, l, r, t, b);
+	//printf ("rendering %x %f %f %f %f\n", hand, l, r, t, b);
 	//char *suit_str[] = {"♣", "♦", "♥", "♠"};
 	char *suit_str[] = {"C", "D", "H", "S"};
 	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -61,9 +61,9 @@ draw (GtkWidget *hand, cairo_t *cr)
 				handdisp->b[c] = y + extents.y_bearing + extents.height;
 				if (c == handdisp->cur_focus) {
 					cairo_set_source_rgb (cr, 1.0, 0.0, 0.0);
-					printf ("ext x_b %f x_a %f w %f", extents.x_bearing, extents.x_advance, extents.width);
-					printf (" y_b %f y_a %f h %f", extents.y_bearing, extents.y_advance, extents.height);
-					printf (" l %f r %f t %f b %f\n", handdisp->l[c],handdisp->r[c],handdisp->t[c],handdisp->b[c]);
+					//printf ("ext x_b %f x_a %f w %f", extents.x_bearing, extents.x_advance, extents.width);
+					//printf (" y_b %f y_a %f h %f", extents.y_bearing, extents.y_advance, extents.height);
+					//printf (" l %f r %f t %f b %f\n", handdisp->l[c],handdisp->r[c],handdisp->t[c],handdisp->b[c]);
 					cairo_move_to (cr, handdisp->l[c], handdisp->b[c]);
 					cairo_line_to (cr, handdisp->l[c], handdisp->t[c]);
 					cairo_line_to (cr, handdisp->r[c], handdisp->t[c]);
@@ -86,8 +86,8 @@ redraw_card (GtkWidget *hand, int card)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	GdkRectangle rect;
-	rect.x = handdisp->l[card] - 1;
-	rect.y = handdisp->t[card] - 1;
+	rect.x = handdisp->l[card] - 2;
+	rect.y = handdisp->t[card] - 2;
 	rect.width = handdisp->r[card] - handdisp->l[card] + 4;
 	rect.height = handdisp->b[card] - handdisp->t[card] + 4;
 	gdk_window_invalidate_rect (hand->window, &rect, FALSE);
@@ -130,7 +130,10 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, event->x, event->y);
+	static int c;
+	c = card;
 	printf("%c%d click\n", "CDHS"[card / 13], card % 13 + 2);
+	g_signal_emit_by_name (HAND_DISPLAY(hand), "clicked", &c);
 	return FALSE;
 }
 
@@ -164,6 +167,17 @@ hand_display_class_init (HandDisplayClass *class)
 	widget_class->leave_notify_event = hand_display_leave;
 	widget_class->button_press_event = hand_display_button_press;
 	widget_class->button_release_event = hand_display_button_press;
+
+	g_signal_new ("clicked",
+			TYPE_HAND_DISPLAY,
+			G_SIGNAL_RUN_LAST,
+			0 /* guint class_offset */,
+			NULL /* GSignalAccumulator accumulator */,
+			NULL /* gpointer accu_data */,
+			g_cclosure_marshal_VOID__INT /* GSignalCMarshaller c_marshaller */,
+			G_TYPE_NONE /* GType return_type */,
+			1 /* guint n_params */,
+			G_TYPE_INT);
 }
 
 static void
