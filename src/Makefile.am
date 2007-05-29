@@ -13,10 +13,10 @@ tenace_SOURCES = \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
 	bridge.c bridge.h \
-	board.c board.h \
 	file.c file.h \
 	functions.c functions.h \
 	solve.c solve.h \
+	window_board.c window_board.h \
 	window_card.c window_card.h \
 	window_line_entry.c window_line_entry.h \
 	window_play.c window_play.h
