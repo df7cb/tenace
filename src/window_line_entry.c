@@ -1,10 +1,10 @@
 #include <assert.h>
 
-#include "board.h"
 #include "bridge.h"
 #include "file.h"
 #include "interface.h"
 #include "support.h"
+#include "window_board.h"
 #include "window_card.h"
 
 GtkWidget *window_line_entry = NULL;

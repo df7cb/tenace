@@ -7,10 +7,12 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include "interface.h"
 #include "support.h"
-#include "board.h"
+#include "bridge.h"
 #include "solve.h"
+#include "window_board.h"
 #include "window_card.h"
 #include "window_play.h"
 

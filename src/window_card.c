@@ -1,9 +1,10 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "board.h"
+#include "bridge.h"
 #include "functions.h"
 #include "support.h"
+#include "window_board.h" /* board b */
 
 static GtkWidget *card_button[52];
 seat new_card_seat = west;

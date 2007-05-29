@@ -4,7 +4,7 @@
 #include <stdlib.h> /* system */
 
 #include "support.h" /* lookup_widget */
-#include "board.h"
+#include "bridge.h"
 #include "file.h" /* board_format_line */
 #include "functions.h"
 #include "main.h"

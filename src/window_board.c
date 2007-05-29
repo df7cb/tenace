@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "board.h"
-#include "bridge.h"
+#include "window_board.h"
+
 #include "functions.h"
 #include "solve.h"
 #include "support.h"

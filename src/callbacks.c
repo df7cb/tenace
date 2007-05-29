@@ -10,11 +10,11 @@
 #include "interface.h"
 #include "support.h"
 #include "bridge.h"
-#include "board.h"
 #include "file.h"
 #include "functions.h"
 #include "main.h"
 #include "solve.h"
+#include "window_board.h"
 #include "window_card.h"
 #include "window_line_entry.h"
 
