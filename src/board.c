@@ -12,7 +12,8 @@
 
 board *b; /* currently visible board */
 
-struct win_t win; /* currently visible window */
+static struct win_t _win; /* currently visible window */
+struct win_t *win = &_win;
 
 static GtkWidget *card_button[52];
 static GtkWidget *card_button_child[52];
@@ -20,49 +21,48 @@ static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
 
 void show_board (board *b)
 {
-	GtkWidget *win = b->win;
 	GtkWidget *w;
 	GString *str = g_string_new(NULL);
 
 	char *fname = b->filename ? strrchr(b->filename->str, '/') + 1 : "";
 	g_string_printf(str, "Tenace - %s%s%s", b->name->str,
 		b->filename ? " - " : "", fname ? fname : "");
-	gtk_window_set_title(GTK_WINDOW(win), str->str);
+	gtk_window_set_title(GTK_WINDOW(win->window), str->str);
 
-	w = lookup_widget(win, "label_board");
+	w = lookup_widget(win->window, "label_board");
 	g_string_printf(str, "%s\n%s", b->name->str,
 		contract_string(b->level, b->trumps, b->declarer, b->doubled));
 	gtk_label_set_text((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win, "label_west");
+	w = lookup_widget(win->window, "label_west");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
 		b->current_turn == west ? " weight=\"bold\"" : "",
 		b->hand_name[0]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win, "label_north");
+	w = lookup_widget(win->window, "label_north");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
 		b->current_turn == north ? " weight=\"bold\"" : "",
 		b->hand_name[1]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win, "label_east");
+	w = lookup_widget(win->window, "label_east");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[1] ? "red" : "green",
 		b->current_turn == east ? " weight=\"bold\"" : "",
 		b->hand_name[2]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win, "label_south");
+	w = lookup_widget(win->window, "label_south");
 	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
 		b->vuln[0] ? "red" : "green",
 		b->current_turn == south ? " weight=\"bold\"" : "",
 		b->hand_name[3]->str);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win, "label_tricks");
+	w = lookup_widget(win->window, "label_tricks");
 	g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 
@@ -87,25 +87,25 @@ void show_board (board *b)
 		int h = b->cards[c];
 		int s = SUIT(c);
 
-		GtkWidget *lab = card_button[c];
-		if (card_button_container[c]) {
-			gtk_container_remove(GTK_CONTAINER(card_button_container[c]), lab);
-			card_button_container[c] = NULL;
+		GtkWidget *lab = win->card_button[c];
+		if (win->card_button_container[c]) {
+			gtk_container_remove(GTK_CONTAINER(win->card_button_container[c]), lab);
+			win->card_button_container[c] = NULL;
 		}
 		if (h) {
-			box = lookup_widget(win, box_array[h-1][s]);
+			box = lookup_widget(win->window, box_array[h-1][s]);
 			gtk_box_pack_start (GTK_BOX (box), lab, FALSE, FALSE, FALSE);
 			gtk_widget_show(lab);
-			card_button_container[c] = box;
+			win->card_button_container[c] = box;
 		}
 	}
 
-	gtk_widget_show_all(win);
+	gtk_widget_show_all(win->window);
 
 	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
 	int i;
 	for (i = west; i <= south; i++) {
-		GtkWidget *label = lookup_widget(b->win, labels[i]);
+		GtkWidget *label = lookup_widget(win->window, labels[i]);
 		gtk_label_set_text(GTK_LABEL(label), "");
 	}
 	if (b->n_played_cards) {
@@ -116,7 +116,7 @@ void show_board (board *b)
 			g_string_printf(str, "<span%s>%s</span>",
 				i == trick_start ? " underline=\"low\"" : "",
 				card_string(c)->str);
-			GtkWidget *label = lookup_widget(b->win, labels[s]);
+			GtkWidget *label = lookup_widget(win->window, labels[s]);
 			gtk_label_set_markup(GTK_LABEL(label), str->str);
 		}
 	}
@@ -124,7 +124,7 @@ void show_board (board *b)
 	g_string_free(str, TRUE);
 
 	if (b->par_score == -1) {
-		w = lookup_widget(b->win, "par_label");
+		w = lookup_widget(win->window, "par_label");
 		gtk_label_set_text(GTK_LABEL(w), "");
 	}
 
@@ -139,14 +139,14 @@ void show_board (board *b)
 
 void button_set_markup(card c, char *text)
 {
-	gtk_label_set_markup(GTK_LABEL(card_button_child[c]), text);
+	gtk_label_set_markup(GTK_LABEL(win->card_button_child[c]), text);
 }
 
 void button_clear_markups()
 {
 	int c;
 	for (c = 0; c < 52; c++) {
-		if (card_button_container[c]) {
+		if (win->card_button_container[c]) {
 			button_set_markup(c, rank_string(RANK(c)));
 		}
 	}
@@ -163,7 +163,7 @@ static void button_entered(GtkButton *l, card *cp)
 {
 	char buf[100];
 
-	board_statusbar(b->win, NULL);
+	board_statusbar(win->window, NULL);
 
 	if (b->card_score[*cp] < 0)
 		return;
@@ -172,15 +172,15 @@ static void button_entered(GtkButton *l, card *cp)
 		card_string(*cp)->str,
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->card_score[*cp], b->current_turn));
-	board_statusbar(b->win, buf);
+	board_statusbar(win->window, buf);
 }
 
 static void button_left(GtkButton *l, card *cp)
 {
-	board_statusbar(b->win, NULL);
+	board_statusbar(win->window, NULL);
 }
 
-void create_card_buttons ()
+void create_card_buttons (struct win_t *win)
 {
 	static card card_data[52];
 	card c;
@@ -196,11 +196,25 @@ void create_card_buttons ()
 		g_signal_connect (but, "clicked", G_CALLBACK(button_clicked), &card_data[c]);
 		g_signal_connect (but, "enter", G_CALLBACK(button_entered), &card_data[c]);
 		g_signal_connect (but, "leave", G_CALLBACK(button_left), &card_data[c]);
-		card_button[c] = but;
-		card_button_child[c] = lab;
-		card_button_container[c] = NULL;
+		win->card_button[c] = but;
+		win->card_button_child[c] = lab;
+		win->card_button_container[c] = NULL;
 		g_object_ref(but); // create reference so buttons are not deleted when moved around
 	}
 }
 
+struct win_t *create_board_window ()
+{
+	struct win_t *win = malloc(sizeof(struct win_t));
+	win->window = create_window_hand ();
 
+	create_card_buttons(win);
+
+	win->n_boards = 1;
+	win->boards[0] = board_new ();
+	win->cur = 0;
+
+	gtk_widget_show (win->window);
+
+	return win;
+}

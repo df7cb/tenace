@@ -17,7 +17,6 @@
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *window_hand;
   //GtkWidget *window_bid;
   GtkWidget *window_card;
   //GtkWidget *window_bids;
@@ -36,11 +35,9 @@ main (int argc, char *argv[])
   init_solve();
   srand(time(NULL));
 
-  b = board_new();
+  win = create_board_window ();
 
-  window_hand = create_window_hand ();
-  b->win = window_hand;
-  gtk_widget_show (window_hand);
+  b = win->boards[0]; //FIXME: remove this
 
   window_card = create_window_card ();
   gtk_widget_show (window_card);
@@ -52,7 +49,6 @@ main (int argc, char *argv[])
 
   window_play_init ();
 
-  create_card_buttons();
   fill_card_window(window_card);
 
   if (argc > 1) {
