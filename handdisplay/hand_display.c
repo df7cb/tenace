@@ -130,10 +130,23 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, event->x, event->y);
-	static int c;
-	c = card;
-	printf("%c%d click\n", "CDHS"[card / 13], card % 13 + 2);
-	g_signal_emit_by_name (HAND_DISPLAY(hand), "clicked", &c);
+	static int card_ptr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+
+	handdisp->cur_focus = card;
+	if (handdisp->cur_focus == -1)
+		return;
+	redraw_card (hand, card);
+
+	printf("%c%d click type %d\n", "CDHS"[card / 13], card % 13 + 2, event->type);
+
+	if (event->type == GDK_BUTTON_PRESS) {
+		handdisp->cur_click = card;
+	} else if (event->type == GDK_BUTTON_RELEASE && handdisp->cur_click == card) {
+		g_signal_emit_by_name (HAND_DISPLAY(hand), "clicked", card_ptr + card);
+	}
 	return FALSE;
 }
 
@@ -189,7 +202,8 @@ hand_display_init (HandDisplay *hand)
 		hand->l[i] = hand->r[i] = hand->t[i] = hand->b[i] = -1;
 	}
 
-	hand->cur_focus = -1;
+	hand->cur_focus = hand->cur_click = -1;
+
 	gtk_widget_add_events (GTK_WIDGET(hand),
 		GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
 		GDK_LEAVE_NOTIFY_MASK |

@@ -3,10 +3,11 @@ typedef struct _HandDisplayClass       HandDisplayClass;
 
 struct _HandDisplay
 {
-       GtkDrawingArea parent;
-       int cur_focus;
-       int cards[52];
-       double l[52], r[52], t[52], b[52];
+	GtkDrawingArea parent;
+	int cur_focus;
+	int cur_click;
+	int cards[52];
+	double l[52], r[52], t[52], b[52];
 
        /* private */
 };
