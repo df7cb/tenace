@@ -7,25 +7,23 @@ static void DNDBeginCB(
 	GtkWidget *widget, GdkDragContext *dc, gpointer data
 )
 {
+	printf ("DNDBeginCB %x %x %x\n", widget, dc, data);
+	gtk_drag_set_icon_stock (dc, "gtk-home", 0, 0);
 }
 static void DNDEndCB(
 	GtkWidget *widget, GdkDragContext *dc, gpointer data
 )
 {
+	printf ("DNDDataDeleteCB %x %x %x\n", widget, dc, data);
 }
-static gboolean DNDDragMotionCB(
-        GtkWidget *widget, GdkDragContext *dc,
-        gint x, gint y, guint t,
-        gpointer data
-)
-{
-}
+
 static void DNDDataRequestCB(
         GtkWidget *widget, GdkDragContext *dc,
         GtkSelectionData *selection_data, guint info, guint t,
         gpointer data
 )
 {
+	printf ("DNDDataRequestCB %x %x %x data %s info %d t %d\n", widget, dc, data, selection_data->data, info, t);
 }
 static void DNDDataRecievedCB(
         GtkWidget *widget, GdkDragContext *dc,
@@ -33,11 +31,15 @@ static void DNDDataRecievedCB(
         guint info, guint t, gpointer data
 )
 {
+	printf ("DNDDataRecievedCB %x %x %x x%d y%d data %x info %d t %d\n", widget, dc, data, x, y, selection_data, info, t);
+	gtk_drag_get_data(widget, dc, 0, 0);
 }
 static void DNDDataDeleteCB(
 	GtkWidget *widget, GdkDragContext *dc, gpointer data
 )
 {
+	/* cleanup */
+	printf ("DNDDataDeleteCB %x %x %x\n", widget, dc, data);
 }
 
 
@@ -77,11 +79,12 @@ setup_dnd(GtkWidget *hand, GtkWidget *window)
 		 */
 		gtk_drag_dest_set(
 			hand,
-			GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT |
+			GTK_DEST_DEFAULT_MOTION |
+			GTK_DEST_DEFAULT_HIGHLIGHT |
 			GTK_DEST_DEFAULT_DROP,
 			target_entry,
 			sizeof(target_entry) / sizeof(GtkTargetEntry),
-			GDK_ACTION_MOVE | GDK_ACTION_COPY
+			GDK_ACTION_MOVE
 		);
 		gtk_signal_connect(
 			GTK_OBJECT(hand), "drag_motion",
@@ -97,7 +100,7 @@ setup_dnd(GtkWidget *hand, GtkWidget *window)
 			GDK_BUTTON1_MASK | GDK_BUTTON2_MASK,
                         target_entry,
                         sizeof(target_entry) / sizeof(GtkTargetEntry),
-			GDK_ACTION_MOVE | GDK_ACTION_COPY
+			GDK_ACTION_MOVE
 		);
 		/* Set DND signals on clist. */
 		gtk_signal_connect(
@@ -120,6 +123,8 @@ setup_dnd(GtkWidget *hand, GtkWidget *window)
                         GTK_OBJECT(hand), "drag_data_delete",
                         GTK_SIGNAL_FUNC(DNDDataDeleteCB), window
                 );
+
+		//gtk_drag_dest_set_track_motion(hand, TRUE);
 
 }
 

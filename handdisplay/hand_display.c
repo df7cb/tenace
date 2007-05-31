@@ -150,6 +150,20 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 	return FALSE;
 }
 
+gboolean DNDDragMotionCB(
+        GtkWidget *hand, GdkDragContext *dc,
+        gint x, gint y, guint t,
+        gpointer data
+)
+{
+	printf ("DNDDragMotionCB %x %x %x x%d y%d t%d\n", hand, dc, data, x, y, t);
+	HandDisplay *handdisp = HAND_DISPLAY(hand);
+	int card = which_card(handdisp, x, y);
+	handdisp->cur_focus = card;
+	if (card != -1)
+		redraw_card (hand, card);
+}
+
 static gboolean
 hand_display_expose (GtkWidget *hand, GdkEventExpose *event)
 {

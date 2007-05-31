@@ -26,3 +26,9 @@ struct _HandDisplayClass
 
 GtkWidget * hand_display_new (void);
 void hand_display_set_card (HandDisplay *hand, int card, int val);
+
+gboolean DNDDragMotionCB(
+        GtkWidget *hand, GdkDragContext *dc,
+        gint x, gint y, guint t,
+        gpointer data
+);
