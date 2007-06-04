@@ -37,7 +37,7 @@ main (int argc, char *argv[])
   init_solve();
   srand(time(NULL));
 
-  win = create_board_window ();
+  board_window_init ();
 
   b = win->boards[0]; //FIXME: remove this
 

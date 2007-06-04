@@ -1,10 +1,16 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <glib.h>
+#include <gtk/gtk.h>
+
+#include "../handdisplay/hand_display.h"
 
 #include "window_board.h"
 
 #include "functions.h"
+#include "interface.h"
 #include "solve.h"
 #include "support.h"
 #include "window_line_entry.h"
@@ -12,12 +18,11 @@
 
 board *b; /* currently visible board */
 
-static struct win_t _win; /* currently visible window */
-struct win_t *win = &_win;
+window_board_t *win; // FIXME static?
 
-static GtkWidget *card_button[52];
-static GtkWidget *card_button_child[52];
-static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
+//static GtkWidget *card_button[52];
+//static GtkWidget *card_button_child[52];
+//static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
 
 void show_board (board *b)
 {
@@ -76,14 +81,22 @@ void show_board (board *b)
 	*/
 
 	int c;
+	/*
 	GtkWidget *box;
 
 	char *box_array[4][4] = {{"hbox_west_c", "hbox_west_d", "hbox_west_h", "hbox_west_s"},
 		{"hbox_north_c", "hbox_north_d", "hbox_north_h", "hbox_north_s"},
 		{"hbox_east_c", "hbox_east_d", "hbox_east_h", "hbox_east_s"},
 		{"hbox_south_c", "hbox_south_d", "hbox_south_h", "hbox_south_s"}};
+		*/
 
 	for (c = 51; c >= 0; c--) {
+		if (b->cards[c]) {
+			seat h = b->cards[c];
+			hand_display_set_card(win->handdisp[h-1], c, 1);
+		}
+	}
+		/*
 		int h = b->cards[c];
 		int s = SUIT(c);
 
@@ -99,6 +112,7 @@ void show_board (board *b)
 			win->card_button_container[c] = box;
 		}
 	}
+	*/
 
 	gtk_widget_show_all(win->window);
 
@@ -139,19 +153,22 @@ void show_board (board *b)
 
 void button_set_markup(card c, char *text)
 {
-	gtk_label_set_markup(GTK_LABEL(win->card_button_child[c]), text);
+	//gtk_label_set_markup(GTK_LABEL(win->card_button_child[c]), text);
 }
 
 void button_clear_markups()
 {
+	/*
 	int c;
 	for (c = 0; c < 52; c++) {
 		if (win->card_button_container[c]) {
 			button_set_markup(c, rank_string(RANK(c)));
 		}
 	}
+	*/
 }
 
+/*
 static void button_clicked(GtkButton *l, card *cp)
 {
 	printf("Clicked: %s.\n", card_string(*cp)->str);
@@ -179,9 +196,22 @@ static void button_left(GtkButton *l, card *cp)
 {
 	board_statusbar(win->window, NULL);
 }
+*/
 
-void create_card_buttons (struct win_t *win)
+static void create_hand_widgets (window_board_t *win)
 {
+	static char *alignment_a[] = {"alignment_n", "alignment_e", "alignment_s", "alignment_w"};
+	int h;
+
+	for (h = 0; h < 4; h++) {
+		GtkWidget *alignment = lookup_widget(win->window, alignment_a[h]);
+		GtkWidget *hand = hand_display_new();
+		gtk_container_add(GTK_CONTAINER(alignment), hand);
+		win->handdisp[h] = HAND_DISPLAY(hand);
+		//gtk_widget_show_all(handdisp);
+	}
+
+		/*
 	static card card_data[52];
 	card c;
 	for (c = 0; c < 52; c++) {
@@ -201,20 +231,35 @@ void create_card_buttons (struct win_t *win)
 		win->card_button_container[c] = NULL;
 		g_object_ref(but); // create reference so buttons are not deleted when moved around
 	}
+	*/
 }
 
-struct win_t *create_board_window ()
+void
+board_window_init ()
 {
-	struct win_t *win = malloc(sizeof(struct win_t));
+	win = malloc(sizeof(window_board_t));
 	win->window = create_window_hand ();
 
-	create_card_buttons(win);
+	//create_card_buttons(win);
+	create_hand_widgets(win);
 
 	win->n_boards = 1;
 	win->boards[0] = board_new ();
 	win->cur = 0;
 
 	gtk_widget_show (win->window);
-
-	return win;
 }
+
+void board_statusbar(GtkWidget *win, char *text)
+{
+	GtkStatusbar *statusbar;
+	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));
+	static guint id = 0;
+	if (!id)
+		id = gtk_statusbar_get_context_id(statusbar, "window_board_c");
+	gtk_statusbar_pop(statusbar, id);
+
+	if (text)
+		gtk_statusbar_push(statusbar, id, text);
+}
+

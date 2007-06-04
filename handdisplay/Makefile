@@ -1,4 +1,4 @@
-CFLAGS += $(shell pkg-config --cflags gtk+-2.0)
+CFLAGS += -O0 -g -Wall $(shell pkg-config --cflags gtk+-2.0)
 LDFLAGS += $(shell pkg-config --libs gtk+-2.0)
 
 test: hand_display.o test.o

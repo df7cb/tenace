@@ -2,7 +2,7 @@
 #define BRIDGE_H
 
 #include <glib.h>
-#include <gtk/gtk.h>
+#include <gtk/gtk.h> // FIXME
 
 typedef enum seat_e {
 	west = 1,
@@ -90,7 +90,6 @@ typedef struct board_t {
  * prototypes
  */
 
-void board_statusbar(GtkWidget *win, char *text);
 void calculate_target(board *b);
 void board_clear(board *b);
 void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled);

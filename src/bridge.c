@@ -7,19 +7,6 @@
 #include "functions.h"
 #include "support.h"
 
-void board_statusbar(GtkWidget *win, char *text)
-{
-	GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));
-	static guint id = 0;
-	if (!id)
-		id = gtk_statusbar_get_context_id(statusbar, "bridge_c");
-	gtk_statusbar_pop(statusbar, id);
-
-	if (text)
-		gtk_statusbar_push(statusbar, id, text);
-}
-
 void calculate_target(board *b)
 {
 	int side = b->declarer % 2;

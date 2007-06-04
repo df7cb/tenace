@@ -1,3 +1,6 @@
+#ifndef HAND_DISPLAY_H
+#define HAND_DISPLAY_H
+
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
 
@@ -25,10 +28,12 @@ struct _HandDisplayClass
 #define HAND_DISPLAY_GET_CLASS     (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_HAND_DISPLAY, HandDisplayClass))
 
 GtkWidget * hand_display_new (void);
-void hand_display_set_card (HandDisplay *hand, int card, int val);
+void hand_display_set_card (HandDisplay *handdisp, int card, int val);
 
 gboolean DNDDragMotionCB(
         GtkWidget *hand, GdkDragContext *dc,
         gint x, gint y, guint t,
         gpointer data
 );
+
+#endif /* HAND_DISPLAY_H */

@@ -52,6 +52,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_show_text (cr, suit_str[suit]);
 
 		int c;
+		if (handdisp->cards)
 		for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
 			if (handdisp->cards[c]) {
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
@@ -137,7 +138,7 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 
 	handdisp->cur_focus = card;
 	if (handdisp->cur_focus == -1)
-		return;
+		return FALSE;
 	redraw_card (hand, card);
 
 	printf("%c%d click type %d\n", "CDHS"[card / 13], card % 13 + 2, event->type);
@@ -156,12 +157,13 @@ gboolean DNDDragMotionCB(
         gpointer data
 )
 {
-	printf ("DNDDragMotionCB %x %x %x x%d y%d t%d\n", hand, dc, data, x, y, t);
+	printf ("DNDDragMotionCB %p %p %p x%d y%d t%d\n", hand, dc, data, x, y, t);
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, x, y);
 	handdisp->cur_focus = card;
 	if (card != -1)
 		redraw_card (hand, card);
+	return FALSE;
 }
 
 static gboolean
@@ -208,17 +210,17 @@ hand_display_class_init (HandDisplayClass *class)
 }
 
 static void
-hand_display_init (HandDisplay *hand)
+hand_display_init (HandDisplay *handdisp)
 {
 	int i;
 	for (i = 0; i < 52; i++) {
-		hand->cards[i] = 0;
-		hand->l[i] = hand->r[i] = hand->t[i] = hand->b[i] = -1;
+		handdisp->cards[i] = 0;
+		handdisp->l[i] = handdisp->r[i] = handdisp->t[i] = handdisp->b[i] = -1;
 	}
 
-	hand->cur_focus = hand->cur_click = -1;
+	handdisp->cur_focus = handdisp->cur_click = -1;
 
-	gtk_widget_add_events (GTK_WIDGET(hand),
+	gtk_widget_add_events (GTK_WIDGET(handdisp),
 		GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
 		GDK_LEAVE_NOTIFY_MASK |
 		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
@@ -231,8 +233,8 @@ hand_display_new (void)
 }
 
 void
-hand_display_set_card (HandDisplay *hand, int card, int val)
+hand_display_set_card (HandDisplay *handdisp, int card, int val)
 {
 	assert (card >= 0 && card < 52);
-	hand->cards[card] = val;
+	handdisp->cards[card] = val;
 }
