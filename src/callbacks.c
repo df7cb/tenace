@@ -343,8 +343,8 @@ on_level_doubled1_activate             (GtkMenuItem     *menuitem,
 	if (double_update_in_progress++)
 		return;
 
-	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_doubled1"));
-	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_redoubled1"));
+	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_doubled1"));
+	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_redoubled1"));
 	if (gtk_check_menu_item_get_active(x)) {
 		b->doubled = 1;
 		gtk_check_menu_item_set_active(xx, FALSE);
@@ -363,8 +363,8 @@ on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
 	if (double_update_in_progress++)
 		return;
 
-	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_doubled1"));
-	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(b->win, "level_redoubled1"));
+	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_doubled1"));
+	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_redoubled1"));
 	if (gtk_check_menu_item_get_active(xx)) {
 		b->doubled = 2;
 		gtk_check_menu_item_set_active(x, FALSE);

@@ -332,7 +332,7 @@ void parscore(board *b)
 			g_string_append_printf(par, "\n");
 	}
 
-	GtkLabel *par_label = GTK_LABEL(lookup_widget(b->win, "par_label"));
+	GtkLabel *par_label = GTK_LABEL(lookup_widget(win->window, "par_label"));
 	gtk_label_set_markup(par_label, par->str);
 	g_string_free(par, TRUE);
 }

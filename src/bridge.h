@@ -82,8 +82,6 @@ typedef struct board_t {
 	int par_score; /* -1 = other par_ fields invalid */
 	int par_dec, par_suit, par_level, par_tricks;
 	int par_arr[4][5];
-
-	GtkWidget *win; // window showing this board
 } board;
 
 /*
