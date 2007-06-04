@@ -58,7 +58,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_show_text (cr, suit_str[suit]);
 
 		int c;
-		if (handdisp->cards)
 		for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
 			if (handdisp->cards[c]) {
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
@@ -76,14 +75,26 @@ draw (GtkWidget *hand, cairo_t *cr)
 					cairo_line_to (cr, handdisp->r[c], handdisp->t[c]);
 					cairo_line_to (cr, handdisp->r[c], handdisp->b[c]);
 					cairo_line_to (cr, handdisp->l[c], handdisp->b[c]);
-					cairo_stroke (cr);
+					cairo_fill (cr);
 					cairo_move_to (cr, x, y);
+					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 				}
 				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
-				if (c == handdisp->cur_focus)
-					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 			}
+		}
+	}
+
+	cairo_set_font_size (cr, 10);
+
+	int c;
+	for (c = 51; c >= 0; c--) {
+		char buf[10];
+		if (handdisp->card_score[c] != -1) {
+			cairo_set_source_rgb (cr, 0.0, 1.0, 0.0);
+			cairo_move_to (cr, handdisp->l[c], handdisp->b[c]);
+			snprintf(buf, 10, "%-d", handdisp->card_score[c]);
+			cairo_show_text (cr, buf);
 		}
 	}
 }
@@ -315,6 +326,7 @@ hand_display_init (HandDisplay *handdisp)
 	int i;
 	for (i = 0; i < 52; i++) {
 		handdisp->cards[i] = 0;
+		handdisp->card_score[i] = -1;
 		handdisp->l[i] = handdisp->r[i] = handdisp->t[i] = handdisp->b[i] = -1;
 	}
 
@@ -355,8 +367,6 @@ hand_display_get_type ()
 	return hand_display_type;
 }
 
-// magic: G_DEFINE_TYPE (HandDisplay, hand_display, GTK_TYPE_DRAWING_AREA);
-
 GtkWidget *
 hand_display_new (void)
 {
@@ -375,4 +385,12 @@ hand_display_set_card (HandDisplay *handdisp, int card, int val)
 {
 	assert (card >= 0 && card < 52);
 	handdisp->cards[card] = val;
+	handdisp->card_score[card] = -1;
+}
+
+void
+hand_display_set_card_score (HandDisplay *handdisp, int card, int score)
+{
+	assert (card >= 0 && card < 52);
+	handdisp->card_score[card] = score;
 }

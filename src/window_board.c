@@ -84,7 +84,9 @@ void show_board (board *b)
 	for (i = west; i <= south; i++) {
 		for (c = 51; c >= 0; c--) {
 			seat h = b->cards[c];
-			hand_display_set_card(win->handdisp[i - 1], c, h == i);
+			hand_display_set_card (win->handdisp[i - 1], c, h == i);
+			if (h == i && b->card_score[c] >= 0)
+				hand_display_set_card_score (win->handdisp[i - 1], c, b->card_score[c]);
 		}
 		hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 	}

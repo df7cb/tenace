@@ -168,6 +168,8 @@ void hilight_dd_scores(board *b)
 
 	compute_dd_scores(b); // FIXME: call when needed
 
+	/* next card not defined (i.e. no prior undo), set it to the highest
+	 * optimal card */
 	if (b->played_cards[b->n_played_cards] == -1) { // FIXME: update when different card is played?
 		for (c = 51; c >= 0; c--) {
 			if (b->card_score[c] == b->best_score) {
@@ -201,6 +203,7 @@ void hilight_dd_scores(board *b)
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->best_score, b->current_turn));
 	solve_statusbar(str);
+	show_board(b); // FIXME doe sthat belong here?
 }
 
 static void compute_par_arr(board *b)
