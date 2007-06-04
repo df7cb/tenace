@@ -7,6 +7,10 @@
 /* static data */
 
 static GtkWidgetClass *parent_class = NULL;
+static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
 
 /* internal functions */
 
@@ -106,12 +110,14 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 	if (handdisp->cur_focus != card) {
 		if (handdisp->cur_focus != -1) {
 			redraw_card (hand, handdisp->cur_focus);
-			printf("%c%d left\n", "CDHS"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
+			//printf("%c%d left\n", "CDHS"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
+			g_signal_emit_by_name (handdisp, "card-leave", card_label + handdisp->cur_focus);
 		}
 		handdisp->cur_focus = card;
 		if (card != -1) {
 			redraw_card (hand, card);
-			printf("%c%d entered\n", "CDHS"[card / 13], card % 13 + 2);
+			//printf("%c%d entered\n", "CDHS"[card / 13], card % 13 + 2);
+			g_signal_emit_by_name (handdisp, "card-enter", card_label + card);
 		}
 	}
 	gdk_window_get_pointer(hand->window, NULL, NULL, NULL); /* request more pointer hints */
@@ -124,8 +130,9 @@ hand_display_leave (GtkWidget *hand, GdkEventCrossing *event)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	if (handdisp->cur_focus != -1) {
 		redraw_card (hand, handdisp->cur_focus);
+		//printf("%c%d left\n", "CDHS"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
+		g_signal_emit_by_name (handdisp, "card-leave", card_label + handdisp->cur_focus);
 		handdisp->cur_focus = -1;
-		printf("%c%d left\n", "CDHS"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
 	}
 	return FALSE;
 }
@@ -135,22 +142,18 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, event->x, event->y);
-	static int card_ptr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
 
 	handdisp->cur_focus = card;
 	if (handdisp->cur_focus == -1)
 		return FALSE;
 	redraw_card (hand, card);
 
-	printf("%c%d click type %d\n", "CDHS"[card / 13], card % 13 + 2, event->type);
+	//printf("%c%d click type %d\n", "CDHS"[card / 13], card % 13 + 2, event->type);
 
 	if (event->type == GDK_BUTTON_PRESS) {
 		handdisp->cur_click = card;
 	} else if (event->type == GDK_BUTTON_RELEASE && handdisp->cur_click == card) {
-		g_signal_emit_by_name (HAND_DISPLAY(hand), "clicked", card_ptr + card);
+		g_signal_emit_by_name (handdisp, "card-clicked", card_label + card);
 	}
 	return FALSE;
 }
@@ -161,7 +164,7 @@ gboolean DNDDragMotionCB(
         gpointer data
 )
 {
-	printf ("DNDDragMotionCB %p %p %p x%d y%d t%d\n", hand, dc, data, x, y, t);
+	//printf ("DNDDragMotionCB %p %p %p x%d y%d t%d\n", hand, dc, data, x, y, t);
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, x, y);
 	handdisp->cur_focus = card;
@@ -274,7 +277,27 @@ hand_display_class_init (HandDisplayClass *class)
 	widget_class->button_press_event = hand_display_button_press;
 	widget_class->button_release_event = hand_display_button_press;
 
-	g_signal_new ("clicked",
+	g_signal_new ("card-clicked",
+			TYPE_HAND_DISPLAY,
+			G_SIGNAL_RUN_LAST,
+			0 /* guint class_offset */,
+			NULL /* GSignalAccumulator accumulator */,
+			NULL /* gpointer accu_data */,
+			g_cclosure_marshal_VOID__INT /* GSignalCMarshaller c_marshaller */,
+			G_TYPE_NONE /* GType return_type */,
+			1 /* guint n_params */,
+			G_TYPE_INT);
+	g_signal_new ("card-enter",
+			TYPE_HAND_DISPLAY,
+			G_SIGNAL_RUN_LAST,
+			0 /* guint class_offset */,
+			NULL /* GSignalAccumulator accumulator */,
+			NULL /* gpointer accu_data */,
+			g_cclosure_marshal_VOID__INT /* GSignalCMarshaller c_marshaller */,
+			G_TYPE_NONE /* GType return_type */,
+			1 /* guint n_params */,
+			G_TYPE_INT);
+	g_signal_new ("card-leave",
 			TYPE_HAND_DISPLAY,
 			G_SIGNAL_RUN_LAST,
 			0 /* guint class_offset */,

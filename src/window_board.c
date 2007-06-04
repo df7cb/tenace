@@ -169,19 +169,18 @@ void button_clear_markups()
 	*/
 }
 
-static void button_clicked (HandDisplay *handdisp, int *cp, int *seatp)
+static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 {
 	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
 	if (play_card(b, b->cards[*cp], *cp))
 		show_board(b);
 }
 
-/*
-static void button_entered(GtkButton *l, card *cp)
+static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
 {
 	char buf[100];
 
-	board_statusbar(win->window, NULL);
+	board_statusbar(NULL);
 
 	if (b->card_score[*cp] < 0)
 		return;
@@ -190,19 +189,18 @@ static void button_entered(GtkButton *l, card *cp)
 		card_string(*cp)->str,
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->card_score[*cp], b->current_turn));
-	board_statusbar(win->window, buf);
+	board_statusbar(buf);
 }
 
-static void button_left(GtkButton *l, card *cp)
+static void card_leave (HandDisplay *handdisp, int *cp, int *seatp)
 {
-	board_statusbar(win->window, NULL);
+	board_statusbar(NULL);
 }
-*/
 
 static void create_hand_widgets (window_board_t *win)
 {
 	static const char *alignment_a[] = {"alignment_w", "alignment_n", "alignment_e", "alignment_s"};
-	static const int dir[] = { 1, 2, 3, 4 };
+	static int dir[] = { 1, 2, 3, 4 };
 	int h;
 
 	for (h = 0; h < 4; h++) {
@@ -210,7 +208,9 @@ static void create_hand_widgets (window_board_t *win)
 		GtkWidget *hand = hand_display_new();
 		gtk_container_add(GTK_CONTAINER(alignment), hand);
 		gtk_widget_show(hand);
-		g_signal_connect (hand, "clicked", G_CALLBACK (button_clicked), dir + h);
+		g_signal_connect (hand, "card-clicked", G_CALLBACK (card_clicked), dir + h);
+		g_signal_connect (hand, "card-enter", G_CALLBACK (card_enter), dir + h);
+		g_signal_connect (hand, "card-leave", G_CALLBACK (card_leave), dir + h);
 		win->handdisp[h] = HAND_DISPLAY(hand);
 		//gtk_widget_show_all(handdisp);
 	}
@@ -251,19 +251,19 @@ board_window_init ()
 	win->boards[0] = board_new ();
 	win->cur = 0;
 
+	win->statusbar = GTK_STATUSBAR(lookup_widget(win->window, "statusbar1"));
+
 	gtk_widget_show (win->window);
 }
 
-void board_statusbar (GtkWidget *win, char *text)
+void board_statusbar (char *text)
 {
-	GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));
 	static guint id = 0;
 	if (!id)
-		id = gtk_statusbar_get_context_id(statusbar, "window_board_c");
-	gtk_statusbar_pop(statusbar, id);
+		id = gtk_statusbar_get_context_id(win->statusbar, "window_board_c");
 
+	gtk_statusbar_pop(win->statusbar, id);
 	if (text)
-		gtk_statusbar_push(statusbar, id, text);
+		gtk_statusbar_push(win->statusbar, id, text);
 }
 

@@ -16,7 +16,7 @@ void board_set_from_line_entry(board *b)
 	const char *line = gtk_entry_get_text(line_entry);
 	board_clear(b);
 	if (!board_parse_line(line, b, ' ', '.')) {
-		board_statusbar(b->win, "Parse error");
+		board_statusbar("Parse error");
 	}
 	card_window_update(b->dealt_cards);
 	show_board(b);

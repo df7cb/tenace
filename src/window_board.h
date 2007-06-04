@@ -7,12 +7,7 @@
 
 typedef struct _windown_board_t {
 	GtkWidget *window;
-
-#if 0
-	GtkWidget *card_button[52];
-	GtkWidget *card_button_child[52];
-	GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
-#endif
+	GtkStatusbar *statusbar;
 
 	int n_boards;
 	int cur;
@@ -29,6 +24,6 @@ void button_set_markup(card c, char *text);
 void button_clear_markups();
 
 void board_window_init ();
-void board_statusbar(GtkWidget *win, char *text);
+void board_statusbar(char *text);
 
 #endif /* WINDOW_CARD_H */

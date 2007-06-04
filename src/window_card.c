@@ -22,7 +22,7 @@ void cardX_clicked (GtkButton *button, gpointer cxp)
 	suit cx = *(suit *)cxp;
 
 	if (b->hand_cards[new_card_seat-1] == 13) {
-		board_statusbar(b->win, "Hand has already 13 cards");
+		board_statusbar("Hand has already 13 cards");
 		return;
 	}
 
@@ -32,13 +32,13 @@ void cardX_clicked (GtkButton *button, gpointer cxp)
 		if (b->dealt_cards[c] == 0) {
 			add_card(b, new_card_seat, c);
 
-			board_statusbar(b->win, NULL);
+			board_statusbar(NULL);
 			card_window_update(b->dealt_cards);
 			show_board(b);
 			return;
 		}
 	}
-	board_statusbar(b->win, "All cards of that suit dealt");
+	board_statusbar("All cards of that suit dealt");
 }
 
 void card_clicked (GtkButton *button, gpointer cp)
@@ -47,7 +47,7 @@ void card_clicked (GtkButton *button, gpointer cp)
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
 
 	if (b->dealt_cards[c] && !b->cards[c]) {
-		board_statusbar(b->win, "Card is in play and cannot be removed");
+		board_statusbar("Card is in play and cannot be removed");
 		return;
 	}
 
@@ -55,7 +55,7 @@ void card_clicked (GtkButton *button, gpointer cp)
 		remove_card(b, new_card_seat, c);
 	else {
 		if (b->hand_cards[new_card_seat-1] == 13) {
-			board_statusbar(b->win, "Hand has already 13 cards");
+			board_statusbar("Hand has already 13 cards");
 			return;
 		}
 
@@ -64,7 +64,7 @@ void card_clicked (GtkButton *button, gpointer cp)
 		add_card(b, new_card_seat, c);
 	}
 
-	board_statusbar(b->win, NULL);
+	board_statusbar(NULL);
 	card_window_update(b->dealt_cards);
 	show_board(b);
 }
