@@ -7,7 +7,7 @@
 #include "bridge.h"
 #include "file.h" /* board_format_line */
 #include "functions.h"
-#include "main.h"
+#include "window_board.h" /* statusbar */
 
 void init_solve()
 {
@@ -36,17 +36,15 @@ static const char seat_char[] = {'E', 'S', 'W', 'N'};
 
 int run_dd = 0;
 
-static void solve_statusbar(GtkWidget *win, char *text)
+static void solve_statusbar(char *text)
 {
-	GtkStatusbar *statusbar;
-	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));
 	static guint id = 0;
 	if (!id)
-		id = gtk_statusbar_get_context_id(statusbar, "solve_c");
-	gtk_statusbar_pop(statusbar, id);
+		id = gtk_statusbar_get_context_id(win->statusbar, "solve_c");
 
+	gtk_statusbar_pop(win->statusbar, id);
 	if (text)
-		gtk_statusbar_push(statusbar, id, text);
+		gtk_statusbar_push(win->statusbar, id, text);
 }
 
 static int dds_suit_conv(int s) /* works both ways */
@@ -103,7 +101,7 @@ static void compute_dd_scores(board *b)
 	char str[100];
 
 	if (!assert_board(b)) { /* FIXME: do not call this every time */
-		board_statusbar(b->win, "Error: hands have different numbers of cards");
+		board_statusbar("Error: hands have different numbers of cards");
 		return;
 	}
 
@@ -131,14 +129,14 @@ static void compute_dd_scores(board *b)
 		d.currentTrickRank[i] = RANK(c) + 2;
 	}
 
-	solve_statusbar(b->win, "Thinking...");
+	solve_statusbar("Thinking...");
 	while (gtk_events_pending ())
 		gtk_main_iteration();
 	i = SolveBoard(d, -1, 3, 1, &fut);
-	solve_statusbar(b->win, NULL);
+	solve_statusbar(NULL);
 	if (i <= 0) {
 		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
-		board_statusbar(b->win, str);
+		board_statusbar(str);
 		return;
 	}
 	printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
@@ -202,7 +200,7 @@ void hilight_dd_scores(board *b)
 	snprintf(str, 99, "DD: %s",
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->best_score, b->current_turn));
-	solve_statusbar(b->win, str);
+	solve_statusbar(str);
 }
 
 static void compute_par_arr(board *b)
@@ -235,7 +233,7 @@ static void compute_par_arr(board *b)
 
 		for (h = 0; h < 4; h++) {
 			g_string_append_printf(str, "%c", seat_char[h]);
-			solve_statusbar(b->win, str->str);
+			solve_statusbar(str->str);
 			while (gtk_events_pending ())
 				gtk_main_iteration();
 
@@ -245,8 +243,8 @@ static void compute_par_arr(board *b)
 					h == 0 ? 1 : 2 /* mode */, &fut);
 			if (i <= 0) {
 				g_string_printf(str, "DD Error: %s", dds_error[-i]);
-				solve_statusbar(b->win, NULL);
-				board_statusbar(b->win, str->str);
+				solve_statusbar(NULL);
+				board_statusbar(str->str);
 				g_string_free(str, TRUE);
 				return;
 			}
@@ -255,7 +253,7 @@ static void compute_par_arr(board *b)
 		}
 	}
 
-	solve_statusbar(b->win, NULL);
+	solve_statusbar(NULL);
 	g_string_free(str, TRUE);
 	//system("dds -tricks dd&");
 }
@@ -266,7 +264,7 @@ void parscore(board *b)
 
 	if (b->par_score == -1) {
 		if (!assert_board(b)) {
-			board_statusbar(b->win, "Error: hands have different numbers of cards");
+			board_statusbar("Error: hands have different numbers of cards");
 			return;
 		}
 		compute_par_arr(b);

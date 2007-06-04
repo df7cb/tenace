@@ -4,6 +4,8 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "window_board.h"
+#include "window_card.h"
 
 GString *board_format_line(board *b, char handsep, char suitsep)
 {
@@ -237,7 +239,7 @@ int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 			if (add_card(b, se, (su * 13) + ra) != 1)
 				return 0;
 		} else {
-			printf ("parse error at char %ld: %s\n", c - line + 1, line);
+			printf ("parse error at char %d: %s\n", c - line + 1, line);
 			return 0;
 		}
 		c++;
@@ -270,7 +272,7 @@ void board_load_dialog (board *b)
 	GtkWidget *dialog;
 
 	dialog = gtk_file_chooser_dialog_new ("Open File",
-			b->win,
+			GTK_WINDOW (win->window),
 			GTK_FILE_CHOOSER_ACTION_OPEN,
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
@@ -305,7 +307,7 @@ void board_save_dialog (board *b, int save_as)
 	}
 
 	dialog = gtk_file_chooser_dialog_new ("Save File",
-			b->win,
+			GTK_WINDOW (win->window),
 			GTK_FILE_CHOOSER_ACTION_SAVE,
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,

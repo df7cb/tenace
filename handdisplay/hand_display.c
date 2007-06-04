@@ -51,7 +51,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	int suit;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
-		y = ((double) hand->allocation.height * (suit + 0.8) / 4.0);
+		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
 		x += extents.x_advance; y += extents.y_advance;

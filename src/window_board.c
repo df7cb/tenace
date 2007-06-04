@@ -80,22 +80,15 @@ void show_board (board *b)
 	label_i = 0;
 	*/
 
-	int c;
-	/*
-	GtkWidget *box;
-
-	char *box_array[4][4] = {{"hbox_west_c", "hbox_west_d", "hbox_west_h", "hbox_west_s"},
-		{"hbox_north_c", "hbox_north_d", "hbox_north_h", "hbox_north_s"},
-		{"hbox_east_c", "hbox_east_d", "hbox_east_h", "hbox_east_s"},
-		{"hbox_south_c", "hbox_south_d", "hbox_south_h", "hbox_south_s"}};
-		*/
-
-	for (c = 51; c >= 0; c--) {
-		if (b->cards[c]) {
+	int i, c;
+	for (i = west; i <= south; i++) {
+		for (c = 51; c >= 0; c--) {
 			seat h = b->cards[c];
-			hand_display_set_card(win->handdisp[h-1], c, 1);
+			hand_display_set_card(win->handdisp[i - 1], c, h == i);
 		}
+		hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 	}
+
 		/*
 		int h = b->cards[c];
 		int s = SUIT(c);
@@ -117,11 +110,9 @@ void show_board (board *b)
 	//gtk_widget_show_all(win->window);
 
 	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
-	int i;
 	for (i = west; i <= south; i++) {
 		GtkWidget *label = lookup_widget(win->window, labels[i]);
 		gtk_label_set_text(GTK_LABEL(label), "");
-		hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 	}
 	if (b->n_played_cards) {
 		int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
