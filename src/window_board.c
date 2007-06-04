@@ -114,13 +114,14 @@ void show_board (board *b)
 	}
 	*/
 
-	gtk_widget_show_all(win->window);
+	//gtk_widget_show_all(win->window);
 
 	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
 	int i;
 	for (i = west; i <= south; i++) {
 		GtkWidget *label = lookup_widget(win->window, labels[i]);
 		gtk_label_set_text(GTK_LABEL(label), "");
+		hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 	}
 	if (b->n_played_cards) {
 		int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
@@ -168,14 +169,14 @@ void button_clear_markups()
 	*/
 }
 
-/*
-static void button_clicked(GtkButton *l, card *cp)
+static void button_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 {
-	printf("Clicked: %s.\n", card_string(*cp)->str);
+	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
 	if (play_card(b, b->cards[*cp], *cp))
 		show_board(b);
 }
 
+/*
 static void button_entered(GtkButton *l, card *cp)
 {
 	char buf[100];
@@ -200,13 +201,16 @@ static void button_left(GtkButton *l, card *cp)
 
 static void create_hand_widgets (window_board_t *win)
 {
-	static char *alignment_a[] = {"alignment_n", "alignment_e", "alignment_s", "alignment_w"};
+	static const char *alignment_a[] = {"alignment_w", "alignment_n", "alignment_e", "alignment_s"};
+	static const int dir[] = { 1, 2, 3, 4 };
 	int h;
 
 	for (h = 0; h < 4; h++) {
 		GtkWidget *alignment = lookup_widget(win->window, alignment_a[h]);
 		GtkWidget *hand = hand_display_new();
 		gtk_container_add(GTK_CONTAINER(alignment), hand);
+		gtk_widget_show(hand);
+		g_signal_connect (hand, "clicked", G_CALLBACK (button_clicked), dir + h);
 		win->handdisp[h] = HAND_DISPLAY(hand);
 		//gtk_widget_show_all(handdisp);
 	}
@@ -250,7 +254,7 @@ board_window_init ()
 	gtk_widget_show (win->window);
 }
 
-void board_statusbar(GtkWidget *win, char *text)
+void board_statusbar (GtkWidget *win, char *text)
 {
 	GtkStatusbar *statusbar;
 	statusbar = GTK_STATUSBAR(lookup_widget(win, "statusbar1"));

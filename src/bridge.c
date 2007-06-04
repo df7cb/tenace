@@ -6,6 +6,7 @@
 #include "bridge.h"
 #include "functions.h"
 #include "support.h"
+#include "window_board.h"
 
 void calculate_target(board *b)
 {
@@ -163,10 +164,10 @@ static void play_card_0(board *b, seat s, card c)
 
 int play_card(board *b, seat s, card c)
 {
-	board_statusbar(b->win, NULL);
+	board_statusbar(win->window, NULL);
 
 	if (b->cards[c] != b->current_turn) {
-		board_statusbar(b->win, "Not your turn");
+		board_statusbar(win->window, "Not your turn");
 		return 0;
 	}
 
@@ -176,7 +177,7 @@ int play_card(board *b, seat s, card c)
 		firstcard = b->n_played_cards - (b->n_played_cards % 4);
 		lead = b->played_cards[firstcard];
 		if (SUIT(c) != SUIT(lead) && has_suit(b->cards, s, SUIT(lead))) {
-			board_statusbar(b->win, "Please follow suit");
+			board_statusbar(win->window, "Please follow suit");
 			return 0;
 		}
 	}
@@ -207,7 +208,7 @@ int play_card(board *b, seat s, card c)
 int rewind_card(board *b)
 {
 	if (b->n_played_cards == 0) {
-		board_statusbar(b->win, "Nothing to undo");
+		board_statusbar(win->window, "Nothing to undo");
 		return 0;
 	}
 
@@ -232,19 +233,19 @@ void board_rewind(board *b)
 int next_card(board *b)
 {
 	if (b->n_played_cards >= b->n_dealt_cards) {
-		board_statusbar(b->win, "No cards left to play");
+		board_statusbar(win->window, "No cards left to play");
 		return 0;
 	}
 	if (b->played_cards[b->n_played_cards] == -1) {
-		board_statusbar(b->win, "Which card should I play?");
+		board_statusbar(win->window, "Which card should I play?");
 		return 0;
 	}
 	if (b->cards[b->played_cards[b->n_played_cards]] == 0) {
-		board_statusbar(b->win, "Card was already played");
+		board_statusbar(win->window, "Card was already played");
 		return 0;
 	}
 	if (b->cards[b->played_cards[b->n_played_cards]] != b->current_turn) {
-		board_statusbar(b->win, "Card belongs to wrong player");
+		board_statusbar(win->window, "Card belongs to wrong player");
 		return 0;
 	}
 	return play_card(b, b->current_turn, b->played_cards[b->n_played_cards]);

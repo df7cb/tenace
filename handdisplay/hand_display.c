@@ -2,11 +2,13 @@
 #include <glib/gtypes.h>
 #include <gtk/gtk.h>
 
-#include <math.h> /* M_PI */
-
 #include "hand_display.h"
 
-G_DEFINE_TYPE (HandDisplay, hand_display, GTK_TYPE_DRAWING_AREA);
+/* static data */
+
+static GtkWidgetClass *parent_class = NULL;
+
+/* internal functions */
 
 static int
 which_card (HandDisplay *handdisp, double x, double y)
@@ -45,7 +47,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	int suit;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
-		y = b - ((double) hand->allocation.height * (suit + 0.2) / 4.0);
+		y = ((double) hand->allocation.height * (suit + 0.8) / 4.0);
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
 		x += extents.x_advance; y += extents.y_advance;
@@ -93,6 +95,8 @@ redraw_card (GtkWidget *hand, int card)
 	rect.height = handdisp->b[card] - handdisp->t[card] + 4;
 	gdk_window_invalidate_rect (hand->window, &rect, FALSE);
 }
+
+/* private callbacks */
 
 static gboolean
 hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
@@ -166,6 +170,42 @@ gboolean DNDDragMotionCB(
 	return FALSE;
 }
 
+static void
+hand_display_realize (GtkWidget *widget)
+{
+	//GtkDial *dial;
+	GdkWindowAttr attributes;
+	gint attributes_mask;
+
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (IS_HAND_DISPLAY (widget));
+
+	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+	//dial = GTK_DIAL (widget);
+
+	attributes.x = widget->allocation.x;
+	attributes.y = widget->allocation.y;
+	attributes.width = widget->allocation.width;
+	attributes.height = widget->allocation.height;
+	attributes.wclass = GDK_INPUT_OUTPUT;
+	attributes.window_type = GDK_WINDOW_CHILD;
+	attributes.event_mask = gtk_widget_get_events (widget) |
+		GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK |
+		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+		GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK;
+	attributes.visual = gtk_widget_get_visual (widget);
+	attributes.colormap = gtk_widget_get_colormap (widget);
+
+	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+	widget->window = gdk_window_new (widget->parent->window, &attributes, attributes_mask);
+
+	widget->style = gtk_style_attach (widget->style, widget->window);
+
+	gdk_window_set_user_data (widget->window, widget);
+
+	gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
+}
+
 static gboolean
 hand_display_expose (GtkWidget *hand, GdkEventExpose *event)
 {
@@ -185,13 +225,50 @@ hand_display_expose (GtkWidget *hand, GdkEventExpose *event)
 }
 
 static void
+hand_display_size_request (GtkWidget *hand, GtkRequisition *requisition)
+{
+	requisition->width = 100;
+	requisition->height = 100;
+}
+
+static void
+hand_display_size_allocate (GtkWidget     *widget,
+                        GtkAllocation *allocation)
+{
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (IS_HAND_DISPLAY (widget));
+	g_return_if_fail (allocation != NULL);
+
+	widget->allocation = *allocation;
+	if (GTK_WIDGET_REALIZED (widget))
+	{
+		gdk_window_move_resize (widget->window,
+				allocation->x, allocation->y,
+				allocation->width, allocation->height);
+		//dial->radius = MAX(allocation->width,allocation->height) * 0.45;
+		//dial->pointer_width = dial->radius / 5;
+	}
+}
+
+/* initializers */
+
+static void
 hand_display_class_init (HandDisplayClass *class)
 {
+	//GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
+	//object_class = GTK_OBJECT_CLASS (class);
 	widget_class = GTK_WIDGET_CLASS (class);
 
+	parent_class = gtk_type_class (gtk_widget_get_type ());
+
+	//object_class->destroy = hand_display_destroy;
+
+	widget_class->realize = hand_display_realize;
 	widget_class->expose_event = hand_display_expose;
+	widget_class->size_request = hand_display_size_request;
+	widget_class->size_allocate = hand_display_size_allocate;
 	widget_class->motion_notify_event = hand_display_motion;
 	widget_class->leave_notify_event = hand_display_leave;
 	widget_class->button_press_event = hand_display_button_press;
@@ -220,16 +297,54 @@ hand_display_init (HandDisplay *handdisp)
 
 	handdisp->cur_focus = handdisp->cur_click = -1;
 
+	/*
 	gtk_widget_add_events (GTK_WIDGET(handdisp),
 		GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
 		GDK_LEAVE_NOTIFY_MASK |
 		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+		*/
 }
+
+/* public interface */
+
+GtkType
+hand_display_get_type ()
+{
+	static GtkType hand_display_type = 0;
+
+	if (!hand_display_type)
+	{
+		static const GtkTypeInfo hand_display_info =
+		{
+			"HandDisplay",
+			sizeof (HandDisplay),
+			sizeof (HandDisplayClass),
+			(GtkClassInitFunc) hand_display_class_init,
+			(GtkObjectInitFunc) hand_display_init,
+			/* reserved_1 */ NULL,
+			/* reserved_1 */ NULL,
+			(GtkClassInitFunc) NULL
+		};
+
+		hand_display_type = gtk_type_unique (GTK_TYPE_WIDGET, &hand_display_info);
+	}
+
+	return hand_display_type;
+}
+
+// magic: G_DEFINE_TYPE (HandDisplay, hand_display, GTK_TYPE_DRAWING_AREA);
 
 GtkWidget *
 hand_display_new (void)
 {
-	return g_object_new (TYPE_HAND_DISPLAY, NULL);
+	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
+	return GTK_WIDGET(handdisp);
+}
+
+void
+hand_display_draw (GtkWidget *hand)
+{
+	gtk_widget_queue_draw_area (hand, 0, 0, hand->allocation.width, hand->allocation.height);
 }
 
 void

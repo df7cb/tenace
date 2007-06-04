@@ -145,9 +145,8 @@ int
 
         gtk_container_add (GTK_CONTAINER (window), table);
 
-
 	hand = hand_display_new ();
-	gtk_table_attach_defaults (GTK_TABLE(table), hand, 3, 4, 0, 1); /* W */
+	gtk_table_attach_defaults (GTK_TABLE(table), hand, 0, 1, 1, 2); /* W */
 	hand_display_set_card(HAND_DISPLAY(hand), 1, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 2, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 3, 1);
@@ -157,7 +156,7 @@ int
 	setup_dnd (hand, window);
 
 	hand = hand_display_new ();
-	gtk_table_attach_defaults (GTK_TABLE(table), hand, 0, 1, 0, 1); /* N */
+	gtk_table_attach_defaults (GTK_TABLE(table), hand, 1, 2, 0, 1); /* N */
 	hand_display_set_card(HAND_DISPLAY(hand), 21, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 22, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 23, 1);
@@ -167,7 +166,7 @@ int
 	setup_dnd (hand, window);
 
 	hand = hand_display_new ();
-	gtk_table_attach_defaults (GTK_TABLE(table), hand, 1, 2, 0, 1); /* S */
+	gtk_table_attach_defaults (GTK_TABLE(table), hand, 1, 2, 2, 3); /* S */
 	hand_display_set_card(HAND_DISPLAY(hand), 48, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 39, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 49, 1);
@@ -177,7 +176,7 @@ int
 	setup_dnd (hand, window);
 
 	hand = hand_display_new ();
-	gtk_table_attach_defaults (GTK_TABLE(table), hand, 2, 3, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE(table), hand, 2, 3, 1, 2); /* E */
 	hand_display_set_card(HAND_DISPLAY(hand), 12, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 16, 1);
 	hand_display_set_card(HAND_DISPLAY(hand), 36, 1);
