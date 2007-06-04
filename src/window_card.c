@@ -20,6 +20,7 @@ void card_window_update (seat *cards)
 void cardX_clicked (GtkButton *button, gpointer cxp)
 {
 	suit cx = *(suit *)cxp;
+	board *b = win->boards[win->cur];
 
 	if (b->hand_cards[new_card_seat-1] == 13) {
 		board_statusbar("Hand has already 13 cards");
@@ -45,6 +46,7 @@ void card_clicked (GtkButton *button, gpointer cp)
 {
 	card c = *(card *)cp;
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
+	board *b = win->boards[win->cur];
 
 	if (b->dealt_cards[c] && !b->cards[c]) {
 		board_statusbar("Card is in play and cannot be removed");

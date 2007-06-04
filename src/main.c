@@ -11,6 +11,7 @@
 #include "interface.h"
 #include "support.h"
 #include "bridge.h"
+#include "file.h"
 #include "solve.h"
 #include "window_board.h"
 #include "window_card.h"
@@ -39,8 +40,6 @@ main (int argc, char *argv[])
 
   board_window_init ();
 
-  b = win->boards[0]; //FIXME: remove this
-
   window_card = create_window_card ();
   gtk_widget_show (window_card);
   //window_bid = create_window_bid ();
@@ -54,13 +53,15 @@ main (int argc, char *argv[])
   fill_card_window(window_card);
 
   if (argc > 1) {
+	board *b = board_new ();
 	if (!board_load(argv[1], b))
 		printf ("open failed.\n");
+	board_window_append_board (b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
   }
 
-  show_board(b);
+  show_board(win->boards[0]);
 
   gtk_main ();
   return 0;

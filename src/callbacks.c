@@ -18,8 +18,6 @@
 #include "window_card.h"
 #include "window_line_entry.h"
 
-extern board *b;
-
 static GtkWidget *window_imps = NULL;
 static GtkWidget *window_info = NULL;
 
@@ -27,6 +25,7 @@ void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_clear(b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
@@ -37,6 +36,7 @@ void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_load_dialog(b);
 }
 
@@ -44,6 +44,7 @@ void
 on_speichern1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_save_dialog(b, 0);
 }
 
@@ -52,6 +53,7 @@ void
 on_speichern_unter1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_save_dialog(b, 1);
 }
 
@@ -152,6 +154,7 @@ void
 on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_clear(b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
@@ -162,6 +165,7 @@ void
 on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
@@ -172,6 +176,7 @@ void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_save_dialog(b, 0);
 }
 
@@ -180,10 +185,7 @@ void
 on_declarer_west1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_rewind(b);
-	b->declarer = west;
-	b->current_turn = seat_mod(west + 1);
-	show_board(b);
+	board_set_dealer (west);
 }
 
 
@@ -191,10 +193,7 @@ void
 on_declarer_north1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_rewind(b);
-	b->declarer = north;
-	b->current_turn = seat_mod(north + 1);
-	show_board(b);
+	board_set_dealer (north);
 }
 
 
@@ -202,10 +201,7 @@ void
 on_declarer_east1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_rewind(b);
-	b->declarer = east;
-	b->current_turn = seat_mod(east + 1);
-	show_board(b);
+	board_set_dealer (east);
 }
 
 
@@ -213,10 +209,7 @@ void
 on_declarer_south1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_rewind(b);
-	b->declarer = south;
-	b->current_turn = seat_mod(south + 1);
-	show_board(b);
+	board_set_dealer (south);
 }
 
 
@@ -224,8 +217,7 @@ void
 on_contract_no_trump1_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->trumps = NT;
-	show_board(b);
+	board_set_trumps(NT);
 }
 
 
@@ -233,8 +225,7 @@ void
 on_contract_spades1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->trumps = spade;
-	show_board(b);
+	board_set_trumps(spade);
 }
 
 
@@ -242,8 +233,7 @@ void
 on_contract_hearts1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->trumps = heart;
-	show_board(b);
+	board_set_trumps(heart);
 }
 
 
@@ -251,8 +241,7 @@ void
 on_contract_diamonds1_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->trumps = diamond;
-	show_board(b);
+	board_set_trumps(diamond);
 }
 
 
@@ -260,8 +249,7 @@ void
 on_contract_clubs1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->trumps = club;
-	show_board(b);
+	board_set_trumps(club);
 }
 
 
@@ -269,9 +257,7 @@ void
 on_level1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 1;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (1);
 }
 
 
@@ -279,9 +265,7 @@ void
 on_level2_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 2;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (2);
 }
 
 
@@ -289,9 +273,7 @@ void
 on_level3_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 3;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (3);
 }
 
 
@@ -299,9 +281,7 @@ void
 on_level4_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 4;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (4);
 }
 
 
@@ -309,9 +289,7 @@ void
 on_level5_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 5;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (5);
 }
 
 
@@ -319,9 +297,7 @@ void
 on_level6_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 6;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (6);
 }
 
 
@@ -329,30 +305,14 @@ void
 on_level7_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->level = 7;
-	calculate_target(b);
-	show_board(b);
+	board_set_level (7);
 }
-
-static int double_update_in_progress = 0;
 
 void
 on_level_doubled1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (double_update_in_progress++)
-		return;
-
-	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_doubled1"));
-	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_redoubled1"));
-	if (gtk_check_menu_item_get_active(x)) {
-		b->doubled = 1;
-		gtk_check_menu_item_set_active(xx, FALSE);
-	} else
-		b->doubled = 0;
-
-	show_board(b);
-	double_update_in_progress = 0;
+	board_toggle_doubled (1);
 }
 
 
@@ -360,19 +320,7 @@ void
 on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (double_update_in_progress++)
-		return;
-
-	GtkCheckMenuItem *x = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_doubled1"));
-	GtkCheckMenuItem *xx = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_redoubled1"));
-	if (gtk_check_menu_item_get_active(xx)) {
-		b->doubled = 2;
-		gtk_check_menu_item_set_active(x, FALSE);
-	} else
-		b->doubled = 0;
-
-	show_board(b);
-	double_update_in_progress = 0;
+	board_toggle_doubled (1);
 }
 
 void
@@ -387,6 +335,7 @@ void
 on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_dds(b);
 	hilight_dd_scores(b);
 }
@@ -396,6 +345,7 @@ void
 on_parscore1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	parscore(b);
 }
 
@@ -404,6 +354,7 @@ void
 on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	parscore(b);
 }
 
@@ -412,10 +363,7 @@ void
 on_vuln_none_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->vuln[0] = 0;
-	b->vuln[1] = 0;
-	b->par_score = -1;
-	show_board(b);
+	board_set_vuln (0, 0);
 }
 
 
@@ -423,10 +371,7 @@ void
 on_vuln_ns_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->vuln[0] = 1;
-	b->vuln[1] = 0;
-	b->par_score = -1;
-	show_board(b);
+	board_set_vuln (1, 0);
 }
 
 
@@ -434,10 +379,7 @@ void
 on_vuln_ew_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->vuln[0] = 0;
-	b->vuln[1] = 1;
-	b->par_score = -1;
-	show_board(b);
+	board_set_vuln (0, 1);
 }
 
 
@@ -445,10 +387,7 @@ void
 on_vuln_all_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	b->vuln[0] = 1;
-	b->vuln[1] = 1;
-	b->par_score = -1;
-	show_board(b);
+	board_set_vuln (1, 1);
 }
 
 
@@ -456,6 +395,7 @@ void
 on_set_par1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	b->trumps = b->par_suit;
 	b->level = b->par_level;
 	b->declarer = b->par_dec;
@@ -522,6 +462,7 @@ void
 on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	rewind_card(b); /* extra call to show warning if there's nothing to do */
 	board_rewind(b);
 	show_board(b);
@@ -533,6 +474,7 @@ void
 on_button_back_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	rewind_card(b);
 	show_board(b);
 }
@@ -542,6 +484,7 @@ void
 on_button_next_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	next_card(b);
 	show_board(b);
 }
@@ -551,6 +494,7 @@ void
 on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_fast_forward(b);
 	show_board(b);
 }
@@ -560,6 +504,7 @@ void
 on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_dds(b);
 	hilight_dd_scores(b);
 }
@@ -601,6 +546,7 @@ void
 on_deal_clear_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_clear(b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
@@ -611,6 +557,7 @@ void
 on_deal_random_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
 	show_board(b);
@@ -621,6 +568,7 @@ void
 on_deal_line_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	window_line_entry_init(b);
 }
 
@@ -629,6 +577,7 @@ void
 on_line_entry_activate                 (GtkEntry        *entry,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_set_from_line_entry(b);
 }
 
@@ -637,6 +586,7 @@ void
 on_line_entry_ok_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
+	board *b = CUR_BOARD;
 	board_set_from_line_entry(b);
 }
 

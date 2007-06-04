@@ -8,12 +8,38 @@
 #include "support.h"
 #include "window_board.h"
 
+/* bridge math */
+
 void calculate_target(board *b)
 {
 	int side = b->declarer % 2;
 	b->target[side] = b->level + 6;
 	b->target[1 - side] = 14 - b->target[side]; /* 1 more to beat contract */
 }
+
+int
+card_overtricks (board *b, card c)
+{
+	assert (b->card_score[c] >= 0);
+
+	return b->card_score[c] - 6 - b->level;
+}
+
+int
+card_is_good (board *b, card c)
+{
+	assert (b->card_score[c] >= 0);
+
+	int side = b->current_turn % 2;
+	if (side == (b->declarer % 2))
+		return b->card_score[c] >= b->target[side];
+	else
+		return 13 - b->card_score[c] >= b->target[side];
+
+	/* NOT REACHED */
+}
+
+/* dealing with boards */
 
 void board_clear(board *b)
 {

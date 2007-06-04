@@ -46,7 +46,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 	//printf ("rendering %x %f %f %f %f\n", hand, l, r, t, b);
 	//char *suit_str[] = {"♣", "♦", "♥", "♠"};
-	char *suit_str[] = {"C", "D", "H", "S"};
+	char *suit_str[] = {"C ", "D ", "H ", "S "};
 	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 	int suit;
 	for (suit = 0; suit < 4; suit++) {
@@ -85,15 +85,24 @@ draw (GtkWidget *hand, cairo_t *cr)
 		}
 	}
 
-	cairo_set_font_size (cr, 10);
+	//cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
+			//CAIRO_FONT_WEIGHT_NORMAL);
+	cairo_set_font_size (cr, 8);
 
 	int c;
 	for (c = 51; c >= 0; c--) {
 		char buf[10];
-		if (handdisp->card_score[c] != -1) {
-			cairo_set_source_rgb (cr, 0.0, 1.0, 0.0);
+		if (handdisp->card_score[c] != HAND_DISPLAY_NO_SCORE) {
+			snprintf(buf, 10, "%+d", handdisp->card_score[c]);
+			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
+			cairo_text_extents (cr, buf, &extents);
+			cairo_move_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
+			cairo_rel_line_to (cr, 0, -extents.height - 2);
+			cairo_rel_line_to (cr, extents.width + 2, 0);
+			cairo_rel_line_to (cr, 0, extents.height + 2);
+			cairo_fill (cr);
 			cairo_move_to (cr, handdisp->l[c], handdisp->b[c]);
-			snprintf(buf, 10, "%-d", handdisp->card_score[c]);
+			cairo_set_source_rgb (cr, 0.0, 1.0, 0.0);
 			cairo_show_text (cr, buf);
 		}
 	}
@@ -385,7 +394,7 @@ hand_display_set_card (HandDisplay *handdisp, int card, int val)
 {
 	assert (card >= 0 && card < 52);
 	handdisp->cards[card] = val;
-	handdisp->card_score[card] = -1;
+	handdisp->card_score[card] = HAND_DISPLAY_NO_SCORE;
 }
 
 void

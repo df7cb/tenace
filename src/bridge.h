@@ -89,6 +89,9 @@ typedef struct board_t {
  */
 
 void calculate_target(board *b);
+int card_overtricks (board *b, card c);
+int card_is_good (board *b, card c);
+
 void board_clear(board *b);
 void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled);
 board *board_new(void);

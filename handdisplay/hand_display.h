@@ -16,6 +16,8 @@ extern "C" {
 //#define IS_HAND_DISPLAY_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE ((obj), TYPE_HAND_DISPLAY))
 //#define HAND_DISPLAY_GET_CLASS     (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_HAND_DISPLAY, HandDisplayClass))
 
+#define HAND_DISPLAY_NO_SCORE (-1111)
+
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
 

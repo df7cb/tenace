@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,8 +16,6 @@
 #include "support.h"
 #include "window_line_entry.h"
 #include "window_play.h"
-
-board *b; /* currently visible board */
 
 window_board_t *win; // FIXME static?
 
@@ -86,7 +85,8 @@ void show_board (board *b)
 			seat h = b->cards[c];
 			hand_display_set_card (win->handdisp[i - 1], c, h == i);
 			if (h == i && b->card_score[c] >= 0)
-				hand_display_set_card_score (win->handdisp[i - 1], c, b->card_score[c]);
+				hand_display_set_card_score (win->handdisp[i - 1],
+					c, card_overtricks(b, c));
 		}
 		hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 	}
@@ -164,6 +164,7 @@ void button_clear_markups()
 
 static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 {
+	board *b = CUR_BOARD;
 	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
 	if (play_card(b, b->cards[*cp], *cp))
 		show_board(b);
@@ -175,6 +176,7 @@ static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
 
 	board_statusbar(NULL);
 
+	board *b = CUR_BOARD;
 	if (b->card_score[*cp] < 0)
 		return;
 
@@ -232,6 +234,20 @@ static void create_hand_widgets (window_board_t *win)
 }
 
 void
+board_window_append_board (board *b)
+{
+	if (win->n_boards >= win->n_boards_alloc) {
+		win->n_boards_alloc <<= 2;
+		win->boards = realloc(win->boards, win->n_boards_alloc);
+		assert(win->boards);
+	}
+	win->boards[win->n_boards++] = b;
+
+	GtkWidget *m = gtk_menu_item_new_with_label (b->name->str);
+	gtk_menu_append ((win->board_menu), m);
+}
+
+void
 board_window_init ()
 {
 	win = malloc(sizeof(window_board_t));
@@ -240,11 +256,16 @@ board_window_init ()
 	//create_card_buttons(win);
 	create_hand_widgets(win);
 
-	win->n_boards = 1;
-	win->boards[0] = board_new ();
+	win->boards = malloc(4 * sizeof(board*));
+	assert (win->boards);
+	win->n_boards_alloc = 4;
+	win->n_boards = 0;
+
+	board_window_append_board (board_new ());
 	win->cur = 0;
 
-	win->statusbar = GTK_STATUSBAR(lookup_widget(win->window, "statusbar1"));
+	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
+	win->board_menu = GTK_MENU (lookup_widget(win->window, "board_menu1_menu"));
 
 	gtk_widget_show (win->window);
 }
@@ -260,3 +281,78 @@ void board_statusbar (char *text)
 		gtk_statusbar_push(win->statusbar, id, text);
 }
 
+void
+board_set_dealer (seat dealer)
+{
+	board *b = CUR_BOARD;
+	board_rewind(b);
+	b->declarer = dealer;
+	b->current_turn = seat_mod(dealer + 1);
+	show_board(b);
+}
+
+void
+board_set_trumps (suit trumps)
+{
+	board *b = CUR_BOARD;
+	b->trumps = trumps;
+	show_board(b);
+}
+
+void
+board_set_level (int level)
+{
+	board *b = CUR_BOARD;
+	b->level = level;
+	calculate_target(b);
+	show_board(b);
+}
+
+void
+board_set_vuln (int ns, int ew)
+{
+	board *b = CUR_BOARD;
+	b->vuln[0] = ns;
+	b->vuln[1] = ew;
+	b->par_score = -1;
+	show_board(b);
+}
+
+void
+board_toggle_doubled (int button)
+{
+	static int double_update_in_progress = 0;
+	static GtkCheckMenuItem *x = 0, *xx = 0;
+
+	if (double_update_in_progress++)
+		return;
+
+	if (!x)
+		x = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_doubled1"));
+	if (!xx)
+		xx = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_redoubled1"));
+
+	board *b = CUR_BOARD;
+
+	switch (button) {
+	case 1:
+		if (gtk_check_menu_item_get_active(x)) {
+			b->doubled = 1;
+			gtk_check_menu_item_set_active(xx, FALSE);
+		} else
+			b->doubled = 0;
+		break;
+	case 2:
+		if (gtk_check_menu_item_get_active(xx)) {
+			b->doubled = 2;
+			gtk_check_menu_item_set_active(x, FALSE);
+		} else
+			b->doubled = 0;
+		break;
+	default:
+		assert(0);
+	}
+
+	show_board(b);
+	double_update_in_progress = 0;
+}
