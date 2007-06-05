@@ -1753,7 +1753,7 @@ create_window_info (void)
 {
   GtkWidget *window_info;
   GtkWidget *vbox5;
-  GtkWidget *label92;
+  GtkWidget *info_label;
   GtkWidget *hbuttonbox3;
   GtkWidget *info_ok;
 
@@ -1764,12 +1764,12 @@ create_window_info (void)
   gtk_widget_show (vbox5);
   gtk_container_add (GTK_CONTAINER (window_info), vbox5);
 
-  label92 = gtk_label_new (_("<b>bridgehand</b>\n\n(C) 2007 Christoph Berg &lt;cb@df7cb.de&gt;"));
-  gtk_widget_show (label92);
-  gtk_box_pack_start (GTK_BOX (vbox5), label92, FALSE, FALSE, 0);
-  gtk_label_set_use_markup (GTK_LABEL (label92), TRUE);
-  gtk_label_set_justify (GTK_LABEL (label92), GTK_JUSTIFY_CENTER);
-  gtk_misc_set_padding (GTK_MISC (label92), 5, 0);
+  info_label = gtk_label_new (_("<b>tenace</b>\n\n(C) 2007 Christoph Berg &lt;cb@df7cb.de&gt;"));
+  gtk_widget_show (info_label);
+  gtk_box_pack_start (GTK_BOX (vbox5), info_label, FALSE, FALSE, 0);
+  gtk_label_set_use_markup (GTK_LABEL (info_label), TRUE);
+  gtk_label_set_justify (GTK_LABEL (info_label), GTK_JUSTIFY_CENTER);
+  gtk_misc_set_padding (GTK_MISC (info_label), 5, 0);
 
   hbuttonbox3 = gtk_hbutton_box_new ();
   gtk_widget_show (hbuttonbox3);
@@ -1793,7 +1793,7 @@ create_window_info (void)
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (window_info, window_info, "window_info");
   GLADE_HOOKUP_OBJECT (window_info, vbox5, "vbox5");
-  GLADE_HOOKUP_OBJECT (window_info, label92, "label92");
+  GLADE_HOOKUP_OBJECT (window_info, info_label, "info_label");
   GLADE_HOOKUP_OBJECT (window_info, hbuttonbox3, "hbuttonbox3");
   GLADE_HOOKUP_OBJECT (window_info, info_ok, "info_ok");
 

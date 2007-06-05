@@ -58,10 +58,10 @@ main (int argc, char *argv[])
 		printf ("open failed.\n");
 	board_window_append_board (b);
 	card_window_update(b->dealt_cards);
-	show_board(b);
+	show_board(b, REDRAW_FULL);
   }
 
-  show_board(win->boards[0]);
+  show_board(win->boards[0], REDRAW_FULL);
 
   gtk_main ();
   return 0;

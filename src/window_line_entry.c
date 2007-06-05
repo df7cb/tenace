@@ -19,7 +19,7 @@ void board_set_from_line_entry(board *b)
 		board_statusbar("Parse error");
 	}
 	card_window_update(b->dealt_cards);
-	show_board(b);
+	show_board(b, REDRAW_PLAY);
 }
 
 void line_entry_set_from_board(board *b)

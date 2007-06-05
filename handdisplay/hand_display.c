@@ -28,6 +28,17 @@ which_card (HandDisplay *handdisp, double x, double y)
 	return -1;
 }
 
+static char *
+overtricks (int i)
+{
+	static char buf[4];
+	if (i == 0)
+		snprintf(buf, 3, "=");
+	else
+		snprintf(buf, 3, "%+d", i);
+	return buf;
+}
+
 static void
 draw (GtkWidget *hand, cairo_t *cr)
 {
@@ -55,6 +66,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
 		x += extents.x_advance; y += extents.y_advance;
+		cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 		cairo_show_text (cr, suit_str[suit]);
 
 		int c;
@@ -77,8 +89,15 @@ draw (GtkWidget *hand, cairo_t *cr)
 					cairo_line_to (cr, handdisp->l[c], handdisp->b[c]);
 					cairo_fill (cr);
 					cairo_move_to (cr, x, y);
-					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 				}
+				if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) 
+					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+				else
+					/* invert colors if the score is for the opps */
+					if (handdisp->card_score_neg[c] ^ (handdisp->card_score[c] >= 0))
+						cairo_set_source_rgb (cr, 0.0, 0.7, 0.0);
+					else
+						cairo_set_source_rgb (cr, 0.7, 0.0, 0.0);
 				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
 			}
@@ -91,16 +110,17 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 	int c;
 	for (c = 51; c >= 0; c--) {
-		char buf[10];
+		char *buf;
 		if (handdisp->card_score[c] != HAND_DISPLAY_NO_SCORE) {
-			snprintf(buf, 10, "%+d", handdisp->card_score[c]);
-			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
+			buf = overtricks (handdisp->card_score[c]);
 			cairo_text_extents (cr, buf, &extents);
 			cairo_move_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
 			cairo_rel_line_to (cr, 0, -extents.height - 2);
 			cairo_rel_line_to (cr, extents.width + 2, 0);
 			cairo_rel_line_to (cr, 0, extents.height + 2);
+			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
 			cairo_fill (cr);
+
 			cairo_move_to (cr, handdisp->l[c], handdisp->b[c]);
 			cairo_set_source_rgb (cr, 0.0, 1.0, 0.0);
 			cairo_show_text (cr, buf);
@@ -263,13 +283,10 @@ hand_display_size_allocate (GtkWidget     *widget,
 	g_return_if_fail (allocation != NULL);
 
 	widget->allocation = *allocation;
-	if (GTK_WIDGET_REALIZED (widget))
-	{
+	if (GTK_WIDGET_REALIZED (widget)) {
 		gdk_window_move_resize (widget->window,
 				allocation->x, allocation->y,
 				allocation->width, allocation->height);
-		//dial->radius = MAX(allocation->width,allocation->height) * 0.45;
-		//dial->pointer_width = dial->radius / 5;
 	}
 }
 
@@ -336,17 +353,11 @@ hand_display_init (HandDisplay *handdisp)
 	for (i = 0; i < 52; i++) {
 		handdisp->cards[i] = 0;
 		handdisp->card_score[i] = -1;
+		handdisp->card_score_neg[i] = 0;
 		handdisp->l[i] = handdisp->r[i] = handdisp->t[i] = handdisp->b[i] = -1;
 	}
 
 	handdisp->cur_focus = handdisp->cur_click = -1;
-
-	/*
-	gtk_widget_add_events (GTK_WIDGET(handdisp),
-		GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
-		GDK_LEAVE_NOTIFY_MASK |
-		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
-		*/
 }
 
 /* public interface */
@@ -398,8 +409,9 @@ hand_display_set_card (HandDisplay *handdisp, int card, int val)
 }
 
 void
-hand_display_set_card_score (HandDisplay *handdisp, int card, int score)
+hand_display_set_card_score (HandDisplay *handdisp, int card, int score, int neg)
 {
 	assert (card >= 0 && card < 52);
 	handdisp->card_score[card] = score;
+	handdisp->card_score_neg[card] = neg;
 }

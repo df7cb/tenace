@@ -23,52 +23,58 @@ window_board_t *win; // FIXME static?
 //static GtkWidget *card_button_child[52];
 //static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
 
-void show_board (board *b)
+void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
 	GString *str = g_string_new(NULL);
 
-	char *fname = b->filename ? strrchr(b->filename->str, '/') + 1 : "";
-	g_string_printf(str, "Tenace - %s%s%s", b->name->str,
-		b->filename ? " - " : "", fname ? fname : "");
-	gtk_window_set_title(GTK_WINDOW(win->window), str->str);
+	if (redraw & REDRAW_TITLE) {
+		char *fname = b->filename ? strrchr(b->filename->str, '/') + 1 : "";
+		g_string_printf(str, "Tenace - %s%s%s", b->name->str,
+			b->filename ? " - " : "", fname ? fname : "");
+		gtk_window_set_title(GTK_WINDOW(win->window), str->str);
 
-	w = lookup_widget(win->window, "label_board");
-	g_string_printf(str, "%s\n%s", b->name->str,
-		contract_string(b->level, b->trumps, b->declarer, b->doubled));
-	gtk_label_set_text((GtkLabel*) w, str->str);
+		w = lookup_widget(win->window, "label_board");
+		g_string_printf(str, "%s\n%s", b->name->str,
+			contract_string(b->level, b->trumps, b->declarer, b->doubled));
+		gtk_label_set_text((GtkLabel*) w, str->str);
+	}
 
-	w = lookup_widget(win->window, "label_west");
-	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-		b->vuln[1] ? "red" : "green",
-		b->current_turn == west ? " weight=\"bold\"" : "",
-		b->hand_name[0]->str);
-	gtk_label_set_markup((GtkLabel*) w, str->str);
+	if (redraw & REDRAW_NAMES) {
+		w = lookup_widget(win->window, "label_west");
+		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+			b->vuln[1] ? "red" : "green",
+			b->current_turn == west ? " weight=\"bold\"" : "",
+			b->hand_name[0]->str);
+		gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win->window, "label_north");
-	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-		b->vuln[0] ? "red" : "green",
-		b->current_turn == north ? " weight=\"bold\"" : "",
-		b->hand_name[1]->str);
-	gtk_label_set_markup((GtkLabel*) w, str->str);
+		w = lookup_widget(win->window, "label_north");
+		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+			b->vuln[0] ? "red" : "green",
+			b->current_turn == north ? " weight=\"bold\"" : "",
+			b->hand_name[1]->str);
+		gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win->window, "label_east");
-	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-		b->vuln[1] ? "red" : "green",
-		b->current_turn == east ? " weight=\"bold\"" : "",
-		b->hand_name[2]->str);
-	gtk_label_set_markup((GtkLabel*) w, str->str);
+		w = lookup_widget(win->window, "label_east");
+		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+			b->vuln[1] ? "red" : "green",
+			b->current_turn == east ? " weight=\"bold\"" : "",
+			b->hand_name[2]->str);
+		gtk_label_set_markup((GtkLabel*) w, str->str);
 
-	w = lookup_widget(win->window, "label_south");
-	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-		b->vuln[0] ? "red" : "green",
-		b->current_turn == south ? " weight=\"bold\"" : "",
-		b->hand_name[3]->str);
-	gtk_label_set_markup((GtkLabel*) w, str->str);
+		w = lookup_widget(win->window, "label_south");
+		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+			b->vuln[0] ? "red" : "green",
+			b->current_turn == south ? " weight=\"bold\"" : "",
+			b->hand_name[3]->str);
+		gtk_label_set_markup((GtkLabel*) w, str->str);
+	}
 
-	w = lookup_widget(win->window, "label_tricks");
-	g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
-	gtk_label_set_markup((GtkLabel*) w, str->str);
+	if (redraw & REDRAW_TITLE) {
+		w = lookup_widget(win->window, "label_tricks");
+		g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
+		gtk_label_set_markup((GtkLabel*) w, str->str);
+	}
 
 	/*
 	int label_i;
@@ -79,87 +85,60 @@ void show_board (board *b)
 	label_i = 0;
 	*/
 
-	int i, c;
-	for (i = west; i <= south; i++) {
-		for (c = 51; c >= 0; c--) {
-			seat h = b->cards[c];
-			hand_display_set_card (win->handdisp[i - 1], c, h == i);
-			if (h == i && b->card_score[c] >= 0)
-				hand_display_set_card_score (win->handdisp[i - 1],
-					c, card_overtricks(b, c));
+	if (redraw & REDRAW_DD) {
+		if (b->par_score == -1) {
+			w = lookup_widget(win->window, "par_label");
+			gtk_label_set_text(GTK_LABEL(w), "");
 		}
-		hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
+
+		if (run_dd)
+			hilight_dd_scores(b);
 	}
 
-		/*
-		int h = b->cards[c];
-		int s = SUIT(c);
-
-		GtkWidget *lab = win->card_button[c];
-		if (win->card_button_container[c]) {
-			gtk_container_remove(GTK_CONTAINER(win->card_button_container[c]), lab);
-			win->card_button_container[c] = NULL;
+	if (redraw & REDRAW_HANDS) {
+		int i, c;
+		for (i = west; i <= south; i++) {
+			for (c = 51; c >= 0; c--) {
+				seat h = b->cards[c];
+				hand_display_set_card (win->handdisp[i - 1], c, h == i);
+				if (h == i && b->card_score[c] >= 0)
+					hand_display_set_card_score (win->handdisp[i - 1], c,
+						card_overtricks(b, c), h % 2 != b->declarer % 2);
+			}
+			hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 		}
-		if (h) {
-			box = lookup_widget(win->window, box_array[h-1][s]);
-			gtk_box_pack_start (GTK_BOX (box), lab, FALSE, FALSE, FALSE);
-			gtk_widget_show(lab);
-			win->card_button_container[c] = box;
-		}
-	}
-	*/
 
-	//gtk_widget_show_all(win->window);
-
-	char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
-	for (i = west; i <= south; i++) {
-		GtkWidget *label = lookup_widget(win->window, labels[i]);
-		gtk_label_set_text(GTK_LABEL(label), "");
-	}
-	if (b->n_played_cards) {
-		int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
-		for (i = trick_start; i < b->n_played_cards; i++) {
-			card c = b->played_cards[i];
-			seat s = b->dealt_cards[c];
-			g_string_printf(str, "<span%s>%s</span>",
-				i == trick_start ? " underline=\"low\"" : "",
-				card_string(c)->str);
-			GtkWidget *label = lookup_widget(win->window, labels[s]);
-			gtk_label_set_markup(GTK_LABEL(label), str->str);
+		char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
+		for (i = west; i <= south; i++) {
+			GtkWidget *label = lookup_widget(win->window, labels[i]);
+			gtk_label_set_text(GTK_LABEL(label), "");
 		}
+		if (b->n_played_cards) {
+			int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
+			for (i = trick_start; i < b->n_played_cards; i++) {
+				card c = b->played_cards[i];
+				seat s = b->dealt_cards[c];
+				g_string_printf(str, "<span%s>%s</span>",
+					i == trick_start ? " underline=\"low\"" : "",
+					card_string(c)->str);
+				GtkWidget *label = lookup_widget(win->window, labels[s]);
+				gtk_label_set_markup(GTK_LABEL(label), str->str);
+			}
+		}
+
+		line_entry_set_from_board(b);
 	}
 
 	g_string_free(str, TRUE);
 
-	if (b->par_score == -1) {
-		w = lookup_widget(win->window, "par_label");
-		gtk_label_set_text(GTK_LABEL(w), "");
+	if (redraw & REDRAW_PLAY)
+		window_play_update(b);
+
+	if (redraw & REDRAW_BIDDING) {
+		int i;
+		for (i = 0; i < b->n_bids; i++)
+			printf ("%s\n", bid_string(b->bidding[i])->str);
 	}
-
-	if (run_dd)
-		hilight_dd_scores(b);
-
-	window_play_update(b);
-	for (i = 0; i < b->n_bids; i++)
-		printf ("%s\n", bid_string(b->bidding[i])->str);
-	line_entry_set_from_board(b);
-}
-
-void button_set_markup(card c, char *text)
-{
-	//gtk_label_set_markup(GTK_LABEL(win->card_button_child[c]), text);
-}
-
-void button_clear_markups()
-{
-	/*
-	int c;
-	for (c = 0; c < 52; c++) {
-		if (win->card_button_container[c]) {
-			button_set_markup(c, rank_string(RANK(c)));
-		}
-	}
-	*/
 }
 
 static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
@@ -167,7 +146,7 @@ static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 	board *b = CUR_BOARD;
 	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
 	if (play_card(b, b->cards[*cp], *cp))
-		show_board(b);
+		show_board(b, REDRAW_HANDS | REDRAW_TRICKS);
 }
 
 static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
@@ -288,7 +267,7 @@ board_set_dealer (seat dealer)
 	board_rewind(b);
 	b->declarer = dealer;
 	b->current_turn = seat_mod(dealer + 1);
-	show_board(b);
+	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS);
 }
 
 void
@@ -296,7 +275,7 @@ board_set_trumps (suit trumps)
 {
 	board *b = CUR_BOARD;
 	b->trumps = trumps;
-	show_board(b);
+	show_board(b, REDRAW_CONTRACT);
 }
 
 void
@@ -305,7 +284,7 @@ board_set_level (int level)
 	board *b = CUR_BOARD;
 	b->level = level;
 	calculate_target(b);
-	show_board(b);
+	show_board(b, REDRAW_CONTRACT);
 }
 
 void
@@ -315,7 +294,7 @@ board_set_vuln (int ns, int ew)
 	b->vuln[0] = ns;
 	b->vuln[1] = ew;
 	b->par_score = -1;
-	show_board(b);
+	show_board(b, REDRAW_CONTRACT);
 }
 
 void
@@ -353,6 +332,6 @@ board_toggle_doubled (int button)
 		assert(0);
 	}
 
-	show_board(b);
+	show_board(b, REDRAW_CONTRACT);
 	double_update_in_progress = 0;
 }

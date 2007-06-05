@@ -287,7 +287,7 @@ void board_load_dialog (board *b)
 				g_string_free(b->filename, TRUE);
 			b->filename = g_string_new(filename);
 			card_window_update(b->dealt_cards);
-			show_board(b);
+			show_board(b, REDRAW_FULL);
 		} else {
 			printf ("open failed.\n");
 		}

@@ -179,6 +179,7 @@ void hilight_dd_scores(board *b)
 		}
 	}
 
+#if 0
 	button_clear_markups();
 
 	for (c = 51; c >= 0; c--) {
@@ -198,12 +199,13 @@ void hilight_dd_scores(board *b)
 			color, weight, rank_string(RANK(c)));
 		button_set_markup(c, str);
 	}
+#endif
 
 	snprintf(str, 99, "DD: %s",
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->best_score, b->current_turn));
 	solve_statusbar(str);
-	show_board(b); // FIXME doe sthat belong here?
+	//show_board(b, REDRAW_HANDS | REDRAW_DD); // FIXME doe sthat belong here?
 }
 
 static void compute_par_arr(board *b)

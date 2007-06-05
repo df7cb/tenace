@@ -24,15 +24,25 @@ typedef struct _windown_board_t {
 	HandDisplay *handdisp[4];
 } window_board_t;
 
+typedef enum _redraw_t {
+	REDRAW_TITLE	= 1 << 0,
+	REDRAW_NAMES	= 1 << 1,
+	REDRAW_CONTRACT	= 1 << 2,
+	REDRAW_TRICKS	= 1 << 3,
+	REDRAW_HANDS	= 1 << 4,
+	REDRAW_DD	= 1 << 5,
+	REDRAW_PLAY	= 1 << 6,
+	REDRAW_BIDDING	= 1 << 7,
+	REDRAW_FULL	= -1
+} redraw_t;
+
 /* global variable */
 
 extern window_board_t *win;
 
 /* interface */
 
-void show_board (board *b);
-void button_set_markup(card c, char *text);
-void button_clear_markups();
+void show_board (board *b, redraw_t redraw);
 
 void board_window_append_board (board *b);
 void board_window_init ();

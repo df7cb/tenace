@@ -35,7 +35,7 @@ void cardX_clicked (GtkButton *button, gpointer cxp)
 
 			board_statusbar(NULL);
 			card_window_update(b->dealt_cards);
-			show_board(b);
+			show_board(b, REDRAW_HANDS);
 			return;
 		}
 	}
@@ -68,7 +68,7 @@ void card_clicked (GtkButton *button, gpointer cp)
 
 	board_statusbar(NULL);
 	card_window_update(b->dealt_cards);
-	show_board(b);
+	show_board(b, REDRAW_HANDS);
 }
 
 void fill_card_window (GtkWidget *w)

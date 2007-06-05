@@ -2,7 +2,6 @@
 #define HAND_DISPLAY_H
 
 #include <gdk/gdk.h>
-//#include <gtk/gtkadjustment.h>
 #include <gtk/gtkwidget.h>
 
 #ifdef __cplusplus
@@ -16,7 +15,7 @@ extern "C" {
 //#define IS_HAND_DISPLAY_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE ((obj), TYPE_HAND_DISPLAY))
 //#define HAND_DISPLAY_GET_CLASS     (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_HAND_DISPLAY, HandDisplayClass))
 
-#define HAND_DISPLAY_NO_SCORE (-1111)
+#define HAND_DISPLAY_NO_SCORE      (0x1000) /* score undefined */
 
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
@@ -28,6 +27,7 @@ struct _HandDisplay
 	int cur_click;
 	int cards[52];
 	int card_score[52];
+	int card_score_neg[52];
 	double l[52], r[52], t[52], b[52];
 
        /* private */
@@ -42,7 +42,7 @@ GtkType hand_display_get_type (void);
 GtkWidget * hand_display_new (void);
 void hand_display_draw (GtkWidget *hand);
 void hand_display_set_card (HandDisplay *handdisp, int card, int val);
-void hand_display_set_card_score (HandDisplay *handdisp, int card, int score);
+void hand_display_set_card_score (HandDisplay *handdisp, int card, int score, int neg);
 
 gboolean DNDDragMotionCB(
         GtkWidget *hand, GdkDragContext *dc,
