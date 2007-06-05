@@ -3407,9 +3407,9 @@ EW: 0</property>
       <property name="spacing">0</property>
 
       <child>
-	<widget class="GtkLabel" id="label92">
+	<widget class="GtkLabel" id="info_label">
 	  <property name="visible">True</property>
-	  <property name="label" translatable="yes">&lt;b&gt;bridgehand&lt;/b&gt;
+	  <property name="label" translatable="yes">&lt;b&gt;tenace&lt;/b&gt;
 
 (C) 2007 Christoph Berg &amp;lt;cb@df7cb.de&amp;gt;</property>
 	  <property name="use_underline">False</property>

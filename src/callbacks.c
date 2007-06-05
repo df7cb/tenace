@@ -104,6 +104,8 @@ on_info1_activate                      (GtkMenuItem     *menuitem,
 {
 	if (!window_info) {
 		window_info = create_window_info ();
+		GtkWidget *info_label = lookup_widget (window_info, "info_label");
+		gtk_label_set_markup (GTK_LABEL (info_label), "<b>tenace</b> " VERSION"\n\n(C) 2007 Christoph Berg &lt;cb@df7cb.de&gt;");
 		gtk_widget_show (window_info);
 	}
 }
