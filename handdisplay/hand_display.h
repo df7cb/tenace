@@ -27,7 +27,8 @@ struct _HandDisplay
 	int cur_click;
 	int cards[52];
 	int card_score[52];
-	int card_score_neg[52];
+	int card_score_neg;
+	int best_card_score;
 	double l[52], r[52], t[52], b[52];
 
        /* private */
@@ -42,7 +43,8 @@ GtkType hand_display_get_type (void);
 GtkWidget * hand_display_new (void);
 void hand_display_draw (GtkWidget *hand);
 void hand_display_set_card (HandDisplay *handdisp, int card, int val);
-void hand_display_set_card_score (HandDisplay *handdisp, int card, int score, int neg);
+void hand_display_set_card_score (HandDisplay *handdisp, int card, int score);
+void hand_display_set_card_score_neg (HandDisplay *handdisp, int neg);
 
 gboolean DNDDragMotionCB(
         GtkWidget *hand, GdkDragContext *dc,

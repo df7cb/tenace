@@ -103,8 +103,10 @@ void show_board (board *b, redraw_t redraw)
 				hand_display_set_card (win->handdisp[i - 1], c, h == i);
 				if (h == i && b->card_score[c] >= 0)
 					hand_display_set_card_score (win->handdisp[i - 1], c,
-						card_overtricks(b, c), h % 2 != b->declarer % 2);
+						card_overtricks(b, c));
 			}
+			hand_display_set_card_score_neg (win->handdisp[i - 1],
+					i % 2 != b->declarer % 2);
 			hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 		}
 

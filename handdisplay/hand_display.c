@@ -43,6 +43,7 @@ static void
 draw (GtkWidget *hand, cairo_t *cr)
 {
 	double l, r, t, b, x, y;
+	int suit;
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 
@@ -51,23 +52,51 @@ draw (GtkWidget *hand, cairo_t *cr)
 	t = hand->allocation.y;
 	b = t + hand->allocation.height;
 
-	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
+	/* compute cached best card score for this hand */
+	if (handdisp->best_card_score == HAND_DISPLAY_NO_SCORE) {
+		int c;
+		handdisp->best_card_score = handdisp->card_score_neg ? 14 : -14;
+		for (c = 0; c < 52; c++) {
+			if (handdisp->card_score_neg ?
+				(handdisp->card_score[c] < handdisp->best_card_score) :
+				(handdisp->card_score[c] > handdisp->best_card_score))
+					handdisp->best_card_score = handdisp->card_score[c];
+		}
+	}
+
+	/* draw suit symbols */
+	cairo_select_font_face (cr, "Symbol", CAIRO_FONT_SLANT_NORMAL,
 			CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, 20);
+	char *suit_str[] = {"♣", "♦", "♥", "♠"};
+	double suit_color[4][3] = {
+		{ 0.0, 0.6, 0.0 },
+		{ 1.0, 0.3, 0.0 },
+		{ 0.9, 0.0, 0.0 },
+		{ 0.0, 0.0, 0.7 }
+	};
 
-	//printf ("rendering %x %f %f %f %f\n", hand, l, r, t, b);
-	//char *suit_str[] = {"♣", "♦", "♥", "♠"};
-	char *suit_str[] = {"C ", "D ", "H ", "S "};
-	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-	int suit;
+	//char *suit_str[] = {"C ", "D ", "H ", "S "};
+	double suit_width = 0.0;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
 		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
-		x += extents.x_advance; y += extents.y_advance;
-		cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+		if (extents.x_advance > suit_width)
+			suit_width = extents.x_advance;
+		cairo_set_source_rgb (cr, suit_color[suit][0], suit_color[suit][1], suit_color[suit][2]);
 		cairo_show_text (cr, suit_str[suit]);
+	}
+
+	/* draw cards */
+	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
+			CAIRO_FONT_WEIGHT_BOLD);
+	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+	for (suit = 0; suit < 4; suit++) {
+		x = 4 + suit_width;
+		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
+		cairo_move_to (cr, x, y);
 
 		int c;
 		for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
@@ -82,11 +111,11 @@ draw (GtkWidget *hand, cairo_t *cr)
 					//printf ("ext x_b %f x_a %f w %f", extents.x_bearing, extents.x_advance, extents.width);
 					//printf (" y_b %f y_a %f h %f", extents.y_bearing, extents.y_advance, extents.height);
 					//printf (" l %f r %f t %f b %f\n", handdisp->l[c],handdisp->r[c],handdisp->t[c],handdisp->b[c]);
-					cairo_move_to (cr, handdisp->l[c], handdisp->b[c]);
-					cairo_line_to (cr, handdisp->l[c], handdisp->t[c]);
-					cairo_line_to (cr, handdisp->r[c], handdisp->t[c]);
-					cairo_line_to (cr, handdisp->r[c], handdisp->b[c]);
-					cairo_line_to (cr, handdisp->l[c], handdisp->b[c]);
+					cairo_move_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
+					cairo_line_to (cr, handdisp->l[c] - 1, handdisp->t[c] - 1);
+					cairo_line_to (cr, handdisp->r[c] + 1, handdisp->t[c] - 1);
+					cairo_line_to (cr, handdisp->r[c] + 1, handdisp->b[c] + 1);
+					cairo_line_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
 					cairo_fill (cr);
 					cairo_move_to (cr, x, y);
 				}
@@ -94,35 +123,43 @@ draw (GtkWidget *hand, cairo_t *cr)
 					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 				else
 					/* invert colors if the score is for the opps */
-					if (handdisp->card_score_neg[c] ^ (handdisp->card_score[c] >= 0))
-						cairo_set_source_rgb (cr, 0.0, 0.7, 0.0);
+					if (handdisp->card_score_neg ^ (handdisp->card_score[c] >= 0))
+						if (handdisp->best_card_score == handdisp->card_score[c])
+							cairo_set_source_rgb (cr, 0.0, 0.9, 0.0);
+						else
+							cairo_set_source_rgb (cr, 0.0, 0.7, 0.0);
 					else
-						cairo_set_source_rgb (cr, 0.7, 0.0, 0.0);
+						if (handdisp->best_card_score == handdisp->card_score[c])
+							cairo_set_source_rgb (cr, 0.9, 0.0, 0.0);
+						else
+							cairo_set_source_rgb (cr, 0.7, 0.0, 0.0);
 				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
 			}
 		}
 	}
 
+	/* draw card scores */
 	//cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
 			//CAIRO_FONT_WEIGHT_NORMAL);
-	cairo_set_font_size (cr, 8);
-
+	cairo_set_font_size (cr, 10);
 	int c;
 	for (c = 51; c >= 0; c--) {
 		char *buf;
 		if (handdisp->card_score[c] != HAND_DISPLAY_NO_SCORE) {
 			buf = overtricks (handdisp->card_score[c]);
 			cairo_text_extents (cr, buf, &extents);
+			/*
 			cairo_move_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
 			cairo_rel_line_to (cr, 0, -extents.height - 2);
 			cairo_rel_line_to (cr, extents.width + 2, 0);
 			cairo_rel_line_to (cr, 0, extents.height + 2);
 			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
 			cairo_fill (cr);
+			*/
 
-			cairo_move_to (cr, handdisp->l[c], handdisp->b[c]);
-			cairo_set_source_rgb (cr, 0.0, 1.0, 0.0);
+			cairo_move_to (cr, handdisp->r[c] - extents.x_advance, handdisp->b[c]);
+			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
 			cairo_show_text (cr, buf);
 		}
 	}
@@ -353,9 +390,10 @@ hand_display_init (HandDisplay *handdisp)
 	for (i = 0; i < 52; i++) {
 		handdisp->cards[i] = 0;
 		handdisp->card_score[i] = -1;
-		handdisp->card_score_neg[i] = 0;
 		handdisp->l[i] = handdisp->r[i] = handdisp->t[i] = handdisp->b[i] = -1;
 	}
+	handdisp->card_score_neg = 0;
+	handdisp->best_card_score = HAND_DISPLAY_NO_SCORE;
 
 	handdisp->cur_focus = handdisp->cur_click = -1;
 }
@@ -409,9 +447,15 @@ hand_display_set_card (HandDisplay *handdisp, int card, int val)
 }
 
 void
-hand_display_set_card_score (HandDisplay *handdisp, int card, int score, int neg)
+hand_display_set_card_score (HandDisplay *handdisp, int card, int score)
 {
 	assert (card >= 0 && card < 52);
 	handdisp->card_score[card] = score;
-	handdisp->card_score_neg[card] = neg;
+}
+
+void
+hand_display_set_card_score_neg (HandDisplay *handdisp, int neg)
+{
+	handdisp->card_score_neg = neg;
+	handdisp->best_card_score = HAND_DISPLAY_NO_SCORE;
 }
