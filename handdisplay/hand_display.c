@@ -108,16 +108,9 @@ draw (GtkWidget *hand, cairo_t *cr)
 				handdisp->b[c] = y + extents.y_bearing + extents.height;
 				if (c == handdisp->cur_focus) {
 					cairo_set_source_rgb (cr, 1.0, 0.0, 0.0);
-					//printf ("ext x_b %f x_a %f w %f", extents.x_bearing, extents.x_advance, extents.width);
-					//printf (" y_b %f y_a %f h %f", extents.y_bearing, extents.y_advance, extents.height);
-					//printf (" l %f r %f t %f b %f\n", handdisp->l[c],handdisp->r[c],handdisp->t[c],handdisp->b[c]);
-					cairo_move_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
-					cairo_line_to (cr, handdisp->l[c] - 1, handdisp->t[c] - 1);
-					cairo_line_to (cr, handdisp->r[c] + 1, handdisp->t[c] - 1);
-					cairo_line_to (cr, handdisp->r[c] + 1, handdisp->b[c] + 1);
-					cairo_line_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
+					cairo_rectangle (cr, handdisp->l[c] - 1, handdisp->t[c] - 1,
+						extents.width + 2, extents.height + 2);
 					cairo_fill (cr);
-					cairo_move_to (cr, x, y);
 				}
 				if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) 
 					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
@@ -133,6 +126,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 							cairo_set_source_rgb (cr, 0.9, 0.0, 0.0);
 						else
 							cairo_set_source_rgb (cr, 0.7, 0.0, 0.0);
+				cairo_move_to (cr, x, y);
 				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
 			}

@@ -45,6 +45,13 @@ create_window_hand (void)
   GtkWidget *deal_clear;
   GtkWidget *deal_random;
   GtkWidget *deal_line;
+  GtkWidget *dealer1;
+  GtkWidget *dealer1_menu;
+  GSList *dealer_west1_group = NULL;
+  GtkWidget *dealer_west1;
+  GtkWidget *dealer_north1;
+  GtkWidget *dealer_east1;
+  GtkWidget *dealer_south1;
   GtkWidget *contract1;
   GtkWidget *contract1_menu;
   GSList *declarer_west1_group = NULL;
@@ -70,6 +77,9 @@ create_window_hand (void)
   GtkWidget *level5;
   GtkWidget *level6;
   GtkWidget *level7;
+  GtkWidget *trennlinie3;
+  GSList *level_doubled0_group = NULL;
+  GtkWidget *level_doubled0;
   GtkWidget *level_doubled1;
   GtkWidget *level_redoubled1;
   GtkWidget *vulnerable1;
@@ -209,6 +219,33 @@ create_window_hand (void)
   gtk_widget_show (deal_line);
   gtk_container_add (GTK_CONTAINER (deal1_menu), deal_line);
 
+  dealer1 = gtk_menu_item_new_with_mnemonic (_("Dealer"));
+  gtk_widget_show (dealer1);
+  gtk_container_add (GTK_CONTAINER (deal1_menu), dealer1);
+
+  dealer1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (dealer1), dealer1_menu);
+
+  dealer_west1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("West"));
+  dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_west1));
+  gtk_widget_show (dealer_west1);
+  gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_west1);
+
+  dealer_north1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("North"));
+  dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_north1));
+  gtk_widget_show (dealer_north1);
+  gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_north1);
+
+  dealer_east1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("East"));
+  dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_east1));
+  gtk_widget_show (dealer_east1);
+  gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_east1);
+
+  dealer_south1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("South"));
+  dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_south1));
+  gtk_widget_show (dealer_south1);
+  gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_south1);
+
   contract1 = gtk_menu_item_new_with_mnemonic (_("Contract"));
   gtk_widget_show (contract1);
   gtk_container_add (GTK_CONTAINER (menubar1), contract1);
@@ -220,19 +257,16 @@ create_window_hand (void)
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_west1));
   gtk_widget_show (declarer_west1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_west1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_west1), TRUE);
 
   declarer_north1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("North"));
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_north1));
   gtk_widget_show (declarer_north1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_north1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_north1), TRUE);
 
   declarer_east1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("East"));
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_east1));
   gtk_widget_show (declarer_east1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_east1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_east1), TRUE);
 
   declarer_south1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("South"));
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_south1));
@@ -249,25 +283,21 @@ create_window_hand (void)
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_no_trump1));
   gtk_widget_show (contract_no_trump1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_no_trump1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_no_trump1), TRUE);
 
   contract_spades1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\240 Spades"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_spades1));
   gtk_widget_show (contract_spades1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_spades1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_spades1), TRUE);
 
   contract_hearts1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\245 Hearts"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_hearts1));
   gtk_widget_show (contract_hearts1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_hearts1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_hearts1), TRUE);
 
   contract_diamonds1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\246 Diamonds"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_diamonds1));
   gtk_widget_show (contract_diamonds1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_diamonds1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_diamonds1), TRUE);
 
   contract_clubs1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\243 Clubs"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_clubs1));
@@ -291,37 +321,31 @@ create_window_hand (void)
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level1));
   gtk_widget_show (level1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level1), TRUE);
 
   level2 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("2"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level2));
   gtk_widget_show (level2);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level2);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level2), TRUE);
 
   level3 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("3"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level3));
   gtk_widget_show (level3);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level3);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level3), TRUE);
 
   level4 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("4"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level4));
   gtk_widget_show (level4);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level4);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level4), TRUE);
 
   level5 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("5"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level5));
   gtk_widget_show (level5);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level5);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level5), TRUE);
 
   level6 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("6"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level6));
   gtk_widget_show (level6);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level6);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level6), TRUE);
 
   level7 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("7"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level7));
@@ -329,11 +353,24 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level7);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level7), TRUE);
 
-  level_doubled1 = gtk_check_menu_item_new_with_mnemonic (_("X Doubled"));
+  trennlinie3 = gtk_separator_menu_item_new ();
+  gtk_widget_show (trennlinie3);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), trennlinie3);
+  gtk_widget_set_sensitive (trennlinie3, FALSE);
+
+  level_doubled0 = gtk_radio_menu_item_new_with_mnemonic (level_doubled0_group, _("No double"));
+  level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_doubled0));
+  gtk_widget_show (level_doubled0);
+  gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_doubled0);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level_doubled0), TRUE);
+
+  level_doubled1 = gtk_radio_menu_item_new_with_mnemonic (level_doubled0_group, _("X Doubled"));
+  level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_doubled1));
   gtk_widget_show (level_doubled1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_doubled1);
 
-  level_redoubled1 = gtk_check_menu_item_new_with_mnemonic (_("XX Redoubled"));
+  level_redoubled1 = gtk_radio_menu_item_new_with_mnemonic (level_doubled0_group, _("XX Redoubled"));
+  level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_redoubled1));
   gtk_widget_show (level_redoubled1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_redoubled1);
 
@@ -348,19 +385,16 @@ create_window_hand (void)
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_none));
   gtk_widget_show (vuln_none);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_none);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_none), TRUE);
 
   vuln_ns = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("North-South"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ns));
   gtk_widget_show (vuln_ns);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_ns);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_ns), TRUE);
 
   vuln_ew = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("East-West"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ew));
   gtk_widget_show (vuln_ew);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_ew);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_ew), TRUE);
 
   vuln_all = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("All"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_all));
@@ -401,13 +435,11 @@ create_window_hand (void)
   pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_north_south));
   gtk_widget_show (pos_north_south);
   gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_north_south);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (pos_north_south), TRUE);
 
   pos_declarer = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("Declarer"));
   pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_declarer));
   gtk_widget_show (pos_declarer);
   gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_declarer);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (pos_declarer), TRUE);
 
   pos_current_lead = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("Current lead"));
   pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_current_lead));
@@ -713,6 +745,18 @@ create_window_hand (void)
   g_signal_connect ((gpointer) deal_line, "activate",
                     G_CALLBACK (on_deal_line_activate),
                     NULL);
+  g_signal_connect ((gpointer) dealer_west1, "activate",
+                    G_CALLBACK (on_dealer_west1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) dealer_north1, "activate",
+                    G_CALLBACK (on_dealer_north1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) dealer_east1, "activate",
+                    G_CALLBACK (on_dealer_east1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) dealer_south1, "activate",
+                    G_CALLBACK (on_dealer_south1_activate),
+                    NULL);
   g_signal_connect ((gpointer) declarer_west1, "activate",
                     G_CALLBACK (on_declarer_west1_activate),
                     NULL);
@@ -760,6 +804,9 @@ create_window_hand (void)
                     NULL);
   g_signal_connect ((gpointer) level7, "activate",
                     G_CALLBACK (on_level7_activate),
+                    NULL);
+  g_signal_connect ((gpointer) level_doubled0, "activate",
+                    G_CALLBACK (on_level_doubled0_activate),
                     NULL);
   g_signal_connect ((gpointer) level_doubled1, "activate",
                     G_CALLBACK (on_level_doubled1_activate),
@@ -860,6 +907,12 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, deal_clear, "deal_clear");
   GLADE_HOOKUP_OBJECT (window_hand, deal_random, "deal_random");
   GLADE_HOOKUP_OBJECT (window_hand, deal_line, "deal_line");
+  GLADE_HOOKUP_OBJECT (window_hand, dealer1, "dealer1");
+  GLADE_HOOKUP_OBJECT (window_hand, dealer1_menu, "dealer1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, dealer_west1, "dealer_west1");
+  GLADE_HOOKUP_OBJECT (window_hand, dealer_north1, "dealer_north1");
+  GLADE_HOOKUP_OBJECT (window_hand, dealer_east1, "dealer_east1");
+  GLADE_HOOKUP_OBJECT (window_hand, dealer_south1, "dealer_south1");
   GLADE_HOOKUP_OBJECT (window_hand, contract1, "contract1");
   GLADE_HOOKUP_OBJECT (window_hand, contract1_menu, "contract1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, declarer_west1, "declarer_west1");
@@ -882,6 +935,8 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, level5, "level5");
   GLADE_HOOKUP_OBJECT (window_hand, level6, "level6");
   GLADE_HOOKUP_OBJECT (window_hand, level7, "level7");
+  GLADE_HOOKUP_OBJECT (window_hand, trennlinie3, "trennlinie3");
+  GLADE_HOOKUP_OBJECT (window_hand, level_doubled0, "level_doubled0");
   GLADE_HOOKUP_OBJECT (window_hand, level_doubled1, "level_doubled1");
   GLADE_HOOKUP_OBJECT (window_hand, level_redoubled1, "level_redoubled1");
   GLADE_HOOKUP_OBJECT (window_hand, vulnerable1, "vulnerable1");

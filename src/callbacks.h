@@ -302,3 +302,23 @@ on_window_line_entry_delete_event      (GtkWidget       *widget,
 void
 on_line_entry_activate                 (GtkEntry        *entry,
                                         gpointer         user_data);
+
+void
+on_level_doubled0_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_dealer_west1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_dealer_north1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_dealer_east1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_dealer_south1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

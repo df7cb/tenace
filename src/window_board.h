@@ -48,10 +48,12 @@ void board_window_append_board (board *b);
 void board_window_init ();
 void board_statusbar(char *text);
 
+/* stubs for calls from gui */
+void board_set_declarer (seat declarer);
 void board_set_dealer (seat dealer);
 void board_set_trumps (suit trumps);
 void board_set_level (int level);
 void board_set_vuln (int ns, int ew);
-void board_toggle_doubled (int button); /* only useful for calls from GUI */
+void board_toggle_doubled (int button);
 
 #endif /* WINDOW_CARD_H */

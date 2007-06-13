@@ -188,7 +188,7 @@ void
 on_declarer_west1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_set_dealer (west);
+	board_set_declarer (west);
 }
 
 
@@ -196,7 +196,7 @@ void
 on_declarer_north1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_set_dealer (north);
+	board_set_declarer (north);
 }
 
 
@@ -204,7 +204,7 @@ void
 on_declarer_east1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_set_dealer (east);
+	board_set_declarer (east);
 }
 
 
@@ -212,7 +212,7 @@ void
 on_declarer_south1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_set_dealer (south);
+	board_set_declarer (south);
 }
 
 
@@ -312,10 +312,17 @@ on_level7_activate                     (GtkMenuItem     *menuitem,
 }
 
 void
+on_level_doubled0_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_set_doubled (0);
+}
+
+void
 on_level_doubled1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_toggle_doubled (1);
+	board_set_doubled (1);
 }
 
 
@@ -323,7 +330,7 @@ void
 on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_toggle_doubled (1);
+	board_set_doubled (2);
 }
 
 void
@@ -605,5 +612,38 @@ on_window_line_entry_delete_event      (GtkWidget       *widget,
 {
 	window_line_entry = NULL;
 	return FALSE;
+}
+
+
+
+void
+on_dealer_west1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_set_dealer (west);
+}
+
+
+void
+on_dealer_north1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_set_dealer (north);
+}
+
+
+void
+on_dealer_east1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_set_dealer (east);
+}
+
+
+void
+on_dealer_south1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_set_dealer (south);
 }
 

@@ -195,7 +195,7 @@ char *contract_string(int level, suit trumps, seat declarer, int doubled)
 	static char buf[20];
 	char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
 	char *declarer_str[] = {0, "W", "N", "E", "S"};
-	sprintf(buf, "%d%s %s%s", level, trump_str[trumps], declarer_str[declarer],
+	snprintf(buf, 20, "%d%s %s%s", level, trump_str[trumps], declarer_str[declarer],
 		doubled == 2 ? " XX" :
 			doubled == 1 ? " X" : "");
 	return buf;

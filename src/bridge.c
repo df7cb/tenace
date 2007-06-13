@@ -82,6 +82,7 @@ board *board_new(void)
 		b->hand_name[i] = g_string_new(names[i]);
 	}
 
+	b->dealer = north;
 	board_set_contract(b, 1, NT, south, 0);
 	board_clear(b);
 	b->vuln[0] = b->vuln[1] = 0;

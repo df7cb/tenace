@@ -33,11 +33,41 @@ void show_board (board *b, redraw_t redraw)
 		g_string_printf(str, "Tenace - %s%s%s", b->name->str,
 			b->filename ? " - " : "", fname ? fname : "");
 		gtk_window_set_title(GTK_WINDOW(win->window), str->str);
+	}
 
+	if (redraw & REDRAW_CONTRACT) {
 		w = lookup_widget(win->window, "label_board");
 		g_string_printf(str, "%s\n%s", b->name->str,
 			contract_string(b->level, b->trumps, b->declarer, b->doubled));
 		gtk_label_set_text((GtkLabel*) w, str->str);
+
+		char *dealermenu[] = { 0, "dealer_west1", "dealer_north1",
+			"dealer_east1", "dealer_south1"};
+		w = lookup_widget(win->window, dealermenu[b->dealer]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
+
+		char *declarermenu[] = { 0, "declarer_west1", "declarer_north1",
+			"declarer_east1", "declarer_south1"};
+		w = lookup_widget(win->window, declarermenu[b->declarer]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
+
+		char *levelmenu[] = { 0, "level1", "level2", "level3",
+			"level4", "level5", "level6", "level7" };
+		w = lookup_widget(win->window, levelmenu[b->level]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
+
+		char *suitmenu[] = { "contract_clubs1", "contract_diamonds1",
+			"contract_hearts1", "contract_spades1", "contract_no_trump1" };
+		w = lookup_widget(win->window, suitmenu[b->trumps]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
+
+		char *doublemenu[] = { "level_doubled0", "level_doubled1", "level_redoubled1" };
+		w = lookup_widget(win->window, doublemenu[b->doubled]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
+
+		char *vulnmenu[] = { "vuln_none", "vuln_ns", "vuln_ew", "vuln_all" };
+		w = lookup_widget(win->window, vulnmenu[2 * b->vuln[1] + b->vuln[0]]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 	}
 
 	if (redraw & REDRAW_NAMES) {
@@ -262,78 +292,71 @@ void board_statusbar (char *text)
 		gtk_statusbar_push(win->statusbar, id, text);
 }
 
+#define PROTECT_BEGIN static int protect = 0; if (protect) return; protect = 1;
+#define PROTECT_END protect = 0;
+
+void
+board_set_declarer (seat declarer)
+{
+	PROTECT_BEGIN;
+	board *b = CUR_BOARD;
+	board_rewind(b);
+	b->declarer = declarer;
+	b->current_turn = seat_mod(declarer + 1);
+	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS | REDRAW_NAMES);
+	// FIXME: redraw less?
+	PROTECT_END;
+}
+
 void
 board_set_dealer (seat dealer)
 {
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
-	board_rewind(b);
-	b->declarer = dealer;
-	b->current_turn = seat_mod(dealer + 1);
-	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS);
+	b->dealer = dealer;
+	// FIXME: redraw something?
+	PROTECT_END;
 }
 
 void
 board_set_trumps (suit trumps)
 {
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->trumps = trumps;
 	show_board(b, REDRAW_CONTRACT);
+	PROTECT_END;
 }
 
 void
 board_set_level (int level)
 {
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->level = level;
 	calculate_target(b);
 	show_board(b, REDRAW_CONTRACT);
+	PROTECT_END;
 }
 
 void
 board_set_vuln (int ns, int ew)
 {
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->vuln[0] = ns;
 	b->vuln[1] = ew;
 	b->par_score = -1;
-	show_board(b, REDRAW_CONTRACT);
+	show_board(b, REDRAW_CONTRACT | REDRAW_NAMES);
+	PROTECT_END;
 }
 
 void
-board_toggle_doubled (int button)
+board_set_doubled (int doubled)
 {
-	static int double_update_in_progress = 0;
-	static GtkCheckMenuItem *x = 0, *xx = 0;
-
-	if (double_update_in_progress++)
-		return;
-
-	if (!x)
-		x = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_doubled1"));
-	if (!xx)
-		xx = GTK_CHECK_MENU_ITEM(lookup_widget(win->window, "level_redoubled1"));
-
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
-
-	switch (button) {
-	case 1:
-		if (gtk_check_menu_item_get_active(x)) {
-			b->doubled = 1;
-			gtk_check_menu_item_set_active(xx, FALSE);
-		} else
-			b->doubled = 0;
-		break;
-	case 2:
-		if (gtk_check_menu_item_get_active(xx)) {
-			b->doubled = 2;
-			gtk_check_menu_item_set_active(x, FALSE);
-		} else
-			b->doubled = 0;
-		break;
-	default:
-		assert(0);
-	}
-
+	b->doubled = doubled;
 	show_board(b, REDRAW_CONTRACT);
-	double_update_in_progress = 0;
+	PROTECT_END;
 }
