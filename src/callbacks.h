@@ -344,3 +344,17 @@ gboolean
 on_window_card_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
+
+void
+on_bids1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+gboolean
+on_window_bidding_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+gboolean
+on_window_bids_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);

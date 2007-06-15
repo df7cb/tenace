@@ -3,7 +3,7 @@
  */
 
 GtkWidget* create_window_hand (void);
-GtkWidget* create_window_bid (void);
+GtkWidget* create_window_bidding (void);
 GtkWidget* create_window_card (void);
 GtkWidget* create_window_bids (void);
 GtkWidget* create_window_imps (void);

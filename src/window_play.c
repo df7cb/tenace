@@ -4,7 +4,6 @@
 #include "functions.h"
 #include "interface.h"
 #include "support.h"
-#include "window_board.h"
 
 static GtkWidget *window_play = 0;
 static GtkTable *play_table;

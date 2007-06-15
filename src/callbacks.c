@@ -14,6 +14,7 @@
 #include "functions.h"
 #include "main.h"
 #include "solve.h"
+#include "window_bids.h"
 #include "window_board.h"
 #include "window_card.h"
 #include "window_line_entry.h"
@@ -649,6 +650,8 @@ on_dealer_south1_activate              (GtkMenuItem     *menuitem,
 }
 
 
+/* window handling */
+
 gboolean
 on_window_card_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -671,13 +674,50 @@ on_cards1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
+gboolean
+on_window_bidding_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "bidding1"));
+	gtk_check_menu_item_set_active (menuitem, FALSE);
+	window_bidding_delete ();
+	return FALSE;
+}
+
+
 void
 on_bidding1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
+		window_bidding_init ();
+	else
+		window_bidding_delete ();
 }
 
+
+gboolean
+on_window_bids_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "bids1"));
+	gtk_check_menu_item_set_active (menuitem, FALSE);
+	window_bids_delete ();
+	return FALSE;
+}
+
+
+void
+on_bids1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
+		window_bids_init ();
+	else
+		window_bids_delete ();
+}
 
 gboolean
 on_window_play_delete_event            (GtkWidget       *widget,

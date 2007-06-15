@@ -58,6 +58,6 @@ void board_set_dealer (seat dealer);
 void board_set_trumps (suit trumps);
 void board_set_level (int level);
 void board_set_vuln (int ns, int ew);
-void board_toggle_doubled (int button);
+void board_set_doubled (int doubled);
 
 #endif /* WINDOW_CARD_H */

@@ -113,6 +113,7 @@ create_window_hand (void)
   GtkWidget *menuitem3_menu;
   GtkWidget *cards1;
   GtkWidget *bidding1;
+  GtkWidget *bids1;
   GtkWidget *play1;
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
@@ -501,6 +502,10 @@ create_window_hand (void)
   gtk_widget_show (bidding1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), bidding1);
 
+  bids1 = gtk_check_menu_item_new_with_mnemonic (_("Bids"));
+  gtk_widget_show (bids1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), bids1);
+
   play1 = gtk_check_menu_item_new_with_mnemonic (_("Play"));
   gtk_widget_show (play1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), play1);
@@ -885,6 +890,9 @@ create_window_hand (void)
   g_signal_connect ((gpointer) bidding1, "activate",
                     G_CALLBACK (on_bidding1_activate),
                     NULL);
+  g_signal_connect ((gpointer) bids1, "activate",
+                    G_CALLBACK (on_bids1_activate),
+                    NULL);
   g_signal_connect ((gpointer) play1, "activate",
                     G_CALLBACK (on_play1_activate),
                     NULL);
@@ -997,6 +1005,7 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, menuitem3_menu, "menuitem3_menu");
   GLADE_HOOKUP_OBJECT (window_hand, cards1, "cards1");
   GLADE_HOOKUP_OBJECT (window_hand, bidding1, "bidding1");
+  GLADE_HOOKUP_OBJECT (window_hand, bids1, "bids1");
   GLADE_HOOKUP_OBJECT (window_hand, play1, "play1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4_menu, "menuitem4_menu");
@@ -1044,30 +1053,34 @@ create_window_hand (void)
 }
 
 GtkWidget*
-create_window_bid (void)
+create_window_bidding (void)
 {
-  GtkWidget *window_bid;
+  GtkWidget *window_bidding;
   GtkWidget *scrolledwindow1;
   GtkWidget *treeview_bid;
 
-  window_bid = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (window_bid), _("Bidding"));
+  window_bidding = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window_bidding), _("Bidding"));
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow1);
-  gtk_container_add (GTK_CONTAINER (window_bid), scrolledwindow1);
+  gtk_container_add (GTK_CONTAINER (window_bidding), scrolledwindow1);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
 
   treeview_bid = gtk_tree_view_new ();
   gtk_widget_show (treeview_bid);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), treeview_bid);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (window_bid, window_bid, "window_bid");
-  GLADE_HOOKUP_OBJECT (window_bid, scrolledwindow1, "scrolledwindow1");
-  GLADE_HOOKUP_OBJECT (window_bid, treeview_bid, "treeview_bid");
+  g_signal_connect ((gpointer) window_bidding, "delete_event",
+                    G_CALLBACK (on_window_bidding_delete_event),
+                    NULL);
 
-  return window_bid;
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (window_bidding, window_bidding, "window_bidding");
+  GLADE_HOOKUP_OBJECT (window_bidding, scrolledwindow1, "scrolledwindow1");
+  GLADE_HOOKUP_OBJECT (window_bidding, treeview_bid, "treeview_bid");
+
+  return window_bidding;
 }
 
 GtkWidget*
@@ -1254,21 +1267,9 @@ create_window_bids (void)
   GtkWidget *toolbutton5;
   GtkWidget *hbuttonbox1;
   GtkWidget *bid_pass;
-  GtkWidget *alignment1;
-  GtkWidget *hbox1;
-  GtkWidget *image1;
-  GtkWidget *label5;
   GtkWidget *bid_x;
-  GtkWidget *alignment2;
-  GtkWidget *hbox2;
-  GtkWidget *image2;
-  GtkWidget *label6;
   GtkWidget *bid_xx;
-  GtkWidget *alignment3;
-  GtkWidget *hbox3;
-  GtkWidget *image3;
-  GtkWidget *label7;
-  GtkWidget *table3;
+  GtkWidget *bids_table;
 
   window_bids = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (window_bids), _("Bids"));
@@ -1291,72 +1292,28 @@ create_window_bids (void)
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (vbox3), hbuttonbox1, FALSE, TRUE, 0);
 
-  bid_pass = gtk_button_new ();
+  bid_pass = gtk_button_new_with_mnemonic (_("PASS"));
   gtk_widget_show (bid_pass);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), bid_pass);
   GTK_WIDGET_SET_FLAGS (bid_pass, GTK_CAN_DEFAULT);
 
-  alignment1 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment1);
-  gtk_container_add (GTK_CONTAINER (bid_pass), alignment1);
-
-  hbox1 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox1);
-  gtk_container_add (GTK_CONTAINER (alignment1), hbox1);
-
-  image1 = gtk_image_new_from_stock ("gtk-remove", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image1);
-  gtk_box_pack_start (GTK_BOX (hbox1), image1, FALSE, FALSE, 0);
-
-  label5 = gtk_label_new_with_mnemonic (_("Pass"));
-  gtk_widget_show (label5);
-  gtk_box_pack_start (GTK_BOX (hbox1), label5, FALSE, FALSE, 0);
-
-  bid_x = gtk_button_new ();
+  bid_x = gtk_button_new_with_mnemonic (_("X"));
   gtk_widget_show (bid_x);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), bid_x);
   GTK_WIDGET_SET_FLAGS (bid_x, GTK_CAN_DEFAULT);
 
-  alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment2);
-  gtk_container_add (GTK_CONTAINER (bid_x), alignment2);
-
-  hbox2 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox2);
-  gtk_container_add (GTK_CONTAINER (alignment2), hbox2);
-
-  image2 = gtk_image_new_from_stock ("gtk-stop", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image2);
-  gtk_box_pack_start (GTK_BOX (hbox2), image2, FALSE, FALSE, 0);
-
-  label6 = gtk_label_new_with_mnemonic (_("X"));
-  gtk_widget_show (label6);
-  gtk_box_pack_start (GTK_BOX (hbox2), label6, FALSE, FALSE, 0);
-
-  bid_xx = gtk_button_new ();
+  bid_xx = gtk_button_new_with_mnemonic (_("XX"));
   gtk_widget_show (bid_xx);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), bid_xx);
   GTK_WIDGET_SET_FLAGS (bid_xx, GTK_CAN_DEFAULT);
 
-  alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment3);
-  gtk_container_add (GTK_CONTAINER (bid_xx), alignment3);
+  bids_table = gtk_table_new (7, 4, FALSE);
+  gtk_widget_show (bids_table);
+  gtk_box_pack_start (GTK_BOX (vbox3), bids_table, TRUE, TRUE, 0);
 
-  hbox3 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox3);
-  gtk_container_add (GTK_CONTAINER (alignment3), hbox3);
-
-  image3 = gtk_image_new_from_stock ("gtk-stop", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image3);
-  gtk_box_pack_start (GTK_BOX (hbox3), image3, FALSE, FALSE, 0);
-
-  label7 = gtk_label_new_with_mnemonic (_("XX"));
-  gtk_widget_show (label7);
-  gtk_box_pack_start (GTK_BOX (hbox3), label7, FALSE, FALSE, 0);
-
-  table3 = gtk_table_new (7, 4, FALSE);
-  gtk_widget_show (table3);
-  gtk_box_pack_start (GTK_BOX (vbox3), table3, TRUE, TRUE, 0);
+  g_signal_connect ((gpointer) window_bids, "delete_event",
+                    G_CALLBACK (on_window_bids_delete_event),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (window_bids, window_bids, "window_bids");
@@ -1365,21 +1322,9 @@ create_window_bids (void)
   GLADE_HOOKUP_OBJECT (window_bids, toolbutton5, "toolbutton5");
   GLADE_HOOKUP_OBJECT (window_bids, hbuttonbox1, "hbuttonbox1");
   GLADE_HOOKUP_OBJECT (window_bids, bid_pass, "bid_pass");
-  GLADE_HOOKUP_OBJECT (window_bids, alignment1, "alignment1");
-  GLADE_HOOKUP_OBJECT (window_bids, hbox1, "hbox1");
-  GLADE_HOOKUP_OBJECT (window_bids, image1, "image1");
-  GLADE_HOOKUP_OBJECT (window_bids, label5, "label5");
   GLADE_HOOKUP_OBJECT (window_bids, bid_x, "bid_x");
-  GLADE_HOOKUP_OBJECT (window_bids, alignment2, "alignment2");
-  GLADE_HOOKUP_OBJECT (window_bids, hbox2, "hbox2");
-  GLADE_HOOKUP_OBJECT (window_bids, image2, "image2");
-  GLADE_HOOKUP_OBJECT (window_bids, label6, "label6");
   GLADE_HOOKUP_OBJECT (window_bids, bid_xx, "bid_xx");
-  GLADE_HOOKUP_OBJECT (window_bids, alignment3, "alignment3");
-  GLADE_HOOKUP_OBJECT (window_bids, hbox3, "hbox3");
-  GLADE_HOOKUP_OBJECT (window_bids, image3, "image3");
-  GLADE_HOOKUP_OBJECT (window_bids, label7, "label7");
-  GLADE_HOOKUP_OBJECT (window_bids, table3, "table3");
+  GLADE_HOOKUP_OBJECT (window_bids, bids_table, "bids_table");
 
   return window_bids;
 }

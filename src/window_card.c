@@ -3,6 +3,7 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "interface.h"
 #include "support.h"
 #include "window_board.h" /* board b */
 
