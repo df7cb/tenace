@@ -6,6 +6,7 @@
 #include "support.h"
 #include "window_board.h" /* board b */
 
+static GtkWidget *window_card = 0;
 static GtkWidget *card_button[52];
 seat new_card_seat = west;
 
@@ -17,7 +18,8 @@ void card_window_update (seat *cards)
 			cards[c] ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
 }
 
-void cardX_clicked (GtkButton *button, gpointer cxp)
+static void
+cardX_clicked (GtkButton *button, gpointer cxp)
 {
 	suit cx = *(suit *)cxp;
 	board *b = win->boards[win->cur];
@@ -42,7 +44,8 @@ void cardX_clicked (GtkButton *button, gpointer cxp)
 	board_statusbar("All cards of that suit dealt");
 }
 
-void card_clicked (GtkButton *button, gpointer cp)
+static void
+card_clicked (GtkButton *button, gpointer cp)
 {
 	card c = *(card *)cp;
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
@@ -100,3 +103,23 @@ void fill_card_window (GtkWidget *w)
 	}
 }
 
+void
+window_card_init ()
+{
+	if (window_card)
+		return;
+
+	window_card = create_window_card ();
+	fill_card_window (window_card);
+	gtk_widget_show (window_card);
+}
+
+void
+window_card_delete (void)
+{
+	if (!window_card)
+		return;
+
+	gtk_widget_destroy (window_card);
+	window_card = 0;
+}

@@ -4,13 +4,17 @@
 #include "functions.h"
 #include "interface.h"
 #include "support.h"
+#include "window_board.h"
 
-static GtkWidget *window_play;
+static GtkWidget *window_play = 0;
 static GtkTable *play_table;
 static GtkLabel *play_label[52];
 
 void window_play_init ()
 {
+	if (window_play)
+		return;
+
 	window_play = create_window_play();
 	gtk_widget_show(window_play);
 	play_table = GTK_TABLE(lookup_widget(window_play, "play_table"));
@@ -32,6 +36,9 @@ void window_play_init ()
 
 void window_play_update (board *b)
 {
+	if (!window_play)
+		return;
+
 	int c;
 	for (c = 0; c < 52; c++) {
 		if (b->played_cards[c] == -1)
@@ -43,4 +50,14 @@ void window_play_update (board *b)
 			gtk_widget_set_sensitive(GTK_WIDGET(play_label[c]), c < b->n_played_cards);
 		}
 	}
+}
+
+void
+window_play_delete (void)
+{
+	if (!window_play)
+		return;
+
+	gtk_widget_destroy (window_play);
+	window_play = 0;
 }

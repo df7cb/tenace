@@ -110,6 +110,10 @@ create_window_hand (void)
   GtkWidget *einf__gen1;
   GtkWidget *l__schen1;
   GtkWidget *menuitem3;
+  GtkWidget *menuitem3_menu;
+  GtkWidget *cards1;
+  GtkWidget *bidding1;
+  GtkWidget *play1;
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
   GtkWidget *imp_table1;
@@ -245,6 +249,7 @@ create_window_hand (void)
   dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_south1));
   gtk_widget_show (dealer_south1);
   gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_south1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (dealer_south1), TRUE);
 
   contract1 = gtk_menu_item_new_with_mnemonic (_("Contract"));
   gtk_widget_show (contract1);
@@ -362,7 +367,6 @@ create_window_hand (void)
   level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_doubled0));
   gtk_widget_show (level_doubled0);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_doubled0);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level_doubled0), TRUE);
 
   level_doubled1 = gtk_radio_menu_item_new_with_mnemonic (level_doubled0_group, _("X Doubled"));
   level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_doubled1));
@@ -373,6 +377,7 @@ create_window_hand (void)
   level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_redoubled1));
   gtk_widget_show (level_redoubled1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_redoubled1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level_redoubled1), TRUE);
 
   vulnerable1 = gtk_menu_item_new_with_mnemonic (_("Vulnerable"));
   gtk_widget_show (vulnerable1);
@@ -484,6 +489,21 @@ create_window_hand (void)
   menuitem3 = gtk_menu_item_new_with_mnemonic (_("_Ansicht"));
   gtk_widget_show (menuitem3);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem3);
+
+  menuitem3_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem3), menuitem3_menu);
+
+  cards1 = gtk_check_menu_item_new_with_mnemonic (_("Cards"));
+  gtk_widget_show (cards1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), cards1);
+
+  bidding1 = gtk_check_menu_item_new_with_mnemonic (_("Bidding"));
+  gtk_widget_show (bidding1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), bidding1);
+
+  play1 = gtk_check_menu_item_new_with_mnemonic (_("Play"));
+  gtk_widget_show (play1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), play1);
 
   menuitem4 = gtk_menu_item_new_with_mnemonic (_("_Hilfe"));
   gtk_widget_show (menuitem4);
@@ -859,6 +879,15 @@ create_window_hand (void)
   g_signal_connect ((gpointer) l__schen1, "activate",
                     G_CALLBACK (on_l__schen1_activate),
                     NULL);
+  g_signal_connect ((gpointer) cards1, "activate",
+                    G_CALLBACK (on_cards1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) bidding1, "activate",
+                    G_CALLBACK (on_bidding1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) play1, "activate",
+                    G_CALLBACK (on_play1_activate),
+                    NULL);
   g_signal_connect ((gpointer) imp_table1, "activate",
                     G_CALLBACK (on_imp_table1_activate),
                     NULL);
@@ -965,6 +994,10 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, einf__gen1, "einf__gen1");
   GLADE_HOOKUP_OBJECT (window_hand, l__schen1, "l__schen1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem3, "menuitem3");
+  GLADE_HOOKUP_OBJECT (window_hand, menuitem3_menu, "menuitem3_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, cards1, "cards1");
+  GLADE_HOOKUP_OBJECT (window_hand, bidding1, "bidding1");
+  GLADE_HOOKUP_OBJECT (window_hand, play1, "play1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4_menu, "menuitem4_menu");
   GLADE_HOOKUP_OBJECT (window_hand, imp_table1, "imp_table1");
@@ -1168,6 +1201,9 @@ create_window_card (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
   gtk_label_set_use_markup (GTK_LABEL (label4), TRUE);
 
+  g_signal_connect ((gpointer) window_card, "delete_event",
+                    G_CALLBACK (on_window_card_delete_event),
+                    NULL);
   g_signal_connect ((gpointer) toolbutton_card_wipe, "clicked",
                     G_CALLBACK (on_toolbutton_card_wipe_clicked),
                     NULL);
@@ -1920,6 +1956,10 @@ create_window_play (void)
   play_table = gtk_table_new (13, 5, TRUE);
   gtk_widget_show (play_table);
   gtk_box_pack_start (GTK_BOX (vbox6), play_table, TRUE, TRUE, 0);
+
+  g_signal_connect ((gpointer) window_play, "delete_event",
+                    G_CALLBACK (on_window_play_delete_event),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (window_play, window_play, "window_play");

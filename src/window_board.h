@@ -9,6 +9,10 @@
 
 #define CUR_BOARD (win->boards[win->cur])
 
+/* make sure some code is not called twice */
+#define PROTECT_BEGIN static int protect = 0; if (protect) return; protect = 1;
+#define PROTECT_END protect = 0;
+
 /* types */
 
 typedef struct _windown_board_t {

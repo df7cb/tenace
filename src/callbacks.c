@@ -17,6 +17,7 @@
 #include "window_board.h"
 #include "window_card.h"
 #include "window_line_entry.h"
+#include "window_play.h"
 
 static GtkWidget *window_imps = NULL;
 static GtkWidget *window_info = NULL;
@@ -646,4 +647,58 @@ on_dealer_south1_activate              (GtkMenuItem     *menuitem,
 {
 	board_set_dealer (south);
 }
+
+
+gboolean
+on_window_card_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "cards1"));
+	gtk_check_menu_item_set_active (menuitem, FALSE);
+	window_card_delete ();
+	return FALSE;
+}
+
+void
+on_cards1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
+		window_card_init ();
+	else
+		window_card_delete ();
+}
+
+
+void
+on_bidding1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+gboolean
+on_window_play_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "play1"));
+	gtk_check_menu_item_set_active (menuitem, FALSE);
+	window_play_delete ();
+	return FALSE;
+}
+
+
+void
+on_play1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
+		window_play_init ();
+	else
+		window_play_delete ();
+}
+
 

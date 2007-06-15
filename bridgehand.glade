@@ -178,7 +178,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">South</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">dealer_west1</property>
 			      <signal name="activate" handler="on_dealer_south1_activate" last_modification_time="Wed, 13 Jun 2007 21:59:48 GMT"/>
 			    </widget>
@@ -406,7 +406,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">No double</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_level_doubled0_activate" last_modification_time="Wed, 13 Jun 2007 21:46:31 GMT"/>
 			    </widget>
 			  </child>
@@ -427,7 +427,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">XX Redoubled</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">level_doubled0</property>
 			      <signal name="activate" handler="on_level_redoubled1_activate" last_modification_time="Sat, 03 Feb 2007 20:56:20 GMT"/>
 			    </widget>
@@ -661,6 +661,41 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Ansicht</property>
 	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="menuitem3_menu">
+
+		  <child>
+		    <widget class="GtkCheckMenuItem" id="cards1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Cards</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="on_cards1_activate" last_modification_time="Fri, 15 Jun 2007 22:12:11 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkCheckMenuItem" id="bidding1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Bidding</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="on_bidding1_activate" last_modification_time="Fri, 15 Jun 2007 22:12:11 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkCheckMenuItem" id="play1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Play</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="on_play1_activate" last_modification_time="Fri, 15 Jun 2007 22:12:11 GMT"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
 	    </widget>
 	  </child>
 
@@ -1438,6 +1473,7 @@ EW: 0</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="delete_event" handler="on_window_card_delete_event" last_modification_time="Fri, 15 Jun 2007 22:45:55 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox2">
@@ -3617,6 +3653,7 @@ EW: 0</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="delete_event" handler="on_window_play_delete_event" last_modification_time="Fri, 15 Jun 2007 22:00:52 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox6">

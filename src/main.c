@@ -21,7 +21,6 @@ int
 main (int argc, char *argv[])
 {
   //GtkWidget *window_bid;
-  GtkWidget *window_card;
   //GtkWidget *window_bids;
 
 #ifdef ENABLE_NLS
@@ -40,17 +39,14 @@ main (int argc, char *argv[])
 
   board_window_init ();
 
-  window_card = create_window_card ();
-  gtk_widget_show (window_card);
   //window_bid = create_window_bid ();
   //gtk_widget_show (window_bid);
   //window_bids = create_window_bids ();
   //gtk_widget_show (window_bids);
   //gtk_widget_show (create_window_line_entry());
 
-  window_play_init ();
+  //window_play_init ();
 
-  fill_card_window(window_card);
 
   if (argc > 1) {
 	board *b = board_new ();

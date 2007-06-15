@@ -322,3 +322,25 @@ on_dealer_east1_activate               (GtkMenuItem     *menuitem,
 void
 on_dealer_south1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+gboolean
+on_window_play_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+void
+on_cards1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_bidding1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_play1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+gboolean
+on_window_card_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);

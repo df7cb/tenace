@@ -19,10 +19,6 @@
 
 window_board_t *win; // FIXME static?
 
-//static GtkWidget *card_button[52];
-//static GtkWidget *card_button_child[52];
-//static GtkWidget *card_button_container[52]; /* non-NULL if button is shown */
-
 void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
@@ -105,15 +101,6 @@ void show_board (board *b, redraw_t redraw)
 		g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
 		gtk_label_set_markup((GtkLabel*) w, str->str);
 	}
-
-	/*
-	int label_i;
-	for (label_i = 0; label_i < 52 && b->card_label[label_i]; label_i++) {
-		gtk_widget_destroy(b->card_label[label_i]);
-		b->card_label[label_i] = 0;
-	}
-	label_i = 0;
-	*/
 
 	if (redraw & REDRAW_DD) {
 		if (b->par_score == -1) {
@@ -218,30 +205,7 @@ static void create_hand_widgets (window_board_t *win)
 		g_signal_connect (hand, "card-enter", G_CALLBACK (card_enter), dir + h);
 		g_signal_connect (hand, "card-leave", G_CALLBACK (card_leave), dir + h);
 		win->handdisp[h] = HAND_DISPLAY(hand);
-		//gtk_widget_show_all(handdisp);
 	}
-
-		/*
-	static card card_data[52];
-	card c;
-	for (c = 0; c < 52; c++) {
-		GtkWidget *lab = gtk_label_new(rank_string(RANK(c)));
-		gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
-		GtkWidget *but = gtk_button_new();
-		gtk_container_add(GTK_CONTAINER(but), lab);
-		//gtk_container_set_border_width(GTK_CONTAINER(but), 0);
-		gtk_button_set_focus_on_click(GTK_BUTTON(but), FALSE);
-
-		card_data[c] = c;
-		g_signal_connect (but, "clicked", G_CALLBACK(button_clicked), &card_data[c]);
-		g_signal_connect (but, "enter", G_CALLBACK(button_entered), &card_data[c]);
-		g_signal_connect (but, "leave", G_CALLBACK(button_left), &card_data[c]);
-		win->card_button[c] = but;
-		win->card_button_child[c] = lab;
-		win->card_button_container[c] = NULL;
-		g_object_ref(but); // create reference so buttons are not deleted when moved around
-	}
-	*/
 }
 
 void
@@ -264,7 +228,6 @@ board_window_init ()
 	win = malloc(sizeof(window_board_t));
 	win->window = create_window_hand ();
 
-	//create_card_buttons(win);
 	create_hand_widgets(win);
 
 	win->boards = malloc(4 * sizeof(board*));
@@ -291,9 +254,6 @@ void board_statusbar (char *text)
 	if (text)
 		gtk_statusbar_push(win->statusbar, id, text);
 }
-
-#define PROTECT_BEGIN static int protect = 0; if (protect) return; protect = 1;
-#define PROTECT_END protect = 0;
 
 void
 board_set_declarer (seat declarer)
