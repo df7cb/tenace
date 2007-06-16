@@ -1,6 +1,15 @@
 # List of source files containing translatable strings.
 
-src/main.c
-src/interface.c
+src/bridge.c
 src/callbacks.c
+src/file.c
+src/functions.c
+src/interface.c
+src/main.c
+src/solve.c
 src/support.c
+src/window_bids.c
+src/window_board.c
+src/window_card.c
+src/window_line_entry.c
+src/window_play.c
