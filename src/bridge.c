@@ -91,8 +91,9 @@ board *board_new(void)
 	board *b = malloc(sizeof(board));
 	assert(b);
 
-	b->filename = NULL;
 	b->name = g_string_new("Board 1");
+	b->filename = NULL;
+	b->n = 0; /* will be set by the board menu hander */
 	for (i = 0; i < 4; i++) {
 		b->hand_name[i] = g_string_new(names[i]);
 	}
@@ -208,8 +209,13 @@ int play_card(board *b, seat s, card c)
 {
 	board_statusbar(NULL);
 
+	if (b->cards[c] == 0) {
+		board_statusbar(_("Card is not in your hand"));
+		return 0;
+	}
+
 	if (b->cards[c] != b->current_turn) {
-		board_statusbar("Not your turn");
+		board_statusbar(_("Not your turn"));
 		return 0;
 	}
 
@@ -219,7 +225,7 @@ int play_card(board *b, seat s, card c)
 		firstcard = b->n_played_cards - (b->n_played_cards % 4);
 		lead = b->played_cards[firstcard];
 		if (SUIT(c) != SUIT(lead) && has_suit(b->cards, s, SUIT(lead))) {
-			board_statusbar("Please follow suit");
+			board_statusbar(_("Please follow suit"));
 			return 0;
 		}
 	}
@@ -250,7 +256,7 @@ int play_card(board *b, seat s, card c)
 int rewind_card(board *b)
 {
 	if (b->n_played_cards == 0) {
-		board_statusbar("Nothing to undo");
+		board_statusbar(_("Nothing to undo"));
 		return 0;
 	}
 
@@ -275,19 +281,19 @@ void board_rewind(board *b)
 int next_card(board *b)
 {
 	if (b->n_played_cards >= b->n_dealt_cards) {
-		board_statusbar("No cards left to play");
+		board_statusbar(_("No cards left to play"));
 		return 0;
 	}
 	if (b->played_cards[b->n_played_cards] == -1) {
-		board_statusbar("Which card should I play?");
+		board_statusbar(_("Which card should I play?"));
 		return 0;
 	}
 	if (b->cards[b->played_cards[b->n_played_cards]] == 0) {
-		board_statusbar("Card was already played");
+		board_statusbar(_("Card was already played"));
 		return 0;
 	}
 	if (b->cards[b->played_cards[b->n_played_cards]] != b->current_turn) {
-		board_statusbar("Card belongs to wrong player");
+		board_statusbar(_("Card belongs to wrong player"));
 		return 0;
 	}
 	return play_card(b, b->current_turn, b->played_cards[b->n_played_cards]);

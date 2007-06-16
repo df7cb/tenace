@@ -1,3 +1,18 @@
+/*
+ *  hand display - bridge hand widget for GTK+
+ *  Copyright (C) 2007 Christoph Berg <cb@df7cb.de>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ */
+
 #include <assert.h>
 #include <glib/gtypes.h>
 #include <gtk/gtk.h>
@@ -112,9 +127,14 @@ draw (GtkWidget *hand, cairo_t *cr)
 						extents.width + 2, extents.height + 2);
 					cairo_fill (cr);
 				}
-				if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) 
-					cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
-				else
+				if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) {
+					if (handdisp->cards[c] == HAND_DISPLAY_CARD)
+						cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+					else if (handdisp->cards[c] == HAND_DISPLAY_GREY_CARD)
+						cairo_set_source_rgb (cr, 0.2, 0.2, 0.2);
+					else if (handdisp->cards[c] == HAND_DISPLAY_OLD_CARD)
+						cairo_set_source_rgb (cr, 0.5, 0.5, 0.5);
+				} else {
 					/* invert colors if the score is for the opps */
 					if (handdisp->card_score_neg ^ (handdisp->card_score[c] >= 0))
 						if (handdisp->best_card_score == handdisp->card_score[c])
@@ -126,6 +146,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 							cairo_set_source_rgb (cr, 0.9, 0.0, 0.0);
 						else
 							cairo_set_source_rgb (cr, 0.7, 0.0, 0.0);
+				}
 				cairo_move_to (cr, x, y);
 				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
@@ -247,7 +268,6 @@ gboolean DNDDragMotionCB(
 static void
 hand_display_realize (GtkWidget *widget)
 {
-	//GtkDial *dial;
 	GdkWindowAttr attributes;
 	gint attributes_mask;
 
@@ -255,7 +275,6 @@ hand_display_realize (GtkWidget *widget)
 	g_return_if_fail (IS_HAND_DISPLAY (widget));
 
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-	//dial = GTK_DIAL (widget);
 
 	attributes.x = widget->allocation.x;
 	attributes.y = widget->allocation.y;

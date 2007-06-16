@@ -34,10 +34,46 @@
 
 window_board_t *win; // FIXME static?
 
+static void
+board_menu_select (GtkWidget *menuitem, int *n)
+{
+	win->cur = *n;
+	show_board (win->boards[*n], REDRAW_BOARD);
+}
+
+static void
+board_window_rebuild_board_menu (window_board_t *win)
+{
+	if (gtk_menu_item_get_submenu (GTK_MENU_ITEM (win->board_menu)))
+		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (win->board_menu));
+
+	GtkWidget *submenu = gtk_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (win->board_menu), submenu);
+
+	int i;
+	GSList *group = NULL;
+	for (i = 0; i < win->n_boards; i++) {
+		GtkWidget *menuitem = gtk_radio_menu_item_new_with_label
+			(group, win->boards[i]->name->str);
+		group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (menuitem));
+		if (i == win->cur)
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), TRUE);
+		win->boards[i]->n = i;
+		g_signal_connect (G_OBJECT (menuitem), "activate",
+			G_CALLBACK (board_menu_select), &(win->boards[i]->n));
+
+		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menuitem);
+		gtk_widget_show (menuitem);
+	}
+}
+
 void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
 	GString *str = g_string_new(NULL);
+
+	if (redraw & REDRAW_BOARD_LIST)
+		board_window_rebuild_board_menu (win);
 
 	if (redraw & REDRAW_TITLE) {
 		char *fname = b->filename ? b->filename->str : "";
@@ -133,9 +169,13 @@ void show_board (board *b, redraw_t redraw)
 		int i, c;
 		for (i = west; i <= south; i++) {
 			for (c = 51; c >= 0; c--) {
-				seat h = b->cards[c];
-				hand_display_set_card (win->handdisp[i - 1], c, h == i);
-				if (h == i && b->card_score[c] >= 0)
+				int has = i == b->cards[c];
+				int had = i == b->dealt_cards[c];
+				int color = has ? HAND_DISPLAY_CARD :
+					(had && win->show_played_cards ?
+					 HAND_DISPLAY_OLD_CARD : HAND_DISPLAY_NO_CARD);
+				hand_display_set_card (win->handdisp[i - 1], c, color);
+				if (has && b->card_score[c] >= 0)
 					hand_display_set_card_score (win->handdisp[i - 1], c,
 						card_overtricks(b, c));
 			}
@@ -225,53 +265,38 @@ static void create_hand_widgets (window_board_t *win)
 	}
 }
 
-/*
-void
-board_window_rebuild_board_menu (window_board_t *win)
-{
-	if (gtk_menu_item_get_submenu (GTK_MENU_ITEM (win->board_menu)))
-		gtk_menu_item_remove_submenu GTK_MENU_ITEM (win->board_menu);
-
-	GtkWidget *submenu = gtk_menu_new ();
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (win->board_menu), submenu);
-
-	int i;
-	for (i = 0; i < win->n_boards; i++) {
-		GtkWidget *menuitem = gtk_menu_item_new_with_label ("1");
-		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menuitem);
-		gtk_widget_show (menuitem);
-	}
-}
-*/
-
-void
+int
 board_window_append_board (window_board_t *win, board *b)
 {
+	if (!b)
+		return -1;
+
 	if (win->n_boards >= win->n_boards_alloc) {
 		win->n_boards_alloc <<= 2;
-		win->boards = realloc(win->boards, win->n_boards_alloc);
+		win->boards = realloc(win->boards, win->n_boards_alloc * sizeof (board*));
 		assert(win->boards);
 	}
-	win->boards[win->n_boards++] = b;
+	win->boards[win->n_boards] = b;
+	return win->n_boards++;
 }
 
 void
 board_window_init (window_board_t *win)
 {
 	win->window = create_window_hand ();
-
+	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
+	win->board_menu = lookup_widget(win->window, "board_menu1");
 	create_hand_widgets(win);
 
-	win->boards = malloc(4 * sizeof(board*));
+	win->show_played_cards = 0;
+
+	win->boards = calloc(4, sizeof(board*));
 	assert (win->boards);
 	win->n_boards_alloc = 4;
 	win->n_boards = 1;
 
 	win->cur = 0;
 	win->boards[0] = board_new ();
-
-	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
-	//win->board_menu = lookup_widget(win->window, "board_menu1");
 
 	gtk_widget_show (win->window);
 }

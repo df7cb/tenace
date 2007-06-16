@@ -52,6 +52,8 @@ typedef int card;
 typedef struct board_t {
 	GString *name;
 	GString *filename;
+	int n; /* board number for callbacks */
+
 	int vuln[2]; /* 0 = NS, 1 = EW */
 	seat dealer;
 

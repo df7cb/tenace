@@ -113,6 +113,8 @@ create_window_hand (void)
   GtkWidget *bidding1;
   GtkWidget *bids1;
   GtkWidget *play1;
+  GtkWidget *trennlinie4;
+  GtkWidget *played_cards1;
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
   GtkWidget *imp_table1;
@@ -524,6 +526,15 @@ create_window_hand (void)
   gtk_widget_show (play1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), play1);
 
+  trennlinie4 = gtk_separator_menu_item_new ();
+  gtk_widget_show (trennlinie4);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), trennlinie4);
+  gtk_widget_set_sensitive (trennlinie4, FALSE);
+
+  played_cards1 = gtk_check_menu_item_new_with_mnemonic (_("Played cards"));
+  gtk_widget_show (played_cards1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), played_cards1);
+
   menuitem4 = gtk_menu_item_new_with_mnemonic (_("_Hilfe"));
   gtk_widget_show (menuitem4);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem4);
@@ -907,6 +918,9 @@ create_window_hand (void)
   g_signal_connect ((gpointer) play1, "activate",
                     G_CALLBACK (on_play1_activate),
                     NULL);
+  g_signal_connect ((gpointer) played_cards1, "activate",
+                    G_CALLBACK (on_played_cards1_activate),
+                    NULL);
   g_signal_connect ((gpointer) imp_table1, "activate",
                     G_CALLBACK (on_imp_table1_activate),
                     NULL);
@@ -1016,6 +1030,8 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, bidding1, "bidding1");
   GLADE_HOOKUP_OBJECT (window_hand, bids1, "bids1");
   GLADE_HOOKUP_OBJECT (window_hand, play1, "play1");
+  GLADE_HOOKUP_OBJECT (window_hand, trennlinie4, "trennlinie4");
+  GLADE_HOOKUP_OBJECT (window_hand, played_cards1, "played_cards1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4_menu, "menuitem4_menu");
   GLADE_HOOKUP_OBJECT (window_hand, imp_table1, "imp_table1");

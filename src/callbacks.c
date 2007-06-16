@@ -42,11 +42,14 @@ void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board *b = CUR_BOARD;
-	// FIXME add new board
-	board_clear(b);
-	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS | REDRAW_PLAY);
+	int i;
+	for (i = 0; i < win->n_boards; i++) {
+		board_free (win->boards[i]);
+	}
+	win->n_boards = 0;
+	win->cur = board_window_append_board (win, board_new ());
+	card_window_update(win->boards[0]->dealt_cards);
+	show_board(win->boards[0], REDRAW_FULL);
 }
 
 
@@ -54,8 +57,7 @@ void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board *b = CUR_BOARD;
-	board_load_dialog(b);
+	board_load_dialog ();
 }
 
 void
@@ -493,7 +495,7 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	rewind_card(b); /* extra call to show warning if there's nothing to do */
 	board_rewind(b);
-	show_board(b, REDRAW_HANDS | REDRAW_PLAY);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -504,7 +506,7 @@ on_button_back_clicked                 (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	rewind_card(b);
-	show_board(b, REDRAW_HANDS | REDRAW_PLAY);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -514,7 +516,7 @@ on_button_next_clicked                 (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	next_card(b);
-	show_board(b, REDRAW_HANDS | REDRAW_PLAY);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -524,7 +526,7 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	board_fast_forward(b);
-	show_board(b, REDRAW_HANDS | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -756,4 +758,13 @@ on_play1_activate                      (GtkMenuItem     *menuitem,
 		window_play_delete ();
 }
 
+
+
+void
+on_played_cards1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_played_cards = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem));
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
 

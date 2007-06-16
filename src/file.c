@@ -268,7 +268,8 @@ int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 	return 1;
 }
 
-int board_load(char *fname, board *b)
+board *
+board_load(char *fname)
 {
 	FILE *f;
 	char buf[1024];
@@ -279,18 +280,25 @@ int board_load(char *fname, board *b)
 	if (fgets(buf, 1023, f) == NULL)
 		return 0;
 	fclose(f);
-	//printf("board is %s\n", buf);
-	board_clear(b);
+
+	board *b = board_new ();
+	int ret;
 	if (!strncmp(buf, "pn", 2) || !strncmp(buf, "vg", 2)) {
-		return board_parse_lin(buf, b);
+		ret = board_parse_lin(buf, b);
 	} else {
-		return board_parse_line(buf, b, ' ', '.');
+		ret = board_parse_line(buf, b, ' ', '.');
 	}
+	if (ret)
+		return b;
+	board_free (b);
+	return NULL;
 }
 
-void board_load_dialog (board *b)
+board *
+board_load_dialog (void)
 {
 	GtkWidget *dialog;
+	board *b;
 
 	dialog = gtk_file_chooser_dialog_new ("Open File",
 			GTK_WINDOW (win->window),
@@ -303,19 +311,22 @@ void board_load_dialog (board *b)
 		char *filename;
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		if (board_load(filename, b)) {
+		if (b = board_load(filename)) {
 			if (b->filename)
 				g_string_free(b->filename, TRUE);
 			b->filename = g_string_new(filename);
 			card_window_update(b->dealt_cards);
+			win->cur = board_window_append_board (win, b);
 			show_board(b, REDRAW_FULL);
 		} else {
+			// FIXME: the control flow here is totally bad
 			printf ("open failed.\n");
 		}
 		g_free (filename);
 	}
 
 	gtk_widget_destroy (dialog);
+	return b;
 }
 
 void board_save_dialog (board *b, int save_as)

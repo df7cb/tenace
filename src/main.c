@@ -65,9 +65,14 @@ main (int argc, char *argv[])
   board_window_init (win);
 
   if (argc > 1) {
-	if (!board_load(argv[1], win->boards[0]))
+	board *b;
+	if (!(b = board_load(argv[1]))) {
 		printf ("open failed.\n");
-	card_window_update(win->boards[0]->dealt_cards);
+		exit (1);
+	}
+	board_free (win->boards[0]);
+	win->boards[0] = b;
+	card_window_update(b->dealt_cards);
   }
 
   show_board(win->boards[0], REDRAW_FULL);
