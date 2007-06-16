@@ -22,5 +22,5 @@ tenace_SOURCES = \
 	window_line_entry.c window_line_entry.h \
 	window_play.c window_play.h
 
-tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds
+tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds ../handdisplay/hand_display.o
 
