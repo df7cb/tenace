@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: tenace
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-opensymbol
 Description: bridge hand viewer and editor
  Tenace is a bridge hand viewer and editor.
  .
