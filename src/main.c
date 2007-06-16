@@ -52,8 +52,6 @@ main (int argc, char *argv[])
   init_solve();
   srand(time(NULL));
 
-  board_window_init ();
-
   //window_bid = create_window_bid ();
   //gtk_widget_show (window_bid);
   //window_bids = create_window_bids ();
@@ -62,8 +60,9 @@ main (int argc, char *argv[])
 
   //window_play_init ();
 
+  win = malloc(sizeof(window_board_t));
 
-  board_window_append_board (win, board_new ());
+  board_window_init (win);
 
   if (argc > 1) {
 	if (!board_load(argv[1], win->boards[0]))

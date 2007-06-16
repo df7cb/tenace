@@ -48,6 +48,7 @@ extern window_board_t *win;
 
 void show_board (board *b, redraw_t redraw);
 
+void board_window_rebuild_board_menu (window_board_t *win);
 void board_window_append_board (window_board_t *win, board *b);
 void board_window_init ();
 void board_statusbar(char *text);

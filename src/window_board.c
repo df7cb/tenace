@@ -40,9 +40,11 @@ void show_board (board *b, redraw_t redraw)
 	GString *str = g_string_new(NULL);
 
 	if (redraw & REDRAW_TITLE) {
-		char *fname = b->filename ? strrchr(b->filename->str, '/') + 1 : "";
+		char *fname = b->filename ? b->filename->str : "";
+		if (b->filename && strrchr(b->filename->str, '/'))
+			fname = strrchr(b->filename->str, '/') + 1;
 		g_string_printf(str, "Tenace - %s%s%s", b->name->str,
-			b->filename ? " - " : "", fname ? fname : "");
+			b->filename ? " - " : "", fname);
 		gtk_window_set_title(GTK_WINDOW(win->window), str->str);
 	}
 
@@ -223,6 +225,25 @@ static void create_hand_widgets (window_board_t *win)
 	}
 }
 
+/*
+void
+board_window_rebuild_board_menu (window_board_t *win)
+{
+	if (gtk_menu_item_get_submenu (GTK_MENU_ITEM (win->board_menu)))
+		gtk_menu_item_remove_submenu GTK_MENU_ITEM (win->board_menu);
+
+	GtkWidget *submenu = gtk_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (win->board_menu), submenu);
+
+	int i;
+	for (i = 0; i < win->n_boards; i++) {
+		GtkWidget *menuitem = gtk_menu_item_new_with_label ("1");
+		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menuitem);
+		gtk_widget_show (menuitem);
+	}
+}
+*/
+
 void
 board_window_append_board (window_board_t *win, board *b)
 {
@@ -235,9 +256,8 @@ board_window_append_board (window_board_t *win, board *b)
 }
 
 void
-board_window_init ()
+board_window_init (window_board_t *win)
 {
-	win = malloc(sizeof(window_board_t));
 	win->window = create_window_hand ();
 
 	create_hand_widgets(win);
@@ -245,13 +265,13 @@ board_window_init ()
 	win->boards = malloc(4 * sizeof(board*));
 	assert (win->boards);
 	win->n_boards_alloc = 4;
-	win->n_boards = 0;
+	win->n_boards = 1;
 
-	board_window_append_board (win, board_new ());
 	win->cur = 0;
+	win->boards[0] = board_new ();
 
 	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
-	win->board_menu = GTK_MENU (lookup_widget(win->window, "board_menu1_menu"));
+	//win->board_menu = lookup_widget(win->window, "board_menu1");
 
 	gtk_widget_show (win->window);
 }

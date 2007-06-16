@@ -304,7 +304,7 @@ void board_append_bid(board *b, card bid)
 {
 	if (b->n_bids >= b->n_bid_alloc) {
 		b->n_bid_alloc <<= 2;
-		b->bidding = realloc(b->bidding, b->n_bid_alloc);
+		b->bidding = realloc(b->bidding, b->n_bid_alloc * sizeof (card));
 		assert(b->bidding);
 	}
 	b->bidding[b->n_bids++] = bid;
