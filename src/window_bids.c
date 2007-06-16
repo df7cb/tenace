@@ -24,7 +24,7 @@ static GtkWidget *window_bidding = 0;
 
 static GtkWidget *window_bids = 0;
 static GtkTable *bids_table;
-static GtkButton *bids_button[52];
+//static GtkButton *bids_button[52];
 
 void
 window_bidding_init ()

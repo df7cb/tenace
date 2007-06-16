@@ -26,8 +26,12 @@ static GtkWidget *window_card = 0;
 static GtkWidget *card_button[52];
 seat new_card_seat = west;
 
-void card_window_update (seat *cards)
+void
+card_window_update (seat *cards)
 {
+	if (!window_card)
+		return;
+
 	int c;
 	for (c = 0; c < 52; c++)
 		gtk_button_set_relief ((GtkButton*)card_button[c],
@@ -90,7 +94,8 @@ card_clicked (GtkButton *button, gpointer cp)
 	show_board(b, REDRAW_HANDS);
 }
 
-void fill_card_window (GtkWidget *w)
+static void
+fill_card_window (GtkWidget *w)
 {
 	GtkTable *table = (GtkTable*) lookup_widget(w, "table_cards");
 	static card c[52];

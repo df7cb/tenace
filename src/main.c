@@ -63,13 +63,12 @@ main (int argc, char *argv[])
   //window_play_init ();
 
 
+  board_window_append_board (win, board_new ());
+
   if (argc > 1) {
-	board *b = board_new ();
-	if (!board_load(argv[1], b))
+	if (!board_load(argv[1], win->boards[0]))
 		printf ("open failed.\n");
-	board_window_append_board (b);
-	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_FULL);
+	card_window_update(win->boards[0]->dealt_cards);
   }
 
   show_board(win->boards[0], REDRAW_FULL);

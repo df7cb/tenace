@@ -18,7 +18,7 @@
 typedef struct _windown_board_t {
 	GtkWidget *window;
 	GtkStatusbar *statusbar;
-	GtkMenu *board_menu;
+	GtkWidget *board_menu;
 
 	int n_boards;
 	int n_boards_alloc;
@@ -48,7 +48,7 @@ extern window_board_t *win;
 
 void show_board (board *b, redraw_t redraw);
 
-void board_window_append_board (board *b);
+void board_window_append_board (window_board_t *win, board *b);
 void board_window_init ();
 void board_statusbar(char *text);
 

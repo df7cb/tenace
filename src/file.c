@@ -15,6 +15,7 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "bridge.h"
@@ -173,12 +174,12 @@ int board_parse_lin(const char *line, board *b)
 					su = i;
 				} else if ((i = parse_rank_char(*c)) != -1) {
 					if (add_card(b, se, (su * 13) + i) != 1)
-						return 0;
+						goto error;
 				} else if (*c == ',') {
 					se = seat_mod(se + 1);
 				} else {
 					printf("Parse error: %s", tok);
-					return 0;
+					goto error;
 				}
 			}
 			deal_random(b); /* compute east hand */
@@ -197,7 +198,7 @@ int board_parse_lin(const char *line, board *b)
 			int bid = parse_bid(tok = STRTOK);
 			if (bid == -1) {
 				printf("Invalid bid %s\n", tok);
-				return 0;
+				goto error;
 			}
 			board_append_bid(b, bid);
 			if (bid > bid_xx) {
@@ -213,7 +214,7 @@ int board_parse_lin(const char *line, board *b)
 			int c = parse_card(tok = STRTOK);
 			if (c == -1) {
 				printf("Invalid card %s\n", tok);
-				return 0;
+				goto error;
 			}
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
@@ -230,7 +231,12 @@ int board_parse_lin(const char *line, board *b)
 	if (b->played_cards[0] != -1)
 		board_set_contract(b, LEVEL(contract), DENOM(contract),
 			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled);
+	free (l);
 	return 1;
+
+error:
+	free(l);
+	return 0;
 }
 #undef STRTOK
 
@@ -254,7 +260,7 @@ int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 			if (add_card(b, se, (su * 13) + ra) != 1)
 				return 0;
 		} else {
-			printf ("parse error at char %d: %s\n", c - line + 1, line);
+			printf ("parse error at char %ld: %s\n", c - line + 1, line);
 			return 0;
 		}
 		c++;

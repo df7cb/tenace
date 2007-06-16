@@ -213,8 +213,8 @@ int play_card(board *b, seat s, card c)
 		return 0;
 	}
 
-	int firstcard;
-	card lead;
+	int firstcard = 0;
+	card lead = 0;
 	if (b->n_played_cards % 4 != 0) { /* must follow suit */
 		firstcard = b->n_played_cards - (b->n_played_cards % 4);
 		lead = b->played_cards[firstcard];

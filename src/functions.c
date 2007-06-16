@@ -272,7 +272,7 @@ int score (int level, suit s, int doubled, int vuln, int tricks)
 char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln, int tricks, seat lead)
 {
 	static char buf[25];
-	int flip;
+	int flip = 0;
 	switch (pos_score_for) {
 		case 0: /* NS */
 			flip = (declarer % 2) == 1 ? -1 : 1;

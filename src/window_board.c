@@ -111,7 +111,7 @@ void show_board (board *b, redraw_t redraw)
 		gtk_label_set_markup((GtkLabel*) w, str->str);
 	}
 
-	if (redraw & REDRAW_TITLE) {
+	if (redraw & REDRAW_TRICKS) {
 		w = lookup_widget(win->window, "label_tricks");
 		g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
 		gtk_label_set_markup((GtkLabel*) w, str->str);
@@ -224,7 +224,7 @@ static void create_hand_widgets (window_board_t *win)
 }
 
 void
-board_window_append_board (board *b)
+board_window_append_board (window_board_t *win, board *b)
 {
 	if (win->n_boards >= win->n_boards_alloc) {
 		win->n_boards_alloc <<= 2;
@@ -232,9 +232,6 @@ board_window_append_board (board *b)
 		assert(win->boards);
 	}
 	win->boards[win->n_boards++] = b;
-
-	GtkWidget *m = gtk_menu_item_new_with_label (b->name->str);
-	gtk_menu_append ((win->board_menu), m);
 }
 
 void
@@ -250,7 +247,7 @@ board_window_init ()
 	win->n_boards_alloc = 4;
 	win->n_boards = 0;
 
-	board_window_append_board (board_new ());
+	board_window_append_board (win, board_new ());
 	win->cur = 0;
 
 	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
