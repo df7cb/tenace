@@ -16,16 +16,21 @@
 #include <assert.h>
 #include <glib/gtypes.h>
 #include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
+#include <librsvg/rsvg-cairo.h>
 
 #include "hand_display.h"
 
 /* static data */
 
-static GtkWidgetClass *parent_class = NULL;
+//static GtkWidgetClass *parent_class = NULL;
 static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
 			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+static RsvgHandle *rsvg = NULL;
+static cairo_surface_t *surface = NULL;
+static cairo_pattern_t *pattern = NULL;
 
 /* internal functions */
 
@@ -52,6 +57,53 @@ overtricks (int i)
 	else
 		snprintf(buf, 3, "%+d", i);
 	return buf;
+}
+
+static void
+render_card (cairo_t *cr, double x, double y, int c)
+{
+	static int init = 0;
+	static GdkPixbuf *cards[52];
+	static int width, height;
+
+	assert (0 <= c && c < 52);
+	
+	if (!init) {
+		printf("Initializing card pixmaps\n");
+		GError *error = NULL;
+		//char *fname = "/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg";
+		char *fname = "/home/cb/projects/bridge/tenace/bonded.svg";
+		GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, 40 * 13, 500, &error);
+		if (!pb) {
+			printf ("moo: %s.\n", error->message);
+			exit (1);
+		}
+		width = gdk_pixbuf_get_width (pb) / 13;
+		height = gdk_pixbuf_get_height (pb) / 5;
+		int i;
+		for (i = 0; i < 52; i++) {
+			cards[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
+			if (!cards[i]) {
+				printf ("cards[i]\n");
+				exit (1);
+			}
+			int col = (i + 1) % 13;
+			int row = i / 13;
+			gdk_pixbuf_copy_area (pb, width * col, height * row, width, height,
+				cards[i], 0, 0);
+		}
+		init = 1;
+	}
+	//cairo_save (cr);
+	//cairo_translate (cr, x, y);
+	//cairo_rectangle (cr, 0, 0, width, height);
+	//cairo_clip (cr);
+	//cairo_move_to (cr, 0, 0);
+	//cairo_set_antialias (cr, CAIRO_ANTIALIAS_GRAY);
+	gdk_cairo_set_source_pixbuf (cr, cards[c], x, y);
+	cairo_paint (cr);
+	//cairo_restore (cr);
+	return;
 }
 
 static void
@@ -85,10 +137,10 @@ draw (GtkWidget *hand, cairo_t *cr)
 	cairo_set_font_size (cr, 20);
 	char *suit_str[] = {"♣", "♦", "♥", "♠"};
 	double suit_color[4][3] = {
-		{ 0.0, 0.6, 0.0 },
-		{ 1.0, 0.3, 0.0 },
-		{ 0.9, 0.0, 0.0 },
-		{ 0.0, 0.0, 0.7 }
+		{ HAND_DISPLAY_SPADES_FONT   },
+		{ HAND_DISPLAY_HEARTS_FONT   },
+		{ HAND_DISPLAY_DIAMONDS_FONT },
+		{ HAND_DISPLAY_CLUBS_FONT    }
 	};
 
 	//char *suit_str[] = {"C ", "D ", "H ", "S "};
@@ -116,36 +168,37 @@ draw (GtkWidget *hand, cairo_t *cr)
 		int c;
 		for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
 			if (handdisp->cards[c]) {
+				render_card (cr, x, y - 60, c);
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
 				handdisp->l[c] = x + extents.x_bearing;
 				handdisp->r[c] = x + extents.x_bearing + extents.width;
 				handdisp->t[c] = y + extents.y_bearing;
 				handdisp->b[c] = y + extents.y_bearing + extents.height;
 				if (c == handdisp->cur_focus) {
-					cairo_set_source_rgb (cr, 1.0, 0.0, 0.0);
+					cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
 					cairo_rectangle (cr, handdisp->l[c] - 1, handdisp->t[c] - 1,
 						extents.width + 2, extents.height + 2);
 					cairo_fill (cr);
 				}
 				if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) {
 					if (handdisp->cards[c] == HAND_DISPLAY_CARD)
-						cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+						cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
 					else if (handdisp->cards[c] == HAND_DISPLAY_GREY_CARD)
-						cairo_set_source_rgb (cr, 0.2, 0.2, 0.2);
+						cairo_set_source_rgb (cr, HAND_DISPLAY_GREY_FONT);
 					else if (handdisp->cards[c] == HAND_DISPLAY_OLD_CARD)
-						cairo_set_source_rgb (cr, 0.5, 0.5, 0.5);
+						cairo_set_source_rgb (cr, HAND_DISPLAY_OLD_FONT);
 				} else {
 					/* invert colors if the score is for the opps */
 					if (handdisp->card_score_neg ^ (handdisp->card_score[c] >= 0))
 						if (handdisp->best_card_score == handdisp->card_score[c])
-							cairo_set_source_rgb (cr, 0.0, 0.9, 0.0);
+							cairo_set_source_rgb (cr, HAND_DISPLAY_BEST_POS_FONT);
 						else
-							cairo_set_source_rgb (cr, 0.0, 0.7, 0.0);
+							cairo_set_source_rgb (cr, HAND_DISPLAY_POS_FONT);
 					else
 						if (handdisp->best_card_score == handdisp->card_score[c])
-							cairo_set_source_rgb (cr, 0.9, 0.0, 0.0);
+							cairo_set_source_rgb (cr, HAND_DISPLAY_BEST_NEG_FONT);
 						else
-							cairo_set_source_rgb (cr, 0.7, 0.0, 0.0);
+							cairo_set_source_rgb (cr, HAND_DISPLAY_NEG_FONT);
 				}
 				cairo_move_to (cr, x, y);
 				cairo_show_text (cr, rank_str[c % 13]);
@@ -174,7 +227,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 			*/
 
 			cairo_move_to (cr, handdisp->r[c] - extents.x_advance, handdisp->b[c]);
-			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
+			cairo_set_source_rgb (cr, HAND_DISPLAY_DD_FONT);
 			cairo_show_text (cr, buf);
 		}
 	}
@@ -351,7 +404,7 @@ hand_display_class_init (HandDisplayClass *class)
 	//object_class = GTK_OBJECT_CLASS (class);
 	widget_class = GTK_WIDGET_CLASS (class);
 
-	parent_class = gtk_type_class (gtk_widget_get_type ());
+	//parent_class = gtk_type_class (gtk_widget_get_type ());
 
 	//object_class->destroy = hand_display_destroy;
 
@@ -394,6 +447,35 @@ hand_display_class_init (HandDisplayClass *class)
 			G_TYPE_NONE /* GType return_type */,
 			1 /* guint n_params */,
 			G_TYPE_INT);
+
+	/*
+	GError *error = NULL;
+	rsvg = rsvg_handle_new_from_file ("/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg", &error);
+	if (!rsvg) {
+		printf ("rsvg error: %s", error->message);
+		exit (1);
+	}
+
+	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 100, 100);
+	printf("create\n");
+	if (cairo_surface_status (surface) != CAIRO_STATUS_SUCCESS) {
+		printf ("moo.\n");
+		exit (1);
+	}
+
+	cairo_t *cr = cairo_create (surface);
+	if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
+		printf ("boo: %d.\n", cairo_status (cr));
+		exit (1);
+	}
+	//rsvg_handle_render_cairo (rsvg, cr);
+	if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
+		printf ("foo: %d.\n", cairo_status (cr));
+		exit (1);
+	}
+	//cairo_stroke (cr);
+	//pattern = cairo_pattern_create_for_surface (surface);
+	*/
 }
 
 static void

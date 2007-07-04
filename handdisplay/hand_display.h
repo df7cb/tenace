@@ -25,7 +25,7 @@ extern "C" {
 
 #define TYPE_HAND_DISPLAY          (hand_display_get_type ())
 #define HAND_DISPLAY(obj)          (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_HAND_DISPLAY, HandDisplay))
-#define HAND_DISPLAY_CLASS(klass)  (G_TYPE_CHECK_CLASS_CAST ((klass), HAND_DISPLAY,  HandDisplayClass))
+//#define HAND_DISPLAY_CLASS(klass)  (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_HAND_DISPLAY,  HandDisplayClass))
 #define IS_HAND_DISPLAY(obj)       (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_HAND_DISPLAY))
 
 #define HAND_DISPLAY_NO_CARD       0
@@ -34,6 +34,22 @@ extern "C" {
 #define HAND_DISPLAY_OLD_CARD      3
 
 #define HAND_DISPLAY_NO_SCORE      (0x1000) /* score undefined */
+
+/* internally used colors */
+#define HAND_DISPLAY_FONT          0.0, 0.0, 0.0
+#define HAND_DISPLAY_GREY_FONT     0.2, 0.2, 0.2
+#define HAND_DISPLAY_OLD_FONT      0.5, 0.5, 0.5
+#define HAND_DISPLAY_BEST_POS_FONT 0.0, 0.9, 0.0
+#define HAND_DISPLAY_POS_FONT      0.0, 0.7, 0.0
+#define HAND_DISPLAY_BEST_NEG_FONT 0.9, 0.0, 0.0
+#define HAND_DISPLAY_NEG_FONT      0.7, 0.0, 0.0
+#define HAND_DISPLAY_DD_FONT       0.0, 0.0, 1.0
+#define HAND_DISPLAY_FOCUS_BG      1.0, 0.8, 0.0
+
+#define HAND_DISPLAY_SPADES_FONT   0.0, 0.6, 0.0
+#define HAND_DISPLAY_HEARTS_FONT   1.0, 0.3, 0.0
+#define HAND_DISPLAY_DIAMONDS_FONT 0.9, 0.0, 0.0
+#define HAND_DISPLAY_CLUBS_FONT    0.0, 0.0, 0.7
 
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
