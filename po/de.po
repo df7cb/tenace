@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-06-17 01:21+0200\n"
-"PO-Revision-Date: 2007-06-17 01:25+0200\n"
+"PO-Revision-Date: 2007-07-03 00:58+0200\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -37,11 +37,11 @@ msgstr "Zufällig"
 
 #: src/interface.c:223
 msgid "Line"
-msgstr ""
+msgstr "Zeile"
 
 #: src/interface.c:227
 msgid "Dealer"
-msgstr ""
+msgstr "Teiler"
 
 #: src/interface.c:234 src/interface.c:265 src/interface.c:640
 #: src/interface.c:1168 src/interface.c:1174
@@ -154,11 +154,11 @@ msgstr ""
 
 #: src/interface.c:439
 msgid "Double dummy"
-msgstr ""
+msgstr "Double Dummy"
 
 #: src/interface.c:442 src/interface.c:608 src/interface.c:617
 msgid "Double dummy analysis"
-msgstr ""
+msgstr "Double-Dummy-Analyse"
 
 #: src/interface.c:444
 msgid "Parscore"
@@ -166,27 +166,27 @@ msgstr ""
 
 #: src/interface.c:447
 msgid "Compute par score and contract"
-msgstr ""
+msgstr "Berechne Parscore und -Kontrakt"
 
 #: src/interface.c:449
 msgid "Play par"
-msgstr ""
+msgstr "Spiele Par"
 
 #: src/interface.c:452
 msgid "Set contract to computed par contract"
-msgstr ""
+msgstr "Setze Kontrakt auf berechneten Par"
 
 #: src/interface.c:454
 msgid "Positive for"
-msgstr ""
+msgstr "Positiv für"
 
 #: src/interface.c:467
 msgid "Declarer"
-msgstr ""
+msgstr "Alleinspieler"
 
 #: src/interface.c:473
 msgid "Current lead"
-msgstr ""
+msgstr "Aktuell am Ausspiel"
 
 #: src/interface.c:479
 msgid "Board"
@@ -246,7 +246,7 @@ msgstr ""
 
 #: src/interface.c:578
 msgid "Rewind play"
-msgstr ""
+msgstr "Zurückspulen"
 
 #: src/interface.c:582
 msgid "Zurück"
@@ -254,7 +254,7 @@ msgstr ""
 
 #: src/interface.c:585
 msgid "Undo card play"
-msgstr ""
+msgstr "Karte zurücknehmen"
 
 #: src/interface.c:589
 msgid "Vor"
@@ -262,11 +262,11 @@ msgstr ""
 
 #: src/interface.c:592
 msgid "Play next card"
-msgstr ""
+msgstr "Nächste Karte spielen"
 
 #: src/interface.c:599
 msgid "Play all cards"
-msgstr ""
+msgstr "Alle Karten spielen"
 
 #: src/interface.c:622
 msgid "Par score"
@@ -298,7 +298,7 @@ msgstr ""
 
 #: src/interface.c:1154
 msgid "Clear board"
-msgstr ""
+msgstr "Board leeren"
 
 #: src/interface.c:1158
 msgid "Zufall"
@@ -306,7 +306,7 @@ msgstr ""
 
 #: src/interface.c:1161
 msgid "Deal randomly"
-msgstr ""
+msgstr "Zufällig teilen"
 
 #: src/interface.c:1215
 msgid "♠"
@@ -349,7 +349,7 @@ msgstr ""
 
 #: src/interface.c:1873
 msgid "Hand Line"
-msgstr ""
+msgstr "Hand als Zeile"
 
 #: src/interface.c:1883
 msgid "63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853"
@@ -358,4 +358,4 @@ msgstr ""
 #: src/support.c:90 src/support.c:114
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr ""
+msgstr "Konnte pixmap nicht finden: %s"
