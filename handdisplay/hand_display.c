@@ -16,8 +16,6 @@
 #include <assert.h>
 #include <glib/gtypes.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
-#include <librsvg/rsvg-cairo.h>
 
 #include "hand_display.h"
 
@@ -28,24 +26,28 @@ static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
 			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
-static RsvgHandle *rsvg = NULL;
-static cairo_surface_t *surface = NULL;
-static cairo_pattern_t *pattern = NULL;
+static int card_init = 0, card_width = 0, card_height = 0;
+static GdkPixbuf *card_pixbuf[52];
 
 /* internal functions */
 
 static int
 which_card (HandDisplay *handdisp, double x, double y)
 {
+	/* find rightmost card */
 	int c;
+	int max_x = -1;
+	int max = -1;
 	for (c = 0; c < 52; c++) {
 		if (handdisp->cards[c] && x >= handdisp->l[c] && x <= handdisp->r[c]
 				       && y >= handdisp->t[c] && y <= handdisp->b[c]) {
-			return c;
-			break;
+			if (handdisp->r[c] > max_x) {
+				max = c;
+				max_x = handdisp->r[c];
+			}
 		}
 	}
-	return -1;
+	return max;
 }
 
 static char *
@@ -60,47 +62,50 @@ overtricks (int i)
 }
 
 static void
+render_card_init (void)
+{
+	printf("Initializing card pixmaps\n");
+	GError *error = NULL;
+	//char *fname = "/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg";
+	char *fname = "/home/cb/projects/bridge/tenace/bonded.svg";
+	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, 40 * 13, 500, &error);
+	if (!pb) {
+		printf ("moo: %s.\n", error->message);
+		return;
+	}
+	card_width = gdk_pixbuf_get_width (pb) / 13;
+	card_height = gdk_pixbuf_get_height (pb) / 5;
+	int i;
+	for (i = 0; i < 52; i++) {
+		card_pixbuf[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, card_width, card_height);
+		if (!card_pixbuf[i]) {
+			printf ("card_pixbuf[i]\n");
+			return;
+		}
+		int col = (i + 1) % 13;
+		int row = i / 13;
+		gdk_pixbuf_copy_area (pb, card_width * col, card_height * row,
+			card_width, card_height, card_pixbuf[i], 0, 0);
+	}
+
+	card_init = 1;
+}
+
+static void
 render_card (cairo_t *cr, double x, double y, int c)
 {
-	static int init = 0;
-	static GdkPixbuf *cards[52];
-	static int width, height;
+	if (!card_init)
+		return;
 
 	assert (0 <= c && c < 52);
 	
-	if (!init) {
-		printf("Initializing card pixmaps\n");
-		GError *error = NULL;
-		//char *fname = "/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg";
-		char *fname = "/home/cb/projects/bridge/tenace/bonded.svg";
-		GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, 40 * 13, 500, &error);
-		if (!pb) {
-			printf ("moo: %s.\n", error->message);
-			exit (1);
-		}
-		width = gdk_pixbuf_get_width (pb) / 13;
-		height = gdk_pixbuf_get_height (pb) / 5;
-		int i;
-		for (i = 0; i < 52; i++) {
-			cards[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
-			if (!cards[i]) {
-				printf ("cards[i]\n");
-				exit (1);
-			}
-			int col = (i + 1) % 13;
-			int row = i / 13;
-			gdk_pixbuf_copy_area (pb, width * col, height * row, width, height,
-				cards[i], 0, 0);
-		}
-		init = 1;
-	}
 	//cairo_save (cr);
 	//cairo_translate (cr, x, y);
 	//cairo_rectangle (cr, 0, 0, width, height);
 	//cairo_clip (cr);
 	//cairo_move_to (cr, 0, 0);
 	//cairo_set_antialias (cr, CAIRO_ANTIALIAS_GRAY);
-	gdk_cairo_set_source_pixbuf (cr, cards[c], x, y);
+	gdk_cairo_set_source_pixbuf (cr, card_pixbuf[c], x, y);
 	cairo_paint (cr);
 	//cairo_restore (cr);
 	return;
@@ -114,10 +119,37 @@ draw (GtkWidget *hand, cairo_t *cr)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 
-	l = hand->allocation.x;
-	r = l + hand->allocation.width;
-	t = hand->allocation.y;
-	b = t + hand->allocation.height;
+	//l = hand->allocation.x;
+	//r = l + hand->allocation.width;
+	//t = hand->allocation.y;
+	//b = t + hand->allocation.height;
+	
+	if (handdisp->mode_table) {
+		int i;
+		for (i = 0; i < 4; i++) {
+			switch (handdisp->table_seat[i]) {
+				case 1: x = hand->allocation.width / 2 - card_width + 5;
+				/*W*/	y = (hand->allocation.height - card_height) / 2 + 5;
+					break;
+				case 2: x = (hand->allocation.width - card_width) / 2 - 2;
+				/*N*/	y = hand->allocation.height / 2 - card_height + 10;
+					break;
+				case 3: x = hand->allocation.width / 2 - 5;
+				/*E*/	y = (hand->allocation.height - card_height) / 2 - 5;
+					break;
+				case 4: x = (hand->allocation.width - card_width) / 2 + 2;
+				/*S*/	y = hand->allocation.height / 2 - 10;
+					break;
+				default:
+					return; /* stop here */
+			}
+
+			if (handdisp->style == HAND_DISPLAY_STYLE_CARDS)
+				render_card (cr, x, y, handdisp->table_card[i]);
+
+		}
+		return;
+	}
 
 	/* compute cached best card score for this hand */
 	if (handdisp->best_card_score == HAND_DISPLAY_NO_SCORE) {
@@ -131,7 +163,33 @@ draw (GtkWidget *hand, cairo_t *cr)
 		}
 	}
 
+	/* "cards" style */
+
+	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
+		y = hand->allocation.height - card_height - 4;
+		x = 4;
+		int x_advance = (hand->allocation.width - card_width - 8) / 12;
+		for (suit = 3; suit >= 0; suit--) {
+			int c;
+			for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
+				if (handdisp->cards[c]) {
+					render_card (cr, x, c == handdisp->cur_focus ? y - 15 : y, c);
+					handdisp->l[c] = x;
+					handdisp->r[c] = x + card_width;
+					handdisp->t[c] = y - 15;
+					handdisp->b[c] = y + card_height;
+					x += x_advance;
+				}
+			}
+		}
+
+		return;
+	}
+
+	/* "text" style */
+
 	/* draw suit symbols */
+
 	cairo_select_font_face (cr, "Symbol", CAIRO_FONT_SLANT_NORMAL,
 			CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, 20);
@@ -168,7 +226,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 		int c;
 		for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
 			if (handdisp->cards[c]) {
-				render_card (cr, x, y - 60, c);
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
 				handdisp->l[c] = x + extents.x_bearing;
 				handdisp->r[c] = x + extents.x_bearing + extents.width;
@@ -447,41 +504,21 @@ hand_display_class_init (HandDisplayClass *class)
 			G_TYPE_NONE /* GType return_type */,
 			1 /* guint n_params */,
 			G_TYPE_INT);
-
-	/*
-	GError *error = NULL;
-	rsvg = rsvg_handle_new_from_file ("/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg", &error);
-	if (!rsvg) {
-		printf ("rsvg error: %s", error->message);
-		exit (1);
-	}
-
-	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 100, 100);
-	printf("create\n");
-	if (cairo_surface_status (surface) != CAIRO_STATUS_SUCCESS) {
-		printf ("moo.\n");
-		exit (1);
-	}
-
-	cairo_t *cr = cairo_create (surface);
-	if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
-		printf ("boo: %d.\n", cairo_status (cr));
-		exit (1);
-	}
-	//rsvg_handle_render_cairo (rsvg, cr);
-	if (cairo_status (cr) != CAIRO_STATUS_SUCCESS) {
-		printf ("foo: %d.\n", cairo_status (cr));
-		exit (1);
-	}
-	//cairo_stroke (cr);
-	//pattern = cairo_pattern_create_for_surface (surface);
-	*/
 }
 
 static void
 hand_display_init (HandDisplay *handdisp)
 {
 	int i;
+	handdisp->style = HAND_DISPLAY_STYLE_TEXT;
+
+	if (handdisp->mode_table) {
+		for (i = 0; i < 4; i++) {
+			handdisp->table_seat[i] = handdisp->table_card[i] = 0;
+		}
+		return;
+	}
+
 	for (i = 0; i < 52; i++) {
 		handdisp->cards[i] = 0;
 		handdisp->card_score[i] = -1;
@@ -524,6 +561,15 @@ GtkWidget *
 hand_display_new (void)
 {
 	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
+	handdisp->mode_table = 0;
+	return GTK_WIDGET(handdisp);
+}
+
+GtkWidget *
+hand_display_table_new (void)
+{
+	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
+	handdisp->mode_table = 1;
 	return GTK_WIDGET(handdisp);
 }
 
@@ -532,6 +578,16 @@ hand_display_draw (GtkWidget *hand)
 {
 	gtk_widget_queue_draw_area (hand, 0, 0, hand->allocation.width, hand->allocation.height);
 }
+
+void
+hand_display_set_style (HandDisplay *handdisp, int style)
+{
+	handdisp->style = style;
+	if (style == HAND_DISPLAY_STYLE_CARDS && !card_init)
+		render_card_init ();
+}
+
+/* hand interface */
 
 void
 hand_display_set_card (HandDisplay *handdisp, int card, int val)
@@ -554,3 +610,22 @@ hand_display_set_card_score_neg (HandDisplay *handdisp, int neg)
 	handdisp->card_score_neg = neg;
 	handdisp->best_card_score = HAND_DISPLAY_NO_SCORE;
 }
+
+/* table interface */
+void
+hand_display_table_reset_cards (HandDisplay *handdisp)
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		handdisp->table_seat[i] = handdisp->table_card[i] = 0;
+	}
+}
+
+void
+hand_display_table_set_card (HandDisplay *handdisp, int n, int seat, int card)
+{
+	assert (card >= 0 && card < 52);
+	handdisp->table_seat[n] = seat;
+	handdisp->table_card[n] = card;
+}
+

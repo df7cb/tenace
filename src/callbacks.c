@@ -768,3 +768,19 @@ on_played_cards1_activate              (GtkMenuItem     *menuitem,
 	show_board (win->boards[win->cur], REDRAW_HANDS);
 }
 
+
+void
+on_style_text_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_window_set_style (win, HAND_DISPLAY_STYLE_TEXT);
+}
+
+
+void
+on_style_cards_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_window_set_style (win, HAND_DISPLAY_STYLE_CARDS);
+}
+

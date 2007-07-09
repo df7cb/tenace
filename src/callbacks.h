@@ -362,3 +362,11 @@ on_window_bids_delete_event            (GtkWidget       *widget,
 void
 on_played_cards1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_style_text_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_style_cards_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

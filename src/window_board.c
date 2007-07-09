@@ -184,23 +184,16 @@ void show_board (board *b, redraw_t redraw)
 			hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 		}
 
-		char *labels[] = {0, "card_west", "card_north", "card_east", "card_south"};
-		for (i = west; i <= south; i++) {
-			GtkWidget *label = lookup_widget(win->window, labels[i]);
-			gtk_label_set_text(GTK_LABEL(label), "");
-		}
+		hand_display_table_reset_cards (win->table);
 		if (b->n_played_cards) {
 			int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
 			for (i = trick_start; i < b->n_played_cards; i++) {
 				card c = b->played_cards[i];
 				seat s = b->dealt_cards[c];
-				g_string_printf(str, "<span%s>%s</span>",
-					i == trick_start ? " underline=\"low\"" : "",
-					card_string(c)->str);
-				GtkWidget *label = lookup_widget(win->window, labels[s]);
-				gtk_label_set_markup(GTK_LABEL(label), str->str);
+				hand_display_table_set_card (win->table, i - trick_start, s, c);
 			}
 		}
+		hand_display_draw(GTK_WIDGET (win->table));
 
 		line_entry_set_from_board(b);
 	}
@@ -263,6 +256,21 @@ static void create_hand_widgets (window_board_t *win)
 		g_signal_connect (hand, "card-leave", G_CALLBACK (card_leave), dir + h);
 		win->handdisp[h] = HAND_DISPLAY(hand);
 	}
+	GtkWidget *grid = lookup_widget (win->window, "table1");
+	GtkWidget *table = hand_display_table_new ();
+	gtk_table_attach_defaults (GTK_TABLE (grid), table, 1, 2, 1, 2);
+	gtk_widget_show (table);
+	win->table = table;
+}
+
+void board_window_set_style (window_board_t *win, int style)
+{
+	int h;
+	for (h = 0; h < 4; h++) {
+		hand_display_set_style(win->handdisp[h], style);
+	}
+	hand_display_set_style(win->table, style);
+	show_board(CUR_BOARD, REDRAW_HANDS);
 }
 
 int

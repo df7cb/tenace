@@ -28,6 +28,10 @@ extern "C" {
 //#define HAND_DISPLAY_CLASS(klass)  (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_HAND_DISPLAY,  HandDisplayClass))
 #define IS_HAND_DISPLAY(obj)       (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_HAND_DISPLAY))
 
+/* display styles */
+#define HAND_DISPLAY_STYLE_TEXT    0
+#define HAND_DISPLAY_STYLE_CARDS   1
+
 #define HAND_DISPLAY_NO_CARD       0
 #define HAND_DISPLAY_CARD          1
 #define HAND_DISPLAY_GREY_CARD     2
@@ -57,6 +61,10 @@ typedef struct _HandDisplayClass       HandDisplayClass;
 struct _HandDisplay
 {
 	GtkDrawingArea parent;
+	int mode_table; /* 0 hand, 1 table */
+	int style;
+
+	/* hand */
 	int cur_focus;
 	int cur_click;
 	int cards[52];
@@ -64,6 +72,10 @@ struct _HandDisplay
 	int card_score_neg;
 	int best_card_score;
 	double l[52], r[52], t[52], b[52];
+
+	/* table */
+	int table_seat[4];
+	int table_card[4];
 };
 
 struct _HandDisplayClass
@@ -73,10 +85,18 @@ struct _HandDisplayClass
 
 GtkType hand_display_get_type (void);
 GtkWidget *hand_display_new (void);
+GtkWidget *hand_display_table_new (void);
 void hand_display_draw (GtkWidget *hand);
+void hand_display_set_style (HandDisplay *handdisp, int style);
+
+/* hand interface */
 void hand_display_set_card (HandDisplay *handdisp, int card, int val);
 void hand_display_set_card_score (HandDisplay *handdisp, int card, int score);
 void hand_display_set_card_score_neg (HandDisplay *handdisp, int neg);
+
+/* table interface */
+void hand_display_table_reset_cards (HandDisplay *handdisp);
+void hand_display_table_set_card (HandDisplay *handdisp, int n, int seat, int card);
 
 gboolean DNDDragMotionCB(
         GtkWidget *hand, GdkDragContext *dc,
