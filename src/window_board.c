@@ -307,7 +307,7 @@ board_window_init (window_board_t *win)
 	win->cur = 0;
 	win->boards[0] = board_new ();
 
-	GdkColor bg = { 0, 0, 40000, 0 };
+	GdkColor bg = { 0, HAND_DISPLAY_TABLE_GDK_BG };
 	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
 	gtk_widget_modify_bg (win->window, GTK_STATE_NORMAL, &bg);
 

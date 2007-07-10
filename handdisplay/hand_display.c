@@ -133,16 +133,20 @@ draw (GtkWidget *hand, cairo_t *cr)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 
+	char *suit_str[] = {"♣", "♦", "♥", "♠"};
+	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+	double suit_color[4][3] = {
+		{ HAND_DISPLAY_CLUBS_FONT    },
+		{ HAND_DISPLAY_DIAMONDS_FONT },
+		{ HAND_DISPLAY_HEARTS_FONT   },
+		{ HAND_DISPLAY_SPADES_FONT   },
+	};
+
 	cairo_set_source_rgb (cr, HAND_DISPLAY_TABLE_BG);
 	cairo_rectangle (cr, 0, 0, hand->allocation.width, hand->allocation.height);
 	cairo_fill (cr);
 
-	//l = hand->allocation.x;
-	//r = l + hand->allocation.width;
-	//t = hand->allocation.y;
-	//b = t + hand->allocation.height;
-	
-	if (handdisp->mode_table) {
+	if (handdisp->mode_table && handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
 		int i;
 		for (i = 0; i < 4; i++) {
 			switch (handdisp->table_seat[i]) {
@@ -165,6 +169,49 @@ draw (GtkWidget *hand, cairo_t *cr)
 			if (handdisp->style == HAND_DISPLAY_STYLE_CARDS)
 				render_card (cr, x, y, handdisp->table_card[i], HAND_DISPLAY_CARD);
 
+		}
+		return;
+	}
+
+	if (handdisp->mode_table) {
+		cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
+				CAIRO_FONT_WEIGHT_BOLD);
+		cairo_set_font_size (cr, 20);
+
+		int i;
+		for (i = 0; i < 4; i++) {
+			char cs[6];
+			if (!handdisp->table_seat[i])
+				return;
+			snprintf (cs, 6, "%s%s", suit_str[handdisp->table_card[i] / 13],
+						 rank_str[handdisp->table_card[i] % 13]);
+			cairo_text_extents (cr, cs, &extents);
+
+			switch (handdisp->table_seat[i]) { /* lower left point */
+				case 1: x = hand->allocation.width / 2 - extents.width - 10;
+				/*W*/	y = (hand->allocation.height + extents.height) / 2;
+					break;
+				case 2: x = (hand->allocation.width - extents.width) / 2;
+				/*N*/	y = hand->allocation.height / 2 - 10;
+					break;
+				case 3: x = hand->allocation.width / 2 + 10;
+				/*E*/	y = (hand->allocation.height + extents.height) / 2;
+					break;
+				case 4: x = (hand->allocation.width - extents.width) / 2;
+				/*S*/	y = hand->allocation.height / 2 + extents.height + 10;
+					break;
+				default:
+					return; /* stop here */
+			}
+
+			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
+			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2, extents.width + 4, -extents.height - 4);
+			printf ("x %f y %f\n", extents.x_bearing, extents. y_bearing);
+			cairo_fill (cr);
+
+			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+			cairo_move_to (cr, x, y);
+			cairo_show_text (cr, cs);
 		}
 		return;
 	}
@@ -215,13 +262,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
 			CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, 20);
-	char *suit_str[] = {"♣", "♦", "♥", "♠"};
-	double suit_color[4][3] = {
-		{ HAND_DISPLAY_CLUBS_FONT    },
-		{ HAND_DISPLAY_DIAMONDS_FONT },
-		{ HAND_DISPLAY_HEARTS_FONT   },
-		{ HAND_DISPLAY_SPADES_FONT   },
-	};
 
 	//char *suit_str[] = {"C ", "D ", "H ", "S "};
 	double suit_width = 0.0;
@@ -239,7 +279,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* draw cards */
 	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
 			CAIRO_FONT_WEIGHT_BOLD);
-	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 	for (suit = 0; suit < 4; suit++) {
 		x = 4 + suit_width;
 		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
