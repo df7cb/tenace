@@ -16,6 +16,7 @@
 #include <assert.h>
 #include <glib/gtypes.h>
 #include <gtk/gtk.h>
+#include <math.h>
 
 #include "hand_display.h"
 
@@ -67,14 +68,16 @@ render_card_init (void)
 	printf("Initializing card pixmaps\n");
 	GError *error = NULL;
 	//char *fname = "/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg";
-	char *fname = "/home/cb/projects/bridge/tenace/bonded.svg";
+	char *fname = "/usr/share/pixmaps/gnome-games-common/cards/paris.svg";
 	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, 40 * 13, 500, &error);
 	if (!pb) {
 		printf ("moo: %s.\n", error->message);
 		return;
 	}
-	card_width = gdk_pixbuf_get_width (pb) / 13;
-	card_height = gdk_pixbuf_get_height (pb) / 5;
+	int buf_width = gdk_pixbuf_get_width (pb);
+	int buf_height = gdk_pixbuf_get_height (pb);
+	card_width = ceil (gdk_pixbuf_get_width (pb) / 13.0);
+	card_height = ceil (gdk_pixbuf_get_height (pb) / 5.0);
 	int i;
 	for (i = 0; i < 52; i++) {
 		card_pixbuf[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, card_width, card_height);
@@ -84,7 +87,7 @@ render_card_init (void)
 		}
 		int col = (i + 1) % 13;
 		int row = i / 13;
-		gdk_pixbuf_copy_area (pb, card_width * col, card_height * row,
+		gdk_pixbuf_copy_area (pb, buf_width * col / 13.0, buf_height * row / 5.0,
 			card_width, card_height, card_pixbuf[i], 0, 0);
 	}
 
