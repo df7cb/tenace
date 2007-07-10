@@ -10,3 +10,4 @@ GtkWidget* create_window_imps (void);
 GtkWidget* create_window_info (void);
 GtkWidget* create_window_line_entry (void);
 GtkWidget* create_window_play (void);
+GtkWidget* create_window_options (void);

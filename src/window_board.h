@@ -23,6 +23,7 @@ typedef struct _windown_board_t {
 	HandDisplay *table;
 
 	int show_played_cards;
+	int card_width;
 
 	int n_boards;
 	int n_boards_alloc;

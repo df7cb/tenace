@@ -370,3 +370,8 @@ on_style_text_activate                 (GtkMenuItem     *menuitem,
 void
 on_style_cards_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_options_cards_filechooser_file_activated
+                                        (GtkFileChooser  *filechooser,
+                                        gpointer         user_data);

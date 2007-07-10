@@ -784,3 +784,12 @@ on_style_cards_activate                (GtkMenuItem     *menuitem,
 	board_window_set_style (win, HAND_DISPLAY_STYLE_CARDS);
 }
 
+
+void
+on_options_cards_filechooser_file_activated
+                                        (GtkFileChooser  *filechooser,
+                                        gpointer         user_data)
+{
+
+}
+

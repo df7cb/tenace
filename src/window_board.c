@@ -258,7 +258,7 @@ static void create_hand_widgets (window_board_t *win)
 	}
 	GtkWidget *grid = lookup_widget (win->window, "table1");
 	GtkWidget *table = hand_display_table_new ();
-	gtk_table_attach_defaults (GTK_TABLE (grid), table, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (grid), table, 2, 3, 1, 2);
 	gtk_widget_show (table);
 	win->table = table;
 }
@@ -297,6 +297,7 @@ board_window_init (window_board_t *win)
 	create_hand_widgets(win);
 
 	win->show_played_cards = 0;
+	win->card_width = 80;
 
 	win->boards = calloc(4, sizeof(board*));
 	assert (win->boards);
@@ -305,6 +306,10 @@ board_window_init (window_board_t *win)
 
 	win->cur = 0;
 	win->boards[0] = board_new ();
+
+	GdkColor bg = { 0, 0, 40000, 0 };
+	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
+	gtk_widget_modify_bg (win->window, GTK_STATE_NORMAL, &bg);
 
 	gtk_widget_show (win->window);
 }

@@ -54,8 +54,8 @@ main (int argc, char *argv[])
 
   //window_bid = create_window_bid ();
   //gtk_widget_show (window_bid);
-  //window_bids = create_window_bids ();
-  //gtk_widget_show (window_bids);
+  //GtkWidget *window_options = create_window_options ();
+  //gtk_widget_show (window_options);
   //gtk_widget_show (create_window_line_entry());
 
   //window_play_init ();

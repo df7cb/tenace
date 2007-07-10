@@ -40,6 +40,8 @@ extern "C" {
 #define HAND_DISPLAY_NO_SCORE      (0x1000) /* score undefined */
 
 /* internally used colors */
+#define HAND_DISPLAY_TABLE_BG      0.0, 0.6, 0.0
+
 #define HAND_DISPLAY_FONT          0.0, 0.0, 0.0
 #define HAND_DISPLAY_GREY_FONT     0.2, 0.2, 0.2
 #define HAND_DISPLAY_OLD_FONT      0.5, 0.5, 0.5
@@ -50,10 +52,10 @@ extern "C" {
 #define HAND_DISPLAY_DD_FONT       0.0, 0.0, 1.0
 #define HAND_DISPLAY_FOCUS_BG      1.0, 0.8, 0.0
 
-#define HAND_DISPLAY_SPADES_FONT   0.0, 0.6, 0.0
-#define HAND_DISPLAY_HEARTS_FONT   1.0, 0.3, 0.0
-#define HAND_DISPLAY_DIAMONDS_FONT 0.9, 0.0, 0.0
-#define HAND_DISPLAY_CLUBS_FONT    0.0, 0.0, 0.7
+#define HAND_DISPLAY_SPADES_FONT   0.0, 0.0, 0.7
+#define HAND_DISPLAY_HEARTS_FONT   0.9, 0.0, 0.0
+#define HAND_DISPLAY_DIAMONDS_FONT 1.0, 0.3, 0.0
+#define HAND_DISPLAY_CLUBS_FONT    0.0, 0.3, 0.0
 
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;

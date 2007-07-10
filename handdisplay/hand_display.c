@@ -27,8 +27,8 @@ static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
 			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
-static int card_init = 0, card_width = 0, card_height = 0;
-static GdkPixbuf *card_pixbuf[52];
+static int card_init = 0, card_width = 80, card_height = 0;
+static GdkPixbuf *card_pixbuf[53];
 
 /* internal functions */
 
@@ -67,9 +67,8 @@ render_card_init (void)
 {
 	printf("Initializing card pixmaps\n");
 	GError *error = NULL;
-	//char *fname = "/home/cb/projects/bridge/svg-cards/SVG-cards-2.0.1/svg-cards.svg";
-	char *fname = "/usr/share/pixmaps/gnome-games-common/cards/paris.svg";
-	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, 40 * 13, 500, &error);
+	char *fname = "cards/bonded.svg";
+	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, card_width * 13, 500, &error);
 	if (!pb) {
 		printf ("moo: %s.\n", error->message);
 		return;
@@ -90,12 +89,20 @@ render_card_init (void)
 		gdk_pixbuf_copy_area (pb, buf_width * col / 13.0, buf_height * row / 5.0,
 			card_width, card_height, card_pixbuf[i], 0, 0);
 	}
+	g_object_unref (pb);
+
+	card_pixbuf[52] =
+		gdk_pixbuf_new_from_file_at_size ("cards/grey.svg", card_width, card_height, &error);
+	if (!card_pixbuf[52]) {
+		printf ("moo: %s.\n", error->message);
+		return;
+	}
 
 	card_init = 1;
 }
 
 static void
-render_card (cairo_t *cr, double x, double y, int c)
+render_card (cairo_t *cr, double x, double y, int c, int color)
 {
 	if (!card_init)
 		return;
@@ -109,7 +116,11 @@ render_card (cairo_t *cr, double x, double y, int c)
 	//cairo_move_to (cr, 0, 0);
 	//cairo_set_antialias (cr, CAIRO_ANTIALIAS_GRAY);
 	gdk_cairo_set_source_pixbuf (cr, card_pixbuf[c], x, y);
-	cairo_paint (cr);
+	cairo_paint_with_alpha (cr, 1.0);
+	if (color == HAND_DISPLAY_OLD_CARD) {
+		gdk_cairo_set_source_pixbuf (cr, card_pixbuf[52], x, y);
+		cairo_paint_with_alpha (cr, 0.5);
+	}
 	//cairo_restore (cr);
 	return;
 }
@@ -121,6 +132,10 @@ draw (GtkWidget *hand, cairo_t *cr)
 	int suit;
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
+
+	cairo_set_source_rgb (cr, HAND_DISPLAY_TABLE_BG);
+	cairo_rectangle (cr, 0, 0, hand->allocation.width, hand->allocation.height);
+	cairo_fill (cr);
 
 	//l = hand->allocation.x;
 	//r = l + hand->allocation.width;
@@ -135,20 +150,20 @@ draw (GtkWidget *hand, cairo_t *cr)
 				/*W*/	y = (hand->allocation.height - card_height) / 2 + 5;
 					break;
 				case 2: x = (hand->allocation.width - card_width) / 2 - 2;
-				/*N*/	y = hand->allocation.height / 2 - card_height + 10;
+				/*N*/	y = MAX (hand->allocation.height / 2 - card_height + 10, 0);
 					break;
 				case 3: x = hand->allocation.width / 2 - 5;
 				/*E*/	y = (hand->allocation.height - card_height) / 2 - 5;
 					break;
 				case 4: x = (hand->allocation.width - card_width) / 2 + 2;
-				/*S*/	y = hand->allocation.height / 2 - 10;
+				/*S*/	y = MIN (hand->allocation.height / 2 - 10, hand->allocation.height - card_height);
 					break;
 				default:
 					return; /* stop here */
 			}
 
 			if (handdisp->style == HAND_DISPLAY_STYLE_CARDS)
-				render_card (cr, x, y, handdisp->table_card[i]);
+				render_card (cr, x, y, handdisp->table_card[i], HAND_DISPLAY_CARD);
 
 		}
 		return;
@@ -169,19 +184,23 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* "cards" style */
 
 	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
-		y = hand->allocation.height - card_height - 4;
-		x = 4;
-		int x_advance = (hand->allocation.width - card_width - 8) / 12;
+		y = MAX (hand->allocation.height - card_height - 5, 15);
+		int n = 0;
 		for (suit = 3; suit >= 0; suit--) {
 			int c;
 			for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
 				if (handdisp->cards[c]) {
-					render_card (cr, x, c == handdisp->cur_focus ? y - 15 : y, c);
+					x = 5 + n * (hand->allocation.width - card_width - 10) / 12.0;
+					int sc = handdisp->card_score[c];
+					double yy = c == handdisp->cur_focus ? y - 15 :
+						(sc != HAND_DISPLAY_NO_SCORE &&
+						 handdisp->best_card_score == sc ? y - 5 : y);
+					render_card (cr, floor (x), MAX (yy, 5), c, handdisp->cards[c]);
 					handdisp->l[c] = x;
 					handdisp->r[c] = x + card_width;
 					handdisp->t[c] = y - 15;
 					handdisp->b[c] = y + card_height;
-					x += x_advance;
+					n++;
 				}
 			}
 		}
@@ -193,15 +212,15 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 	/* draw suit symbols */
 
-	cairo_select_font_face (cr, "Symbol", CAIRO_FONT_SLANT_NORMAL,
+	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
 			CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, 20);
 	char *suit_str[] = {"♣", "♦", "♥", "♠"};
 	double suit_color[4][3] = {
-		{ HAND_DISPLAY_SPADES_FONT   },
-		{ HAND_DISPLAY_HEARTS_FONT   },
+		{ HAND_DISPLAY_CLUBS_FONT    },
 		{ HAND_DISPLAY_DIAMONDS_FONT },
-		{ HAND_DISPLAY_CLUBS_FONT    }
+		{ HAND_DISPLAY_HEARTS_FONT   },
+		{ HAND_DISPLAY_SPADES_FONT   },
 	};
 
 	//char *suit_str[] = {"C ", "D ", "H ", "S "};
