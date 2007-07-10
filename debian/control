@@ -4,6 +4,8 @@ Priority: extra
 Maintainer: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>> 5), libgtk2.0-dev, libdds-dev (>> 1.0.4)
 Standards-Version: 3.7.2
+XS-Vcs-Browser: http://hg.df7cb.de/hg/tenace
+XS-Vcs-Hg: http://hg.df7cb.de/hg/tenace
 
 Package: tenace
 Architecture: any

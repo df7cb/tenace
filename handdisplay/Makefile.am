@@ -9,7 +9,5 @@ all: hand_display.o
 hand_display.o: hand_display.c hand_display.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-install:
-
-clean:
+clean-local:
 	rm -f *.o tags

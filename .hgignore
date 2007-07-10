@@ -1,0 +1,16 @@
+# autotools
+^aclocal\.m4$
+^autom4te\.cache/
+^config/
+^configure$
+^config\.(h|h\.in|log|status)$
+Makefile\.in$
+^(|contrib/|handdisplay/|po/|src/)Makefile$
+^po/.*\.gmo$
+^po/POTFILES$
+^src/\.deps/.*\.Po$
+^stamp-h1$
+
+# built
+/.*\.o$
+^src/tenace$
