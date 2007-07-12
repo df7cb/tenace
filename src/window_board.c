@@ -258,7 +258,7 @@ static void create_hand_widgets (window_board_t *win)
 	}
 	GtkWidget *grid = lookup_widget (win->window, "table1");
 	GtkWidget *table = hand_display_table_new ();
-	gtk_table_attach_defaults (GTK_TABLE (grid), table, 2, 3, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (grid), table, 3, 4, 1, 2);
 	gtk_widget_show (table);
 	win->table = table;
 }
