@@ -142,9 +142,13 @@ draw (GtkWidget *hand, cairo_t *cr)
 		{ HAND_DISPLAY_SPADES_FONT   },
 	};
 
+	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+
 	cairo_set_source_rgb (cr, HAND_DISPLAY_TABLE_BG);
 	cairo_rectangle (cr, 0, 0, hand->allocation.width, hand->allocation.height);
 	cairo_fill (cr);
+
+	/* "table" mode for displaying the already played cards in the middle of the screen */
 
 	if (handdisp->mode_table && handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
 		int i;
@@ -174,8 +178,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 	}
 
 	if (handdisp->mode_table) {
-		cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
-				CAIRO_FONT_WEIGHT_BOLD);
 		cairo_set_font_size (cr, 20);
 
 		int i;
@@ -216,6 +218,8 @@ draw (GtkWidget *hand, cairo_t *cr)
 		return;
 	}
 
+	/* normal hands display */
+
 	/* compute cached best card score for this hand */
 	if (handdisp->best_card_score == HAND_DISPLAY_NO_SCORE) {
 		int c;
@@ -237,17 +241,33 @@ draw (GtkWidget *hand, cairo_t *cr)
 			int c;
 			for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
 				if (handdisp->cards[c]) {
-					x = 5 + n * (hand->allocation.width - card_width - 10) / 12.0;
+					x = floor (5 + n * (hand->allocation.width - card_width - 10) / 12.0);
 					int sc = handdisp->card_score[c];
 					double yy = c == handdisp->cur_focus ? y - 15 :
 						(sc != HAND_DISPLAY_NO_SCORE &&
 						 handdisp->best_card_score == sc ? y - 5 : y);
-					render_card (cr, floor (x), MAX (yy, 5), c, handdisp->cards[c]);
+					yy = MAX (yy, 5);
+					render_card (cr, x, yy, c, handdisp->cards[c]);
 					handdisp->l[c] = x;
 					handdisp->r[c] = x + card_width;
 					handdisp->t[c] = y - 15;
 					handdisp->b[c] = y + card_height;
 					n++;
+
+					/* show card score */
+					if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE)
+						continue;
+					char *buf = overtricks (handdisp->card_score[c]);
+					/*
+					cairo_text_extents (cr, buf, &extents);
+					cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
+					cairo_rectangle (cr, x + 2, yy + 40,
+							extents.width + 2, -extents.height - 2);
+					cairo_fill (cr);
+					*/
+					cairo_move_to (cr, x + 1, yy + 40);
+					cairo_set_source_rgb (cr, HAND_DISPLAY_DD_FONT);
+					cairo_show_text (cr, buf);
 				}
 			}
 		}
@@ -258,12 +278,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* "text" style */
 
 	/* draw suit symbols */
-
-	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
-			CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, 20);
-
-	//char *suit_str[] = {"C ", "D ", "H ", "S "};
 	double suit_width = 0.0;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
@@ -277,8 +292,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 	}
 
 	/* draw cards */
-	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
-			CAIRO_FONT_WEIGHT_BOLD);
 	for (suit = 0; suit < 4; suit++) {
 		x = 4 + suit_width;
 		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
@@ -325,9 +338,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		}
 	}
 
-	/* draw card scores */
-	//cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL,
-			//CAIRO_FONT_WEIGHT_NORMAL);
+	/* show card scores */
 	cairo_set_font_size (cr, 10);
 	int c;
 	for (c = 51; c >= 0; c--) {
