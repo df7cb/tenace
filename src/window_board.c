@@ -33,6 +33,7 @@
 #include "window_play.h"
 
 window_board_t *win; // FIXME static?
+static GString *rcfile = NULL;
 
 static void
 board_menu_select (GtkWidget *menuitem, int *n)
@@ -389,4 +390,48 @@ board_set_doubled (int doubled)
 	b->doubled = doubled;
 	show_board(b, REDRAW_CONTRACT);
 	PROTECT_END;
+}
+
+int
+read_config (window_board_t *win)
+{
+	if (!rcfile) {
+		char *home = getenv ("HOME");
+		if (!home) {
+			printf ("HOME unset, cannot read config");
+			return 0;
+		}
+		rcfile = g_string_new (NULL);
+		g_string_printf (rcfile, "%s/.tenacerc", home);
+	}
+	FILE *f;
+	if (!(f = fopen(rcfile->str, "r"))) {
+		return 0;
+	}
+	int style;
+	if (fscanf (f, "style %d", &style) == 1) {
+		char *checkitem_name[] = { "style_text", "style_cards" };
+		GtkWidget *checkitem = lookup_widget (win->window, checkitem_name[style > 0]);
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (checkitem), TRUE);
+	}
+	fclose (f);
+	return 1;
+}
+
+int
+write_config (window_board_t *win)
+{
+	if (!rcfile) {
+		return 0;
+	}
+	FILE *f;
+	if (!(f = fopen(rcfile->str, "w"))) {
+		perror (rcfile->str);
+		return 0;
+	}
+	GtkWidget *checkitem = lookup_widget (win->window, "style_cards");
+	fprintf (f, "style %d\n",
+		gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (checkitem)));
+	fclose (f);
+	return 1;
 }

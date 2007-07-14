@@ -63,6 +63,7 @@ main (int argc, char *argv[])
   win = malloc(sizeof(window_board_t));
 
   board_window_init (win);
+  read_config (win);
 
   if (argc > 1) {
 	board *b;
@@ -78,6 +79,7 @@ main (int argc, char *argv[])
   show_board(win->boards[0], REDRAW_FULL);
 
   gtk_main ();
+  write_config (win);
   return 0;
 }
 

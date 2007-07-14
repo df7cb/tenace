@@ -82,7 +82,7 @@ void
 on_beenden1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	exit(0);
+	gtk_main_quit ();
 }
 
 
@@ -136,7 +136,7 @@ on_window_hand_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	exit(1);
+	gtk_main_quit ();
 }
 
 
