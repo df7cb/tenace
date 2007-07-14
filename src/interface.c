@@ -1089,11 +1089,6 @@ create_window_card (void)
   GtkWidget *radiotoolbutton_north;
   GtkWidget *radiotoolbutton_east;
   GtkWidget *radiotoolbutton_south;
-  GtkWidget *table_cards;
-  GtkWidget *label1;
-  GtkWidget *label2;
-  GtkWidget *label3;
-  GtkWidget *label4;
   GtkTooltips *tooltips;
 
   tooltips = gtk_tooltips_new ();
@@ -1173,37 +1168,6 @@ create_window_card (void)
   gtk_radio_tool_button_set_group (GTK_RADIO_TOOL_BUTTON (radiotoolbutton_south), radiotoolbutton_west_group);
   radiotoolbutton_west_group = gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (radiotoolbutton_south));
 
-  table_cards = gtk_table_new (4, 15, FALSE);
-  gtk_widget_show (table_cards);
-  gtk_box_pack_start (GTK_BOX (vbox2), table_cards, FALSE, FALSE, 0);
-
-  label1 = gtk_label_new (_("\342\231\240"));
-  gtk_widget_show (label1);
-  gtk_table_attach (GTK_TABLE (table_cards), label1, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
-
-  label2 = gtk_label_new (_("<span foreground=\"red\">\342\231\245</span>"));
-  gtk_widget_show (label2);
-  gtk_table_attach (GTK_TABLE (table_cards), label2, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
-  gtk_label_set_use_markup (GTK_LABEL (label2), TRUE);
-
-  label3 = gtk_label_new (_("<span foreground=\"orange\">\342\231\246</span>"));
-  gtk_widget_show (label3);
-  gtk_table_attach (GTK_TABLE (table_cards), label3, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
-  gtk_label_set_use_markup (GTK_LABEL (label3), TRUE);
-
-  label4 = gtk_label_new (_("<span foreground=\"darkgreen\">\342\231\243</span>"));
-  gtk_widget_show (label4);
-  gtk_table_attach (GTK_TABLE (table_cards), label4, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK), 0, 0);
-  gtk_label_set_use_markup (GTK_LABEL (label4), TRUE);
-
   g_signal_connect ((gpointer) window_card, "delete_event",
                     G_CALLBACK (on_window_card_delete_event),
                     NULL);
@@ -1237,11 +1201,6 @@ create_window_card (void)
   GLADE_HOOKUP_OBJECT (window_card, radiotoolbutton_north, "radiotoolbutton_north");
   GLADE_HOOKUP_OBJECT (window_card, radiotoolbutton_east, "radiotoolbutton_east");
   GLADE_HOOKUP_OBJECT (window_card, radiotoolbutton_south, "radiotoolbutton_south");
-  GLADE_HOOKUP_OBJECT (window_card, table_cards, "table_cards");
-  GLADE_HOOKUP_OBJECT (window_card, label1, "label1");
-  GLADE_HOOKUP_OBJECT (window_card, label2, "label2");
-  GLADE_HOOKUP_OBJECT (window_card, label3, "label3");
-  GLADE_HOOKUP_OBJECT (window_card, label4, "label4");
   GLADE_HOOKUP_OBJECT_NO_REF (window_card, tooltips, "tooltips");
 
   return window_card;

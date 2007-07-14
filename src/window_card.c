@@ -23,7 +23,7 @@
 #include "window_board.h" /* board b */
 
 static GtkWidget *window_card = 0;
-static GtkWidget *card_button[52];
+static HandDisplay *hand_display = 0;
 seat new_card_seat = west;
 
 void
@@ -34,42 +34,41 @@ card_window_update (seat *cards)
 
 	int c;
 	for (c = 0; c < 52; c++)
-		gtk_button_set_relief ((GtkButton*)card_button[c],
-			cards[c] ? GTK_RELIEF_NONE : GTK_RELIEF_NORMAL);
+		hand_display_set_card (hand_display, c,
+			cards[c] ? HAND_DISPLAY_OLD_CARD : HAND_DISPLAY_CARD);
 }
 
 static void
-cardX_clicked (GtkButton *button, gpointer cxp)
+card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 {
-	suit cx = *(suit *)cxp;
-	board *b = win->boards[win->cur];
-
-	if (b->hand_cards[new_card_seat-1] == 13) {
-		board_statusbar("Hand has already 13 cards");
-		return;
-	}
-
-	int i;
-	for (i = 0; i < 13; i++) {
-		int c = cx * 13 + i;
-		if (b->dealt_cards[c] == 0) {
-			add_card(b, new_card_seat, c);
-
-			board_statusbar(NULL);
-			card_window_update(b->dealt_cards);
-			show_board(b, REDRAW_HANDS);
-			return;
-		}
-	}
-	board_statusbar("All cards of that suit dealt");
-}
-
-static void
-card_clicked (GtkButton *button, gpointer cp)
-{
-	card c = *(card *)cp;
+	card c = *cp;
+	assert (c >= 0 && c < 56);
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
 	board *b = win->boards[win->cur];
+
+	/* x clicked */
+	if (c >= 52) {
+		if (b->hand_cards[new_card_seat-1] == 13) {
+			board_statusbar("Hand has already 13 cards");
+			return;
+		}
+
+		int i;
+		for (i = 0; i < 13; i++) {
+			int new = (c - 52) * 13 + i;
+			if (b->dealt_cards[new] == 0) {
+				add_card(b, new_card_seat, new);
+
+				board_statusbar(NULL);
+				card_window_update(b->dealt_cards);
+				hand_display_draw(GTK_WIDGET (hand_display)); /* force redraw */
+				show_board(b, REDRAW_HANDS);
+				return;
+			}
+		}
+		board_statusbar("All cards of that suit dealt");
+		return;
+	}
 
 	if (b->dealt_cards[c] && !b->cards[c]) {
 		board_statusbar("Card is in play and cannot be removed");
@@ -94,44 +93,24 @@ card_clicked (GtkButton *button, gpointer cp)
 	show_board(b, REDRAW_HANDS);
 }
 
-static void
-fill_card_window (GtkWidget *w)
-{
-	GtkTable *table = (GtkTable*) lookup_widget(w, "table_cards");
-	static card c[52];
-	static card cx[4];
-	card cr, cc;
-	int i = 51;
-	for (cr = 0; cr <= 3; cr++) {
-		for (cc = 0; cc <= 12; cc++) {
-			GtkWidget *b = gtk_button_new_with_label(rank_string(12-cc));
-			c[i] = i;
-			g_signal_connect (b, "clicked", G_CALLBACK(card_clicked), (gpointer)(&c[i]));
-			gtk_button_set_focus_on_click ((GtkButton*)b, 0);
-			gtk_table_attach(table, b, cc+1, cc+2, cr, cr+1, 0, 0, 0, 0);
-			gtk_widget_show(b);
-			card_button[i] = b;
-			i--;
-		}
-	}
-	for (cr = 0; cr <= 3; cr++) {
-		GtkWidget *b = gtk_button_new_with_label("x");
-		cx[cr] = 3 - cr;
-		g_signal_connect (b, "clicked", G_CALLBACK(cardX_clicked), (gpointer)(&cx[cr]));
-		gtk_button_set_focus_on_click ((GtkButton*)b, 0);
-		gtk_table_attach(table, b, 14, 15, cr, cr+1, 0, 0, 0, 0);
-		gtk_widget_show(b);
-	}
-}
-
 void
 window_card_init ()
 {
 	if (window_card)
 		return;
 
+	GtkWidget *w = hand_display_new (HAND_DISPLAY_MODE_HAND_X);
+	hand_display = HAND_DISPLAY (w);
+	int c;
+	for (c = 0; c < 52; c++) {
+		hand_display_set_card (hand_display, c, HAND_DISPLAY_CARD);
+	}
+	g_signal_connect (hand_display, "card-clicked", G_CALLBACK (card_clicked), NULL);
+
 	window_card = create_window_card ();
-	fill_card_window (window_card);
+	GtkWidget *vbox = lookup_widget (window_card, "vbox2");
+	gtk_widget_show (w);
+	gtk_box_pack_start_defaults (vbox, w);
 	gtk_widget_show (window_card);
 }
 

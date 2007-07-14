@@ -28,6 +28,11 @@ extern "C" {
 //#define HAND_DISPLAY_CLASS(klass)  (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_HAND_DISPLAY,  HandDisplayClass))
 #define IS_HAND_DISPLAY(obj)       (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_HAND_DISPLAY))
 
+/* display modes */
+#define HAND_DISPLAY_MODE_HAND     0
+#define HAND_DISPLAY_MODE_HAND_X   1
+#define HAND_DISPLAY_MODE_TABLE    2
+
 /* display styles */
 #define HAND_DISPLAY_STYLE_TEXT    0
 #define HAND_DISPLAY_STYLE_CARDS   1
@@ -64,7 +69,7 @@ typedef struct _HandDisplayClass       HandDisplayClass;
 struct _HandDisplay
 {
 	GtkDrawingArea parent;
-	int mode_table; /* 0 hand, 1 table */
+	int mode;
 	int style;
 
 	/* hand */
@@ -74,9 +79,9 @@ struct _HandDisplay
 	int card_score[52];
 	int card_score_neg;
 	int best_card_score;
-	double l[52], r[52], t[52], b[52];
+	double l[56], r[56], t[56], b[56]; /* 52..55 are MODE_X */
 
-	/* table */
+	/* table */ // FIXME: this should use a union or something
 	int table_seat[4];
 	int table_card[4];
 };
@@ -87,8 +92,7 @@ struct _HandDisplayClass
 };
 
 GtkType hand_display_get_type (void);
-GtkWidget *hand_display_new (void);
-GtkWidget *hand_display_table_new (void);
+GtkWidget *hand_display_new (int mode);
 void hand_display_draw (GtkWidget *hand);
 void hand_display_set_style (HandDisplay *handdisp, int style);
 

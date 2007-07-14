@@ -26,7 +26,8 @@
 static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+			52, 53, 54, 55 /* MODE_X */ };
 static int card_init = 0, card_width = 80, card_height = 0;
 static GdkPixbuf *card_pixbuf[53];
 
@@ -39,9 +40,9 @@ which_card (HandDisplay *handdisp, double x, double y)
 	int c;
 	int max_x = -1;
 	int max = -1;
-	for (c = 0; c < 52; c++) {
-		if (handdisp->cards[c] && x >= handdisp->l[c] && x <= handdisp->r[c]
-				       && y >= handdisp->t[c] && y <= handdisp->b[c]) {
+	for (c = 0; c < (handdisp->mode == HAND_DISPLAY_MODE_HAND_X ? 56 : 52); c++) {
+		if (x >= handdisp->l[c] && x <= handdisp->r[c]
+				&& y >= handdisp->t[c] && y <= handdisp->b[c]) {
 			if (handdisp->r[c] > max_x) {
 				max = c;
 				max_x = handdisp->r[c];
@@ -150,7 +151,8 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 	/* "table" mode for displaying the already played cards in the middle of the screen */
 
-	if (handdisp->mode_table && handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
+	if (handdisp->mode == HAND_DISPLAY_MODE_TABLE &&
+	    handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
 		int i;
 		for (i = 0; i < 4; i++) {
 			switch (handdisp->table_seat[i]) {
@@ -177,7 +179,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		return;
 	}
 
-	if (handdisp->mode_table) {
+	if (handdisp->mode == HAND_DISPLAY_MODE_TABLE) {
 		cairo_set_font_size (cr, 20);
 
 		int i;
@@ -270,6 +272,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 					cairo_show_text (cr, buf);
 				}
 			}
+			/* we do not yet support MODE_X here */
 		}
 
 		return;
@@ -298,7 +301,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_move_to (cr, x, y);
 
 		int c;
-		for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
+		for (c = 13 * suit + 12; c >= 13 * suit; c--) {
 			if (handdisp->cards[c]) {
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
 				handdisp->l[c] = x + extents.x_bearing;
@@ -334,7 +337,29 @@ draw (GtkWidget *hand, cairo_t *cr)
 				cairo_move_to (cr, x, y);
 				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
+			} else {
+				handdisp->l[c] = handdisp->r[c] = handdisp->t[c] = handdisp->b[c] = 0;
 			}
+		}
+
+		/* MODE_X */
+		if (handdisp->mode == HAND_DISPLAY_MODE_HAND_X) {
+			c = 52 + suit;
+			x += 3;
+			cairo_text_extents (cr, "x", &extents);
+			handdisp->l[c] = x + extents.x_bearing;
+			handdisp->r[c] = x + extents.x_bearing + extents.width;
+			handdisp->t[c] = y + extents.y_bearing;
+			handdisp->b[c] = y + extents.y_bearing + extents.height;
+			if (c == handdisp->cur_focus) {
+				cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
+				cairo_rectangle (cr, handdisp->l[c] - 1, handdisp->t[c] - 1,
+					extents.width + 2, extents.height + 2);
+				cairo_fill (cr);
+			}
+			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+			cairo_move_to (cr, x, y);
+			cairo_show_text (cr, "x");
 		}
 	}
 
@@ -384,13 +409,13 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 	if (handdisp->cur_focus != card) {
 		if (handdisp->cur_focus != -1) {
 			redraw_card (hand, handdisp->cur_focus);
-			//printf("%c%d left\n", "CDHS"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
+			//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
 			g_signal_emit_by_name (handdisp, "card-leave", card_label + handdisp->cur_focus);
 		}
 		handdisp->cur_focus = card;
 		if (card != -1) {
 			redraw_card (hand, card);
-			//printf("%c%d entered\n", "CDHS"[card / 13], card % 13 + 2);
+			//printf("%c%d entered\n", "CDHSx"[card / 13], card % 13 + 2);
 			g_signal_emit_by_name (handdisp, "card-enter", card_label + card);
 		}
 	}
@@ -404,7 +429,7 @@ hand_display_leave (GtkWidget *hand, GdkEventCrossing *event)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	if (handdisp->cur_focus != -1) {
 		redraw_card (hand, handdisp->cur_focus);
-		//printf("%c%d left\n", "CDHS"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
+		//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
 		g_signal_emit_by_name (handdisp, "card-leave", card_label + handdisp->cur_focus);
 		handdisp->cur_focus = -1;
 	}
@@ -422,7 +447,7 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 		return FALSE;
 	redraw_card (hand, card);
 
-	//printf("%c%d click type %d\n", "CDHS"[card / 13], card % 13 + 2, event->type);
+	//printf("%c%d click type %d\n", "CDHSx"[card / 13], card % 13 + 2, event->type);
 
 	if (event->type == GDK_BUTTON_PRESS) {
 		handdisp->cur_click = card;
@@ -584,7 +609,7 @@ hand_display_init (HandDisplay *handdisp)
 	int i;
 	handdisp->style = HAND_DISPLAY_STYLE_TEXT;
 
-	if (handdisp->mode_table) {
+	if (handdisp->mode == HAND_DISPLAY_MODE_TABLE) {
 		for (i = 0; i < 4; i++) {
 			handdisp->table_seat[i] = handdisp->table_card[i] = 0;
 		}
@@ -630,18 +655,10 @@ hand_display_get_type ()
 }
 
 GtkWidget *
-hand_display_new (void)
+hand_display_new (int mode)
 {
 	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
-	handdisp->mode_table = 0;
-	return GTK_WIDGET(handdisp);
-}
-
-GtkWidget *
-hand_display_table_new (void)
-{
-	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
-	handdisp->mode_table = 1;
+	handdisp->mode = mode;
 	return GTK_WIDGET(handdisp);
 }
 

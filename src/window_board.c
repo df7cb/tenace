@@ -249,7 +249,7 @@ static void create_hand_widgets (window_board_t *win)
 
 	for (h = 0; h < 4; h++) {
 		GtkWidget *alignment = lookup_widget(win->window, alignment_a[h]);
-		GtkWidget *hand = hand_display_new();
+		GtkWidget *hand = hand_display_new(HAND_DISPLAY_MODE_HAND);
 		gtk_container_add(GTK_CONTAINER(alignment), hand);
 		gtk_widget_show(hand);
 		g_signal_connect (hand, "card-clicked", G_CALLBACK (card_clicked), dir + h);
@@ -258,7 +258,7 @@ static void create_hand_widgets (window_board_t *win)
 		win->handdisp[h] = HAND_DISPLAY(hand);
 	}
 	GtkWidget *grid = lookup_widget (win->window, "table1");
-	GtkWidget *table = hand_display_table_new ();
+	GtkWidget *table = hand_display_new (HAND_DISPLAY_MODE_TABLE);
 	gtk_table_attach_defaults (GTK_TABLE (grid), table, 4, 5, 1, 2);
 	gtk_widget_show (table);
 	win->table = table;
