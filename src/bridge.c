@@ -69,6 +69,7 @@ void board_clear(board *b)
 	for (i = 0; i < 4; i++)
 		b->hand_cards[i] = 0;
 	b->current_turn = seat_mod(b->declarer + 1);
+	b->tricks[0] = b->tricks[1] = 0;
 
 	b->par_score = -1;
 	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;

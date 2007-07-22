@@ -80,7 +80,8 @@ void show_board (board *b, redraw_t redraw)
 		char *fname = b->filename ? b->filename->str : "";
 		if (b->filename && strrchr(b->filename->str, '/'))
 			fname = strrchr(b->filename->str, '/') + 1;
-		g_string_printf(str, "Tenace - %s%s%s", b->name->str,
+		g_string_printf(str, "Tenace - %s: %s%s%s", b->name->str,
+			contract_string(b->level, b->trumps, b->declarer, b->doubled),
 			b->filename ? " - " : "", fname);
 		gtk_window_set_title(GTK_WINDOW(win->window), str->str);
 	}
@@ -277,8 +278,10 @@ void board_window_set_style (window_board_t *win, int style)
 int
 board_window_append_board (window_board_t *win, board *b)
 {
-	if (!b)
-		return -1;
+	if (!b) {
+		b = board_new ();
+		g_string_printf (b->name, "Board %d", win->n_boards + 1);
+	}
 
 	if (win->n_boards >= win->n_boards_alloc) {
 		win->n_boards_alloc <<= 2;

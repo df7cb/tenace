@@ -47,7 +47,7 @@ on_neu1_activate                       (GtkMenuItem     *menuitem,
 		board_free (win->boards[i]);
 	}
 	win->n_boards = 0;
-	win->cur = board_window_append_board (win, board_new ());
+	win->cur = board_window_append_board (win, NULL);
 	card_window_update(win->boards[0]->dealt_cards);
 	show_board(win->boards[0], REDRAW_FULL);
 }
@@ -798,6 +798,8 @@ void
 on_deal_new_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	win->cur = board_window_append_board (win, NULL);
+	card_window_update(win->boards[win->cur]->dealt_cards);
+	show_board(win->boards[win->cur], REDRAW_FULL);
 }
 
