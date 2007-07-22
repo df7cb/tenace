@@ -244,9 +244,9 @@ draw (GtkWidget *hand, cairo_t *cr)
 	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
 		y = MAX (hand->allocation.height - card_height - 5, 15);
 		int n = 0;
-		for (suit = 3; suit >= 0; suit--) {
+		for (suit = 0; suit < 4; suit++) {
 			int c;
-			for (c = 13 * (suit + 1) - 1; c >= 13 * suit; c--) {
+			for (c = 13 * (handdisp->suits[suit] + 1) - 1; c >= 13 * handdisp->suits[suit]; c--) {
 				if (handdisp->cards[c]) {
 					x = floor (5 + n * (hand->allocation.width - card_width - 10) / 12.0);
 					int sc = handdisp->card_score[c];
@@ -620,6 +620,10 @@ hand_display_init (HandDisplay *handdisp)
 		}
 		return;
 	}
+
+	int suitlist[] = { 3, 2, 0, 1 }; /* S H C D */
+	for (i = 0; i < 4; i++)
+		handdisp->suits[i] = suitlist[i];
 
 	for (i = 0; i < 52; i++) {
 		handdisp->cards[i] = 0;

@@ -80,6 +80,7 @@ struct _HandDisplay
 	int card_score_neg;
 	int best_card_score;
 	double l[56], r[56], t[56], b[56]; /* 52..55 are MODE_X */
+	int suits[4]; /* order in which to show suits */
 
 	/* table */ // FIXME: this should use a union or something
 	int table_seat[4];
