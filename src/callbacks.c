@@ -793,3 +793,11 @@ on_options_cards_filechooser_file_activated
 
 }
 
+
+void
+on_deal_new_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+

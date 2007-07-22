@@ -9,7 +9,8 @@ XS-Vcs-Hg: http://hg.df7cb.de/hg/tenace
 
 Package: tenace
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-opensymbol
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: gnome-cards-data, librsvg2-common
 Description: bridge hand viewer and editor
  Tenace is a bridge hand viewer and editor.
  .

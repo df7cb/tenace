@@ -268,9 +268,9 @@ void board_window_set_style (window_board_t *win, int style)
 {
 	int h;
 	for (h = 0; h < 4; h++) {
-		hand_display_set_style(win->handdisp[h], style);
+		hand_display_set_style(win->handdisp[h], style, NULL);
 	}
-	hand_display_set_style(win->table, style);
+	hand_display_set_style(win->table, style, NULL);
 	show_board(CUR_BOARD, REDRAW_HANDS);
 }
 

@@ -28,7 +28,7 @@ static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
 			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 			52, 53, 54, 55 /* MODE_X */ };
-static int card_init = 0, card_width = 80, card_height = 0;
+static int render_init = 0, card_width = 80, card_height = 0;
 static GdkPixbuf *card_pixbuf[53];
 
 /* internal functions */
@@ -41,7 +41,7 @@ which_card (HandDisplay *handdisp, double x, double y)
 	int max_x = -1;
 	int max = -1;
 	for (c = 0; c < (handdisp->mode == HAND_DISPLAY_MODE_HAND_X ? 56 : 52); c++) {
-		if (x >= handdisp->l[c] && x <= handdisp->r[c]
+		if (handdisp->cards[c] && x >= handdisp->l[c] && x <= handdisp->r[c]
 				&& y >= handdisp->t[c] && y <= handdisp->b[c]) {
 			if (handdisp->r[c] > max_x) {
 				max = c;
@@ -64,21 +64,26 @@ overtricks (int i)
 }
 
 static void
-render_card_init (void)
+render_card_init (char *card_fname)
 {
+	int i;
+	if (render_init) {
+		for (i = 0; i < 53; i++)
+			g_object_unref (card_pixbuf[i]);
+		render_init = 0;
+	}
+
 	printf("Initializing card pixmaps\n");
 	GError *error = NULL;
-	char *fname = "cards/bonded.svg";
-	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (fname, card_width * 13, 500, &error);
+	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname, card_width * 13, 500, &error);
 	if (!pb) {
-		printf ("moo: %s.\n", error->message);
+		printf ("%s: %s.\n", card_fname, error->message);
 		return;
 	}
 	int buf_width = gdk_pixbuf_get_width (pb);
 	int buf_height = gdk_pixbuf_get_height (pb);
 	card_width = ceil (gdk_pixbuf_get_width (pb) / 13.0);
 	card_height = ceil (gdk_pixbuf_get_height (pb) / 5.0);
-	int i;
 	for (i = 0; i < 52; i++) {
 		card_pixbuf[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, card_width, card_height);
 		if (!card_pixbuf[i]) {
@@ -99,13 +104,13 @@ render_card_init (void)
 		return;
 	}
 
-	card_init = 1;
+	render_init = 1;
 }
 
 static void
 render_card (cairo_t *cr, double x, double y, int c, int color)
 {
-	if (!card_init)
+	if (!render_init)
 		return;
 
 	assert (0 <= c && c < 52);
@@ -669,11 +674,14 @@ hand_display_draw (GtkWidget *hand)
 }
 
 void
-hand_display_set_style (HandDisplay *handdisp, int style)
+hand_display_set_style (HandDisplay *handdisp, int style, char *fname)
 {
+	char *card_fname = "/usr/share/pixmaps/gnome-games-common/cards/bonded.svg";
+	if (fname)
+		card_fname = fname;
 	handdisp->style = style;
-	if (style == HAND_DISPLAY_STYLE_CARDS && !card_init)
-		render_card_init ();
+	if (style == HAND_DISPLAY_STYLE_CARDS && !render_init)
+		render_card_init (card_fname);
 }
 
 /* hand interface */

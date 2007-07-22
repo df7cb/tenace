@@ -375,3 +375,7 @@ void
 on_options_cards_filechooser_file_activated
                                         (GtkFileChooser  *filechooser,
                                         gpointer         user_data);
+
+void
+on_deal_new_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

@@ -94,7 +94,7 @@ struct _HandDisplayClass
 GtkType hand_display_get_type (void);
 GtkWidget *hand_display_new (int mode);
 void hand_display_draw (GtkWidget *hand);
-void hand_display_set_style (HandDisplay *handdisp, int style);
+void hand_display_set_style (HandDisplay *handdisp, int style, char *fname);
 
 /* hand interface */
 void hand_display_set_card (HandDisplay *handdisp, int card, int val);
