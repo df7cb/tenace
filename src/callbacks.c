@@ -144,7 +144,7 @@ void
 on_radiotoolbutton_west_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	new_card_seat = west;
+	set_new_card_seat (west);
 }
 
 
@@ -152,7 +152,7 @@ void
 on_radiotoolbutton_north_clicked       (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	new_card_seat = north;
+	set_new_card_seat (north);
 }
 
 
@@ -160,7 +160,7 @@ void
 on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	new_card_seat = east;
+	set_new_card_seat (east);
 }
 
 
@@ -168,7 +168,7 @@ void
 on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	new_card_seat = south;
+	set_new_card_seat (south);
 }
 
 

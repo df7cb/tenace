@@ -41,6 +41,7 @@ extern "C" {
 #define HAND_DISPLAY_CARD          1
 #define HAND_DISPLAY_GREY_CARD     2
 #define HAND_DISPLAY_OLD_CARD      3
+#define HAND_DISPLAY_HILIGHT_CARD  4
 
 #define HAND_DISPLAY_NO_SCORE      (0x1000) /* score undefined */
 
@@ -50,8 +51,9 @@ extern "C" {
 #define HAND_DISPLAY_FOCUS_BG      1.0, 0.8, 0.0
 
 #define HAND_DISPLAY_FONT          0.0, 0.0, 0.0
-#define HAND_DISPLAY_GREY_FONT     0.2, 0.2, 0.2
+#define HAND_DISPLAY_GREY_FONT     0.3, 0.3, 0.3
 #define HAND_DISPLAY_OLD_FONT      0.5, 0.5, 0.5
+#define HAND_DISPLAY_HILIGHT_FONT  1.0, 0.3, 0.0
 #define HAND_DISPLAY_BEST_POS_FONT 0.0, 0.9, 0.0
 #define HAND_DISPLAY_POS_FONT      0.0, 0.7, 0.0
 #define HAND_DISPLAY_BEST_NEG_FONT 0.9, 0.0, 0.0

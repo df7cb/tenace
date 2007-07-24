@@ -326,6 +326,8 @@ draw (GtkWidget *hand, cairo_t *cr)
 						cairo_set_source_rgb (cr, HAND_DISPLAY_GREY_FONT);
 					else if (handdisp->cards[c] == HAND_DISPLAY_OLD_CARD)
 						cairo_set_source_rgb (cr, HAND_DISPLAY_OLD_FONT);
+					else if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD)
+						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
 				} else {
 					/* invert colors if the score is for the opps */
 					if (handdisp->card_score_neg ^ (handdisp->card_score[c] >= 0))
