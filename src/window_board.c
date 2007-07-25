@@ -247,6 +247,7 @@ static void create_hand_widgets (window_board_t *win)
 	static const char *alignment_a[] = {"alignment_w", "alignment_n", "alignment_e", "alignment_s"};
 	static int dir[] = { 1, 2, 3, 4 };
 	int h;
+	GtkSizeGroup *sizegroup = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
 	for (h = 0; h < 4; h++) {
 		GtkWidget *alignment = lookup_widget(win->window, alignment_a[h]);
@@ -257,7 +258,10 @@ static void create_hand_widgets (window_board_t *win)
 		g_signal_connect (hand, "card-enter", G_CALLBACK (card_enter), dir + h);
 		g_signal_connect (hand, "card-leave", G_CALLBACK (card_leave), dir + h);
 		win->handdisp[h] = HAND_DISPLAY(hand);
+		gtk_size_group_add_widget (sizegroup, hand);
 	}
+	g_object_unref (sizegroup);
+
 	GtkWidget *grid = lookup_widget (win->window, "table1");
 	GtkWidget *table = hand_display_new (HAND_DISPLAY_MODE_TABLE);
 	gtk_table_attach_defaults (GTK_TABLE (grid), table, 4, 5, 1, 2);
