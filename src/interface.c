@@ -44,7 +44,6 @@ create_window_hand (void)
   GtkWidget *deal1_menu;
   GtkWidget *deal_clear;
   GtkWidget *deal_random;
-  GtkWidget *deal_line;
   GtkWidget *dealer1;
   GtkWidget *dealer1_menu;
   GSList *dealer_west1_group = NULL;
@@ -112,6 +111,7 @@ create_window_hand (void)
   GtkWidget *menuitem3;
   GtkWidget *menuitem3_menu;
   GtkWidget *cards1;
+  GtkWidget *deal_line;
   GtkWidget *bidding1;
   GtkWidget *bids1;
   GtkWidget *play1;
@@ -221,10 +221,6 @@ create_window_hand (void)
   deal_random = gtk_menu_item_new_with_mnemonic (_("_Random"));
   gtk_widget_show (deal_random);
   gtk_container_add (GTK_CONTAINER (deal1_menu), deal_random);
-
-  deal_line = gtk_menu_item_new_with_mnemonic (_("Line"));
-  gtk_widget_show (deal_line);
-  gtk_container_add (GTK_CONTAINER (deal1_menu), deal_line);
 
   dealer1 = gtk_menu_item_new_with_mnemonic (_("_Dealer"));
   gtk_widget_show (dealer1);
@@ -498,19 +494,23 @@ create_window_hand (void)
   menuitem3_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem3), menuitem3_menu);
 
-  cards1 = gtk_check_menu_item_new_with_mnemonic (_("Cards"));
+  cards1 = gtk_check_menu_item_new_with_mnemonic (_("_Cards"));
   gtk_widget_show (cards1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), cards1);
 
-  bidding1 = gtk_check_menu_item_new_with_mnemonic (_("Bidding"));
+  deal_line = gtk_check_menu_item_new_with_mnemonic (_("_Line entry"));
+  gtk_widget_show (deal_line);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), deal_line);
+
+  bidding1 = gtk_check_menu_item_new_with_mnemonic (_("_Bidding"));
   gtk_widget_show (bidding1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), bidding1);
 
-  bids1 = gtk_check_menu_item_new_with_mnemonic (_("Bids"));
+  bids1 = gtk_check_menu_item_new_with_mnemonic (_("Bi_ds"));
   gtk_widget_show (bids1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), bids1);
 
-  play1 = gtk_check_menu_item_new_with_mnemonic (_("Play"));
+  play1 = gtk_check_menu_item_new_with_mnemonic (_("Pla_y"));
   gtk_widget_show (play1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), play1);
 
@@ -519,24 +519,24 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), trennlinie4);
   gtk_widget_set_sensitive (trennlinie4, FALSE);
 
-  played_cards1 = gtk_check_menu_item_new_with_mnemonic (_("Played cards"));
+  played_cards1 = gtk_check_menu_item_new_with_mnemonic (_("_Played cards"));
   gtk_widget_show (played_cards1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), played_cards1);
 
-  display_style1 = gtk_menu_item_new_with_mnemonic (_("Display style"));
+  display_style1 = gtk_menu_item_new_with_mnemonic (_("Display _style"));
   gtk_widget_show (display_style1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), display_style1);
 
   display_style1_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (display_style1), display_style1_menu);
 
-  style_text = gtk_radio_menu_item_new_with_mnemonic (style_text_group, _("Text"));
+  style_text = gtk_radio_menu_item_new_with_mnemonic (style_text_group, _("_Text"));
   style_text_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (style_text));
   gtk_widget_show (style_text);
   gtk_container_add (GTK_CONTAINER (display_style1_menu), style_text);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (style_text), TRUE);
 
-  style_cards = gtk_radio_menu_item_new_with_mnemonic (style_text_group, _("Cards"));
+  style_cards = gtk_radio_menu_item_new_with_mnemonic (style_text_group, _("_Cards"));
   style_text_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (style_cards));
   gtk_widget_show (style_cards);
   gtk_container_add (GTK_CONTAINER (display_style1_menu), style_cards);
@@ -763,9 +763,6 @@ create_window_hand (void)
   g_signal_connect ((gpointer) deal_random, "activate",
                     G_CALLBACK (on_deal_random_activate),
                     NULL);
-  g_signal_connect ((gpointer) deal_line, "activate",
-                    G_CALLBACK (on_deal_line_activate),
-                    NULL);
   g_signal_connect ((gpointer) dealer_west1, "activate",
                     G_CALLBACK (on_dealer_west1_activate),
                     NULL);
@@ -883,6 +880,9 @@ create_window_hand (void)
   g_signal_connect ((gpointer) cards1, "activate",
                     G_CALLBACK (on_cards1_activate),
                     NULL);
+  g_signal_connect ((gpointer) deal_line, "activate",
+                    G_CALLBACK (on_deal_line_activate),
+                    NULL);
   g_signal_connect ((gpointer) bidding1, "activate",
                     G_CALLBACK (on_bidding1_activate),
                     NULL);
@@ -948,7 +948,6 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, deal1_menu, "deal1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, deal_clear, "deal_clear");
   GLADE_HOOKUP_OBJECT (window_hand, deal_random, "deal_random");
-  GLADE_HOOKUP_OBJECT (window_hand, deal_line, "deal_line");
   GLADE_HOOKUP_OBJECT (window_hand, dealer1, "dealer1");
   GLADE_HOOKUP_OBJECT (window_hand, dealer1_menu, "dealer1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, dealer_west1, "dealer_west1");
@@ -1009,6 +1008,7 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, menuitem3, "menuitem3");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem3_menu, "menuitem3_menu");
   GLADE_HOOKUP_OBJECT (window_hand, cards1, "cards1");
+  GLADE_HOOKUP_OBJECT (window_hand, deal_line, "deal_line");
   GLADE_HOOKUP_OBJECT (window_hand, bidding1, "bidding1");
   GLADE_HOOKUP_OBJECT (window_hand, bids1, "bids1");
   GLADE_HOOKUP_OBJECT (window_hand, play1, "play1");

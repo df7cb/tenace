@@ -601,8 +601,11 @@ void
 on_deal_line_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board *b = CUR_BOARD;
-	window_line_entry_init(b);
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
+		board *b = CUR_BOARD;
+		window_line_entry_init (b);
+	} else
+		window_line_entry_delete ();
 }
 
 
