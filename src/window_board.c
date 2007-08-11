@@ -54,8 +54,12 @@ board_window_rebuild_board_menu (window_board_t *win)
 	int i;
 	GSList *group = NULL;
 	for (i = 0; i < win->n_boards; i++) {
-		GtkWidget *menuitem = gtk_radio_menu_item_new_with_label
-			(group, win->boards[i]->name->str);
+		GString *label = g_string_new (win->boards[i]->name->str);
+		if (win->boards[i]->name2)
+			g_string_append_printf (label, " (%s)", win->boards[i]->name2->str);
+		GtkWidget *menuitem = gtk_radio_menu_item_new_with_label (group, label->str);
+		g_string_free (label, TRUE);
+
 		group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (menuitem));
 		if (i == win->cur)
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), TRUE);

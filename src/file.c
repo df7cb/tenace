@@ -161,6 +161,7 @@ board_parse_lin (char *line, FILE *f)
 	int card_nr = 0;
 	int contract = 0;
 	int doubled = 0;
+	int i;
 
 	board *b = board_new ();
 	int board_filled = 0;
@@ -168,6 +169,7 @@ board_parse_lin (char *line, FILE *f)
 
 	char *name_arr[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	int name_n = 0;
+	char *res = NULL, *res_ptr = NULL;
 
 	do {
 	for (tok = strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
@@ -195,7 +197,6 @@ board_parse_lin (char *line, FILE *f)
 			suit su = spade;
 			b->dealer = seat_mod(*tok - '0' - 1);
 			for (c = tok + 1; *c; c++) {
-				int i;
 				if ((i = parse_suit(*c)) != -1) {
 					su = i;
 				} else if ((i = parse_rank_char(*c)) != -1) {
@@ -227,10 +228,15 @@ board_parse_lin (char *line, FILE *f)
 						"%s", name_arr[i + (tok[0] == 'c' ? 4 : 0)]);
 				}
 			}
+			if (res) {
+				if (res_ptr)
+					b->name2 = g_string_new (strtok_r (NULL, ",", &res_ptr));
+				else
+					b->name2 = g_string_new (strtok_r (res, ",", &res_ptr));
+			}
 			if (strlen (tok) >= 1)
 				g_string_printf(b->name, "%s %s",
-					tok[0] == 'c' ? "Closed" : "Open",
-					tok + 1);
+					tok[0] == 'c' ? "Closed" : "Open", tok + 1);
 		} else if (!strcmp(tok, "sv")) {
 			tok = STRTOK;
 			switch (*tok) {
@@ -275,10 +281,10 @@ board_parse_lin (char *line, FILE *f)
 		} else if (!strcmp(tok, "vg")) { /* match title */
 			STRTOK;
 		} else if (!strcmp(tok, "rs")) { /* results */
-			STRTOK;
+			res = strdup(STRTOK);
 		} else if (!strcmp(tok, "nt")) { /* comment */
 			tok = STRTOK;
-			printf ("\"%s\"\n", tok);
+			//printf ("\"%s\"\n", tok);
 		} else {
 			printf("Unknown token '%s'\n", tok);
 		}
@@ -286,12 +292,20 @@ board_parse_lin (char *line, FILE *f)
 	} while (fgets(line, 1023, f));
 
 	FINISH_BOARD;
-	return 1;
-
+	int ret = 1;
+	goto ok;
 error:
-	return 0;
+	ret = 0;
+ok:
+	for (i = 0; i < name_n; i++)
+		free (name_arr[i]);
+	if (res)
+		free (res);
+	printf ("returning %d\n", ret);
+	return ret;
 }
 #undef STRTOK
+#undef FINISH_BOARD
 
 int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 {
@@ -339,20 +353,20 @@ board_load(char *fname)
 	} else {
 		board *b = board_new ();
 		ret = board_parse_line(buf, b, ' ', '.');
-		if (!ret)
+		if (ret)
+			board_window_append_board (win, b);
+		else
 			board_free (b);
 	}
 	fclose(f);
-	if (ret)
-		return 1;
-	return 0;
+	return ret;
 }
 
 int
 board_load_dialog (void)
 {
 	GtkWidget *dialog;
-	board *b;
+	int ret = 0;
 
 	dialog = gtk_file_chooser_dialog_new ("Open File",
 			GTK_WINDOW (win->window),
@@ -369,9 +383,9 @@ board_load_dialog (void)
 			if (win->filename)
 				g_string_free (win->filename, TRUE);
 			win->filename = g_string_new (filename);
-			card_window_update(b->dealt_cards);
-			win->cur = board_window_append_board (win, b);
-			show_board(b, REDRAW_FULL);
+			card_window_update(win->boards[0]->dealt_cards);
+			show_board(win->boards[0], REDRAW_FULL);
+			ret = 1;
 		} else {
 			// FIXME: the control flow here is totally bad
 			printf ("open failed.\n");
@@ -379,7 +393,7 @@ board_load_dialog (void)
 	}
 
 	gtk_widget_destroy (dialog);
-	return b;
+	return ret;
 }
 
 void board_save_dialog (board *b, int save_as)

@@ -93,6 +93,7 @@ board *board_new(void)
 	assert(b);
 
 	b->name = g_string_new("Board 1");
+	b->name2 = NULL;
 	b->n = 0; /* will be set by the board menu hander */
 	for (i = 0; i < 4; i++) {
 		b->hand_name[i] = g_string_new(names[i]);
@@ -116,6 +117,8 @@ void board_free(board *b)
 	int i;
 	assert(b);
 	g_string_free(b->name, TRUE);
+	if (b->name2)
+		g_string_free(b->name2, TRUE);
 	for (i = 0; i < 4; i++) {
 		g_string_free(b->hand_name[i], TRUE);
 	}
