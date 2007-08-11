@@ -19,6 +19,7 @@ install: build-stamp
 	dh_clean -k
 	$(MAKE) install DESTDIR=$D
 	install -m644 -D contrib/mailcap $D/usr/lib/mime/packages/tenace
+	install -m644 -D cards/grey.svg $D/usr/share/tenace/grey.svg
 
 binary-indep:
 

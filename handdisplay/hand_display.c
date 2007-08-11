@@ -98,7 +98,7 @@ render_card_init (char *card_fname)
 	g_object_unref (pb);
 
 	card_pixbuf[52] =
-		gdk_pixbuf_new_from_file_at_size ("cards/grey.svg", card_width, card_height, &error);
+		gdk_pixbuf_new_from_file_at_size ("/usr/share/tenace/grey.svg", card_width, card_height, &error);
 	if (!card_pixbuf[52]) {
 		printf ("moo: %s.\n", error->message);
 		return;
