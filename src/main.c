@@ -72,8 +72,7 @@ main (int argc, char *argv[])
 	}
 	card_window_update(win->boards[0]->dealt_cards);
   } else {
-	board *b = board_new ();
-	board_window_append_board (win, b);
+	board_window_append_board (win, NULL);
   }
 
   show_board(win->boards[0], REDRAW_FULL);

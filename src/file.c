@@ -152,7 +152,10 @@ void board_save(board *b, char *filename)
 #define FINISH_BOARD \
 	if (b->played_cards[0] != -1) \
 		board_set_contract(b, LEVEL(contract), DENOM(contract), \
-			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled);
+			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled); \
+	card_nr = 0; \
+	contract = 0; \
+	doubled = 0;
 static int
 board_parse_lin (char *line, FILE *f)
 {
@@ -169,7 +172,6 @@ board_parse_lin (char *line, FILE *f)
 
 	char *name_arr[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	int name_n = 0;
-	char *res = NULL, *res_ptr = NULL;
 
 	do {
 	for (tok = strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
@@ -215,7 +217,7 @@ board_parse_lin (char *line, FILE *f)
 			g_string_printf(b->name, "%s", STRTOK);
 		} else if (!strcmp(tok, "qx")) { /* board number, o1, c1, o2, ... */
 			tok = STRTOK;
-			if (board_filled) { /* first token in new vuegraph board */
+			if (board_filled) { /* first token in new vugraph board */
 				FINISH_BOARD;
 				board_filled = 0;
 
@@ -228,12 +230,14 @@ board_parse_lin (char *line, FILE *f)
 						"%s", name_arr[i + (tok[0] == 'c' ? 4 : 0)]);
 				}
 			}
+			/*
 			if (res) {
 				if (res_ptr)
 					b->name2 = g_string_new (strtok_r (NULL, ",", &res_ptr));
 				else
 					b->name2 = g_string_new (strtok_r (res, ",", &res_ptr));
 			}
+			*/
 			if (strlen (tok) >= 1)
 				g_string_printf(b->name, "%s %s",
 					tok[0] == 'c' ? "Closed" : "Open", tok + 1);
@@ -277,11 +281,11 @@ board_parse_lin (char *line, FILE *f)
 		} else if (!strcmp(tok, "mc")) {
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
 			STRTOK;
-		/* vuegraph file */
+		/* vugraph file */
 		} else if (!strcmp(tok, "vg")) { /* match title */
 			STRTOK;
 		} else if (!strcmp(tok, "rs")) { /* results */
-			res = strdup(STRTOK);
+			STRTOK;
 		} else if (!strcmp(tok, "nt")) { /* comment */
 			tok = STRTOK;
 			//printf ("\"%s\"\n", tok);
@@ -299,8 +303,6 @@ error:
 ok:
 	for (i = 0; i < name_n; i++)
 		free (name_arr[i]);
-	if (res)
-		free (res);
 	printf ("returning %d\n", ret);
 	return ret;
 }

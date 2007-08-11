@@ -54,9 +54,10 @@ board_window_rebuild_board_menu (window_board_t *win)
 	int i;
 	GSList *group = NULL;
 	for (i = 0; i < win->n_boards; i++) {
-		GString *label = g_string_new (win->boards[i]->name->str);
-		if (win->boards[i]->name2)
-			g_string_append_printf (label, " (%s)", win->boards[i]->name2->str);
+		board *b = win->boards[i];
+		GString *label = g_string_new (b->name->str);
+		g_string_append_printf (label, " (%s)",
+			contract_string (b->level, b->trumps, b->declarer, b->doubled));
 		GtkWidget *menuitem = gtk_radio_menu_item_new_with_label (group, label->str);
 		g_string_free (label, TRUE);
 
@@ -76,6 +77,8 @@ void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
 	GString *str = g_string_new(NULL);
+	if (!b)
+		return;
 
 	if (redraw & REDRAW_BOARD_LIST)
 		board_window_rebuild_board_menu (win);
