@@ -13,6 +13,7 @@
  *  GNU General Public License for more details.
  */
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -148,21 +149,46 @@ void board_save(board *b, char *filename)
 
 // pn|Frederic,gm,Myon,mecky|st||md|4S27KAHKD49C3589TJ,S36H48AD358KC27QK,STJH259TJQD26TJQC,|rh||ah|Board 14|sv|o|mb|p|mb|p|mb|1D|mb|2H|mb|2S|mb|p|mb|p|mb|p|pg||pc|HK|pc|H4|pc|H2|pc|H6|pg||pc|CJ|pc|CK|pc|ST|pc|C4|pg||pc|H9|pc|H3|pc|S2|pc|H8|pg||pc|CT|pc|C2|pc|SJ|pc|C6|pg||pc|HQ|pc|H7|pc|S7|pc|HA|pg||pc|D9|pc|D3|pc|DT|pc|DA|pg||pc|S4|pc|SK|pc|S3|pc|H5|pg||pc|SA|pc|S6|pc|HT|pc|S5|pg||pc|D4|pc|DK|pc|D2|pc|D7|pg||pc|C7|pc|D6|pc|CA|pc|C3|pg||mc|6|
 #define STRTOK strtok_r(NULL, "|\n\r", &saveptr)
-int board_parse_lin(const char *line, board *b)
+#define FINISH_BOARD \
+	if (b->played_cards[0] != -1) \
+		board_set_contract(b, LEVEL(contract), DENOM(contract), \
+			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled);
+static int
+board_parse_lin (char *line, FILE *f)
 {
-	char *l = strdup(line);
 	char *saveptr;
 	char *tok;
 	int card_nr = 0;
 	int contract = 0;
 	int doubled = 0;
-	for (tok = strtok_r(l, "|", &saveptr); tok; tok = STRTOK) {
+
+	board *b = board_new ();
+	int board_filled = 0;
+	board_window_append_board (win, b);
+
+	char *name_arr[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	int name_n = 0;
+
+	do {
+	for (tok = strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
+		/* single hand */
 		if (!strcmp(tok, "pn")) { /* SWNE */
-			g_string_printf(b->hand_name[south-1], "%s", strtok_r(NULL, ",|", &saveptr));
-			g_string_printf(b->hand_name[west-1], "%s", strtok_r(NULL, ",|", &saveptr));
-			g_string_printf(b->hand_name[north-1], "%s", strtok_r(NULL, ",|", &saveptr));
-			g_string_printf(b->hand_name[east-1], "%s", strtok_r(NULL, ",|", &saveptr));
+			tok = STRTOK;
+			char *nameptr;
+			char *name = strtok_r(tok, ",", &nameptr);
+			assert (name_n < 8);
+			do {
+				name_arr[name_n] = strdup(name);
+				if (name_n < 4)
+					g_string_printf(b->hand_name[seat_mod (name_n) - 1], "%s", name);
+				name_n++;
+			} while ((name = strtok_r(NULL, ",", &nameptr)) && name_n < 8);
+			//g_string_printf(b->hand_name[south-1], "%s", strtok_r(NULL, ",|", &saveptr));
+			//g_string_printf(b->hand_name[west-1], "%s", strtok_r(NULL, ",|", &saveptr));
+			//g_string_printf(b->hand_name[north-1], "%s", strtok_r(NULL, ",|", &saveptr));
+			//g_string_printf(b->hand_name[east-1], "%s", strtok_r(NULL, ",|", &saveptr));
 		} else if (!strcmp(tok, "md")) {
+			assert (!board_filled);
 			tok = STRTOK;
 			char *c;
 			seat se = south;
@@ -183,8 +209,28 @@ int board_parse_lin(const char *line, board *b)
 				}
 			}
 			deal_random(b); /* compute east hand */
+			board_filled = 1; /* consider this board finished on next qx token */
 		} else if (!strcmp(tok, "ah")) {
 			g_string_printf(b->name, "%s", STRTOK);
+		} else if (!strcmp(tok, "qx")) { /* board number, o1, c1, o2, ... */
+			tok = STRTOK;
+			if (board_filled) { /* first token in new vuegraph board */
+				FINISH_BOARD;
+				board_filled = 0;
+
+				/* initialize player names for new board */
+				b = board_new ();
+				board_window_append_board (win, b);
+				int i;
+				for (i = 0; i < 4; i++) {
+					g_string_printf(b->hand_name[seat_mod (i) - 1],
+						"%s", name_arr[i + (tok[0] == 'c' ? 4 : 0)]);
+				}
+			}
+			if (strlen (tok) >= 1)
+				g_string_printf(b->name, "%s %s",
+					tok[0] == 'c' ? "Closed" : "Open",
+					tok + 1);
 		} else if (!strcmp(tok, "sv")) {
 			tok = STRTOK;
 			switch (*tok) {
@@ -195,7 +241,7 @@ int board_parse_lin(const char *line, board *b)
 				default: printf("Unknown vulnerability: %s\n", tok);
 			}
 		} else if (!strcmp(tok, "mb")) {
-			int bid = parse_bid(tok = STRTOK);
+			int bid = parse_bid(tok = STRTOK) & ~bid_alert; /* TODO: alert */
 			if (bid == -1) {
 				printf("Invalid bid %s\n", tok);
 				goto error;
@@ -208,8 +254,8 @@ int board_parse_lin(const char *line, board *b)
 				doubled = bid;
 			}
 		} else if (!strcmp(tok, "an")) {
-			printf("TODO: alerts not parsed yet\n");
-			STRTOK;
+			tok = STRTOK;
+			printf("TODO: alert %s\n", tok);
 		} else if (!strcmp(tok, "pc")) {
 			int c = parse_card(tok = STRTOK);
 			if (c == -1) {
@@ -220,22 +266,29 @@ int board_parse_lin(const char *line, board *b)
 				b->played_cards[card_nr++] = c;
 		} else if (!strcmp(tok, "st")) {
 		} else if (!strcmp(tok, "rh")) {
-		} else if (!strcmp(tok, "pg")) {
+		} else if (!strcmp(tok, "pg")) { /* new page, e.g. after trick or comment */
+			STRTOK;
 		} else if (!strcmp(tok, "mc")) {
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
 			STRTOK;
+		/* vuegraph file */
+		} else if (!strcmp(tok, "vg")) { /* match title */
+			STRTOK;
+		} else if (!strcmp(tok, "rs")) { /* results */
+			STRTOK;
+		} else if (!strcmp(tok, "nt")) { /* comment */
+			tok = STRTOK;
+			printf ("\"%s\"\n", tok);
 		} else {
 			printf("Unknown token '%s'\n", tok);
 		}
 	}
-	if (b->played_cards[0] != -1)
-		board_set_contract(b, LEVEL(contract), DENOM(contract),
-			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled);
-	free (l);
+	} while (fgets(line, 1023, f));
+
+	FINISH_BOARD;
 	return 1;
 
 error:
-	free(l);
 	return 0;
 }
 #undef STRTOK
@@ -268,7 +321,7 @@ int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 	return 1;
 }
 
-board *
+int
 board_load(char *fname)
 {
 	FILE *f;
@@ -279,22 +332,23 @@ board_load(char *fname)
 	}
 	if (fgets(buf, 1023, f) == NULL)
 		return 0;
-	fclose(f);
 
-	board *b = board_new ();
 	int ret;
 	if (!strncmp(buf, "pn", 2) || !strncmp(buf, "vg", 2)) {
-		ret = board_parse_lin(buf, b);
+		ret = board_parse_lin(buf, f);
 	} else {
+		board *b = board_new ();
 		ret = board_parse_line(buf, b, ' ', '.');
+		if (!ret)
+			board_free (b);
 	}
+	fclose(f);
 	if (ret)
-		return b;
-	board_free (b);
-	return NULL;
+		return 1;
+	return 0;
 }
 
-board *
+int
 board_load_dialog (void)
 {
 	GtkWidget *dialog;
@@ -311,10 +365,10 @@ board_load_dialog (void)
 		char *filename;
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		if (b = board_load(filename)) {
-			if (b->filename)
-				g_string_free(b->filename, TRUE);
-			b->filename = g_string_new(filename);
+		if (board_load(filename)) {
+			if (win->filename)
+				g_string_free (win->filename, TRUE);
+			win->filename = g_string_new (filename);
 			card_window_update(b->dealt_cards);
 			win->cur = board_window_append_board (win, b);
 			show_board(b, REDRAW_FULL);
@@ -322,7 +376,6 @@ board_load_dialog (void)
 			// FIXME: the control flow here is totally bad
 			printf ("open failed.\n");
 		}
-		g_free (filename);
 	}
 
 	gtk_widget_destroy (dialog);
@@ -333,8 +386,8 @@ void board_save_dialog (board *b, int save_as)
 {
 	GtkWidget *dialog;
 
-	if (!save_as && b->filename) {
-		board_save(b, b->filename->str);
+	if (!save_as && win->filename) {
+		board_save(b, win->filename->str);
 		return;
 	}
 
@@ -346,22 +399,22 @@ void board_save_dialog (board *b, int save_as)
 			NULL);
 	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
-	if (!b->filename) {
+	if (!win->filename) {
 		//gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), default_folder_for_saving);
 		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "hand.lin");
 	}
 	else
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), b->filename->str);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename->str);
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename;
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		if (b->filename)
-			g_string_free(b->filename, TRUE);
-		b->filename = g_string_new(filename);
+		if (win->filename)
+			g_string_free(win->filename, TRUE);
+		win->filename = g_string_new(filename);
 		g_free (filename);
-		board_save (b, b->filename->str);
+		board_save (b, win->filename->str);
 	}
 
 	gtk_widget_destroy (dialog);

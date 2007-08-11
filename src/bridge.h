@@ -39,6 +39,7 @@ typedef enum rank_e {
 	bid_pass = 0,
 	bid_x = 1,
 	bid_xx = 2,
+	bid_alert = 0x40,
 } rank;
 
 typedef int card;
@@ -51,7 +52,6 @@ typedef int card;
 
 typedef struct board_t {
 	GString *name;
-	GString *filename;
 	int n; /* board number for callbacks */
 
 	int vuln[2]; /* 0 = NS, 1 = EW */

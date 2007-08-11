@@ -66,14 +66,14 @@ main (int argc, char *argv[])
   read_config (win);
 
   if (argc > 1) {
-	board *b;
-	if (!(b = board_load(argv[1]))) {
+	if (!board_load(argv[1])) {
 		printf ("open failed.\n");
 		exit (1);
 	}
-	board_free (win->boards[0]);
-	win->boards[0] = b;
-	card_window_update(b->dealt_cards);
+	card_window_update(win->boards[0]->dealt_cards);
+  } else {
+	board *b = board_new ();
+	board_window_append_board (win, b);
   }
 
   show_board(win->boards[0], REDRAW_FULL);

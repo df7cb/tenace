@@ -10,21 +10,25 @@
 #define CUR_BOARD (win->boards[win->cur])
 
 /* make sure some code is not called twice */
-#define PROTECT_BEGIN static int protect = 0; if (protect) return; protect = 1;
+#define PROTECT_BEGIN static int protect = 0; if (protect++) return;
 #define PROTECT_END protect = 0;
 
 /* types */
 
-typedef struct _windown_board_t {
+typedef struct _window_board_t {
+	/* GTK */
 	GtkWidget *window;
 	GtkStatusbar *statusbar;
 	GtkWidget *board_menu;
 	HandDisplay *handdisp[4];
 	HandDisplay *table;
 
+	/* config */
 	int show_played_cards;
 	int card_width;
 
+	/* boards */
+	GString *filename;
 	int n_boards;
 	int n_boards_alloc;
 	int cur;

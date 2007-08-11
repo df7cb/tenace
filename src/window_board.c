@@ -77,12 +77,12 @@ void show_board (board *b, redraw_t redraw)
 		board_window_rebuild_board_menu (win);
 
 	if (redraw & REDRAW_TITLE) {
-		char *fname = b->filename ? b->filename->str : "";
-		if (b->filename && strrchr(b->filename->str, '/'))
-			fname = strrchr(b->filename->str, '/') + 1;
+		char *fname = win->filename ? win->filename->str : "";
+		if (win->filename && strrchr(win->filename->str, '/'))
+			fname = strrchr(win->filename->str, '/') + 1;
 		g_string_printf(str, "Tenace - %s: %s%s%s", b->name->str,
 			contract_string(b->level, b->trumps, b->declarer, b->doubled),
-			b->filename ? " - " : "", fname);
+			win->filename ? " - " : "", fname);
 		gtk_window_set_title(GTK_WINDOW(win->window), str->str);
 	}
 
@@ -307,13 +307,13 @@ board_window_init (window_board_t *win)
 	win->show_played_cards = 0;
 	win->card_width = 80;
 
+	win->filename = NULL;
 	win->boards = calloc(4, sizeof(board*));
 	assert (win->boards);
 	win->n_boards_alloc = 4;
-	win->n_boards = 1;
+	win->n_boards = 0;
 
 	win->cur = 0;
-	win->boards[0] = board_new ();
 
 	GdkColor bg = { 0, HAND_DISPLAY_TABLE_GDK_BG };
 	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);

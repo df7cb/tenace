@@ -94,7 +94,10 @@ int parse_bid(char *tok)
 	if (!strcasecmp(tok, "x") || !strcasecmp(tok, "d"))
 		return bid_x;
 	if (!strcasecmp(tok, "xx") || !strcasecmp(tok, "r"))
-		return bid_x;
+		return bid_xx;
+	int alert = 0;
+	if (strlen(tok) == 3 && tok[2] == '!')
+		alert = bid_alert;
 	if (strlen(tok) != 2)
 		return -1;
 
@@ -102,7 +105,7 @@ int parse_bid(char *tok)
 	int su = parse_suit(tok[1]);
 	if (le < 1 || le > 7 || su == -1)
 		return -1;
-	return 5 * le + su;
+	return (5 * le + su) | alert;
 }
 
 GString *card_string (card c)
