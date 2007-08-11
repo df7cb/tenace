@@ -84,12 +84,16 @@ void show_board (board *b, redraw_t redraw)
 		board_window_rebuild_board_menu (win);
 
 	if (redraw & REDRAW_TITLE) {
-		char *fname = win->filename ? win->filename->str : "";
-		if (win->filename && strrchr(win->filename->str, '/'))
-			fname = strrchr(win->filename->str, '/') + 1;
-		g_string_printf(str, "Tenace - %s: %s%s%s", b->name->str,
-			contract_string(b->level, b->trumps, b->declarer, b->doubled),
-			win->filename ? " - " : "", fname);
+		g_string_printf(str, "Tenace - %s (%s)", b->name->str,
+			contract_string(b->level, b->trumps, b->declarer, b->doubled));
+		if (win->title) {
+			g_string_append_printf (str, " - %s", win->title->str);
+		} else if (win->filename) {
+			char *fname = win->filename->str;
+			if (strrchr(fname, '/'))
+				fname = strrchr(fname, '/') + 1;
+			g_string_append_printf (str, " - %s", fname);
+		}
 		gtk_window_set_title(GTK_WINDOW(win->window), str->str);
 	}
 
@@ -315,6 +319,7 @@ board_window_init (window_board_t *win)
 	win->card_width = 80;
 
 	win->filename = NULL;
+	win->title = NULL;
 	win->boards = calloc(4, sizeof(board*));
 	assert (win->boards);
 	win->n_boards_alloc = 4;

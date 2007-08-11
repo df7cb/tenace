@@ -283,7 +283,21 @@ board_parse_lin (char *line, FILE *f)
 			STRTOK;
 		/* vugraph file */
 		} else if (!strcmp(tok, "vg")) { /* match title */
-			STRTOK;
+			tok = STRTOK;
+			printf ("Match title: %s\n", tok);
+			char *t_ptr;
+			char *title = strtok_r (tok, ",", &t_ptr);
+			char *subtitle = strtok_r (NULL, ",", &t_ptr);
+			strtok_r (NULL, ",", &t_ptr);
+			strtok_r (NULL, ",", &t_ptr);
+			strtok_r (NULL, ",", &t_ptr);
+			char *team1 = strtok_r (NULL, ",", &t_ptr);
+			strtok_r (NULL, ",", &t_ptr);
+			char *team2 = strtok_r (NULL, ",", &t_ptr);
+			if (win->title)
+				g_string_free (win->title, TRUE);
+			win->title = g_string_new (NULL);
+			g_string_printf (win->title, "%s %s %s - %s", title, subtitle, team1, team2);
 		} else if (!strcmp(tok, "rs")) { /* results */
 			STRTOK;
 		} else if (!strcmp(tok, "nt")) { /* comment */
@@ -361,6 +375,11 @@ board_load(char *fname)
 			board_free (b);
 	}
 	fclose(f);
+	if (ret) {
+		if (win->filename)
+			g_string_free (win->filename, TRUE);
+		win->filename = g_string_new (fname);
+	}
 	return ret;
 }
 
@@ -382,9 +401,6 @@ board_load_dialog (void)
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 		if (board_load(filename)) {
-			if (win->filename)
-				g_string_free (win->filename, TRUE);
-			win->filename = g_string_new (filename);
 			card_window_update(win->boards[0]->dealt_cards);
 			show_board(win->boards[0], REDRAW_FULL);
 			ret = 1;

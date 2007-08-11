@@ -29,6 +29,7 @@ typedef struct _window_board_t {
 
 	/* boards */
 	GString *filename;
+	GString *title;
 	int n_boards;
 	int n_boards_alloc;
 	int cur;
