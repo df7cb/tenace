@@ -213,7 +213,7 @@ board_parse_lin (char *line, FILE *f)
 			}
 			deal_random(b); /* compute east hand */
 			board_filled = 1; /* consider this board finished on next qx token */
-		} else if (!strcmp(tok, "ah")) {
+		} else if (!strcmp(tok, "ah")) { /* board name */
 			g_string_printf(b->name, "%s", STRTOK);
 		} else if (!strcmp(tok, "qx")) { /* board number, o1, c1, o2, ... */
 			tok = STRTOK;
@@ -250,6 +250,8 @@ board_parse_lin (char *line, FILE *f)
 				case 'b': b->vuln[0] = 1; b->vuln[1] = 1; break;
 				default: printf("Unknown vulnerability: %s\n", tok);
 			}
+		} else if (!strcmp(tok, "pw")) { /* more player names */
+			tok = STRTOK;
 		} else if (!strcmp(tok, "mb")) {
 			int bid = parse_bid(tok = STRTOK) & ~bid_alert; /* TODO: alert */
 			if (bid == -1) {
@@ -299,6 +301,8 @@ board_parse_lin (char *line, FILE *f)
 			win->title = g_string_new (NULL);
 			g_string_printf (win->title, "%s %s %s - %s", title, subtitle, team1, team2);
 		} else if (!strcmp(tok, "rs")) { /* results */
+			STRTOK;
+		} else if (!strcmp(tok, "mp")) { /* MP result */
 			STRTOK;
 		} else if (!strcmp(tok, "nt")) { /* comment */
 			tok = STRTOK;
