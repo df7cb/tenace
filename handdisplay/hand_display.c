@@ -138,6 +138,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	int suit;
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
+	cairo_font_extents_t fextents;
 
 	char *suit_str[] = {"♣", "♦", "♥", "♠"};
 	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -261,6 +262,14 @@ draw (GtkWidget *hand, cairo_t *cr)
 					handdisp->b[c] = y + card_height;
 					n++;
 
+					if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD) {
+						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
+						cairo_move_to (cr, x + 3 + (hand->allocation.width - card_width - 10) / 24.0, yy);
+						cairo_rel_line_to (cr, -5, -5);
+						cairo_rel_line_to (cr, 10, 0);
+						cairo_fill (cr);
+					}
+
 					/* show card score */
 					if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE)
 						continue;
@@ -272,9 +281,19 @@ draw (GtkWidget *hand, cairo_t *cr)
 							extents.width + 2, -extents.height - 2);
 					cairo_fill (cr);
 					*/
-					cairo_move_to (cr, x + 1, yy + 40);
+					static int text_h = 0;
+					if (!text_h) {
+						cairo_font_extents (cr, &fextents);
+						text_h = fextents.ascent;
+					}
+					cairo_text_extents (cr, buf, &extents);
+					cairo_move_to (cr, x + 1 + text_h,
+							yy + 30 + extents.width);
 					cairo_set_source_rgb (cr, HAND_DISPLAY_DD_FONT);
+					cairo_save (cr);
+					cairo_rotate (cr, -G_PI_2);
 					cairo_show_text (cr, buf);
+					cairo_restore (cr);
 				}
 			}
 			/* we do not yet support MODE_X here */
@@ -400,9 +419,9 @@ redraw_card (GtkWidget *hand, int card)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	GdkRectangle rect;
 	rect.x = handdisp->l[card] - 2;
-	rect.y = handdisp->t[card] - 2;
+	rect.y = handdisp->t[card] - 7;
 	rect.width = handdisp->r[card] - handdisp->l[card] + 4;
-	rect.height = handdisp->b[card] - handdisp->t[card] + 4;
+	rect.height = handdisp->b[card] - handdisp->t[card] + 8;
 	gdk_window_invalidate_rect (hand->window, &rect, FALSE);
 }
 

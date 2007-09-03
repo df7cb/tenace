@@ -80,10 +80,6 @@ on_label12_button_press_event          (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
 

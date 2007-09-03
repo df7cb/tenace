@@ -937,22 +937,6 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="handbutton_gib">
-	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Double dummy analysis</property>
-	      <property name="stock_id">gtk-convert</property>
-	      <property name="visible_horizontal">True</property>
-	      <property name="visible_vertical">True</property>
-	      <property name="is_important">False</property>
-	      <signal name="clicked" handler="on_handbutton_gib_clicked" last_modification_time="Wed, 01 Mar 2006 19:50:33 GMT"/>
-	    </widget>
-	    <packing>
-	      <property name="expand">False</property>
-	      <property name="homogeneous">True</property>
-	    </packing>
-	  </child>
-
-	  <child>
 	    <widget class="GtkToggleToolButton" id="button_dd">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Double dummy analysis</property>

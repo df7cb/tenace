@@ -73,6 +73,17 @@ board_window_rebuild_board_menu (window_board_t *win)
 	}
 }
 
+static void
+board_set_player_name (GtkWidget *w, int vuln, int current, char *name)
+{
+	GString *str = g_string_new (NULL);
+	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
+		current ? "#ffa000" : (vuln ? "#cc0000" : "#00cc00"),
+		current ? " weight=\"bold\"" : "", name);
+	gtk_label_set_markup((GtkLabel*) w, str->str);
+	g_string_free (str, TRUE);
+}
+
 void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
@@ -134,32 +145,13 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_NAMES) {
 		w = lookup_widget(win->window, "label_west");
-		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-			b->vuln[1] ? "red" : "green",
-			b->current_turn == west ? " weight=\"bold\"" : "",
-			b->hand_name[0]->str);
-		gtk_label_set_markup((GtkLabel*) w, str->str);
-
+		board_set_player_name (w, b->vuln[1], b->current_turn == west, b->hand_name[0]->str);
 		w = lookup_widget(win->window, "label_north");
-		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-			b->vuln[0] ? "red" : "green",
-			b->current_turn == north ? " weight=\"bold\"" : "",
-			b->hand_name[1]->str);
-		gtk_label_set_markup((GtkLabel*) w, str->str);
-
+		board_set_player_name (w, b->vuln[0], b->current_turn == north, b->hand_name[1]->str);
 		w = lookup_widget(win->window, "label_east");
-		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-			b->vuln[1] ? "red" : "green",
-			b->current_turn == east ? " weight=\"bold\"" : "",
-			b->hand_name[2]->str);
-		gtk_label_set_markup((GtkLabel*) w, str->str);
-
+		board_set_player_name (w, b->vuln[1], b->current_turn == east, b->hand_name[2]->str);
 		w = lookup_widget(win->window, "label_south");
-		g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-			b->vuln[0] ? "red" : "green",
-			b->current_turn == south ? " weight=\"bold\"" : "",
-			b->hand_name[3]->str);
-		gtk_label_set_markup((GtkLabel*) w, str->str);
+		board_set_player_name (w, b->vuln[0], b->current_turn == south, b->hand_name[3]->str);
 	}
 
 	if (redraw & REDRAW_TRICKS) {
@@ -180,11 +172,14 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_HANDS) {
 		int i, c;
+		int next_card = b->played_cards[b->n_played_cards];
 		for (i = west; i <= south; i++) {
 			for (c = 51; c >= 0; c--) {
 				int has = i == b->cards[c];
 				int had = i == b->dealt_cards[c];
-				int color = has ? HAND_DISPLAY_CARD :
+				int color = has ?
+					(c == next_card ?
+					 HAND_DISPLAY_HILIGHT_CARD : HAND_DISPLAY_CARD) :
 					(had && win->show_played_cards ?
 					 HAND_DISPLAY_OLD_CARD : HAND_DISPLAY_NO_CARD);
 				hand_display_set_card (win->handdisp[i - 1], c, color);
@@ -228,7 +223,7 @@ static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 	board *b = CUR_BOARD;
 	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
 	if (play_card(b, b->cards[*cp], *cp))
-		show_board(b, REDRAW_HANDS | REDRAW_TRICKS);
+		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
 }
 
 static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)

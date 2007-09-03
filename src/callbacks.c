@@ -190,7 +190,7 @@ on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_DD);
 }
 
 
@@ -365,7 +365,7 @@ on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	board_dds(b);
+	//board_dds(b);
 	hilight_dd_scores(b);
 	show_board(b, REDRAW_HANDS | REDRAW_DD);
 }
@@ -531,17 +531,6 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 
 
 void
-on_handbutton_gib_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	board_dds(b);
-	hilight_dd_scores(b);
-	show_board (b, REDRAW_HANDS | REDRAW_DD);
-}
-
-
-void
 on_button_dd_toggled                   (GtkToggleToolButton *toggletoolbutton,
                                         gpointer         user_data)
 {
@@ -593,7 +582,7 @@ on_deal_random_activate                (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_DD);
 }
 
 

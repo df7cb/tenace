@@ -87,24 +87,23 @@ int parse_card(char *tok)
 	return 13 * su + ra;
 }
 
-int parse_bid(char *tok)
+int parse_bid(char **tok)
 {
-	if (!strcasecmp(tok, "p"))
-		return bid_pass;
-	if (!strcasecmp(tok, "x") || !strcasecmp(tok, "d"))
-		return bid_x;
-	if (!strcasecmp(tok, "xx") || !strcasecmp(tok, "r"))
-		return bid_xx;
-	int alert = 0;
-	if (strlen(tok) == 3 && tok[2] == '!')
-		alert = bid_alert;
-	if (strlen(tok) != 2)
-		return -1;
+	if (!strncasecmp (*tok, "p", 1) || !strncasecmp (*tok, "-", 1)) { *tok += 1; return bid_pass; }
+	if (!strncasecmp (*tok, "xx", 2)) { *tok += 2; return bid_xx; }
+	if (!strncasecmp (*tok, "r", 1)) { *tok += 1; return bid_xx; }
+	if (!strncasecmp (*tok, "x", 1) || !strncasecmp (*tok, "d", 1)) { *tok += 1; return bid_x; }
+	if (strlen (*tok) < 2) return -1;
 
-	int le = tok[0] - '0';
-	int su = parse_suit(tok[1]);
+	int alert = 0;
+	if (strlen (*tok) >= 3 && *tok[2] == '!')
+		alert = bid_alert;
+
+	int le = *tok[0] - '0';
+	int su = parse_suit ((*tok)[1]);
 	if (le < 1 || le > 7 || su == -1)
 		return -1;
+	*tok += alert ? strlen (*tok) : 2;
 	return (5 * le + su) | alert;
 }
 

@@ -42,7 +42,7 @@ card_window_update (seat *cards)
 		hand_display_set_card (hand_display, c,
 			cards_ptr[c] ?
 			( cards_ptr[c] == new_card_seat ?
-			  HAND_DISPLAY_HILIGHT_CARD : HAND_DISPLAY_OLD_CARD )
+			  HAND_DISPLAY_HILIGHT_CARD : HAND_DISPLAY_GREY_CARD )
 			: HAND_DISPLAY_CARD);
 	hand_display_draw (GTK_WIDGET (hand_display));
 }

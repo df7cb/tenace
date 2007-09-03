@@ -137,7 +137,6 @@ create_window_hand (void)
   GtkWidget *button_next;
   GtkWidget *button_fast_forward;
   GtkWidget *separatortoolitem3;
-  GtkWidget *handbutton_gib;
   GtkWidget *button_dd;
   GtkWidget *handbutton_par;
   GtkWidget *table1;
@@ -608,11 +607,6 @@ create_window_hand (void)
   gtk_widget_show (separatortoolitem3);
   gtk_container_add (GTK_CONTAINER (toolbar1), separatortoolitem3);
 
-  handbutton_gib = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-convert");
-  gtk_widget_show (handbutton_gib);
-  gtk_container_add (GTK_CONTAINER (toolbar1), handbutton_gib);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (handbutton_gib), tooltips, _("Double dummy analysis"), NULL);
-
   button_dd = (GtkWidget*) gtk_toggle_tool_button_new ();
   gtk_tool_button_set_label (GTK_TOOL_BUTTON (button_dd), "");
   tmp_image = gtk_image_new_from_stock ("gtk-convert", tmp_toolbar_icon_size);
@@ -922,9 +916,6 @@ create_window_hand (void)
   g_signal_connect ((gpointer) button_fast_forward, "clicked",
                     G_CALLBACK (on_button_fast_forward_clicked),
                     NULL);
-  g_signal_connect ((gpointer) handbutton_gib, "clicked",
-                    G_CALLBACK (on_handbutton_gib_clicked),
-                    NULL);
   g_signal_connect ((gpointer) button_dd, "toggled",
                     G_CALLBACK (on_button_dd_toggled),
                     NULL);
@@ -1031,7 +1022,6 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, button_next, "button_next");
   GLADE_HOOKUP_OBJECT (window_hand, button_fast_forward, "button_fast_forward");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem3, "separatortoolitem3");
-  GLADE_HOOKUP_OBJECT (window_hand, handbutton_gib, "handbutton_gib");
   GLADE_HOOKUP_OBJECT (window_hand, button_dd, "button_dd");
   GLADE_HOOKUP_OBJECT (window_hand, handbutton_par, "handbutton_par");
   GLADE_HOOKUP_OBJECT (window_hand, table1, "table1");

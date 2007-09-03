@@ -150,7 +150,8 @@ void board_save(board *b, char *filename)
 // pn|Frederic,gm,Myon,mecky|st||md|4S27KAHKD49C3589TJ,S36H48AD358KC27QK,STJH259TJQD26TJQC,|rh||ah|Board 14|sv|o|mb|p|mb|p|mb|1D|mb|2H|mb|2S|mb|p|mb|p|mb|p|pg||pc|HK|pc|H4|pc|H2|pc|H6|pg||pc|CJ|pc|CK|pc|ST|pc|C4|pg||pc|H9|pc|H3|pc|S2|pc|H8|pg||pc|CT|pc|C2|pc|SJ|pc|C6|pg||pc|HQ|pc|H7|pc|S7|pc|HA|pg||pc|D9|pc|D3|pc|DT|pc|DA|pg||pc|S4|pc|SK|pc|S3|pc|H5|pg||pc|SA|pc|S6|pc|HT|pc|S5|pg||pc|D4|pc|DK|pc|D2|pc|D7|pg||pc|C7|pc|D6|pc|CA|pc|C3|pg||mc|6|
 #define STRTOK strtok_r(NULL, "|\n\r", &saveptr)
 #define FINISH_BOARD \
-	if (b->played_cards[0] != -1) \
+	printf ("finish: %d\n", contract); \
+	if (contract && b->played_cards[0] != -1) \
 		board_set_contract(b, LEVEL(contract), DENOM(contract), \
 			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled); \
 	card_nr = 0; \
@@ -253,18 +254,24 @@ board_parse_lin (char *line, FILE *f)
 		} else if (!strcmp(tok, "pw")) { /* more player names */
 			tok = STRTOK;
 		} else if (!strcmp(tok, "mb")) {
-			int bid = parse_bid(tok = STRTOK) & ~bid_alert; /* TODO: alert */
-			if (bid == -1) {
-				printf("Invalid bid %s\n", tok);
-				goto error;
-			}
-			board_append_bid(b, bid);
-			if (bid > bid_xx) {
-				contract = bid;
-				doubled = 0;
-			} else if (bid == bid_x || bid == bid_xx) {
-				doubled = bid;
-			}
+			/* mb|-ppp1Cp1Hp3Np4Dp4Hppp| */
+			tok = STRTOK;
+			char *bidp = tok;
+			do {
+				int bid = parse_bid(&bidp);
+				if (bid == -1) {
+					printf("Invalid bid %s/%s\n", tok, bidp);
+					break;
+				}
+				bid &= ~bid_alert; /* TODO: alert */
+				board_append_bid(b, bid);
+				if (bid > bid_xx) {
+					contract = bid;
+					doubled = 0;
+				} else if (bid == bid_x || bid == bid_xx) {
+					doubled = bid;
+				}
+			} while (*bidp);
 		} else if (!strcmp(tok, "an")) {
 			tok = STRTOK;
 			printf("TODO: alert %s\n", tok);
