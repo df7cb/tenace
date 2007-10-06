@@ -592,14 +592,6 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="board_menu1">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Boards</property>
-	      <property name="use_underline">True</property>
-	    </widget>
-	  </child>
-
-	  <child>
 	    <widget class="GtkMenuItem" id="menuitem2">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Edit</property>
@@ -859,6 +851,83 @@
 		  </child>
 		</widget>
 	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="play2">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Play</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="play2_menu">
+
+		  <child>
+		    <widget class="GtkMenuItem" id="autoplay1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Autoplay</property>
+		      <property name="use_underline">True</property>
+
+		      <child>
+			<widget class="GtkMenu" id="autoplay1_menu">
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="autonone1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">None</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">True</property>
+			      <signal name="activate" handler="on_autonone1_activate" last_modification_time="Sat, 06 Oct 2007 17:56:47 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="autoeastwest1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">East-West</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">autonone1</property>
+			      <signal name="activate" handler="on_autoeastwest1_activate" last_modification_time="Sat, 06 Oct 2007 17:56:47 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="autonorthsouth1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">North-South</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">autonone1</property>
+			      <signal name="activate" handler="on_autonorthsouth1_activate" last_modification_time="Sat, 06 Oct 2007 17:56:47 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="autoall1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">All</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">autonone1</property>
+			      <signal name="activate" handler="on_autoall1_activate" last_modification_time="Sat, 06 Oct 2007 17:56:47 GMT"/>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="board_menu1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Boards</property>
+	      <property name="use_underline">True</property>
 	    </widget>
 	  </child>
 

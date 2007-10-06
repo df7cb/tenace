@@ -101,7 +101,6 @@ create_window_hand (void)
   GtkWidget *pos_north_south;
   GtkWidget *pos_declarer;
   GtkWidget *pos_current_lead;
-  GtkWidget *board_menu1;
   GtkWidget *menuitem2;
   GtkWidget *menuitem2_menu;
   GtkWidget *ausschneiden1;
@@ -135,6 +134,16 @@ create_window_hand (void)
   GSList *style_text_group = NULL;
   GtkWidget *style_text;
   GtkWidget *style_cards;
+  GtkWidget *play2;
+  GtkWidget *play2_menu;
+  GtkWidget *autoplay1;
+  GtkWidget *autoplay1_menu;
+  GSList *autonone1_group = NULL;
+  GtkWidget *autonone1;
+  GtkWidget *autoeastwest1;
+  GtkWidget *autonorthsouth1;
+  GtkWidget *autoall1;
+  GtkWidget *board_menu1;
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
   GtkWidget *imp_table1;
@@ -472,10 +481,6 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_current_lead);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (pos_current_lead), TRUE);
 
-  board_menu1 = gtk_menu_item_new_with_mnemonic (_("Boards"));
-  gtk_widget_show (board_menu1);
-  gtk_container_add (GTK_CONTAINER (menubar1), board_menu1);
-
   menuitem2 = gtk_menu_item_new_with_mnemonic (_("_Edit"));
   gtk_widget_show (menuitem2);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem2);
@@ -603,6 +608,45 @@ create_window_hand (void)
   gtk_widget_show (style_cards);
   gtk_container_add (GTK_CONTAINER (display_style1_menu), style_cards);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (style_cards), TRUE);
+
+  play2 = gtk_menu_item_new_with_mnemonic (_("Play"));
+  gtk_widget_show (play2);
+  gtk_container_add (GTK_CONTAINER (menubar1), play2);
+
+  play2_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (play2), play2_menu);
+
+  autoplay1 = gtk_menu_item_new_with_mnemonic (_("Autoplay"));
+  gtk_widget_show (autoplay1);
+  gtk_container_add (GTK_CONTAINER (play2_menu), autoplay1);
+
+  autoplay1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (autoplay1), autoplay1_menu);
+
+  autonone1 = gtk_radio_menu_item_new_with_mnemonic (autonone1_group, _("None"));
+  autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autonone1));
+  gtk_widget_show (autonone1);
+  gtk_container_add (GTK_CONTAINER (autoplay1_menu), autonone1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autonone1), TRUE);
+
+  autoeastwest1 = gtk_radio_menu_item_new_with_mnemonic (autonone1_group, _("East-West"));
+  autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoeastwest1));
+  gtk_widget_show (autoeastwest1);
+  gtk_container_add (GTK_CONTAINER (autoplay1_menu), autoeastwest1);
+
+  autonorthsouth1 = gtk_radio_menu_item_new_with_mnemonic (autonone1_group, _("North-South"));
+  autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autonorthsouth1));
+  gtk_widget_show (autonorthsouth1);
+  gtk_container_add (GTK_CONTAINER (autoplay1_menu), autonorthsouth1);
+
+  autoall1 = gtk_radio_menu_item_new_with_mnemonic (autonone1_group, _("All"));
+  autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoall1));
+  gtk_widget_show (autoall1);
+  gtk_container_add (GTK_CONTAINER (autoplay1_menu), autoall1);
+
+  board_menu1 = gtk_menu_item_new_with_mnemonic (_("Boards"));
+  gtk_widget_show (board_menu1);
+  gtk_container_add (GTK_CONTAINER (menubar1), board_menu1);
 
   menuitem4 = gtk_menu_item_new_with_mnemonic (_("_Help"));
   gtk_widget_show (menuitem4);
@@ -980,6 +1024,18 @@ create_window_hand (void)
   g_signal_connect ((gpointer) style_cards, "activate",
                     G_CALLBACK (on_style_cards_activate),
                     NULL);
+  g_signal_connect ((gpointer) autonone1, "activate",
+                    G_CALLBACK (on_autonone1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) autoeastwest1, "activate",
+                    G_CALLBACK (on_autoeastwest1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) autonorthsouth1, "activate",
+                    G_CALLBACK (on_autonorthsouth1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) autoall1, "activate",
+                    G_CALLBACK (on_autoall1_activate),
+                    NULL);
   g_signal_connect ((gpointer) imp_table1, "activate",
                     G_CALLBACK (on_imp_table1_activate),
                     NULL);
@@ -1074,7 +1130,6 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, pos_north_south, "pos_north_south");
   GLADE_HOOKUP_OBJECT (window_hand, pos_declarer, "pos_declarer");
   GLADE_HOOKUP_OBJECT (window_hand, pos_current_lead, "pos_current_lead");
-  GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2, "menuitem2");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem2_menu, "menuitem2_menu");
   GLADE_HOOKUP_OBJECT (window_hand, ausschneiden1, "ausschneiden1");
@@ -1105,6 +1160,15 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, display_style1_menu, "display_style1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, style_text, "style_text");
   GLADE_HOOKUP_OBJECT (window_hand, style_cards, "style_cards");
+  GLADE_HOOKUP_OBJECT (window_hand, play2, "play2");
+  GLADE_HOOKUP_OBJECT (window_hand, play2_menu, "play2_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, autoplay1, "autoplay1");
+  GLADE_HOOKUP_OBJECT (window_hand, autoplay1_menu, "autoplay1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, autonone1, "autonone1");
+  GLADE_HOOKUP_OBJECT (window_hand, autoeastwest1, "autoeastwest1");
+  GLADE_HOOKUP_OBJECT (window_hand, autonorthsouth1, "autonorthsouth1");
+  GLADE_HOOKUP_OBJECT (window_hand, autoall1, "autoall1");
+  GLADE_HOOKUP_OBJECT (window_hand, board_menu1, "board_menu1");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (window_hand, menuitem4_menu, "menuitem4_menu");
   GLADE_HOOKUP_OBJECT (window_hand, imp_table1, "imp_table1");

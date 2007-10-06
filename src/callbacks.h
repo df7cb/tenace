@@ -403,3 +403,19 @@ on_handsnorthsouth1_activate           (GtkMenuItem     *menuitem,
 void
 on_handsall1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_autonone1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_autoeastwest1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_autonorthsouth1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_autoall1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

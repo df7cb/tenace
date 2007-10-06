@@ -858,3 +858,38 @@ on_handsall1_activate                  (GtkMenuItem     *menuitem,
 	show_board (win->boards[win->cur], REDRAW_HANDS);
 }
 
+
+void
+on_autonone1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->autoplay = seat_none;
+}
+
+
+void
+on_autoeastwest1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->autoplay = east_west;
+	start_autoplay ();
+}
+
+
+void
+on_autonorthsouth1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->autoplay = north_south;
+	start_autoplay ();
+}
+
+
+void
+on_autoall1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->autoplay = seat_all;
+	start_autoplay ();
+}
+

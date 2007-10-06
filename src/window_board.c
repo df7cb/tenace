@@ -34,6 +34,7 @@
 
 window_board_t *win; // FIXME static?
 static GString *rcfile = NULL;
+static int autoplay_running = 0;
 
 static void
 board_menu_select (GtkWidget *menuitem, int *n)
@@ -237,8 +238,10 @@ static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 		redraw = 1;
 	}
 
-	if (play_card(b, *seatp, *cp))
+	if (play_card(b, *seatp, *cp)) {
 		redraw = 1;
+		start_autoplay ();
+	}
 
 	if (redraw)
 		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
@@ -272,6 +275,28 @@ static void card_leave (HandDisplay *handdisp, int *cp, int *seatp)
 	board_statusbar(NULL);
 	//show_board (b, REDRAW_DD);
 }
+
+static gboolean autoplay ()
+{
+	board *b = CUR_BOARD;
+	if (!seat_mask (b->current_turn, win->autoplay))
+		return autoplay_running = FALSE;
+
+	printf ("auto %c\n", "WNES"[b->current_turn - 1]);
+	int i = next_card (b);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
+	return autoplay_running = i;
+}
+
+void start_autoplay ()
+{
+	if (autoplay_running)
+		return;
+	if (autoplay ())
+		g_timeout_add (1000, autoplay, NULL);
+}
+
+/* infrastructure */
 
 static void create_hand_widgets (window_board_t *win)
 {
@@ -338,6 +363,7 @@ board_window_init (window_board_t *win)
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;
 	win->show_dd_scores = seat_all;
+	win->autoplay = seat_none;
 	win->card_width = 80;
 
 	win->filename = NULL;

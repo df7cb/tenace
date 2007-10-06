@@ -216,7 +216,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
 			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2, extents.width + 4, -extents.height - 4);
-			printf ("x %f y %f\n", extents.x_bearing, extents. y_bearing);
+			//printf ("x %f y %f\n", extents.x_bearing, extents. y_bearing);
 			cairo_fill (cr);
 
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
