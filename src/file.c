@@ -147,8 +147,24 @@ void board_save(board *b, char *filename)
 	}
 }
 
+static char *sane_strtok_r (char *str, const char *delim, char **saveptr)
+{
+	char *this = str ? str : *saveptr;
+	if (!this)
+		return NULL;
+
+	char *next = strpbrk (this, delim);
+	if (next) {
+		*next = '\0';
+		*saveptr = next + 1;
+	} else {
+		*saveptr = NULL;
+	}
+	return this;
+}
+
 // pn|Frederic,gm,Myon,mecky|st||md|4S27KAHKD49C3589TJ,S36H48AD358KC27QK,STJH259TJQD26TJQC,|rh||ah|Board 14|sv|o|mb|p|mb|p|mb|1D|mb|2H|mb|2S|mb|p|mb|p|mb|p|pg||pc|HK|pc|H4|pc|H2|pc|H6|pg||pc|CJ|pc|CK|pc|ST|pc|C4|pg||pc|H9|pc|H3|pc|S2|pc|H8|pg||pc|CT|pc|C2|pc|SJ|pc|C6|pg||pc|HQ|pc|H7|pc|S7|pc|HA|pg||pc|D9|pc|D3|pc|DT|pc|DA|pg||pc|S4|pc|SK|pc|S3|pc|H5|pg||pc|SA|pc|S6|pc|HT|pc|S5|pg||pc|D4|pc|DK|pc|D2|pc|D7|pg||pc|C7|pc|D6|pc|CA|pc|C3|pg||mc|6|
-#define STRTOK strtok_r(NULL, "|\n\r", &saveptr)
+#define STRTOK sane_strtok_r(NULL, "|\n\r", &saveptr)
 #define FINISH_BOARD \
 	printf ("finish: %d\n", contract); \
 	if (contract && b->played_cards[0] != -1) \
@@ -175,19 +191,20 @@ board_parse_lin (char *line, FILE *f)
 	int name_n = 0;
 
 	do {
-	for (tok = strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
+	for (tok = sane_strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
+		printf ("parsing token '%s'\n", tok);
 		/* single hand */
 		if (!strcmp(tok, "pn")) { /* SWNE */
 			tok = STRTOK;
 			char *nameptr;
-			char *name = strtok_r(tok, ",", &nameptr);
+			char *name = sane_strtok_r(tok, ",", &nameptr);
 			assert (name_n < 8);
 			do {
 				name_arr[name_n] = strdup(name);
 				if (name_n < 4)
 					g_string_printf(b->hand_name[seat_mod (name_n) - 1], "%s", name);
 				name_n++;
-			} while ((name = strtok_r(NULL, ",", &nameptr)) && name_n < 8);
+			} while ((name = sane_strtok_r(NULL, ",", &nameptr)) && name_n < 8);
 			//g_string_printf(b->hand_name[south-1], "%s", strtok_r(NULL, ",|", &saveptr));
 			//g_string_printf(b->hand_name[west-1], "%s", strtok_r(NULL, ",|", &saveptr));
 			//g_string_printf(b->hand_name[north-1], "%s", strtok_r(NULL, ",|", &saveptr));
@@ -284,7 +301,9 @@ board_parse_lin (char *line, FILE *f)
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
 		} else if (!strcmp(tok, "st")) {
+			STRTOK;
 		} else if (!strcmp(tok, "rh")) {
+			STRTOK;
 		} else if (!strcmp(tok, "pg")) { /* new page, e.g. after trick or comment */
 			STRTOK;
 		} else if (!strcmp(tok, "mc")) {
@@ -295,14 +314,14 @@ board_parse_lin (char *line, FILE *f)
 			tok = STRTOK;
 			printf ("Match title: %s\n", tok);
 			char *t_ptr;
-			char *title = strtok_r (tok, ",", &t_ptr);
-			char *subtitle = strtok_r (NULL, ",", &t_ptr);
-			strtok_r (NULL, ",", &t_ptr);
-			strtok_r (NULL, ",", &t_ptr);
-			strtok_r (NULL, ",", &t_ptr);
-			char *team1 = strtok_r (NULL, ",", &t_ptr);
-			strtok_r (NULL, ",", &t_ptr);
-			char *team2 = strtok_r (NULL, ",", &t_ptr);
+			char *title = sane_strtok_r (tok, ",", &t_ptr);
+			char *subtitle = sane_strtok_r (NULL, ",", &t_ptr);
+			sane_strtok_r (NULL, ",", &t_ptr);
+			sane_strtok_r (NULL, ",", &t_ptr);
+			sane_strtok_r (NULL, ",", &t_ptr);
+			char *team1 = sane_strtok_r (NULL, ",", &t_ptr);
+			sane_strtok_r (NULL, ",", &t_ptr);
+			char *team2 = sane_strtok_r (NULL, ",", &t_ptr);
 			if (win->title)
 				g_string_free (win->title, TRUE);
 			win->title = g_string_new (NULL);
@@ -314,6 +333,8 @@ board_parse_lin (char *line, FILE *f)
 		} else if (!strcmp(tok, "nt")) { /* comment */
 			tok = STRTOK;
 			//printf ("\"%s\"\n", tok);
+		} else if (!*tok) {
+			// empty token, hopefully end of line
 		} else {
 			printf("Unknown token '%s'\n", tok);
 		}

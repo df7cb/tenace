@@ -170,11 +170,13 @@ void show_board (board *b, redraw_t redraw)
 		if (run_dd) {
 			compute_dd_scores(b);
 
-			g_string_printf (str, "%s",
+			if (b->current_dd) {
+				g_string_printf (str, "%s",
 					score_string(b->level, b->trumps, b->declarer,
 						b->doubled, b->vuln[b->declarer % 2],
 						b->current_dd->best_score, b->current_turn));
-			solve_statusbar(str->str);
+				solve_statusbar(str->str);
+			}
 		}
 	}
 

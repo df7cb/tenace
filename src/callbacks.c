@@ -743,7 +743,7 @@ on_play1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_play_init ();
+		window_play_init (CUR_BOARD);
 	else
 		window_play_delete ();
 }

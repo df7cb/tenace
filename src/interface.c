@@ -2004,6 +2004,13 @@ create_window_play (void)
   GtkWidget *window_play;
   GtkWidget *vbox6;
   GtkWidget *play_table;
+  GtkWidget *label98;
+  GtkWidget *label99;
+  GtkWidget *label100;
+  GtkWidget *label101;
+  GtkWidget *label102;
+  GtkWidget *label103;
+  GtkWidget *label104;
 
   window_play = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (window_play), _("Play"));
@@ -2013,9 +2020,52 @@ create_window_play (void)
   gtk_widget_show (vbox6);
   gtk_container_add (GTK_CONTAINER (window_play), vbox6);
 
-  play_table = gtk_table_new (13, 5, TRUE);
+  play_table = gtk_table_new (14, 8, TRUE);
   gtk_widget_show (play_table);
   gtk_box_pack_start (GTK_BOX (vbox6), play_table, TRUE, TRUE, 0);
+
+  label98 = gtk_label_new (_("W"));
+  gtk_widget_show (label98);
+  gtk_table_attach (GTK_TABLE (play_table), label98, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label99 = gtk_label_new (_("N"));
+  gtk_widget_show (label99);
+  gtk_table_attach (GTK_TABLE (play_table), label99, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label100 = gtk_label_new (_("E"));
+  gtk_widget_show (label100);
+  gtk_table_attach (GTK_TABLE (play_table), label100, 3, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label101 = gtk_label_new (_("S"));
+  gtk_widget_show (label101);
+  gtk_table_attach (GTK_TABLE (play_table), label101, 4, 5, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label102 = gtk_label_new (_("W"));
+  gtk_widget_show (label102);
+  gtk_table_attach (GTK_TABLE (play_table), label102, 5, 6, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label103 = gtk_label_new (_("N"));
+  gtk_widget_show (label103);
+  gtk_table_attach (GTK_TABLE (play_table), label103, 6, 7, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label104 = gtk_label_new (_("E"));
+  gtk_widget_show (label104);
+  gtk_table_attach (GTK_TABLE (play_table), label104, 7, 8, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label104), GTK_JUSTIFY_CENTER);
 
   g_signal_connect ((gpointer) window_play, "delete_event",
                     G_CALLBACK (on_window_play_delete_event),
@@ -2025,6 +2075,13 @@ create_window_play (void)
   GLADE_HOOKUP_OBJECT_NO_REF (window_play, window_play, "window_play");
   GLADE_HOOKUP_OBJECT (window_play, vbox6, "vbox6");
   GLADE_HOOKUP_OBJECT (window_play, play_table, "play_table");
+  GLADE_HOOKUP_OBJECT (window_play, label98, "label98");
+  GLADE_HOOKUP_OBJECT (window_play, label99, "label99");
+  GLADE_HOOKUP_OBJECT (window_play, label100, "label100");
+  GLADE_HOOKUP_OBJECT (window_play, label101, "label101");
+  GLADE_HOOKUP_OBJECT (window_play, label102, "label102");
+  GLADE_HOOKUP_OBJECT (window_play, label103, "label103");
+  GLADE_HOOKUP_OBJECT (window_play, label104, "label104");
 
   return window_play;
 }
