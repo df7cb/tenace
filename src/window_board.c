@@ -183,7 +183,7 @@ void show_board (board *b, redraw_t redraw)
 					(had && win->show_played_cards ?
 					 HAND_DISPLAY_OLD_CARD : HAND_DISPLAY_NO_CARD);
 				hand_display_set_card (win->handdisp[i - 1], c, color);
-				if (has && b->card_score[c] >= 0)
+				if (has && b->current_dd && b->current_dd->card_score[c] >= 0)
 					hand_display_set_card_score (win->handdisp[i - 1], c,
 						card_overtricks(b, c));
 			}
@@ -233,13 +233,13 @@ static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
 	board_statusbar(NULL);
 
 	board *b = CUR_BOARD;
-	if (b->card_score[*cp] < 0)
+	if (!b->current_dd || b->current_dd->card_score[*cp] < 0)
 		return;
 
 	snprintf(buf, 99, "%s: %s",
 		card_string(*cp)->str,
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
-			b->card_score[*cp], b->current_turn));
+			b->current_dd->card_score[*cp], b->current_turn));
 	board_statusbar(buf);
 }
 

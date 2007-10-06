@@ -35,21 +35,21 @@ void calculate_target(board *b)
 int
 card_overtricks (board *b, card c)
 {
-	assert (b->card_score[c] >= 0);
+	assert (b->current_dd && b->current_dd->card_score[c] >= 0);
 
-	return b->card_score[c] - 6 - b->level;
+	return b->current_dd->card_score[c] - 6 - b->level;
 }
 
 int
 card_is_good (board *b, card c)
 {
-	assert (b->card_score[c] >= 0);
+	assert (b->current_dd && b->current_dd->card_score[c] >= 0);
 
 	int side = b->current_turn % 2;
 	if (side == (b->declarer % 2))
-		return b->card_score[c] >= b->target[side];
+		return b->current_dd->card_score[c] >= b->target[side];
 	else
-		return 13 - b->card_score[c] >= b->target[side];
+		return 13 - b->current_dd->card_score[c] >= b->target[side];
 
 	/* NOT REACHED */
 }
@@ -63,7 +63,10 @@ void board_clear(board *b)
 	for (i = 0; i < 52; i++) {
 		b->cards[i] = 0;
 		b->dealt_cards[i] = 0;
-		b->card_score[i] = -1;
+		if (b->next_dd[i]) {
+			free (b->next_dd[i]);
+			b->next_dd[i] = NULL;
+		}
 		b->played_cards[i] = -1;
 	}
 	for (i = 0; i < 4; i++)
@@ -71,6 +74,10 @@ void board_clear(board *b)
 	b->current_turn = seat_mod(b->declarer + 1);
 	b->tricks[0] = b->tricks[1] = 0;
 
+	if (b->current_dd) {
+		free (b->current_dd);
+		b->current_dd = NULL;
+	}
 	b->par_score = -1;
 	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;
 }
@@ -100,6 +107,10 @@ board *board_new(void)
 
 	b->dealer = north;
 	board_set_contract(b, 1, NT, south, 0);
+	b->current_dd = NULL;
+	for (i = 0; i < 52; i++) {
+		b->next_dd[i] = NULL;
+	}
 	board_clear(b);
 	b->vuln[0] = b->vuln[1] = 0;
 
@@ -228,6 +239,8 @@ int play_card(board *b, seat s, card c)
 		}
 	}
 
+	int old_next_card = b->played_cards[b->n_played_cards];
+
 	play_card_0(b, s, c);
 
 	if (b->n_played_cards % 4 == 0) { /* trick complete */
@@ -248,6 +261,25 @@ int play_card(board *b, seat s, card c)
 		b->current_turn = seat_mod(b->current_turn + 1);
 	}
 
+	/* update DD scores */
+	dd_t *dd = b->next_dd[c];
+	int i;
+	for (i = 0; i < 52; i++) { /* remove the other DD previews */
+		if (b->next_dd[i] && b->cards[i] && (b->cards[i] == s || c != old_next_card)) {
+			/* invalidate "what-if" previews and old scores from other cards */
+			free (b->next_dd[i]);
+			b->next_dd[i] = NULL;
+		}
+	}
+	b->next_dd[c] = b->current_dd; /* remember scores for rewind */
+	b->current_dd = dd;
+
+	printf ("previews for: ");
+	for (i = 0; i < 52; i++)
+		if (b->next_dd[i])
+			printf ("%s ", card_string(i)->str);
+	printf ("\n");
+
 	return 1;
 }
 
@@ -265,7 +297,27 @@ int rewind_card(board *b)
 
 	card c = b->played_cards[b->n_played_cards];
 	assert (b->cards[c] == 0);
-	b->current_turn = b->cards[c] = b->dealt_cards[c];
+	seat s = b->dealt_cards[c];
+
+	/* remove DD previews */
+	dd_t *dd = b->next_dd[c];
+	int i;
+	for (i = 0; i < 52; i++) {
+		if (b->next_dd[i] && b->cards[i] == s) {
+			free (b->next_dd[i]);
+			b->next_dd[i] = NULL;
+		}
+	}
+	b->next_dd[c] = b->current_dd;
+	b->current_dd = dd;
+
+	/* return card */
+	b->current_turn = b->cards[c] = s;
+	printf ("previews for: ");
+	for (i = 0; i < 52; i++)
+		if (b->next_dd[i])
+			printf ("%s ", card_string(i)->str);
+	printf ("\n");
 
 	return 1;
 }

@@ -108,7 +108,7 @@ static int score_to_tricks(board *b, int score) /* result: tricks for declarer *
 	return score;
 }
 
-static void compute_dd_scores(board *b)
+static void compute_dd_scores(board *b, dd_t *dd)
 {
 	int i, j, c;
 	struct deal d;
@@ -136,7 +136,7 @@ static void compute_dd_scores(board *b)
 		if (b->cards[c]) {
 			d.remainCards[(b->cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
 		}
-		b->card_score[c] = -1; // FIXME: remember scores for undo?
+		dd->card_score[c] = -1; // FIXME: remember scores for undo?
 	}
 	for (i = 0; i < b->n_played_cards % 4; i++) {
 		card c = b->played_cards[b->n_played_cards - (b->n_played_cards % 4) + i];
@@ -147,6 +147,8 @@ static void compute_dd_scores(board *b)
 	solve_statusbar("Thinking...");
 	while (gtk_events_pending ())
 		gtk_main_iteration();
+	sleep (1); // XXX
+	printf ("thinking...\n");
 	i = SolveBoard(d, -1, 3, 1, &fut);
 	solve_statusbar(NULL);
 	if (i <= 0) {
@@ -159,18 +161,18 @@ static void compute_dd_scores(board *b)
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
 		printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);
-		b->card_score[c] = score_to_tricks(b, fut.score[i]);
+		dd->card_score[c] = score_to_tricks(b, fut.score[i]);
 
 		for (j = fut.rank[i] - 2; j >= 0; j--) { /* equals */
 			if (fut.equals[i] & card_bits[j]) {
 				c = 13 * (3 - fut.suit[i]) + j;
 				printf("      %s = %d\n", card_string(c)->str, fut.score[i]);
-				b->card_score[c] = score_to_tricks(b, fut.score[i]);
+				dd->card_score[c] = score_to_tricks(b, fut.score[i]);
 			}
 		}
 	}
 
-	b->best_score = score_to_tricks(b, fut.score[0]);
+	dd->best_score = score_to_tricks(b, fut.score[0]);
 }
 
 void hilight_dd_scores(board *b)
@@ -181,13 +183,17 @@ void hilight_dd_scores(board *b)
 	if (b->n_played_cards == 52)
 		return;
 
-	compute_dd_scores(b); // FIXME: call when needed
+	if (!b->current_dd) {
+		b->current_dd = malloc (sizeof (dd_t));
+		assert (b->current_dd);
+		compute_dd_scores(b, b->current_dd); // FIXME: call when needed
+	}
 
 	/* next card not defined (i.e. no prior undo), set it to the highest
 	 * optimal card */
 	if (b->played_cards[b->n_played_cards] == -1) { // FIXME: update when different card is played?
 		for (c = 51; c >= 0; c--) {
-			if (b->card_score[c] == b->best_score) {
+			if (b->current_dd->card_score[c] == b->current_dd->best_score) {
 				b->played_cards[b->n_played_cards] = c;
 				break;
 			}
@@ -216,9 +222,9 @@ void hilight_dd_scores(board *b)
 	}
 #endif
 
-	snprintf(str, 99, "DD: %s",
+	snprintf(str, 99, "%s",
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
-			b->best_score, b->current_turn));
+			b->current_dd->best_score, b->current_turn));
 	solve_statusbar(str);
 	//show_board(b, REDRAW_HANDS | REDRAW_DD); // FIXME doe sthat belong here?
 }

@@ -50,6 +50,11 @@ typedef int card;
 #define LEVEL(c) ((int)((int)(c) / 5))
 #define DENOM(c) ((c) % 5)
 
+typedef struct _dd_t {
+	int card_score[52];
+	int best_score;
+} dd_t;
+
 typedef struct board_t {
 	GString *name;
 	int n; /* board number for callbacks */
@@ -77,8 +82,8 @@ typedef struct board_t {
 	int n_bids;
 	int n_bid_alloc;
 
-	int card_score[52];
-	int best_score;
+	dd_t *current_dd;
+	dd_t *next_dd[52];
 	int target[2]; /* sum might be less than 13 for partial deals */
 
 	int par_score; /* -1 = other par_ fields invalid */
