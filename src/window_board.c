@@ -162,13 +162,20 @@ void show_board (board *b, redraw_t redraw)
 	}
 
 	if (redraw & REDRAW_DD) {
-		if (b->par_score == -1) {
-			w = lookup_widget(win->window, "par_label");
-			gtk_label_set_text(GTK_LABEL(w), "");
-		}
+		//if (b->par_score == -1) {
+			//w = lookup_widget(win->window, "par_label");
+			//gtk_label_set_text(GTK_LABEL(w), "");
+		//}
 
-		if (run_dd)
-			hilight_dd_scores(b);
+		if (run_dd) {
+			compute_dd_scores(b);
+
+			g_string_printf (str, "%s",
+					score_string(b->level, b->trumps, b->declarer,
+						b->doubled, b->vuln[b->declarer % 2],
+						b->current_dd->best_score, b->current_turn));
+			solve_statusbar(str->str);
+		}
 	}
 
 	if (redraw & REDRAW_HANDS) {
@@ -281,6 +288,8 @@ static gboolean autoplay ()
 	board *b = CUR_BOARD;
 	if (!seat_mask (b->current_turn, win->autoplay))
 		return autoplay_running = FALSE;
+
+	compute_dd_scores (b);
 
 	printf ("auto %c\n", "WNES"[b->current_turn - 1]);
 	int i = next_card (b);

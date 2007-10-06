@@ -365,8 +365,6 @@ on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	//board_dds(b);
-	hilight_dd_scores(b);
 	show_board(b, REDRAW_HANDS | REDRAW_DD);
 }
 

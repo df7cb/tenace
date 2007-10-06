@@ -51,7 +51,7 @@ static const char seat_char[] = {'E', 'S', 'W', 'N'};
 
 int run_dd = 0;
 
-static void solve_statusbar(char *text)
+void solve_statusbar(char *text)
 {
 	static guint id = 0;
 	if (!id)
@@ -108,7 +108,7 @@ static int score_to_tricks(board *b, int score) /* result: tricks for declarer *
 	return score;
 }
 
-static void compute_dd_scores(board *b, dd_t *dd, card next)
+static void compute_dd_scores0(board *b, dd_t *dd, card next)
 {
 	int i, j, c;
 	card old_next;
@@ -186,17 +186,15 @@ static void compute_dd_scores(board *b, dd_t *dd, card next)
 	dd->best_score = score_to_tricks(b, fut.score[0]);
 }
 
-void hilight_dd_scores(board *b)
+void compute_dd_scores(board *b)
 {
-	char str[100];
-
 	if (b->n_played_cards == 52)
 		return;
 
 	if (!b->current_dd) {
 		b->current_dd = malloc (sizeof (dd_t));
 		assert (b->current_dd);
-		compute_dd_scores(b, b->current_dd, -1);
+		compute_dd_scores0(b, b->current_dd, -1);
 	}
 
 	/* next card not defined (i.e. no prior undo), set it to the highest
@@ -211,20 +209,14 @@ void hilight_dd_scores(board *b)
 			}
 		}
 	}
-
-	snprintf(str, 99, "%s",
-		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
-			b->current_dd->best_score, b->current_turn));
-	solve_statusbar(str);
-	//show_board(b, REDRAW_HANDS | REDRAW_DD); // FIXME doe sthat belong here?
 }
 
-void hilight_next_dd_scores(board *b, card c)
+void compute_next_dd_scores(board *b, card c)
 {
 	if (!b->next_dd[c]) {
 		b->next_dd[c] = malloc (sizeof (dd_t));
 		assert (b->next_dd[c]);
-		compute_dd_scores(b, b->next_dd[c], c);
+		compute_dd_scores0(b, b->next_dd[c], c);
 	}
 }
 
