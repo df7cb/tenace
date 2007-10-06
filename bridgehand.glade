@@ -724,6 +724,107 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkMenuItem" id="hands1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Hands</property>
+		      <property name="use_underline">True</property>
+
+		      <child>
+			<widget class="GtkMenu" id="hands1_menu">
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="handseastwest1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">East-West</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <signal name="activate" handler="on_handseastwest1_activate" last_modification_time="Sat, 06 Oct 2007 17:30:47 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="handsnorthsouth1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">North-South</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">handseastwest1</property>
+			      <signal name="activate" handler="on_handsnorthsouth1_activate" last_modification_time="Sat, 06 Oct 2007 17:30:47 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="handsall1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">All</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">True</property>
+			      <property name="group">handseastwest1</property>
+			      <signal name="activate" handler="on_handsall1_activate" last_modification_time="Sat, 06 Oct 2007 17:30:47 GMT"/>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="dd_scores1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">DD Scores</property>
+		      <property name="use_underline">True</property>
+
+		      <child>
+			<widget class="GtkMenu" id="dd_scores1_menu">
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="ddno_one1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">No one</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <signal name="activate" handler="on_ddno_one1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="ddeastwest1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">East-West</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">ddno_one1</property>
+			      <signal name="activate" handler="on_ddeastwest1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="ddnorthsouth1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">North-South</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">False</property>
+			      <property name="group">ddno_one1</property>
+			      <signal name="activate" handler="on_ddnorthsouth1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkRadioMenuItem" id="ddall1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">All</property>
+			      <property name="use_underline">True</property>
+			      <property name="active">True</property>
+			      <property name="group">ddno_one1</property>
+			      <signal name="activate" handler="on_ddall1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkMenuItem" id="display_style1">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Display _style</property>
@@ -737,7 +838,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_Text</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_style_text_activate" last_modification_time="Mon, 09 Jul 2007 20:12:39 GMT"/>
 			    </widget>
 			  </child>
@@ -747,7 +848,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_Cards</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">False</property>
+			      <property name="active">True</property>
 			      <property name="group">style_text</property>
 			      <signal name="activate" handler="on_style_cards_activate" last_modification_time="Mon, 09 Jul 2007 20:12:39 GMT"/>
 			    </widget>

@@ -5,10 +5,14 @@
 #include <gtk/gtk.h> // FIXME
 
 typedef enum seat_e {
+	seat_none = 0,
 	west = 1,
 	north,
 	east,
 	south,
+	east_west,
+	north_south,
+	seat_all,
 } seat;
 
 /* cards: SA = 51, C2 = 0, bids: 1C = 5, 7NT = 39 */

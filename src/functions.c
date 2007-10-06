@@ -223,6 +223,17 @@ seat seat_mod(seat s)
 	return ((s + 3) % 4) + 1;
 }
 
+int seat_mask (seat s, seat filter)
+{
+	switch (filter) {
+		case seat_none: return 0;
+		case seat_all: return 1;
+		case north_south: return s == north || s == south;
+		case east_west: return s == east || s == west;
+		default: return s == filter;
+	}
+}
+
 char *overtricks (int i)
 {
 	static char buf[4];

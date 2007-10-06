@@ -795,3 +795,66 @@ on_deal_new_activate                   (GtkMenuItem     *menuitem,
 	show_board(win->boards[win->cur], REDRAW_FULL);
 }
 
+
+void
+on_ddno_one1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_dd_scores = seat_none;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+
+
+void
+on_ddeastwest1_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_dd_scores = east_west;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+
+
+void
+on_ddnorthsouth1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_dd_scores = north_south;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+
+
+void
+on_ddall1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_dd_scores = seat_all;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+
+
+void
+on_handseastwest1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_hands = east_west;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+
+
+void
+on_handsnorthsouth1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_hands = north_south;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+
+
+void
+on_handsall1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	win->show_hands = seat_all;
+	show_board (win->boards[win->cur], REDRAW_HANDS);
+}
+

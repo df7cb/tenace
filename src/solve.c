@@ -200,8 +200,9 @@ void hilight_dd_scores(board *b)
 	}
 
 	/* next card not defined (i.e. no prior undo), set it to the highest
-	 * optimal card */
-	if (b->played_cards[b->n_played_cards] == -1) { // FIXME: update when different card is played?
+	 * optimal card */ // FIXME: 1st and 2nd hand low
+	if (seat_mask (b->current_turn, win->show_dd_scores) &&
+			b->played_cards[b->n_played_cards] == -1) { // FIXME: update when different card is played?
 		int c;
 		for (c = 51; c >= 0; c--) {
 			if (b->current_dd->card_score[c] == b->current_dd->best_score) {

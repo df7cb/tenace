@@ -25,6 +25,8 @@ typedef struct _window_board_t {
 
 	/* config */
 	int show_played_cards;
+	seat show_hands;
+	seat show_dd_scores;
 	int card_width;
 
 	/* boards */

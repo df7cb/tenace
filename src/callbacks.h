@@ -375,3 +375,31 @@ on_options_cards_filechooser_file_activated
 void
 on_deal_new_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_ddno_one1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_ddeastwest1_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_ddnorthsouth1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_ddall1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_handseastwest1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_handsnorthsouth1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_handsall1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

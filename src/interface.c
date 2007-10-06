@@ -117,6 +117,19 @@ create_window_hand (void)
   GtkWidget *play1;
   GtkWidget *trennlinie4;
   GtkWidget *played_cards1;
+  GtkWidget *hands1;
+  GtkWidget *hands1_menu;
+  GSList *handseastwest1_group = NULL;
+  GtkWidget *handseastwest1;
+  GtkWidget *handsnorthsouth1;
+  GtkWidget *handsall1;
+  GtkWidget *dd_scores1;
+  GtkWidget *dd_scores1_menu;
+  GSList *ddno_one1_group = NULL;
+  GtkWidget *ddno_one1;
+  GtkWidget *ddeastwest1;
+  GtkWidget *ddnorthsouth1;
+  GtkWidget *ddall1;
   GtkWidget *display_style1;
   GtkWidget *display_style1_menu;
   GSList *style_text_group = NULL;
@@ -522,6 +535,57 @@ create_window_hand (void)
   gtk_widget_show (played_cards1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), played_cards1);
 
+  hands1 = gtk_menu_item_new_with_mnemonic (_("Hands"));
+  gtk_widget_show (hands1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), hands1);
+
+  hands1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (hands1), hands1_menu);
+
+  handseastwest1 = gtk_radio_menu_item_new_with_mnemonic (handseastwest1_group, _("East-West"));
+  handseastwest1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (handseastwest1));
+  gtk_widget_show (handseastwest1);
+  gtk_container_add (GTK_CONTAINER (hands1_menu), handseastwest1);
+
+  handsnorthsouth1 = gtk_radio_menu_item_new_with_mnemonic (handseastwest1_group, _("North-South"));
+  handseastwest1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (handsnorthsouth1));
+  gtk_widget_show (handsnorthsouth1);
+  gtk_container_add (GTK_CONTAINER (hands1_menu), handsnorthsouth1);
+
+  handsall1 = gtk_radio_menu_item_new_with_mnemonic (handseastwest1_group, _("All"));
+  handseastwest1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (handsall1));
+  gtk_widget_show (handsall1);
+  gtk_container_add (GTK_CONTAINER (hands1_menu), handsall1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (handsall1), TRUE);
+
+  dd_scores1 = gtk_menu_item_new_with_mnemonic (_("DD Scores"));
+  gtk_widget_show (dd_scores1);
+  gtk_container_add (GTK_CONTAINER (menuitem3_menu), dd_scores1);
+
+  dd_scores1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (dd_scores1), dd_scores1_menu);
+
+  ddno_one1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("No one"));
+  ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddno_one1));
+  gtk_widget_show (ddno_one1);
+  gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddno_one1);
+
+  ddeastwest1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("East-West"));
+  ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddeastwest1));
+  gtk_widget_show (ddeastwest1);
+  gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddeastwest1);
+
+  ddnorthsouth1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("North-South"));
+  ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddnorthsouth1));
+  gtk_widget_show (ddnorthsouth1);
+  gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddnorthsouth1);
+
+  ddall1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("All"));
+  ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddall1));
+  gtk_widget_show (ddall1);
+  gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddall1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ddall1), TRUE);
+
   display_style1 = gtk_menu_item_new_with_mnemonic (_("Display _style"));
   gtk_widget_show (display_style1);
   gtk_container_add (GTK_CONTAINER (menuitem3_menu), display_style1);
@@ -533,12 +597,12 @@ create_window_hand (void)
   style_text_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (style_text));
   gtk_widget_show (style_text);
   gtk_container_add (GTK_CONTAINER (display_style1_menu), style_text);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (style_text), TRUE);
 
   style_cards = gtk_radio_menu_item_new_with_mnemonic (style_text_group, _("_Cards"));
   style_text_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (style_cards));
   gtk_widget_show (style_cards);
   gtk_container_add (GTK_CONTAINER (display_style1_menu), style_cards);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (style_cards), TRUE);
 
   menuitem4 = gtk_menu_item_new_with_mnemonic (_("_Help"));
   gtk_widget_show (menuitem4);
@@ -889,6 +953,27 @@ create_window_hand (void)
   g_signal_connect ((gpointer) played_cards1, "activate",
                     G_CALLBACK (on_played_cards1_activate),
                     NULL);
+  g_signal_connect ((gpointer) handseastwest1, "activate",
+                    G_CALLBACK (on_handseastwest1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) handsnorthsouth1, "activate",
+                    G_CALLBACK (on_handsnorthsouth1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) handsall1, "activate",
+                    G_CALLBACK (on_handsall1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) ddno_one1, "activate",
+                    G_CALLBACK (on_ddno_one1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) ddeastwest1, "activate",
+                    G_CALLBACK (on_ddeastwest1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) ddnorthsouth1, "activate",
+                    G_CALLBACK (on_ddnorthsouth1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) ddall1, "activate",
+                    G_CALLBACK (on_ddall1_activate),
+                    NULL);
   g_signal_connect ((gpointer) style_text, "activate",
                     G_CALLBACK (on_style_text_activate),
                     NULL);
@@ -1005,6 +1090,17 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, play1, "play1");
   GLADE_HOOKUP_OBJECT (window_hand, trennlinie4, "trennlinie4");
   GLADE_HOOKUP_OBJECT (window_hand, played_cards1, "played_cards1");
+  GLADE_HOOKUP_OBJECT (window_hand, hands1, "hands1");
+  GLADE_HOOKUP_OBJECT (window_hand, hands1_menu, "hands1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, handseastwest1, "handseastwest1");
+  GLADE_HOOKUP_OBJECT (window_hand, handsnorthsouth1, "handsnorthsouth1");
+  GLADE_HOOKUP_OBJECT (window_hand, handsall1, "handsall1");
+  GLADE_HOOKUP_OBJECT (window_hand, dd_scores1, "dd_scores1");
+  GLADE_HOOKUP_OBJECT (window_hand, dd_scores1_menu, "dd_scores1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, ddno_one1, "ddno_one1");
+  GLADE_HOOKUP_OBJECT (window_hand, ddeastwest1, "ddeastwest1");
+  GLADE_HOOKUP_OBJECT (window_hand, ddnorthsouth1, "ddnorthsouth1");
+  GLADE_HOOKUP_OBJECT (window_hand, ddall1, "ddall1");
   GLADE_HOOKUP_OBJECT (window_hand, display_style1, "display_style1");
   GLADE_HOOKUP_OBJECT (window_hand, display_style1_menu, "display_style1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, style_text, "style_text");

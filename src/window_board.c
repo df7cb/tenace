@@ -172,18 +172,24 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_HANDS) {
 		int i, c;
+		/* hands */
 		int next_card = b->played_cards[b->n_played_cards];
 		for (i = west; i <= south; i++) {
 			for (c = 51; c >= 0; c--) {
 				int has = i == b->cards[c];
 				int had = i == b->dealt_cards[c];
-				int color = has ?
+				int color;
+				if (seat_mask (i, win->show_hands))
+					color = has ?
 					(c == next_card ?
 					 HAND_DISPLAY_HILIGHT_CARD : HAND_DISPLAY_CARD) :
 					(had && win->show_played_cards ?
 					 HAND_DISPLAY_OLD_CARD : HAND_DISPLAY_NO_CARD);
+				else
+					color = HAND_DISPLAY_NO_CARD;
 				hand_display_set_card (win->handdisp[i - 1], c, color);
-				if (has && b->current_dd && b->current_dd->card_score[c] >= 0)
+				if (has && b->current_dd && b->current_dd->card_score[c] >= 0 &&
+						seat_mask (i, win->show_dd_scores))
 					hand_display_set_card_score (win->handdisp[i - 1], c,
 						card_overtricks(b, c));
 			}
@@ -192,6 +198,7 @@ void show_board (board *b, redraw_t redraw)
 			hand_display_draw(GTK_WIDGET (win->handdisp[i - 1]));
 		}
 
+		/* table */
 		hand_display_table_reset_cards (win->table);
 		if (b->n_played_cards) {
 			int trick_start = b->n_played_cards - seat_mod(b->n_played_cards);
@@ -244,7 +251,8 @@ static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
 	board_statusbar(NULL);
 
 	board *b = CUR_BOARD;
-	if (!b->current_dd || b->current_dd->card_score[*cp] < 0)
+	if (!b->current_dd || b->current_dd->card_score[*cp] < 0 ||
+			!seat_mask (*seatp, win->show_dd_scores))
 		return;
 
 	snprintf(buf, 99, "%s: %s",
@@ -253,6 +261,7 @@ static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
 			b->current_dd->card_score[*cp], b->current_turn));
 	board_statusbar(buf);
 
+	/* what-if */
 	//hilight_next_dd_scores (b, *cp);
 	//show_board (b, REDRAW_DD);
 }
@@ -327,6 +336,8 @@ board_window_init (window_board_t *win)
 	create_hand_widgets(win);
 
 	win->show_played_cards = 0;
+	win->show_hands = seat_all;
+	win->show_dd_scores = seat_all;
 	win->card_width = 80;
 
 	win->filename = NULL;

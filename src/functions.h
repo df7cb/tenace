@@ -14,6 +14,7 @@ GString *hand_string (board *b, seat h);
 //GString *gib_string (hand *h);
 char *contract_string(int level, suit trumps, seat declarer, int doubled);
 seat seat_mod(seat s);
+int seat_mask (seat s, seat filter);
 char *overtricks (int i);
 int score (int level, suit s, int doubled, int vuln, int tricks);
 char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln, int tricks, seat lead);
