@@ -222,7 +222,18 @@ static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 {
 	board *b = CUR_BOARD;
 	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
-	if (play_card(b, b->cards[*cp], *cp))
+	int redraw = 0;
+
+	if (*seatp != b->current_turn && b->n_played_cards > 0 &&
+		b->dealt_cards[b->played_cards[b->n_played_cards - 1]] == *seatp) { /* quick undo */
+		rewind_card (b);
+		redraw = 1;
+	}
+
+	if (play_card(b, *seatp, *cp))
+		redraw = 1;
+
+	if (redraw)
 		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
 }
 
@@ -241,11 +252,16 @@ static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->current_dd->card_score[*cp], b->current_turn));
 	board_statusbar(buf);
+
+	//hilight_next_dd_scores (b, *cp);
+	//show_board (b, REDRAW_DD);
 }
 
 static void card_leave (HandDisplay *handdisp, int *cp, int *seatp)
 {
+	//board *b = CUR_BOARD;
 	board_statusbar(NULL);
+	//show_board (b, REDRAW_DD);
 }
 
 static void create_hand_widgets (window_board_t *win)
@@ -272,7 +288,7 @@ static void create_hand_widgets (window_board_t *win)
 	GtkWidget *table = hand_display_new (HAND_DISPLAY_MODE_TABLE);
 	gtk_table_attach_defaults (GTK_TABLE (grid), table, 4, 5, 1, 2);
 	gtk_widget_show (table);
-	win->table = table;
+	win->table = HAND_DISPLAY (table);
 }
 
 void board_window_set_style (window_board_t *win, int style)
