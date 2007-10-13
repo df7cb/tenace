@@ -235,10 +235,10 @@ void show_board (board *b, redraw_t redraw)
 	}
 }
 
-static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
+static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 {
 	board *b = CUR_BOARD;
-	printf("Clicked: %s for %c.\n", card_string(*cp)->str, "WNES"[*seatp - 1]);
+	printf("Clicked: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
 	int redraw = 0;
 
 	if (*seatp != b->current_turn && b->n_played_cards > 0 &&
@@ -247,7 +247,7 @@ static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 		redraw = 1;
 	}
 
-	if (play_card(b, *seatp, *cp)) {
+	if (play_card(b, *seatp, card)) {
 		redraw = 1;
 		start_autoplay ();
 	}
@@ -256,33 +256,42 @@ static void card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
 }
 
-static void card_enter (HandDisplay *handdisp, int *cp, int *seatp)
+static void card_enter (HandDisplay *handdisp, int card, int *seatp)
 {
 	char buf[100];
 
 	board_statusbar(NULL);
 
 	board *b = CUR_BOARD;
-	if (!b->current_dd || b->current_dd->card_score[*cp] < 0 ||
+	if (!b->current_dd || b->current_dd->card_score[card] < 0 ||
 			!seat_mask (*seatp, win->show_dd_scores))
 		return;
 
 	snprintf(buf, 99, "%s: %s",
-		card_string(*cp)->str,
+		card_string(card)->str,
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
-			b->current_dd->card_score[*cp], b->current_turn));
+			b->current_dd->card_score[card], b->current_turn));
 	board_statusbar(buf);
 
 	/* what-if */
-	//hilight_next_dd_scores (b, *cp);
+	//hilight_next_dd_scores (b, card);
 	//show_board (b, REDRAW_DD);
 }
 
-static void card_leave (HandDisplay *handdisp, int *cp, int *seatp)
+static void card_leave (HandDisplay *handdisp, int card, int *seatp)
 {
 	//board *b = CUR_BOARD;
 	board_statusbar(NULL);
 	//show_board (b, REDRAW_DD);
+}
+
+static void
+card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
+{
+	board *b = CUR_BOARD;
+	printf("Dropped: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
+	if (on_card >= 0)
+		printf("Dropped on: %s.\n", card_string(on_card)->str);
 }
 
 static gboolean autoplay ()
@@ -324,7 +333,9 @@ static void create_hand_widgets (window_board_t *win)
 		g_signal_connect (hand, "card-clicked", G_CALLBACK (card_clicked), dir + h);
 		g_signal_connect (hand, "card-enter", G_CALLBACK (card_enter), dir + h);
 		g_signal_connect (hand, "card-leave", G_CALLBACK (card_leave), dir + h);
+		g_signal_connect (hand, "card-drag-drop", G_CALLBACK (card_drag_drop), dir + h);
 		win->handdisp[h] = HAND_DISPLAY(hand);
+		hand_display_set_drag (HAND_DISPLAY (hand), 1);
 		gtk_size_group_add_widget (sizegroup, hand);
 	}
 	g_object_unref (sizegroup);

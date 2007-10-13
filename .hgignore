@@ -11,6 +11,23 @@ Makefile\.in$
 ^src/\.deps/.*\.Po$
 ^stamp-h1$
 
+syntax: glob
+stamp-h.in
+
+AUTHORS
+ChangeLog
+NEWS
+README
+
 # built
-/.*\.o$
-^src/tenace$
+*.o
+handdisplay/int_int_marshal.h
+src/tenace
+
+# debian
+build-stamp
+configure-stamp
+debian/files
+debian/tenace
+debian/tenace.substvars
+debian/*.debhelper

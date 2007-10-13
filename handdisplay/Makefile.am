@@ -6,8 +6,11 @@ EXTRA_DIST = hand_display.c hand_display.h
 
 all: hand_display.o
 
-hand_display.o: hand_display.c hand_display.h
+hand_display.o: hand_display.c hand_display.h int_int_marshal.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+int_int_marshal.h:
+	echo VOID:INT,INT | glib-genmarshal --header --body --skip-source > $@
+
 clean-local:
-	rm -f *.o tags
+	rm -f *.o tags int_int_marshal.h

@@ -98,6 +98,7 @@ GtkType hand_display_get_type (void);
 GtkWidget *hand_display_new (int mode);
 void hand_display_draw (GtkWidget *hand);
 void hand_display_set_style (HandDisplay *handdisp, int style, char *fname);
+void hand_display_set_drag (HandDisplay *handdisp, int drag);
 
 /* hand interface */
 void hand_display_set_card (HandDisplay *handdisp, int card, int val);
@@ -107,12 +108,6 @@ void hand_display_set_card_score_neg (HandDisplay *handdisp, int neg);
 /* table interface */
 void hand_display_table_reset_cards (HandDisplay *handdisp);
 void hand_display_table_set_card (HandDisplay *handdisp, int n, int seat, int card);
-
-gboolean DNDDragMotionCB(
-        GtkWidget *hand, GdkDragContext *dc,
-        gint x, gint y, guint t,
-        gpointer data
-);
 
 #ifdef __cplusplus
 }

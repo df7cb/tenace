@@ -19,15 +19,10 @@
 #include <math.h>
 
 #include "hand_display.h"
+#include "int_int_marshal.h"
 
 /* static data */
 
-//static GtkWidgetClass *parent_class = NULL;
-static const int card_label[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-			13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-			26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-			39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-			52, 53, 54, 55 /* MODE_X */ };
 static int render_init = 0, card_width = 80, card_height = 0;
 static GdkPixbuf *card_pixbuf[53];
 
@@ -436,13 +431,13 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 		if (handdisp->cur_focus != -1) {
 			redraw_card (hand, handdisp->cur_focus);
 			//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
-			g_signal_emit_by_name (handdisp, "card-leave", card_label + handdisp->cur_focus);
+			g_signal_emit_by_name (handdisp, "card-leave", handdisp->cur_focus);
 		}
 		handdisp->cur_focus = card;
 		if (card != -1) {
 			redraw_card (hand, card);
 			//printf("%c%d entered\n", "CDHSx"[card / 13], card % 13 + 2);
-			g_signal_emit_by_name (handdisp, "card-enter", card_label + card);
+			g_signal_emit_by_name (handdisp, "card-enter", card);
 		}
 	}
 	gdk_window_get_pointer(hand->window, NULL, NULL, NULL); /* request more pointer hints */
@@ -456,7 +451,7 @@ hand_display_leave (GtkWidget *hand, GdkEventCrossing *event)
 	if (handdisp->cur_focus != -1) {
 		redraw_card (hand, handdisp->cur_focus);
 		//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
-		g_signal_emit_by_name (handdisp, "card-leave", card_label + handdisp->cur_focus);
+		g_signal_emit_by_name (handdisp, "card-leave", handdisp->cur_focus);
 		handdisp->cur_focus = -1;
 	}
 	return FALSE;
@@ -478,23 +473,8 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 	if (event->type == GDK_BUTTON_PRESS) {
 		handdisp->cur_click = card;
 	} else if (event->type == GDK_BUTTON_RELEASE && handdisp->cur_click == card) {
-		g_signal_emit_by_name (handdisp, "card-clicked", card_label + card);
+		g_signal_emit_by_name (handdisp, "card-clicked", card);
 	}
-	return FALSE;
-}
-
-gboolean DNDDragMotionCB(
-        GtkWidget *hand, GdkDragContext *dc,
-        gint x, gint y, guint t,
-        gpointer data
-)
-{
-	//printf ("DNDDragMotionCB %p %p %p x%d y%d t%d\n", hand, dc, data, x, y, t);
-	HandDisplay *handdisp = HAND_DISPLAY(hand);
-	int card = which_card(handdisp, x, y);
-	handdisp->cur_focus = card;
-	if (card != -1)
-		redraw_card (hand, card);
 	return FALSE;
 }
 
@@ -558,19 +538,153 @@ hand_display_size_request (GtkWidget *hand, GtkRequisition *requisition)
 }
 
 static void
-hand_display_size_allocate (GtkWidget     *widget,
-                        GtkAllocation *allocation)
+hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
 {
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (IS_HAND_DISPLAY (widget));
+	g_return_if_fail (hand != NULL);
+	g_return_if_fail (IS_HAND_DISPLAY (hand));
 	g_return_if_fail (allocation != NULL);
 
-	widget->allocation = *allocation;
-	if (GTK_WIDGET_REALIZED (widget)) {
-		gdk_window_move_resize (widget->window,
+	hand->allocation = *allocation;
+	if (GTK_WIDGET_REALIZED (hand)) {
+		gdk_window_move_resize (hand->window,
 				allocation->x, allocation->y,
 				allocation->width, allocation->height);
 	}
+}
+
+/* drag-and-drop interface */
+
+static void
+hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
+{
+	printf ("drag_begin %x %x %x\n", hand, dc, data);
+	gtk_drag_set_icon_stock (dc, "gtk-home", 0, 0);
+}
+
+// http://live.gnome.org/GnomeLove/DragNDropTutorial
+static gboolean
+hand_display_drag_motion (GtkWidget *hand, GdkDragContext *dc,
+        gint x, gint y, guint t, gpointer data)
+{
+	//printf ("hand_display_drag_motion %p %p %p x%d y%d t%d\n", hand, dc, data, x, y, t);
+	HandDisplay *handdisp = HAND_DISPLAY(hand);
+	int card = which_card(handdisp, x, y);
+	if (handdisp->cur_focus != card) {
+		if (handdisp->cur_focus != -1) {
+			redraw_card (hand, handdisp->cur_focus);
+			//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
+			g_signal_emit_by_name (handdisp, "card-drag-leave", handdisp->cur_focus);
+		}
+		handdisp->cur_focus = card;
+		if (card != -1) {
+			redraw_card (hand, card);
+			//printf("%c%d entered\n", "CDHSx"[card / 13], card % 13 + 2);
+			g_signal_emit_by_name (handdisp, "card-drag-enter", card);
+		}
+	}
+	return FALSE;
+}
+
+static void
+hand_display_drag_leave (GtkWidget *hand, GdkDragContext *dc, gpointer data)
+{
+	HandDisplay *handdisp = HAND_DISPLAY(hand);
+	if (handdisp->cur_focus != -1) {
+		redraw_card (hand, handdisp->cur_focus);
+		g_signal_emit_by_name (handdisp, "card-drag-leave", handdisp->cur_focus);
+		handdisp->cur_focus = -1;
+	}
+	//printf ("drag_leave %x %x data:%x\n", hand, dc, data);
+}
+
+static gboolean
+hand_display_drag_drop (GtkWidget *hand, GdkDragContext *dc, gpointer data)
+{
+	//printf ("drag_drop %x %x data:%x\n", hand, dc, data);
+	gtk_drag_get_data (hand, dc, 0, 0);
+	return TRUE;
+}
+
+static void
+hand_display_drag_data_get (GtkWidget *hand, GdkDragContext *dc,
+        GtkSelectionData *selection_data, guint targettype, guint t, gpointer data)
+{
+	HandDisplay *handdisp = HAND_DISPLAY (hand);
+	//printf ("drag_data_get %x %x data:%x %s targettype:%d t:%d\n",
+			//hand, dc, data, selection_data->data, targettype, t);
+	assert (targettype == 0);
+	gtk_selection_data_set (selection_data, selection_data->target,
+			32, (guchar *) &(handdisp->cur_click), sizeof (int));
+}
+
+static void
+hand_display_drag_data_received (GtkWidget *hand, GdkDragContext *dc,
+        gint x, gint y, GtkSelectionData *selection_data,
+        guint targettype, guint t, gpointer data)
+{
+	HandDisplay *handdisp = HAND_DISPLAY (hand);
+	//printf ("drag_data_received %x %x %x x%d y%d data %x len %d targettype %d t %d\n",
+			//hand, dc, data, x, y, selection_data, selection_data->length, targettype, t);
+	int *card = (int *) selection_data->data;
+	int on_card = which_card(handdisp, x, y);
+	printf ("got %d\n", *card);
+	if (*card == on_card) {
+		gtk_drag_finish (dc, FALSE, FALSE, t);
+		return;
+	}
+	g_signal_emit_by_name (handdisp, "card-drag-drop", *card, on_card);
+	gtk_drag_finish (dc, TRUE, FALSE, t);
+}
+
+/*
+static void
+hand_display_drag_data_delete (GtkWidget *hand, GdkDragContext *dc, gpointer data)
+{
+	printf ("drag_data_delete %x %x %x\n", hand, dc, data);
+}
+*/
+
+static void
+setup_dnd (HandDisplay *handdisp)
+{
+	GtkTargetEntry target_entry[1];
+	target_entry[0].target = "card";
+	target_entry[0].flags = 0;
+	target_entry[0].info = 0;
+
+	GtkWidget *hand = GTK_WIDGET (handdisp);
+
+	gtk_drag_source_set(
+		hand,
+		GDK_BUTTON1_MASK | GDK_BUTTON2_MASK,
+		target_entry,
+		1,
+		GDK_ACTION_COPY
+	);
+	gtk_drag_dest_set(
+		hand,
+		GTK_DEST_DEFAULT_MOTION |
+		GTK_DEST_DEFAULT_HIGHLIGHT |
+		GTK_DEST_DEFAULT_DROP,
+		target_entry,
+		1,
+		GDK_ACTION_COPY
+	);
+
+	g_signal_connect (GTK_OBJECT(hand), "drag_begin",
+			GTK_SIGNAL_FUNC(hand_display_drag_begin), NULL);
+	g_signal_connect (GTK_OBJECT(hand), "drag_leave",
+			GTK_SIGNAL_FUNC(hand_display_drag_leave), NULL);
+	g_signal_connect (GTK_OBJECT(hand), "drag_motion",
+			GTK_SIGNAL_FUNC(hand_display_drag_motion), NULL);
+	g_signal_connect (GTK_OBJECT(hand), "drag_drop",
+			GTK_SIGNAL_FUNC(hand_display_drag_drop), NULL);
+	g_signal_connect (GTK_OBJECT(hand), "drag_data_get",
+			GTK_SIGNAL_FUNC(hand_display_drag_data_get), NULL);
+	g_signal_connect (GTK_OBJECT(hand), "drag_data_received",
+			GTK_SIGNAL_FUNC(hand_display_drag_data_received), NULL);
+	//g_signal_connect (GTK_OBJECT(hand), "drag_data_delete",
+			//GTK_SIGNAL_FUNC(hand_display_drag_data_delete), NULL);
 }
 
 /* initializers */
@@ -607,26 +721,16 @@ hand_display_class_init (HandDisplayClass *class)
 			G_TYPE_NONE /* GType return_type */,
 			1 /* guint n_params */,
 			G_TYPE_INT);
-	g_signal_new ("card-enter",
-			TYPE_HAND_DISPLAY,
-			G_SIGNAL_RUN_LAST,
-			0 /* guint class_offset */,
-			NULL /* GSignalAccumulator accumulator */,
-			NULL /* gpointer accu_data */,
-			g_cclosure_marshal_VOID__INT /* GSignalCMarshaller c_marshaller */,
-			G_TYPE_NONE /* GType return_type */,
-			1 /* guint n_params */,
-			G_TYPE_INT);
-	g_signal_new ("card-leave",
-			TYPE_HAND_DISPLAY,
-			G_SIGNAL_RUN_LAST,
-			0 /* guint class_offset */,
-			NULL /* GSignalAccumulator accumulator */,
-			NULL /* gpointer accu_data */,
-			g_cclosure_marshal_VOID__INT /* GSignalCMarshaller c_marshaller */,
-			G_TYPE_NONE /* GType return_type */,
-			1 /* guint n_params */,
-			G_TYPE_INT);
+	g_signal_new ("card-enter", TYPE_HAND_DISPLAY, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+			g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+	g_signal_new ("card-leave", TYPE_HAND_DISPLAY, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+			g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+	g_signal_new ("card-drag-enter", TYPE_HAND_DISPLAY, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+			g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+	g_signal_new ("card-drag-leave", TYPE_HAND_DISPLAY, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+			g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+	g_signal_new ("card-drag-drop", TYPE_HAND_DISPLAY, G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+			g_cclosure_user_marshal_VOID__INT_INT, G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
 }
 
 static void
@@ -709,8 +813,15 @@ hand_display_set_style (HandDisplay *handdisp, int style, char *fname)
 		render_card_init (card_fname);
 }
 
-/* hand interface */
+void
+hand_display_set_drag (HandDisplay *handdisp, int drag)
+{
+	if (drag) {
+		setup_dnd (handdisp);
+	}
+}
 
+/* hand interface */
 void
 hand_display_set_card (HandDisplay *handdisp, int card, int val)
 {
