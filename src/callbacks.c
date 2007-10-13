@@ -891,3 +891,63 @@ on_autoall1_activate                   (GtkMenuItem     *menuitem,
 	start_autoplay ();
 }
 
+
+void
+on_ew1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	flip_hands (b, east, west);
+	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_ns1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	flip_hands (b, north, south);
+	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_nw1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	flip_hands (b, north, west);
+	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_ne1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	flip_hands (b, north, east);
+	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_sw1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	flip_hands (b, south, west);
+	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_se1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	flip_hands (b, south, east);
+	show_board(b, REDRAW_HANDS);
+}
+

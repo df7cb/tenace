@@ -55,9 +55,8 @@ set_new_card_seat (seat s)
 }
 
 static void
-card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
+card_clicked (HandDisplay *handdisp, int c, int *seatp)
 {
-	card c = *cp;
 	assert (c >= 0 && c < 56);
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
 	board *b = win->boards[win->cur];
@@ -65,7 +64,7 @@ card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 	/* x clicked */
 	if (c >= 52) {
 		if (b->hand_cards[new_card_seat-1] == 13) {
-			board_statusbar("Hand has already 13 cards");
+			board_statusbar(_("Hand has already 13 cards"));
 			return;
 		}
 
@@ -82,12 +81,12 @@ card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 				return;
 			}
 		}
-		board_statusbar("All cards of that suit dealt");
+		board_statusbar(_("All cards of that suit dealt"));
 		return;
 	}
 
 	if (b->dealt_cards[c] && !b->cards[c]) {
-		board_statusbar("Card is in play and cannot be removed");
+		board_statusbar(_("Card is in play and cannot be removed"));
 		return;
 	}
 
@@ -95,7 +94,7 @@ card_clicked (HandDisplay *handdisp, int *cp, int *seatp)
 		remove_card(b, new_card_seat, c);
 	else {
 		if (b->hand_cards[new_card_seat-1] == 13) {
-			board_statusbar("Hand has already 13 cards");
+			board_statusbar(_("Hand has already 13 cards"));
 			return;
 		}
 

@@ -44,6 +44,14 @@ create_window_hand (void)
   GtkWidget *deal1_menu;
   GtkWidget *deal_clear;
   GtkWidget *deal_random;
+  GtkWidget *flip1;
+  GtkWidget *flip1_menu;
+  GtkWidget *ew1;
+  GtkWidget *ns1;
+  GtkWidget *nw1;
+  GtkWidget *ne1;
+  GtkWidget *sw1;
+  GtkWidget *se1;
   GtkWidget *dealer1;
   GtkWidget *dealer1_menu;
   GSList *dealer_west1_group = NULL;
@@ -243,6 +251,37 @@ create_window_hand (void)
   gtk_widget_show (deal_random);
   gtk_container_add (GTK_CONTAINER (deal1_menu), deal_random);
 
+  flip1 = gtk_menu_item_new_with_mnemonic (_("_Flip"));
+  gtk_widget_show (flip1);
+  gtk_container_add (GTK_CONTAINER (deal1_menu), flip1);
+
+  flip1_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (flip1), flip1_menu);
+
+  ew1 = gtk_menu_item_new_with_mnemonic (_("E-W"));
+  gtk_widget_show (ew1);
+  gtk_container_add (GTK_CONTAINER (flip1_menu), ew1);
+
+  ns1 = gtk_menu_item_new_with_mnemonic (_("N-S"));
+  gtk_widget_show (ns1);
+  gtk_container_add (GTK_CONTAINER (flip1_menu), ns1);
+
+  nw1 = gtk_menu_item_new_with_mnemonic (_("N-W"));
+  gtk_widget_show (nw1);
+  gtk_container_add (GTK_CONTAINER (flip1_menu), nw1);
+
+  ne1 = gtk_menu_item_new_with_mnemonic (_("N-E"));
+  gtk_widget_show (ne1);
+  gtk_container_add (GTK_CONTAINER (flip1_menu), ne1);
+
+  sw1 = gtk_menu_item_new_with_mnemonic (_("S-W"));
+  gtk_widget_show (sw1);
+  gtk_container_add (GTK_CONTAINER (flip1_menu), sw1);
+
+  se1 = gtk_menu_item_new_with_mnemonic (_("S-E"));
+  gtk_widget_show (se1);
+  gtk_container_add (GTK_CONTAINER (flip1_menu), se1);
+
   dealer1 = gtk_menu_item_new_with_mnemonic (_("_Dealer"));
   gtk_widget_show (dealer1);
   gtk_container_add (GTK_CONTAINER (deal1_menu), dealer1);
@@ -254,16 +293,19 @@ create_window_hand (void)
   dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_west1));
   gtk_widget_show (dealer_west1);
   gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_west1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (dealer_west1), TRUE);
 
   dealer_north1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("_North"));
   dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_north1));
   gtk_widget_show (dealer_north1);
   gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_north1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (dealer_north1), TRUE);
 
   dealer_east1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("_East"));
   dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_east1));
   gtk_widget_show (dealer_east1);
   gtk_container_add (GTK_CONTAINER (dealer1_menu), dealer_east1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (dealer_east1), TRUE);
 
   dealer_south1 = gtk_radio_menu_item_new_with_mnemonic (dealer_west1_group, _("_South"));
   dealer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (dealer_south1));
@@ -291,16 +333,19 @@ create_window_hand (void)
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_west1));
   gtk_widget_show (declarer_west1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_west1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_west1), TRUE);
 
   declarer_north1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("_North"));
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_north1));
   gtk_widget_show (declarer_north1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_north1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_north1), TRUE);
 
   declarer_east1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("_East"));
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_east1));
   gtk_widget_show (declarer_east1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), declarer_east1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (declarer_east1), TRUE);
 
   declarer_south1 = gtk_radio_menu_item_new_with_mnemonic (declarer_west1_group, _("_South"));
   declarer_west1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (declarer_south1));
@@ -317,21 +362,25 @@ create_window_hand (void)
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_no_trump1));
   gtk_widget_show (contract_no_trump1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_no_trump1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_no_trump1), TRUE);
 
   contract_spades1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\240 S_pades"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_spades1));
   gtk_widget_show (contract_spades1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_spades1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_spades1), TRUE);
 
   contract_hearts1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\245 _Hearts"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_hearts1));
   gtk_widget_show (contract_hearts1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_hearts1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_hearts1), TRUE);
 
   contract_diamonds1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\246 _Diamonds"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_diamonds1));
   gtk_widget_show (contract_diamonds1);
   gtk_container_add (GTK_CONTAINER (contract1_menu), contract_diamonds1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (contract_diamonds1), TRUE);
 
   contract_clubs1 = gtk_radio_menu_item_new_with_mnemonic (contract_no_trump1_group, _("\342\231\243 _Clubs"));
   contract_no_trump1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (contract_clubs1));
@@ -355,31 +404,37 @@ create_window_hand (void)
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level1));
   gtk_widget_show (level1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level1), TRUE);
 
   level2 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("_2"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level2));
   gtk_widget_show (level2);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level2);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level2), TRUE);
 
   level3 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("_3"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level3));
   gtk_widget_show (level3);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level3);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level3), TRUE);
 
   level4 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("_4"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level4));
   gtk_widget_show (level4);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level4);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level4), TRUE);
 
   level5 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("_5"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level5));
   gtk_widget_show (level5);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level5);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level5), TRUE);
 
   level6 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("_6"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level6));
   gtk_widget_show (level6);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level6);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level6), TRUE);
 
   level7 = gtk_radio_menu_item_new_with_mnemonic (level1_group, _("_7"));
   level1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level7));
@@ -396,11 +451,13 @@ create_window_hand (void)
   level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_doubled0));
   gtk_widget_show (level_doubled0);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_doubled0);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level_doubled0), TRUE);
 
   level_doubled1 = gtk_radio_menu_item_new_with_mnemonic (level_doubled0_group, _("X _Doubled"));
   level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_doubled1));
   gtk_widget_show (level_doubled1);
   gtk_container_add (GTK_CONTAINER (level_menu1_menu), level_doubled1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (level_doubled1), TRUE);
 
   level_redoubled1 = gtk_radio_menu_item_new_with_mnemonic (level_doubled0_group, _("XX _Redoubled"));
   level_doubled0_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (level_redoubled1));
@@ -419,16 +476,19 @@ create_window_hand (void)
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_none));
   gtk_widget_show (vuln_none);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_none);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_none), TRUE);
 
   vuln_ns = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("_North-South"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ns));
   gtk_widget_show (vuln_ns);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_ns);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_ns), TRUE);
 
   vuln_ew = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("_East-West"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_ew));
   gtk_widget_show (vuln_ew);
   gtk_container_add (GTK_CONTAINER (vulnerable1_menu), vuln_ew);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (vuln_ew), TRUE);
 
   vuln_all = gtk_radio_menu_item_new_with_mnemonic (vuln_none_group, _("_All"));
   vuln_none_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (vuln_all));
@@ -469,11 +529,13 @@ create_window_hand (void)
   pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_north_south));
   gtk_widget_show (pos_north_south);
   gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_north_south);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (pos_north_south), TRUE);
 
   pos_declarer = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("Declarer"));
   pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_declarer));
   gtk_widget_show (pos_declarer);
   gtk_container_add (GTK_CONTAINER (positive_for1_menu), pos_declarer);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (pos_declarer), TRUE);
 
   pos_current_lead = gtk_radio_menu_item_new_with_mnemonic (pos_north_south_group, _("Current lead"));
   pos_north_south_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (pos_current_lead));
@@ -551,11 +613,13 @@ create_window_hand (void)
   handseastwest1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (handseastwest1));
   gtk_widget_show (handseastwest1);
   gtk_container_add (GTK_CONTAINER (hands1_menu), handseastwest1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (handseastwest1), TRUE);
 
   handsnorthsouth1 = gtk_radio_menu_item_new_with_mnemonic (handseastwest1_group, _("North-South"));
   handseastwest1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (handsnorthsouth1));
   gtk_widget_show (handsnorthsouth1);
   gtk_container_add (GTK_CONTAINER (hands1_menu), handsnorthsouth1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (handsnorthsouth1), TRUE);
 
   handsall1 = gtk_radio_menu_item_new_with_mnemonic (handseastwest1_group, _("All"));
   handseastwest1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (handsall1));
@@ -574,16 +638,19 @@ create_window_hand (void)
   ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddno_one1));
   gtk_widget_show (ddno_one1);
   gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddno_one1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ddno_one1), TRUE);
 
   ddeastwest1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("East-West"));
   ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddeastwest1));
   gtk_widget_show (ddeastwest1);
   gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddeastwest1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ddeastwest1), TRUE);
 
   ddnorthsouth1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("North-South"));
   ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddnorthsouth1));
   gtk_widget_show (ddnorthsouth1);
   gtk_container_add (GTK_CONTAINER (dd_scores1_menu), ddnorthsouth1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (ddnorthsouth1), TRUE);
 
   ddall1 = gtk_radio_menu_item_new_with_mnemonic (ddno_one1_group, _("All"));
   ddno_one1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (ddall1));
@@ -602,6 +669,7 @@ create_window_hand (void)
   style_text_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (style_text));
   gtk_widget_show (style_text);
   gtk_container_add (GTK_CONTAINER (display_style1_menu), style_text);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (style_text), TRUE);
 
   style_cards = gtk_radio_menu_item_new_with_mnemonic (style_text_group, _("_Cards"));
   style_text_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (style_cards));
@@ -633,16 +701,19 @@ create_window_hand (void)
   autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoeastwest1));
   gtk_widget_show (autoeastwest1);
   gtk_container_add (GTK_CONTAINER (autoplay1_menu), autoeastwest1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoeastwest1), TRUE);
 
   autonorthsouth1 = gtk_radio_menu_item_new_with_mnemonic (autonone1_group, _("North-South"));
   autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autonorthsouth1));
   gtk_widget_show (autonorthsouth1);
   gtk_container_add (GTK_CONTAINER (autoplay1_menu), autonorthsouth1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autonorthsouth1), TRUE);
 
   autoall1 = gtk_radio_menu_item_new_with_mnemonic (autonone1_group, _("All"));
   autonone1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (autoall1));
   gtk_widget_show (autoall1);
   gtk_container_add (GTK_CONTAINER (autoplay1_menu), autoall1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoall1), TRUE);
 
   board_menu1 = gtk_menu_item_new_with_mnemonic (_("Boards"));
   gtk_widget_show (board_menu1);
@@ -865,6 +936,24 @@ create_window_hand (void)
   g_signal_connect ((gpointer) deal_random, "activate",
                     G_CALLBACK (on_deal_random_activate),
                     NULL);
+  g_signal_connect ((gpointer) ew1, "activate",
+                    G_CALLBACK (on_ew1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) ns1, "activate",
+                    G_CALLBACK (on_ns1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) nw1, "activate",
+                    G_CALLBACK (on_nw1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) ne1, "activate",
+                    G_CALLBACK (on_ne1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) sw1, "activate",
+                    G_CALLBACK (on_sw1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) se1, "activate",
+                    G_CALLBACK (on_se1_activate),
+                    NULL);
   g_signal_connect ((gpointer) dealer_west1, "activate",
                     G_CALLBACK (on_dealer_west1_activate),
                     NULL);
@@ -1080,6 +1169,14 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, deal1_menu, "deal1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, deal_clear, "deal_clear");
   GLADE_HOOKUP_OBJECT (window_hand, deal_random, "deal_random");
+  GLADE_HOOKUP_OBJECT (window_hand, flip1, "flip1");
+  GLADE_HOOKUP_OBJECT (window_hand, flip1_menu, "flip1_menu");
+  GLADE_HOOKUP_OBJECT (window_hand, ew1, "ew1");
+  GLADE_HOOKUP_OBJECT (window_hand, ns1, "ns1");
+  GLADE_HOOKUP_OBJECT (window_hand, nw1, "nw1");
+  GLADE_HOOKUP_OBJECT (window_hand, ne1, "ne1");
+  GLADE_HOOKUP_OBJECT (window_hand, sw1, "sw1");
+  GLADE_HOOKUP_OBJECT (window_hand, se1, "se1");
   GLADE_HOOKUP_OBJECT (window_hand, dealer1, "dealer1");
   GLADE_HOOKUP_OBJECT (window_hand, dealer1_menu, "dealer1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, dealer_west1, "dealer_west1");

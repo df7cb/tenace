@@ -419,3 +419,27 @@ on_autonorthsouth1_activate            (GtkMenuItem     *menuitem,
 void
 on_autoall1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_ew1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_ns1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_nw1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_ne1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_sw1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_se1_activate                        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

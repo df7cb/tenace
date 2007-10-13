@@ -304,7 +304,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	double suit_width = 0.0;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
-		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
+		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
 		if (extents.x_advance > suit_width)
@@ -316,7 +316,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* draw cards */
 	for (suit = 0; suit < 4; suit++) {
 		x = 4 + suit_width;
-		y = ((double) hand->allocation.height * (3.8 - suit) / 4.0);
+		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 
 		int c;

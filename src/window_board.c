@@ -292,6 +292,40 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 	printf("Dropped: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
 	if (on_card >= 0)
 		printf("Dropped on: %s.\n", card_string(on_card)->str);
+
+	if (b->dealt_cards[card] && b->dealt_cards[card] == *seatp) /* card didn't move */
+		return;
+
+	if (b->dealt_cards[card] && !b->cards[card]) {
+		board_statusbar(_("Card is in play and cannot be moved"));
+		return;
+	}
+
+	if (on_card >= 0) { /* exchange 2 cards */
+		if (b->dealt_cards[on_card] && !b->cards[on_card]) {
+			board_statusbar(_("Card is in play and cannot be exchanged"));
+			return;
+		}
+
+		seat from_seat = b->dealt_cards[card];
+		remove_card(b, from_seat, card);
+		remove_card(b, *seatp, on_card);
+		add_card(b, from_seat, on_card);
+		add_card(b, *seatp, card);
+	} else { /* move single card */
+		if (b->hand_cards[*seatp-1] == 13) {
+			board_statusbar(_("Hand has already 13 cards"));
+			return;
+		}
+
+		if (b->dealt_cards[card])
+			remove_card(b, b->dealt_cards[card], card);
+		add_card(b, *seatp, card);
+	}
+
+	board_statusbar(NULL);
+	card_window_update(b->dealt_cards);
+	show_board(b, REDRAW_HANDS);
 }
 
 static gboolean autoplay ()
@@ -502,6 +536,8 @@ read_config (window_board_t *win)
 		char *checkitem_name[] = { "style_text", "style_cards" };
 		GtkWidget *checkitem = lookup_widget (win->window, checkitem_name[style > 0]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (checkitem), TRUE);
+		board_window_set_style (win, style > 0 ? HAND_DISPLAY_STYLE_CARDS :
+				HAND_DISPLAY_STYLE_TEXT);
 	}
 	fclose (f);
 	return 1;

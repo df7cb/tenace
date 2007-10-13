@@ -31,3 +31,7 @@ debian/files
 debian/tenace
 debian/tenace.substvars
 debian/*.debhelper
+
+# stuff
+*.bak
+*.swp

@@ -111,6 +111,7 @@ void board_free(board *b);
 int assert_board(board *b);
 int add_card(board *b, seat s, card c);
 int remove_card(board *b, seat s, card c);
+int flip_hands (board *b, seat h1, seat h2);
 void deal_random(board *b);
 
 int play_card(board *b, seat s, card c);

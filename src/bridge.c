@@ -177,6 +177,41 @@ int remove_card(board *b, seat s, card c)
 	return 1;
 }
 
+int
+flip_hands (board *b, seat h1, seat h2)
+{
+	int cards[13];
+	int n_cards = 0;
+	int c, i;
+	for (c = 0; c < 52; c++) {
+		if (b->cards[c] == h1) {
+			cards[n_cards++] = c;
+			remove_card (b, h1, c);
+		}
+	}
+	for (c = 0; c < 52; c++) {
+		if (b->cards[c] == h2) {
+			remove_card (b, h2, c);
+			if (!add_card (b, h1, c)) {
+				add_card (b, h2, c);
+				break;
+			}
+		}
+	}
+	for (i = 0; i < n_cards; i++) {
+		if (!add_card (b, h2, cards[i]))
+			break;
+		cards[i] = -1;
+	}
+	for (i = 0; i < n_cards; i++) {
+		if (cards[i] >= 0) {
+			c = add_card (b, h1, cards[i]);
+			assert (c);
+		}
+	}
+	return 1;
+}
+
 void deal_random(board *b)
 {
 	seat s;
