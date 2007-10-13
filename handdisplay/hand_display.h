@@ -73,6 +73,7 @@ struct _HandDisplay
 	GtkDrawingArea parent;
 	int mode;
 	int style;
+	int want_width;
 
 	/* hand */
 	int cur_focus;

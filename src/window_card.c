@@ -127,6 +127,7 @@ window_card_init ()
 	gtk_widget_show (w);
 	gtk_box_pack_start_defaults (vbox, w);
 	gtk_widget_show (window_card);
+	card_window_update(CUR_BOARD->dealt_cards);
 }
 
 void

@@ -381,6 +381,12 @@ draw (GtkWidget *hand, cairo_t *cr)
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
 			cairo_move_to (cr, x, y);
 			cairo_show_text (cr, "x");
+			x += extents.x_advance + 4;
+		}
+
+		if (x > handdisp->want_width) { /* grow window */
+			handdisp->want_width = x;
+			gtk_widget_queue_resize (hand);
 		}
 	}
 
@@ -533,7 +539,8 @@ hand_display_expose (GtkWidget *hand, GdkEventExpose *event)
 static void
 hand_display_size_request (GtkWidget *hand, GtkRequisition *requisition)
 {
-	requisition->width = 100;
+	HandDisplay *handdisp = HAND_DISPLAY(hand);
+	requisition->width = handdisp->want_width;
 	requisition->height = 100;
 }
 
@@ -793,6 +800,7 @@ hand_display_new (int mode)
 {
 	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
 	handdisp->mode = mode;
+	handdisp->want_width = 100;
 	return GTK_WIDGET(handdisp);
 }
 

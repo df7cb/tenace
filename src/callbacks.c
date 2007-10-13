@@ -898,6 +898,7 @@ on_ew1_activate                        (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	flip_hands (b, east, west);
+	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
 }
 
@@ -908,6 +909,7 @@ on_ns1_activate                        (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	flip_hands (b, north, south);
+	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
 }
 
@@ -918,6 +920,7 @@ on_nw1_activate                        (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	flip_hands (b, north, west);
+	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
 }
 
@@ -928,6 +931,7 @@ on_ne1_activate                        (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	flip_hands (b, north, east);
+	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
 }
 
@@ -938,6 +942,7 @@ on_sw1_activate                        (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	flip_hands (b, south, west);
+	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
 }
 
@@ -948,6 +953,7 @@ on_se1_activate                        (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	flip_hands (b, south, east);
+	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
 }
 
