@@ -253,7 +253,7 @@ static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 	}
 
 	if (redraw)
-		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
+		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD | REDRAW_PLAY);
 }
 
 static void card_enter (HandDisplay *handdisp, int card, int *seatp)

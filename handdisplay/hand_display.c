@@ -110,19 +110,12 @@ render_card (cairo_t *cr, double x, double y, int c, int color)
 
 	assert (0 <= c && c < 52);
 	
-	//cairo_save (cr);
-	//cairo_translate (cr, x, y);
-	//cairo_rectangle (cr, 0, 0, width, height);
-	//cairo_clip (cr);
-	//cairo_move_to (cr, 0, 0);
-	//cairo_set_antialias (cr, CAIRO_ANTIALIAS_GRAY);
 	gdk_cairo_set_source_pixbuf (cr, card_pixbuf[c], x, y);
 	cairo_paint_with_alpha (cr, 1.0);
 	if (color == HAND_DISPLAY_OLD_CARD) {
 		gdk_cairo_set_source_pixbuf (cr, card_pixbuf[52], x, y);
 		cairo_paint_with_alpha (cr, 0.5);
 	}
-	//cairo_restore (cr);
 	return;
 }
 
@@ -211,7 +204,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
 			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2, extents.width + 4, -extents.height - 4);
-			//printf ("x %f y %f\n", extents.x_bearing, extents. y_bearing);
 			cairo_fill (cr);
 
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
@@ -269,13 +261,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 					if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE)
 						continue;
 					char *buf = overtricks (handdisp->card_score[c]);
-					/*
-					cairo_text_extents (cr, buf, &extents);
-					cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
-					cairo_rectangle (cr, x + 2, yy + 40,
-							extents.width + 2, -extents.height - 2);
-					cairo_fill (cr);
-					*/
 					static int text_h = 0;
 					if (!text_h) {
 						cairo_font_extents (cr, &fextents);
@@ -398,15 +383,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 		if (handdisp->card_score[c] != HAND_DISPLAY_NO_SCORE) {
 			buf = overtricks (handdisp->card_score[c]);
 			cairo_text_extents (cr, buf, &extents);
-			/*
-			cairo_move_to (cr, handdisp->l[c] - 1, handdisp->b[c] + 1);
-			cairo_rel_line_to (cr, 0, -extents.height - 2);
-			cairo_rel_line_to (cr, extents.width + 2, 0);
-			cairo_rel_line_to (cr, 0, extents.height + 2);
-			cairo_set_source_rgb (cr, 0.0, 0.0, 1.0);
-			cairo_fill (cr);
-			*/
-
 			cairo_move_to (cr, handdisp->r[c] - extents.x_advance, handdisp->b[c]);
 			cairo_set_source_rgb (cr, HAND_DISPLAY_DD_FONT);
 			cairo_show_text (cr, buf);
@@ -436,13 +412,11 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 	if (handdisp->cur_focus != card) {
 		if (handdisp->cur_focus != -1) {
 			redraw_card (hand, handdisp->cur_focus);
-			//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
 			g_signal_emit_by_name (handdisp, "card-leave", handdisp->cur_focus);
 		}
 		handdisp->cur_focus = card;
 		if (card != -1) {
 			redraw_card (hand, card);
-			//printf("%c%d entered\n", "CDHSx"[card / 13], card % 13 + 2);
 			g_signal_emit_by_name (handdisp, "card-enter", card);
 		}
 	}
@@ -456,7 +430,6 @@ hand_display_leave (GtkWidget *hand, GdkEventCrossing *event)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	if (handdisp->cur_focus != -1) {
 		redraw_card (hand, handdisp->cur_focus);
-		//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
 		g_signal_emit_by_name (handdisp, "card-leave", handdisp->cur_focus);
 		handdisp->cur_focus = -1;
 	}
@@ -473,8 +446,6 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 	if (handdisp->cur_focus == -1)
 		return FALSE;
 	redraw_card (hand, card);
-
-	//printf("%c%d click type %d\n", "CDHSx"[card / 13], card % 13 + 2, event->type);
 
 	if (event->type == GDK_BUTTON_PRESS) {
 		handdisp->cur_click = card;
@@ -560,32 +531,28 @@ hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
 }
 
 /* drag-and-drop interface */
+/* http://live.gnome.org/GnomeLove/DragNDropTutorial */
 
 static void
 hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
-	printf ("drag_begin %x %x %x\n", hand, dc, data);
 	gtk_drag_set_icon_stock (dc, "gtk-home", 0, 0);
 }
 
-// http://live.gnome.org/GnomeLove/DragNDropTutorial
 static gboolean
 hand_display_drag_motion (GtkWidget *hand, GdkDragContext *dc,
         gint x, gint y, guint t, gpointer data)
 {
-	//printf ("hand_display_drag_motion %p %p %p x%d y%d t%d\n", hand, dc, data, x, y, t);
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, x, y);
 	if (handdisp->cur_focus != card) {
 		if (handdisp->cur_focus != -1) {
 			redraw_card (hand, handdisp->cur_focus);
-			//printf("%c%d left\n", "CDHSx"[handdisp->cur_focus / 13], handdisp->cur_focus % 13 + 2);
 			g_signal_emit_by_name (handdisp, "card-drag-leave", handdisp->cur_focus);
 		}
 		handdisp->cur_focus = card;
 		if (card != -1) {
 			redraw_card (hand, card);
-			//printf("%c%d entered\n", "CDHSx"[card / 13], card % 13 + 2);
 			g_signal_emit_by_name (handdisp, "card-drag-enter", card);
 		}
 	}
@@ -601,13 +568,11 @@ hand_display_drag_leave (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 		g_signal_emit_by_name (handdisp, "card-drag-leave", handdisp->cur_focus);
 		handdisp->cur_focus = -1;
 	}
-	//printf ("drag_leave %x %x data:%x\n", hand, dc, data);
 }
 
 static gboolean
 hand_display_drag_drop (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
-	//printf ("drag_drop %x %x data:%x\n", hand, dc, data);
 	gtk_drag_get_data (hand, dc, 0, 0);
 	return TRUE;
 }
@@ -617,8 +582,6 @@ hand_display_drag_data_get (GtkWidget *hand, GdkDragContext *dc,
         GtkSelectionData *selection_data, guint targettype, guint t, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	//printf ("drag_data_get %x %x data:%x %s targettype:%d t:%d\n",
-			//hand, dc, data, selection_data->data, targettype, t);
 	assert (targettype == 0);
 	gtk_selection_data_set (selection_data, selection_data->target,
 			32, (guchar *) &(handdisp->cur_click), sizeof (int));
@@ -630,11 +593,8 @@ hand_display_drag_data_received (GtkWidget *hand, GdkDragContext *dc,
         guint targettype, guint t, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	//printf ("drag_data_received %x %x %x x%d y%d data %x len %d targettype %d t %d\n",
-			//hand, dc, data, x, y, selection_data, selection_data->length, targettype, t);
 	int *card = (int *) selection_data->data;
 	int on_card = which_card(handdisp, x, y);
-	printf ("got %d\n", *card);
 	if (*card == on_card) {
 		gtk_drag_finish (dc, FALSE, FALSE, t);
 		return;
