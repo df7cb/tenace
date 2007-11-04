@@ -119,11 +119,13 @@ render_card (cairo_t *cr, double x, double y, int c, int color)
 	return;
 }
 
+#define FONT_SANS cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
+#define FONT_SYMBOL cairo_select_font_face (cr, "Symbol", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
+
 static void
 draw (GtkWidget *hand, cairo_t *cr)
 {
 	double l, r, t, b, x, y;
-	int suit;
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 	cairo_font_extents_t fextents;
@@ -137,7 +139,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		{ HAND_DISPLAY_SPADES_FONT   },
 	};
 
-	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+	FONT_SANS;
 
 	cairo_set_source_rgb (cr, HAND_DISPLAY_TABLE_BG);
 	cairo_rectangle (cr, 0, 0, hand->allocation.width, hand->allocation.height);
@@ -181,8 +183,10 @@ draw (GtkWidget *hand, cairo_t *cr)
 			char cs[6];
 			if (!handdisp->table_seat[i])
 				return;
-			snprintf (cs, 6, "%s%s", suit_str[handdisp->table_card[i] / 13],
-						 rank_str[handdisp->table_card[i] % 13]);
+			int c = handdisp->table_card[i];
+			int suit = c / 13;
+			int rank = c % 13;
+			snprintf (cs, 6, "%s%s", suit_str[suit], rank_str[rank]);
 			cairo_text_extents (cr, cs, &extents);
 
 			switch (handdisp->table_seat[i]) { /* lower left point */
@@ -206,9 +210,14 @@ draw (GtkWidget *hand, cairo_t *cr)
 			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2, extents.width + 4, -extents.height - 4);
 			cairo_fill (cr);
 
-			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
 			cairo_move_to (cr, x, y);
-			cairo_show_text (cr, cs);
+			FONT_SYMBOL;
+			cairo_set_source_rgb (cr, suit_color[suit][0],
+				suit_color[suit][1], suit_color[suit][2]);
+			cairo_show_text (cr, suit_str[suit]);
+			FONT_SANS;
+			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+			cairo_show_text (cr, rank_str[rank]);
 		}
 		return;
 	}
@@ -232,6 +241,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
 		y = MAX (hand->allocation.height - card_height - 5, 15);
 		int n = 0;
+		int suit;
 		for (suit = 0; suit < 4; suit++) {
 			int c;
 			for (c = 13 * (handdisp->suits[suit] + 1) - 1; c >= 13 * handdisp->suits[suit]; c--) {
@@ -285,8 +295,10 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* "text" style */
 
 	/* draw suit symbols */
+	FONT_SYMBOL;
 	cairo_set_font_size (cr, 20);
 	double suit_width = 0.0;
+	int suit;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
 		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
@@ -299,6 +311,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	}
 
 	/* draw cards */
+	FONT_SANS;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4 + suit_width;
 		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
