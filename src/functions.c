@@ -218,6 +218,17 @@ char *contract_string(int level, suit trumps, seat declarer, int doubled)
 	return buf;
 }
 
+char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
+{
+	static char buf[20];
+	char *trump_str[] = {"C", "D", "H", "S", "NT"};
+	char *declarer_str[] = {0, "W", "N", "E", "S"};
+	snprintf(buf, 20, "%d%s %s%s", level, trump_str[trumps], declarer_str[declarer],
+		doubled == 2 ? " XX" :
+			doubled == 1 ? " X" : "");
+	return buf;
+}
+
 seat seat_mod(seat s)
 {
 	return ((s + 3) % 4) + 1;

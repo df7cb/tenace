@@ -136,13 +136,15 @@ void board_save(board *b, char *filename)
 		} else if (!strcmp(filename + i - 4, ".pbn")) {
 			printf("pbn not yet implemented\n");
 		} else {
+			printf("unrecognized suffix\n");
+			/*
 			int h;
 			printf("%s\n", b->name->str);
-
 			for (h = 1; h < 5; h++) {
 				printf("%s\n", b->hand_name[h-1]->str);
 				printf("%s\n", hand_string(b, h)->str);
 			}
+			*/
 		}
 	}
 }
@@ -166,7 +168,7 @@ static char *sane_strtok_r (char *str, const char *delim, char **saveptr)
 // pn|Frederic,gm,Myon,mecky|st||md|4S27KAHKD49C3589TJ,S36H48AD358KC27QK,STJH259TJQD26TJQC,|rh||ah|Board 14|sv|o|mb|p|mb|p|mb|1D|mb|2H|mb|2S|mb|p|mb|p|mb|p|pg||pc|HK|pc|H4|pc|H2|pc|H6|pg||pc|CJ|pc|CK|pc|ST|pc|C4|pg||pc|H9|pc|H3|pc|S2|pc|H8|pg||pc|CT|pc|C2|pc|SJ|pc|C6|pg||pc|HQ|pc|H7|pc|S7|pc|HA|pg||pc|D9|pc|D3|pc|DT|pc|DA|pg||pc|S4|pc|SK|pc|S3|pc|H5|pg||pc|SA|pc|S6|pc|HT|pc|S5|pg||pc|D4|pc|DK|pc|D2|pc|D7|pg||pc|C7|pc|D6|pc|CA|pc|C3|pg||mc|6|
 #define STRTOK sane_strtok_r(NULL, "|\n\r", &saveptr)
 #define FINISH_BOARD \
-	printf ("finish: %d\n", contract); \
+	/*printf ("finish: %d\n", contract);*/ \
 	if (contract && b->played_cards[0] != -1) \
 		board_set_contract(b, LEVEL(contract), DENOM(contract), \
 			seat_mod(b->dealt_cards[b->played_cards[0]] + 3), doubled); \
@@ -192,7 +194,7 @@ board_parse_lin (char *line, FILE *f)
 
 	do {
 	for (tok = sane_strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
-		printf ("parsing token '%s'\n", tok);
+		//printf ("parsing token '%s'\n", tok);
 		/* single hand */
 		if (!strcmp(tok, "pn")) { /* SWNE */
 			tok = STRTOK;
@@ -349,7 +351,7 @@ error:
 ok:
 	for (i = 0; i < name_n; i++)
 		free (name_arr[i]);
-	printf ("returning %d\n", ret);
+	//printf ("returning %d\n", ret);
 	return ret;
 }
 #undef STRTOK

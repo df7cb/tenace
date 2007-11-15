@@ -13,6 +13,7 @@ char *seat_string (seat s);
 GString *hand_string (board *b, seat h);
 //GString *gib_string (hand *h);
 char *contract_string(int level, suit trumps, seat declarer, int doubled);
+char *contract_string_asc (int level, suit trumps, seat declarer, int doubled);
 seat seat_mod(seat s);
 int seat_mask (seat s, seat filter);
 char *overtricks (int i);

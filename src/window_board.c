@@ -97,7 +97,7 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_TITLE) {
 		g_string_printf(str, "Tenace - %s (%s)", b->name->str,
-			contract_string(b->level, b->trumps, b->declarer, b->doubled));
+			contract_string_asc (b->level, b->trumps, b->declarer, b->doubled));
 		if (win->title) {
 			g_string_append_printf (str, " - %s", win->title->str);
 		} else if (win->filename) {
@@ -229,16 +229,14 @@ void show_board (board *b, redraw_t redraw)
 		window_play_update(b);
 
 	if (redraw & REDRAW_BIDDING) {
-		int i;
-		for (i = 0; i < b->n_bids; i++)
-			printf ("%s\n", bid_string(b->bidding[i])->str);
+		window_bidding_update (b);
 	}
 }
 
 static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 {
 	board *b = CUR_BOARD;
-	printf("Clicked: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
+	//printf("Clicked: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
 	int redraw = 0;
 
 	if (*seatp != b->current_turn && b->n_played_cards > 0 &&

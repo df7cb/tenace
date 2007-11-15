@@ -698,7 +698,7 @@ on_bidding1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_bidding_init ();
+		window_bidding_init (CUR_BOARD);
 	else
 		window_bidding_delete ();
 }

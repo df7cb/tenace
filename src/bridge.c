@@ -309,11 +309,13 @@ int play_card(board *b, seat s, card c)
 	b->next_dd[c] = b->current_dd; /* remember scores for rewind */
 	b->current_dd = dd;
 
+	/*
 	printf ("previews for: ");
 	for (i = 0; i < 52; i++)
 		if (b->next_dd[i])
 			printf ("%s ", card_string(i)->str);
 	printf ("\n");
+	*/
 
 	return 1;
 }
@@ -348,11 +350,13 @@ int rewind_card(board *b)
 
 	/* return card */
 	b->current_turn = b->cards[c] = s;
+	/*
 	printf ("previews for: ");
 	for (i = 0; i < 52; i++)
 		if (b->next_dd[i])
 			printf ("%s ", card_string(i)->str);
 	printf ("\n");
+	*/
 
 	return 1;
 }

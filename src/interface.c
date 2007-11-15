@@ -1318,11 +1318,15 @@ create_window_bidding (void)
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow1);
   gtk_container_add (GTK_CONTAINER (window_bidding), scrolledwindow1);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
 
   treeview_bid = gtk_tree_view_new ();
   gtk_widget_show (treeview_bid);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), treeview_bid);
+  gtk_widget_set_size_request (treeview_bid, 141, 200);
+  GTK_WIDGET_UNSET_FLAGS (treeview_bid, GTK_CAN_FOCUS);
+  gtk_tree_view_set_enable_search (GTK_TREE_VIEW (treeview_bid), FALSE);
 
   g_signal_connect ((gpointer) window_bidding, "delete_event",
                     G_CALLBACK (on_window_bidding_delete_event),
