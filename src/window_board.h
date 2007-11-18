@@ -22,6 +22,7 @@ typedef struct _window_board_t {
 	GtkWidget *board_menu;
 	HandDisplay *handdisp[4];
 	HandDisplay *table;
+	GtkListStore *bidding_store;
 
 	/* config */
 	int show_played_cards;

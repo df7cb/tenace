@@ -443,3 +443,11 @@ on_sw1_activate                        (GtkMenuItem     *menuitem,
 void
 on_se1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);

@@ -116,6 +116,8 @@ board *board_new(void)
 
 	b->bidding = calloc(4, sizeof(card));
 	assert(b->bidding);
+	b->alerts = calloc(4, sizeof(char *));
+	assert(b->alerts);
 	b->n_bids = 0;
 	b->n_bid_alloc = 4;
 
@@ -131,6 +133,10 @@ void board_free(board *b)
 		g_string_free(b->hand_name[i], TRUE);
 	}
 	free(b->bidding);
+	for (i = 0; i < b->n_bid_alloc; i++)
+		if (b->alerts[i])
+			free (b->alerts[i]);
+	free (b->alerts);
 }
 
 /* dealing with cards */
@@ -400,7 +406,25 @@ void board_append_bid(board *b, card bid)
 	if (b->n_bids >= b->n_bid_alloc) {
 		b->n_bid_alloc <<= 2;
 		b->bidding = realloc(b->bidding, b->n_bid_alloc * sizeof (card));
-		assert(b->bidding);
+		b->alerts = realloc(b->alerts, b->n_bid_alloc * sizeof (card));
+		assert(b->bidding && b->alerts);
+		int i; /* I wished there was recalloc() */
+		for (i = b->n_bid_alloc >> 2; i < b->n_bid_alloc; i++)
+			b->alerts[i] = NULL;
 	}
 	b->bidding[b->n_bids++] = bid;
+}
+
+void
+board_set_alert (board *b, char *alert)
+{
+	assert (b->n_bids > 0);
+	if (b->alerts[b->n_bids - 1])
+		free (b->alerts[b->n_bids - 1]);
+	if (alert)
+		b->alerts[b->n_bids - 1] = strdup (alert);
+	else
+		b->alerts[b->n_bids - 1] = NULL;
+	if (alert)
+		printf ("alert: %s\n");
 }

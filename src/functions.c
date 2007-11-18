@@ -96,7 +96,7 @@ int parse_bid(char **tok)
 	if (strlen (*tok) < 2) return -1;
 
 	int alert = 0;
-	if (strlen (*tok) >= 3 && *tok[2] == '!')
+	if (strlen (*tok) >= 3 && *tok[2] == '!') // FIXME: can probably go
 		alert = bid_alert;
 
 	int le = *tok[0] - '0';

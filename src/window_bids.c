@@ -20,98 +20,11 @@
 #include "interface.h"
 #include "support.h"
 
-static GtkWidget *window_bidding = 0;
-static GtkTreeView *bidding = 0;
-static GtkListStore *store = 0;
+#include "window_board.h"
 
 static GtkWidget *window_bids = 0;
 static GtkTable *bids_table;
 //static GtkButton *bids_button[52];
-
-void
-window_bidding_update (board *b)
-{
-	if (!window_bidding)
-		return;
-
-	printf ("updating bidding window...\n");
-
-	gtk_list_store_clear (store);
-
-	GtkTreeIter   iter;  /* Acquire an iterator */
-
-	int i;
-	int col = b->dealer - 1;
-	int last_col = 5;
-
-	for (i = 0; i < b->n_bids; i++) {
-		if (last_col > col)
-			gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter,
-			col, bid_string(b->bidding[i])->str,
-			-1);
-		last_col = col;
-		col = (col + 1) % 4;
-	}
-}
-
-void
-window_bidding_init (board *b)
-{
-	if (window_bidding)
-		return;
-
-	window_bidding = create_window_bidding ();
-	gtk_widget_show (window_bidding);
-	bidding = GTK_TREE_VIEW (lookup_widget(window_bidding, "treeview_bid"));
-	assert (bidding);
-
-	store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING,
-		G_TYPE_STRING, G_TYPE_STRING);
-	gtk_tree_view_set_model (bidding, GTK_TREE_MODEL (store));
-
-	GtkCellRenderer *renderer;
-	GtkTreeViewColumn *column;
-
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set (renderer, "xalign", 0.5, NULL);
-
-	column = gtk_tree_view_column_new_with_attributes ("W", renderer, "text", 0, NULL);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
-
-	column = gtk_tree_view_column_new_with_attributes ("N", renderer, "text", 1, NULL);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
-
-	column = gtk_tree_view_column_new_with_attributes ("E", renderer, "text", 2, NULL);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
-
-	column = gtk_tree_view_column_new_with_attributes ("S", renderer, "text", 3, NULL);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
-
-	gtk_widget_show_all (window_bidding);
-
-	window_bidding_update (b);
-}
-
-void
-window_bidding_delete (void)
-{
-	if (!window_bidding)
-		return;
-
-	gtk_widget_destroy (window_bidding);
-	gtk_widget_destroy (store);
-	window_bidding = 0;
-}
-
 
 void
 window_bids_init ()
@@ -123,12 +36,21 @@ window_bids_init ()
 	gtk_widget_show (window_bids);
 	bids_table = GTK_TABLE(lookup_widget(window_bids, "bids_table"));
 	assert (bids_table);
+	GtkWidget *lab;
+
+	lab = gtk_button_new_with_label ("PASS");
+	gtk_table_attach (bids_table, lab, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
+	lab = gtk_button_new_with_label ("X");
+	gtk_table_attach (bids_table, lab, 3, 4, 0, 1, GTK_FILL, 0, 0, 0);
+	lab = gtk_button_new_with_label ("XX");
+	gtk_table_attach (bids_table, lab, 4, 5, 0, 1, GTK_FILL, 0, 0, 0);
+
 	int d, l;
 	for (l = 1; l <= 7; l++) {
 		for (d = 0; d <= 4; d++) {
 			GString *b = bid_string (5 * l + d);
-			GtkWidget *lab = gtk_button_new_with_label (b->str);
-			gtk_table_attach(bids_table, lab, d, d+1, l-1, l, 0, 0, 0, 0);
+			lab = gtk_button_new_with_label (b->str);
+			gtk_table_attach(bids_table, lab, d, d+1, l, l+1, GTK_FILL, 0, 0, 0);
 			//bids_label[5 * l + d] = GTK_LABEL(lab);
 		}
 	}

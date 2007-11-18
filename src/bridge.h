@@ -83,6 +83,7 @@ typedef struct board_t {
 	int tricks[2]; /* 0 = NS, 1 = EW */
 
 	card *bidding;
+	char **alerts;
 	int n_bids;
 	int n_bid_alloc;
 
@@ -121,5 +122,6 @@ int next_card(board *b);
 void board_fast_forward(board *b);
 
 void board_append_bid(board *b, card bid);
+void board_set_alert (board *b, char *alert);
 
 #endif

@@ -682,29 +682,6 @@ on_cards1_activate                     (GtkMenuItem     *menuitem,
 
 
 gboolean
-on_window_bidding_delete_event         (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "bidding1"));
-	gtk_check_menu_item_set_active (menuitem, FALSE);
-	window_bidding_delete ();
-	return FALSE;
-}
-
-
-void
-on_bidding1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_bidding_init (CUR_BOARD);
-	else
-		window_bidding_delete ();
-}
-
-
-gboolean
 on_window_bids_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -955,5 +932,21 @@ on_se1_activate                        (GtkMenuItem     *menuitem,
 	flip_hands (b, south, east);
 	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+
 }
 

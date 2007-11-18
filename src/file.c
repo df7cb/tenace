@@ -276,14 +276,21 @@ board_parse_lin (char *line, FILE *f)
 			/* mb|-ppp1Cp1Hp3Np4Dp4Hppp| */
 			tok = STRTOK;
 			char *bidp = tok;
+			char *al = strchr (bidp, '!');
+			if (al) {
+				*al++ = '\0';
+			}
 			do {
 				int bid = parse_bid(&bidp);
 				if (bid == -1) {
 					printf("Invalid bid %s/%s\n", tok, bidp);
 					break;
 				}
-				bid &= ~bid_alert; /* TODO: alert */
 				board_append_bid(b, bid);
+				if (al) {
+					board_set_alert (b, al);
+					al = NULL;
+				}
 				if (bid > bid_xx) {
 					contract = bid;
 					doubled = 0;
@@ -293,7 +300,7 @@ board_parse_lin (char *line, FILE *f)
 			} while (*bidp);
 		} else if (!strcmp(tok, "an")) {
 			tok = STRTOK;
-			printf("TODO: alert %s\n", tok);
+			board_set_alert (b, tok);
 		} else if (!strcmp(tok, "pc")) {
 			int c = parse_card(tok = STRTOK);
 			if (c == -1) {

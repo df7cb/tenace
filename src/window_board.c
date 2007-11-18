@@ -85,6 +85,28 @@ board_set_player_name (GtkWidget *w, int vuln, int current, char *name)
 	g_string_free (str, TRUE);
 }
 
+void
+bidding_update (window_board_t *win, board *b)
+{
+	printf ("updating bidding window...\n");
+	gtk_list_store_clear (win->bidding_store);
+	GtkTreeIter iter; /* Acquire an iterator */
+
+	int i;
+	int col = b->dealer - 1;
+	int last_col = 5;
+
+	for (i = 0; i < b->n_bids; i++) {
+		if (last_col > col)
+			gtk_list_store_append (win->bidding_store, &iter);
+		gtk_list_store_set (win->bidding_store, &iter,
+			col, bid_string(b->bidding[i])->str,
+			-1);
+		last_col = col;
+		col = (col + 1) % 4;
+	}
+}
+
 void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
@@ -229,7 +251,7 @@ void show_board (board *b, redraw_t redraw)
 		window_play_update(b);
 
 	if (redraw & REDRAW_BIDDING) {
-		window_bidding_update (b);
+		bidding_update (win, b);
 	}
 }
 
@@ -374,9 +396,48 @@ static void create_hand_widgets (window_board_t *win)
 
 	GtkWidget *grid = lookup_widget (win->window, "table1");
 	GtkWidget *table = hand_display_new (HAND_DISPLAY_MODE_TABLE);
-	gtk_table_attach_defaults (GTK_TABLE (grid), table, 4, 5, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (grid), table, 1, 2, 1, 2);
 	gtk_widget_show (table);
 	win->table = HAND_DISPLAY (table);
+}
+
+static void
+create_bidding_widget (window_board_t *win)
+{
+	GtkTreeView *bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
+	win->bidding_store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING,
+		G_TYPE_STRING, G_TYPE_STRING);
+	gtk_tree_view_set_model (bidding, GTK_TREE_MODEL (win->bidding_store));
+
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set (renderer, "xalign", 0.5, NULL);
+
+	column = gtk_tree_view_column_new_with_attributes ("W", renderer, "text", 0, NULL);
+	gtk_tree_view_column_set_expand (column, TRUE);
+	gtk_tree_view_column_set_min_width (column, 35);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_append_column (bidding, column);
+
+	column = gtk_tree_view_column_new_with_attributes ("N", renderer, "text", 1, NULL);
+	gtk_tree_view_column_set_expand (column, TRUE);
+	gtk_tree_view_column_set_min_width (column, 35);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_append_column (bidding, column);
+
+	column = gtk_tree_view_column_new_with_attributes ("E", renderer, "text", 2, NULL);
+	gtk_tree_view_column_set_expand (column, TRUE);
+	gtk_tree_view_column_set_min_width (column, 35);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_append_column (bidding, column);
+
+	column = gtk_tree_view_column_new_with_attributes ("S", renderer, "text", 3, NULL);
+	gtk_tree_view_column_set_expand (column, TRUE);
+	gtk_tree_view_column_set_min_width (column, 35);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_append_column (bidding, column);
 }
 
 void board_window_set_style (window_board_t *win, int style)
@@ -413,6 +474,7 @@ board_window_init (window_board_t *win)
 	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
 	win->board_menu = lookup_widget(win->window, "board_menu1");
 	create_hand_widgets(win);
+	create_bidding_widget (win);
 
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;
