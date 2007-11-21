@@ -169,11 +169,9 @@ create_window_hand (void)
   GtkWidget *button_dd;
   GtkWidget *handbutton_par;
   GtkWidget *table1;
-  GtkWidget *label_board;
   GtkWidget *frame_w;
   GtkWidget *alignment_w;
   GtkWidget *label_west;
-  GtkWidget *par_label;
   GtkWidget *frame_s;
   GtkWidget *alignment_s;
   GtkWidget *label_south;
@@ -183,8 +181,13 @@ create_window_hand (void)
   GtkWidget *frame_e;
   GtkWidget *alignment_e;
   GtkWidget *label_east;
+  GtkWidget *table10;
   GtkWidget *scrolledwindow2;
   GtkWidget *treeview_bidding;
+  GtkWidget *alignment1;
+  GtkWidget *label105;
+  GtkWidget *label_board;
+  GtkWidget *par_label;
   GtkWidget *label_tricks;
   GtkWidget *statusbar1;
   GtkAccelGroup *accel_group;
@@ -800,15 +803,7 @@ create_window_hand (void)
   table1 = gtk_table_new (3, 3, TRUE);
   gtk_widget_show (table1);
   gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
-
-  label_board = gtk_label_new (_("Bd 1\n4\342\231\246X S"));
-  gtk_widget_show (label_board);
-  gtk_table_attach (GTK_TABLE (table1), label_board, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 5, 0);
-  GTK_WIDGET_SET_FLAGS (label_board, GTK_CAN_FOCUS);
-  gtk_label_set_selectable (GTK_LABEL (label_board), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label_board), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (table1), 5);
 
   frame_w = gtk_frame_new (NULL);
   gtk_widget_show (frame_w);
@@ -827,15 +822,6 @@ create_window_hand (void)
   gtk_widget_show (label_west);
   gtk_frame_set_label_widget (GTK_FRAME (frame_w), label_west);
   gtk_label_set_use_markup (GTK_LABEL (label_west), TRUE);
-
-  par_label = gtk_label_new ("");
-  gtk_widget_show (par_label);
-  gtk_table_attach (GTK_TABLE (table1), par_label, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 5, 0);
-  GTK_WIDGET_SET_FLAGS (par_label, GTK_CAN_FOCUS);
-  gtk_label_set_selectable (GTK_LABEL (par_label), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (par_label), 0, 1);
 
   frame_s = gtk_frame_new (NULL);
   gtk_widget_show (frame_s);
@@ -891,26 +877,62 @@ create_window_hand (void)
   gtk_frame_set_label_widget (GTK_FRAME (frame_e), label_east);
   gtk_label_set_use_markup (GTK_LABEL (label_east), TRUE);
 
-  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow2);
-  gtk_table_attach (GTK_TABLE (table1), scrolledwindow2, 2, 3, 0, 1,
+  table10 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_show (table10);
+  gtk_table_attach (GTK_TABLE (table1), table10, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow2), 5);
+
+  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow2);
+  gtk_table_attach (GTK_TABLE (table10), scrolledwindow2, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   treeview_bidding = gtk_tree_view_new ();
   gtk_widget_show (treeview_bidding);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), treeview_bidding);
-  gtk_container_set_border_width (GTK_CONTAINER (treeview_bidding), 5);
   GTK_WIDGET_UNSET_FLAGS (treeview_bidding, GTK_CAN_FOCUS);
   gtk_tree_view_set_enable_search (GTK_TREE_VIEW (treeview_bidding), FALSE);
+
+  alignment1 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment1);
+  gtk_table_attach (GTK_TABLE (table10), alignment1, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  label105 = gtk_label_new ("");
+  gtk_widget_show (label105);
+  gtk_table_attach (GTK_TABLE (table10), label105, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_size_request (label105, 5, 5);
+  gtk_misc_set_alignment (GTK_MISC (label105), 0, 0.5);
+
+  label_board = gtk_label_new (_("Bd 1\n4\342\231\246X S"));
+  gtk_widget_show (label_board);
+  gtk_table_attach (GTK_TABLE (table1), label_board, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  GTK_WIDGET_SET_FLAGS (label_board, GTK_CAN_FOCUS);
+  gtk_label_set_selectable (GTK_LABEL (label_board), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label_board), 0, 0);
+
+  par_label = gtk_label_new ("");
+  gtk_widget_show (par_label);
+  gtk_table_attach (GTK_TABLE (table1), par_label, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  GTK_WIDGET_SET_FLAGS (par_label, GTK_CAN_FOCUS);
+  gtk_label_set_selectable (GTK_LABEL (par_label), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (par_label), 0, 1);
 
   label_tricks = gtk_label_new (_("NS: 0\nEW: 0"));
   gtk_widget_show (label_tricks);
   gtk_table_attach (GTK_TABLE (table1), label_tricks, 2, 3, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 5, 0);
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   GTK_WIDGET_SET_FLAGS (label_tricks, GTK_CAN_FOCUS);
   gtk_label_set_justify (GTK_LABEL (label_tricks), GTK_JUSTIFY_RIGHT);
   gtk_label_set_selectable (GTK_LABEL (label_tricks), TRUE);
@@ -1286,11 +1308,9 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, button_dd, "button_dd");
   GLADE_HOOKUP_OBJECT (window_hand, handbutton_par, "handbutton_par");
   GLADE_HOOKUP_OBJECT (window_hand, table1, "table1");
-  GLADE_HOOKUP_OBJECT (window_hand, label_board, "label_board");
   GLADE_HOOKUP_OBJECT (window_hand, frame_w, "frame_w");
   GLADE_HOOKUP_OBJECT (window_hand, alignment_w, "alignment_w");
   GLADE_HOOKUP_OBJECT (window_hand, label_west, "label_west");
-  GLADE_HOOKUP_OBJECT (window_hand, par_label, "par_label");
   GLADE_HOOKUP_OBJECT (window_hand, frame_s, "frame_s");
   GLADE_HOOKUP_OBJECT (window_hand, alignment_s, "alignment_s");
   GLADE_HOOKUP_OBJECT (window_hand, label_south, "label_south");
@@ -1300,8 +1320,13 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, frame_e, "frame_e");
   GLADE_HOOKUP_OBJECT (window_hand, alignment_e, "alignment_e");
   GLADE_HOOKUP_OBJECT (window_hand, label_east, "label_east");
+  GLADE_HOOKUP_OBJECT (window_hand, table10, "table10");
   GLADE_HOOKUP_OBJECT (window_hand, scrolledwindow2, "scrolledwindow2");
   GLADE_HOOKUP_OBJECT (window_hand, treeview_bidding, "treeview_bidding");
+  GLADE_HOOKUP_OBJECT (window_hand, alignment1, "alignment1");
+  GLADE_HOOKUP_OBJECT (window_hand, label105, "label105");
+  GLADE_HOOKUP_OBJECT (window_hand, label_board, "label_board");
+  GLADE_HOOKUP_OBJECT (window_hand, par_label, "par_label");
   GLADE_HOOKUP_OBJECT (window_hand, label_tricks, "label_tricks");
   GLADE_HOOKUP_OBJECT (window_hand, statusbar1, "statusbar1");
   GLADE_HOOKUP_OBJECT_NO_REF (window_hand, tooltips, "tooltips");

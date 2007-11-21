@@ -97,11 +97,13 @@ bidding_update (window_board_t *win, board *b)
 	int last_col = 5;
 
 	for (i = 0; i < b->n_bids; i++) {
+		char buf[10];
 		if (last_col > col)
 			gtk_list_store_append (win->bidding_store, &iter);
+		snprintf (buf, sizeof (buf), "%s%s", bid_string(b->bidding[i])->str,
+				b->alerts[i] ? "!" : "");
 		gtk_list_store_set (win->bidding_store, &iter,
-			col, bid_string(b->bidding[i])->str,
-			-1);
+			col, buf, -1);
 		last_col = col;
 		col = (col + 1) % 4;
 	}
@@ -402,8 +404,26 @@ static void create_hand_widgets (window_board_t *win)
 }
 
 static void
+moo (GtkWidget *w, void *data)
+{
+	GdkColor bg = { 0, 0.8*65535, 0.0, 0.0 };
+	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
+	gtk_widget_modify_bg (w, GTK_STATE_NORMAL, &bg);
+}
+
+static void
 create_bidding_widget (window_board_t *win)
 {
+	/*
+	GtkScrolledWindow *scroll = GTK_SCROLLED_WINDOW
+		(lookup_widget(win->window, "scrolledwindow2"));
+	g_object_set (scroll, "scrollbar-spacing", 0, NULL);
+	g_object_set (scroll, "scrollbars-within-bevel", TRUE, NULL);
+	GdkColor bg = { 0, 0.8*65535, 0.0, 0.0 };
+	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
+	gtk_widget_modify_bg (scroll, GTK_STATE_NORMAL, &bg);
+	*/
+
 	GtkTreeView *bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
 	win->bidding_store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING,
 		G_TYPE_STRING, G_TYPE_STRING);
@@ -413,7 +433,7 @@ create_bidding_widget (window_board_t *win)
 	GtkTreeViewColumn *column;
 
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set (renderer, "xalign", 0.5, NULL);
+	g_object_set (renderer, "xalign", 0.5, "cell-background", "green", NULL);
 
 	column = gtk_tree_view_column_new_with_attributes ("W", renderer, "text", 0, NULL);
 	gtk_tree_view_column_set_expand (column, TRUE);
@@ -438,6 +458,8 @@ create_bidding_widget (window_board_t *win)
 	gtk_tree_view_column_set_min_width (column, 35);
 	gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column (bidding, column);
+
+	gtk_container_forall (bidding, moo, NULL);
 }
 
 void board_window_set_style (window_board_t *win, int style)
