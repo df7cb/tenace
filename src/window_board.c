@@ -33,8 +33,11 @@
 #include "window_play.h"
 
 window_board_t *win; // FIXME static?
-static GString *rcfile = NULL;
+static GString *rcfile = 0;
 static int autoplay_running = 0;
+
+static GdkColor bidding_non_vuln = { 0, 0.8*65535, 0.8*65535, 0.8*65535 };
+static GdkColor bidding_vuln = { 0, 0.8*65535, 0, 0 };
 
 static void
 board_menu_select (GtkWidget *menuitem, int *n)
@@ -93,9 +96,14 @@ bidding_update (window_board_t *win, board *b)
 	GtkTreeIter iter; /* Acquire an iterator */
 
 	int i;
+	for (i = 0; i < 2; i++) {
+		GdkColor *color = b->vuln[!i] ? &bidding_vuln : &bidding_non_vuln;
+		gtk_widget_modify_bg (win->bidding_header[i], GTK_STATE_NORMAL, color);
+		gtk_widget_modify_bg (win->bidding_header[i+2], GTK_STATE_NORMAL, color);
+	}
+
 	int col = b->dealer - 1;
 	int last_col = 5;
-
 	for (i = 0; i < b->n_bids; i++) {
 		char buf[10];
 		if (last_col > col)
@@ -257,6 +265,8 @@ void show_board (board *b, redraw_t redraw)
 	}
 }
 
+/* callbacks */
+
 static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 {
 	board *b = CUR_BOARD;
@@ -350,6 +360,12 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 	show_board(b, REDRAW_HANDS);
 }
 
+static void
+bidding_clicked (GtkTreeViewColumn *column, void *data)
+{
+	printf ("clicked bidd\n");
+}
+
 static gboolean autoplay ()
 {
 	board *b = CUR_BOARD;
@@ -404,11 +420,11 @@ static void create_hand_widgets (window_board_t *win)
 }
 
 static void
-moo (GtkWidget *w, void *data)
+create_bidding_widget_cb (GtkWidget *w, window_board_t *win)
 {
-	GdkColor bg = { 0, 0.8*65535, 0.0, 0.0 };
-	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
-	gtk_widget_modify_bg (w, GTK_STATE_NORMAL, &bg);
+	static int i = 0;
+	win->bidding_header[i++] = w;
+	assert (i <= 4);
 }
 
 static void
@@ -417,14 +433,14 @@ create_bidding_widget (window_board_t *win)
 	/*
 	GtkScrolledWindow *scroll = GTK_SCROLLED_WINDOW
 		(lookup_widget(win->window, "scrolledwindow2"));
-	g_object_set (scroll, "scrollbar-spacing", 0, NULL);
-	g_object_set (scroll, "scrollbars-within-bevel", TRUE, NULL);
 	GdkColor bg = { 0, 0.8*65535, 0.0, 0.0 };
 	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
-	gtk_widget_modify_bg (scroll, GTK_STATE_NORMAL, &bg);
+	gtk_widget_modify_bg (GTK_WIDGET (scroll), GTK_STATE_NORMAL, &bg);
 	*/
 
 	GtkTreeView *bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
+	//gtk_widget_modify_bg (GTK_WIDGET (bidding), GTK_STATE_NORMAL, &bg);
+	//gdk_window_set_background (gtk_tree_view_get_bin_window (bidding), &bidding_vuln);
 	win->bidding_store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING,
 		G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model (bidding, GTK_TREE_MODEL (win->bidding_store));
@@ -433,33 +449,27 @@ create_bidding_widget (window_board_t *win)
 	GtkTreeViewColumn *column;
 
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set (renderer, "xalign", 0.5, "cell-background", "green", NULL);
+	g_object_set (renderer, "xalign", 0.5,
+				"cell-background", "yellow",
+				"mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE,
+				NULL);
 
-	column = gtk_tree_view_column_new_with_attributes ("W", renderer, "text", 0, NULL);
-	gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
+	char *dir[] = {"W", "N", "E", "S"};
+	int i;
+	for (i = 0; i < 4; i++) {
+		column = gtk_tree_view_column_new_with_attributes (dir[i], renderer, "text", i, NULL);
+		gtk_tree_view_column_set_expand (column, TRUE);
+		gtk_tree_view_column_set_min_width (column, 35);
+		gtk_tree_view_column_set_alignment (column, 0.5);
+		//g_signal_connect_swapped (column, "clicked", G_CALLBACK (bidding_clicked), 0);
+		gtk_tree_view_append_column (bidding, column);
+	}
 
-	column = gtk_tree_view_column_new_with_attributes ("N", renderer, "text", 1, NULL);
-	gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
+	gtk_container_forall (GTK_CONTAINER (bidding), (GtkCallback) create_bidding_widget_cb, win);
 
-	column = gtk_tree_view_column_new_with_attributes ("E", renderer, "text", 2, NULL);
-	gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
-
-	column = gtk_tree_view_column_new_with_attributes ("S", renderer, "text", 3, NULL);
-	gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_min_width (column, 35);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (bidding, column);
-
-	gtk_container_forall (bidding, moo, NULL);
+	GdkColormap *cmap = gdk_colormap_get_system ();
+	gdk_colormap_alloc_color (cmap, &bidding_non_vuln, FALSE, TRUE);
+	gdk_colormap_alloc_color (cmap, &bidding_vuln, FALSE, TRUE);
 }
 
 void board_window_set_style (window_board_t *win, int style)
@@ -583,7 +593,7 @@ board_set_vuln (int ns, int ew)
 	b->vuln[0] = ns;
 	b->vuln[1] = ew;
 	b->par_score = -1;
-	show_board(b, REDRAW_CONTRACT | REDRAW_NAMES);
+	show_board(b, REDRAW_CONTRACT | REDRAW_NAMES | REDRAW_BIDDING);
 	PROTECT_END;
 }
 
