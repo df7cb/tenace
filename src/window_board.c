@@ -91,7 +91,6 @@ board_set_player_name (GtkWidget *w, int vuln, int current, char *name)
 void
 bidding_update (window_board_t *win, board *b)
 {
-	printf ("updating bidding window...\n");
 	gtk_list_store_clear (win->bidding_store);
 	GtkTreeIter iter; /* Acquire an iterator */
 
@@ -101,17 +100,22 @@ bidding_update (window_board_t *win, board *b)
 		gtk_widget_modify_bg (win->bidding_header[i], GTK_STATE_NORMAL, color);
 		gtk_widget_modify_bg (win->bidding_header[i+2], GTK_STATE_NORMAL, color);
 	}
+	/*
+	for (i = 0; i < 4; i++) {
+		if (b->hand_name[i])
+			gtk_label_set_text (GTK_LABEL (win->bidding_label[i]), b->hand_name[i]->str);
+	}
+	*/
 
 	int col = b->dealer - 1;
 	int last_col = 5;
 	for (i = 0; i < b->n_bids; i++) {
-		char buf[10];
+		char buf[50];
 		if (last_col > col)
 			gtk_list_store_append (win->bidding_store, &iter);
 		snprintf (buf, sizeof (buf), "%s%s", bid_string(b->bidding[i])->str,
-				b->alerts[i] ? "!" : "");
-		gtk_list_store_set (win->bidding_store, &iter,
-			col, buf, -1);
+				b->alerts[i] ? (*b->alerts[i] ? "!!" : "!") : "");
+		gtk_list_store_set (win->bidding_store, &iter, col, buf, -1);
 		last_col = col;
 		col = (col + 1) % 4;
 	}
@@ -457,11 +461,18 @@ create_bidding_widget (window_board_t *win)
 	char *dir[] = {"W", "N", "E", "S"};
 	int i;
 	for (i = 0; i < 4; i++) {
-		column = gtk_tree_view_column_new_with_attributes (dir[i], renderer, "text", i, NULL);
+		column = gtk_tree_view_column_new_with_attributes (dir[i], renderer, "markup", i, NULL);
 		gtk_tree_view_column_set_expand (column, TRUE);
 		gtk_tree_view_column_set_min_width (column, 35);
 		gtk_tree_view_column_set_alignment (column, 0.5);
 		//g_signal_connect_swapped (column, "clicked", G_CALLBACK (bidding_clicked), 0);
+		/*
+		win->bidding_label[i] = gtk_label_new (dir[i]);
+		//gtk_label_set_width_chars (win->bidding_label[i], 4);
+		gtk_label_set_ellipsize (win->bidding_label[i], PANGO_ELLIPSIZE_END);
+		gtk_tree_view_column_set_widget (column, win->bidding_label[i]);
+		gtk_widget_show (win->bidding_label[i]);
+		*/
 		gtk_tree_view_append_column (bidding, column);
 	}
 

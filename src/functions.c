@@ -132,18 +132,18 @@ GString *bid_string (card c)
 		s = g_string_new(NULL);
 
 	if (c == bid_pass) {
-		g_string_printf(s, "-");
+		g_string_printf(s, "‒"); /* FIGURE DASH */
 	} else if (c == bid_x) {
-		g_string_printf(s, "X");
+		g_string_printf(s, "<b>X</b>");
 	} else if (c == bid_x) {
-		g_string_printf(s, "XX");
+		g_string_printf(s, "<b>XX</b>");
 	} else {
 		switch (DENOM(c)) {
 			case NT: su = "NT"; break;
-			case spade: su = "♠"; break;
-			case heart: su = "♥"; break;
-			case diamond: su = "♦"; break;
-			case club: su = "♣"; break;
+			case spade: su = "<span foreground=\"blue\">♠</span>"; break;
+			case heart: su = "<span foreground=\"red\">♥</span>"; break;
+			case diamond: su = "<span foreground=\"orange\">♦</span>"; break;
+			case club: su = "<span foreground=\"green\">♣</span>"; break;
 		}
 		g_string_printf(s, "%d%s", LEVEL(c), su);
 	}

@@ -451,3 +451,11 @@ on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
 void
 on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_button_hand_open_clicked            (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_append1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

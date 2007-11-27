@@ -60,6 +60,28 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkImageMenuItem" id="append1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Append file to board list</property>
+		      <property name="label" translatable="yes">_Append</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_append1_activate" last_modification_time="Tue, 27 Nov 2007 22:21:59 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image1">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-paste</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkImageMenuItem" id="speichern1">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-save</property>
@@ -1035,13 +1057,14 @@
 	  <property name="show_arrow">True</property>
 
 	  <child>
-	    <widget class="GtkToolButton" id="toolbutton1">
+	    <widget class="GtkToolButton" id="button_hand_open">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Open board</property>
 	      <property name="stock_id">gtk-open</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_button_hand_open_clicked" last_modification_time="Tue, 27 Nov 2007 22:19:23 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -1231,7 +1254,7 @@
 		  <property name="yscale">1</property>
 		  <property name="top_padding">0</property>
 		  <property name="bottom_padding">0</property>
-		  <property name="left_padding">0</property>
+		  <property name="left_padding">5</property>
 		  <property name="right_padding">5</property>
 
 		  <child>
@@ -1287,7 +1310,7 @@
 		  <property name="yscale">1</property>
 		  <property name="top_padding">0</property>
 		  <property name="bottom_padding">0</property>
-		  <property name="left_padding">0</property>
+		  <property name="left_padding">5</property>
 		  <property name="right_padding">5</property>
 
 		  <child>
@@ -1344,7 +1367,7 @@
 		  <property name="yscale">1</property>
 		  <property name="top_padding">0</property>
 		  <property name="bottom_padding">0</property>
-		  <property name="left_padding">0</property>
+		  <property name="left_padding">5</property>
 		  <property name="right_padding">5</property>
 
 		  <child>
@@ -1401,7 +1424,7 @@
 		  <property name="yscale">1</property>
 		  <property name="top_padding">0</property>
 		  <property name="bottom_padding">0</property>
-		  <property name="left_padding">0</property>
+		  <property name="left_padding">5</property>
 		  <property name="right_padding">5</property>
 
 		  <child>
@@ -1438,110 +1461,6 @@
 	      <property name="right_attach">3</property>
 	      <property name="top_attach">1</property>
 	      <property name="bottom_attach">2</property>
-	      <property name="y_options">fill</property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkTable" id="table10">
-	      <property name="visible">True</property>
-	      <property name="n_rows">2</property>
-	      <property name="n_columns">2</property>
-	      <property name="homogeneous">False</property>
-	      <property name="row_spacing">0</property>
-	      <property name="column_spacing">0</property>
-
-	      <child>
-		<widget class="GtkScrolledWindow" id="scrolledwindow2">
-		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
-		  <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-		  <property name="shadow_type">GTK_SHADOW_NONE</property>
-		  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
-
-		  <child>
-		    <widget class="GtkTreeView" id="treeview_bidding">
-		      <property name="visible">True</property>
-		      <property name="headers_visible">True</property>
-		      <property name="rules_hint">False</property>
-		      <property name="reorderable">False</property>
-		      <property name="enable_search">False</property>
-		      <property name="fixed_height_mode">False</property>
-		      <property name="hover_selection">False</property>
-		      <property name="hover_expand">False</property>
-		    </widget>
-		  </child>
-		</widget>
-		<packing>
-		  <property name="left_attach">1</property>
-		  <property name="right_attach">2</property>
-		  <property name="top_attach">0</property>
-		  <property name="bottom_attach">1</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkAlignment" id="alignment1">
-		  <property name="visible">True</property>
-		  <property name="xalign">0.5</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xscale">1</property>
-		  <property name="yscale">1</property>
-		  <property name="top_padding">0</property>
-		  <property name="bottom_padding">0</property>
-		  <property name="left_padding">0</property>
-		  <property name="right_padding">0</property>
-
-		  <child>
-		    <placeholder/>
-		  </child>
-		</widget>
-		<packing>
-		  <property name="left_attach">0</property>
-		  <property name="right_attach">1</property>
-		  <property name="top_attach">0</property>
-		  <property name="bottom_attach">1</property>
-		  <property name="y_options">fill</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkLabel" id="label105">
-		  <property name="width_request">5</property>
-		  <property name="height_request">5</property>
-		  <property name="visible">True</property>
-		  <property name="label" translatable="yes"></property>
-		  <property name="use_underline">False</property>
-		  <property name="use_markup">False</property>
-		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">False</property>
-		  <property name="selectable">False</property>
-		  <property name="xalign">0</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xpad">0</property>
-		  <property name="ypad">0</property>
-		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-		  <property name="width_chars">-1</property>
-		  <property name="single_line_mode">False</property>
-		  <property name="angle">0</property>
-		</widget>
-		<packing>
-		  <property name="left_attach">0</property>
-		  <property name="right_attach">1</property>
-		  <property name="top_attach">1</property>
-		  <property name="bottom_attach">2</property>
-		  <property name="x_options">fill</property>
-		  <property name="y_options"></property>
-		</packing>
-	      </child>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">2</property>
-	      <property name="right_attach">3</property>
-	      <property name="top_attach">0</property>
-	      <property name="bottom_attach">1</property>
-	      <property name="x_options">fill</property>
 	      <property name="y_options">fill</property>
 	    </packing>
 	  </child>
@@ -1630,6 +1549,53 @@ EW: 0</property>
 	      <property name="right_attach">3</property>
 	      <property name="top_attach">2</property>
 	      <property name="bottom_attach">3</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options">fill</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkAlignment" id="alignment1">
+	      <property name="visible">True</property>
+	      <property name="xalign">1</property>
+	      <property name="yalign">0</property>
+	      <property name="xscale">1</property>
+	      <property name="yscale">1</property>
+	      <property name="top_padding">0</property>
+	      <property name="bottom_padding">5</property>
+	      <property name="left_padding">5</property>
+	      <property name="right_padding">0</property>
+
+	      <child>
+		<widget class="GtkScrolledWindow" id="scrolledwindow2">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+		  <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+		  <property name="shadow_type">GTK_SHADOW_NONE</property>
+		  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
+
+		  <child>
+		    <widget class="GtkTreeView" id="treeview_bidding">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="headers_visible">True</property>
+		      <property name="rules_hint">False</property>
+		      <property name="reorderable">False</property>
+		      <property name="enable_search">True</property>
+		      <property name="fixed_height_mode">False</property>
+		      <property name="hover_selection">False</property>
+		      <property name="hover_expand">False</property>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">2</property>
+	      <property name="right_attach">3</property>
+	      <property name="top_attach">0</property>
+	      <property name="bottom_attach">1</property>
 	      <property name="x_options">fill</property>
 	      <property name="y_options">fill</property>
 	    </packing>

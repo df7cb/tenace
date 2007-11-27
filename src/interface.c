@@ -36,6 +36,8 @@ create_window_hand (void)
   GtkWidget *menuitem1_menu;
   GtkWidget *neu1;
   GtkWidget *open1;
+  GtkWidget *append1;
+  GtkWidget *image1;
   GtkWidget *speichern1;
   GtkWidget *speichern_unter1;
   GtkWidget *separatormenuitem1;
@@ -157,7 +159,7 @@ create_window_hand (void)
   GtkWidget *info1;
   GtkWidget *toolbar1;
   GtkIconSize tmp_toolbar_icon_size;
-  GtkWidget *toolbutton1;
+  GtkWidget *button_hand_open;
   GtkWidget *button_hand_save;
   GtkWidget *separatortoolitem2;
   GtkWidget *tmp_image;
@@ -181,14 +183,12 @@ create_window_hand (void)
   GtkWidget *frame_e;
   GtkWidget *alignment_e;
   GtkWidget *label_east;
-  GtkWidget *table10;
-  GtkWidget *scrolledwindow2;
-  GtkWidget *treeview_bidding;
-  GtkWidget *alignment1;
-  GtkWidget *label105;
   GtkWidget *label_board;
   GtkWidget *par_label;
   GtkWidget *label_tricks;
+  GtkWidget *alignment1;
+  GtkWidget *scrolledwindow2;
+  GtkWidget *treeview_bidding;
   GtkWidget *statusbar1;
   GtkAccelGroup *accel_group;
   GtkTooltips *tooltips;
@@ -222,6 +222,15 @@ create_window_hand (void)
   open1 = gtk_image_menu_item_new_from_stock ("gtk-open", accel_group);
   gtk_widget_show (open1);
   gtk_container_add (GTK_CONTAINER (menuitem1_menu), open1);
+
+  append1 = gtk_image_menu_item_new_with_mnemonic (_("_Append"));
+  gtk_widget_show (append1);
+  gtk_container_add (GTK_CONTAINER (menuitem1_menu), append1);
+  gtk_tooltips_set_tip (tooltips, append1, _("Append file to board list"), NULL);
+
+  image1 = gtk_image_new_from_stock ("gtk-paste", GTK_ICON_SIZE_MENU);
+  gtk_widget_show (image1);
+  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (append1), image1);
 
   speichern1 = gtk_image_menu_item_new_from_stock ("gtk-save", accel_group);
   gtk_widget_show (speichern1);
@@ -740,10 +749,10 @@ create_window_hand (void)
   gtk_toolbar_set_style (GTK_TOOLBAR (toolbar1), GTK_TOOLBAR_BOTH_HORIZ);
   tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar1));
 
-  toolbutton1 = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-open");
-  gtk_widget_show (toolbutton1);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolbutton1);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton1), tooltips, _("Open board"), NULL);
+  button_hand_open = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-open");
+  gtk_widget_show (button_hand_open);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_hand_open);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_hand_open), tooltips, _("Open board"), NULL);
 
   button_hand_save = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-save");
   gtk_widget_show (button_hand_save);
@@ -816,7 +825,7 @@ create_window_hand (void)
   alignment_w = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment_w);
   gtk_container_add (GTK_CONTAINER (frame_w), alignment_w);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_w), 0, 0, 0, 5);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_w), 0, 0, 5, 5);
 
   label_west = gtk_label_new (_("West"));
   gtk_widget_show (label_west);
@@ -834,7 +843,7 @@ create_window_hand (void)
   alignment_s = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment_s);
   gtk_container_add (GTK_CONTAINER (frame_s), alignment_s);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_s), 0, 0, 0, 5);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_s), 0, 0, 5, 5);
 
   label_south = gtk_label_new (_("S\303\274d"));
   gtk_widget_show (label_south);
@@ -852,7 +861,7 @@ create_window_hand (void)
   alignment_n = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment_n);
   gtk_container_add (GTK_CONTAINER (frame_n), alignment_n);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_n), 0, 0, 0, 5);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_n), 0, 0, 5, 5);
 
   label_north = gtk_label_new (_("Nord"));
   gtk_widget_show (label_north);
@@ -870,45 +879,12 @@ create_window_hand (void)
   alignment_e = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment_e);
   gtk_container_add (GTK_CONTAINER (frame_e), alignment_e);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_e), 0, 0, 0, 5);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_e), 0, 0, 5, 5);
 
   label_east = gtk_label_new (_("Ost"));
   gtk_widget_show (label_east);
   gtk_frame_set_label_widget (GTK_FRAME (frame_e), label_east);
   gtk_label_set_use_markup (GTK_LABEL (label_east), TRUE);
-
-  table10 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_show (table10);
-  gtk_table_attach (GTK_TABLE (table1), table10, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow2);
-  gtk_table_attach (GTK_TABLE (table10), scrolledwindow2, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
-  treeview_bidding = gtk_tree_view_new ();
-  gtk_widget_show (treeview_bidding);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow2), treeview_bidding);
-  GTK_WIDGET_UNSET_FLAGS (treeview_bidding, GTK_CAN_FOCUS);
-  gtk_tree_view_set_enable_search (GTK_TREE_VIEW (treeview_bidding), FALSE);
-
-  alignment1 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_show (alignment1);
-  gtk_table_attach (GTK_TABLE (table10), alignment1, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  label105 = gtk_label_new ("");
-  gtk_widget_show (label105);
-  gtk_table_attach (GTK_TABLE (table10), label105, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (label105, 5, 5);
-  gtk_misc_set_alignment (GTK_MISC (label105), 0, 0.5);
 
   label_board = gtk_label_new (_("Bd 1\n4\342\231\246X S"));
   gtk_widget_show (label_board);
@@ -938,6 +914,22 @@ create_window_hand (void)
   gtk_label_set_selectable (GTK_LABEL (label_tricks), TRUE);
   gtk_misc_set_alignment (GTK_MISC (label_tricks), 1, 1);
 
+  alignment1 = gtk_alignment_new (1, 0, 1, 1);
+  gtk_widget_show (alignment1);
+  gtk_table_attach (GTK_TABLE (table1), alignment1, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment1), 0, 5, 5, 0);
+
+  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow2);
+  gtk_container_add (GTK_CONTAINER (alignment1), scrolledwindow2);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+
+  treeview_bidding = gtk_tree_view_new ();
+  gtk_widget_show (treeview_bidding);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow2), treeview_bidding);
+
   statusbar1 = gtk_statusbar_new ();
   gtk_widget_show (statusbar1);
   gtk_box_pack_start (GTK_BOX (vbox1), statusbar1, FALSE, FALSE, 0);
@@ -950,6 +942,9 @@ create_window_hand (void)
                     NULL);
   g_signal_connect ((gpointer) open1, "activate",
                     G_CALLBACK (on_open1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) append1, "activate",
+                    G_CALLBACK (on_append1_activate),
                     NULL);
   g_signal_connect ((gpointer) speichern1, "activate",
                     G_CALLBACK (on_speichern1_activate),
@@ -1158,6 +1153,9 @@ create_window_hand (void)
   g_signal_connect ((gpointer) info1, "activate",
                     G_CALLBACK (on_info1_activate),
                     NULL);
+  g_signal_connect ((gpointer) button_hand_open, "clicked",
+                    G_CALLBACK (on_button_hand_open_clicked),
+                    NULL);
   g_signal_connect ((gpointer) button_hand_save, "clicked",
                     G_CALLBACK (on_button_hand_save_clicked),
                     NULL);
@@ -1188,6 +1186,8 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, menuitem1_menu, "menuitem1_menu");
   GLADE_HOOKUP_OBJECT (window_hand, neu1, "neu1");
   GLADE_HOOKUP_OBJECT (window_hand, open1, "open1");
+  GLADE_HOOKUP_OBJECT (window_hand, append1, "append1");
+  GLADE_HOOKUP_OBJECT (window_hand, image1, "image1");
   GLADE_HOOKUP_OBJECT (window_hand, speichern1, "speichern1");
   GLADE_HOOKUP_OBJECT (window_hand, speichern_unter1, "speichern_unter1");
   GLADE_HOOKUP_OBJECT (window_hand, separatormenuitem1, "separatormenuitem1");
@@ -1297,7 +1297,7 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, imp_table1, "imp_table1");
   GLADE_HOOKUP_OBJECT (window_hand, info1, "info1");
   GLADE_HOOKUP_OBJECT (window_hand, toolbar1, "toolbar1");
-  GLADE_HOOKUP_OBJECT (window_hand, toolbutton1, "toolbutton1");
+  GLADE_HOOKUP_OBJECT (window_hand, button_hand_open, "button_hand_open");
   GLADE_HOOKUP_OBJECT (window_hand, button_hand_save, "button_hand_save");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem2, "separatortoolitem2");
   GLADE_HOOKUP_OBJECT (window_hand, rewind_button, "rewind_button");
@@ -1320,14 +1320,12 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, frame_e, "frame_e");
   GLADE_HOOKUP_OBJECT (window_hand, alignment_e, "alignment_e");
   GLADE_HOOKUP_OBJECT (window_hand, label_east, "label_east");
-  GLADE_HOOKUP_OBJECT (window_hand, table10, "table10");
-  GLADE_HOOKUP_OBJECT (window_hand, scrolledwindow2, "scrolledwindow2");
-  GLADE_HOOKUP_OBJECT (window_hand, treeview_bidding, "treeview_bidding");
-  GLADE_HOOKUP_OBJECT (window_hand, alignment1, "alignment1");
-  GLADE_HOOKUP_OBJECT (window_hand, label105, "label105");
   GLADE_HOOKUP_OBJECT (window_hand, label_board, "label_board");
   GLADE_HOOKUP_OBJECT (window_hand, par_label, "par_label");
   GLADE_HOOKUP_OBJECT (window_hand, label_tricks, "label_tricks");
+  GLADE_HOOKUP_OBJECT (window_hand, alignment1, "alignment1");
+  GLADE_HOOKUP_OBJECT (window_hand, scrolledwindow2, "scrolledwindow2");
+  GLADE_HOOKUP_OBJECT (window_hand, treeview_bidding, "treeview_bidding");
   GLADE_HOOKUP_OBJECT (window_hand, statusbar1, "statusbar1");
   GLADE_HOOKUP_OBJECT_NO_REF (window_hand, tooltips, "tooltips");
 

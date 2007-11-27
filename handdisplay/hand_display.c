@@ -155,13 +155,13 @@ draw (GtkWidget *hand, cairo_t *cr)
 				/*W*/	y = (hand->allocation.height - card_height) / 2 + 5;
 					break;
 				case 2: x = (hand->allocation.width - card_width) / 2 - 2;
-				/*N*/	y = MAX (hand->allocation.height / 2 - card_height + 10, 5);
+				/*N*/	y = MAX (hand->allocation.height / 2 - card_height + 10, 0);
 					break;
 				case 3: x = hand->allocation.width / 2 - 5;
 				/*E*/	y = (hand->allocation.height - card_height) / 2 - 5;
 					break;
 				case 4: x = (hand->allocation.width - card_width) / 2 + 2;
-				/*S*/	y = MIN (hand->allocation.height / 2 - 10, hand->allocation.height - card_height - 5);
+				/*S*/	y = MIN (hand->allocation.height / 2 - 10, hand->allocation.height - card_height);
 					break;
 				default:
 					return; /* stop here */
@@ -245,12 +245,12 @@ draw (GtkWidget *hand, cairo_t *cr)
 			int c;
 			for (c = 13 * (handdisp->suits[suit] + 1) - 1; c >= 13 * handdisp->suits[suit]; c--) {
 				if (handdisp->cards[c]) {
-					x = floor (5 + n * (hand->allocation.width - card_width - 10) / 12.0);
+					x = floor (n * (hand->allocation.width - card_width) / 12.0);
 					int sc = handdisp->card_score[c];
 					int yy = c == handdisp->cur_focus ? y - 15 :
 						(sc != HAND_DISPLAY_NO_SCORE &&
 						 handdisp->best_card_score == sc ? y - 5 : y);
-					yy = MAX (yy, 5);
+					yy = MAX (yy, 0);
 					render_card (cr, x, yy, c, handdisp->cards[c]);
 					handdisp->l[c] = x;
 					handdisp->r[c] = x + card_width;
@@ -299,7 +299,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	int suit_width = 0;
 	int suit;
 	for (suit = 0; suit < 4; suit++) {
-		x = 4;
+		x = 0;
 		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
@@ -524,7 +524,7 @@ hand_display_size_request (GtkWidget *hand, GtkRequisition *requisition)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	requisition->width = handdisp->want_width;
-	requisition->height = 100;
+	requisition->height = 90;
 }
 
 static void
