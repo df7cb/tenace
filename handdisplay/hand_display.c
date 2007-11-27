@@ -29,7 +29,7 @@ static GdkPixbuf *card_pixbuf[53];
 /* internal functions */
 
 static int
-which_card (HandDisplay *handdisp, double x, double y)
+which_card (HandDisplay *handdisp, int x, int y)
 {
 	/* find rightmost card */
 	int c;
@@ -68,7 +68,6 @@ render_card_init (char *card_fname)
 		render_init = 0;
 	}
 
-	printf("Initializing card pixmaps\n");
 	GError *error = NULL;
 	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname, card_width * 13, 500, &error);
 	if (!pb) {
@@ -95,7 +94,7 @@ render_card_init (char *card_fname)
 	card_pixbuf[52] =
 		gdk_pixbuf_new_from_file_at_size ("/usr/share/tenace/grey.svg", card_width, card_height, &error);
 	if (!card_pixbuf[52]) {
-		printf ("moo: %s.\n", error->message);
+		printf ("/usr/share/tenace/grey.svg: %s.\n", error->message);
 		return;
 	}
 
@@ -103,7 +102,7 @@ render_card_init (char *card_fname)
 }
 
 static void
-render_card (cairo_t *cr, double x, double y, int c, int color)
+render_card (cairo_t *cr, int x, int y, int c, int color)
 {
 	if (!render_init)
 		return;
@@ -125,7 +124,7 @@ render_card (cairo_t *cr, double x, double y, int c, int color)
 static void
 draw (GtkWidget *hand, cairo_t *cr)
 {
-	double l, r, t, b, x, y;
+	int l, r, t, b, x, y;
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 	cairo_font_extents_t fextents;
@@ -156,13 +155,13 @@ draw (GtkWidget *hand, cairo_t *cr)
 				/*W*/	y = (hand->allocation.height - card_height) / 2 + 5;
 					break;
 				case 2: x = (hand->allocation.width - card_width) / 2 - 2;
-				/*N*/	y = MAX (hand->allocation.height / 2 - card_height + 10, 0);
+				/*N*/	y = MAX (hand->allocation.height / 2 - card_height + 10, 5);
 					break;
 				case 3: x = hand->allocation.width / 2 - 5;
 				/*E*/	y = (hand->allocation.height - card_height) / 2 - 5;
 					break;
 				case 4: x = (hand->allocation.width - card_width) / 2 + 2;
-				/*S*/	y = MIN (hand->allocation.height / 2 - 10, hand->allocation.height - card_height);
+				/*S*/	y = MIN (hand->allocation.height / 2 - 10, hand->allocation.height - card_height - 5);
 					break;
 				default:
 					return; /* stop here */
@@ -248,7 +247,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 				if (handdisp->cards[c]) {
 					x = floor (5 + n * (hand->allocation.width - card_width - 10) / 12.0);
 					int sc = handdisp->card_score[c];
-					double yy = c == handdisp->cur_focus ? y - 15 :
+					int yy = c == handdisp->cur_focus ? y - 15 :
 						(sc != HAND_DISPLAY_NO_SCORE &&
 						 handdisp->best_card_score == sc ? y - 5 : y);
 					yy = MAX (yy, 5);
@@ -297,7 +296,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* draw suit symbols */
 	FONT_SYMBOL;
 	cairo_set_font_size (cr, 20);
-	double suit_width = 0.0;
+	int suit_width = 0;
 	int suit;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4;
