@@ -425,6 +425,6 @@ board_set_alert (board *b, char *alert)
 		b->alerts[b->n_bids - 1] = strdup (alert);
 	else
 		b->alerts[b->n_bids - 1] = NULL;
-	if (alert)
-		printf ("alert: %s\n");
+	//if (alert)
+		//printf ("alert: %s\n");
 }

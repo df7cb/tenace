@@ -124,19 +124,21 @@ GString *card_string (card c)
 	return s;
 }
 
-GString *bid_string (card c)
+GString *bid_string (card c, int alert)
 {
-	char *su = NULL;
+	char *bg, *su;
 	static GString *s = NULL;
 	if (!s)
 		s = g_string_new(NULL);
 
+	bg = alert ? " background=\"yellow\"" : "";
+
 	if (c == bid_pass) {
-		g_string_printf(s, "‒"); /* FIGURE DASH */
+		g_string_printf(s, "<span%s>‒</span>", bg); /* FIGURE DASH */
 	} else if (c == bid_x) {
-		g_string_printf(s, "<b>X</b>");
+		g_string_printf(s, "<span%s><b>X</b></span>", bg);
 	} else if (c == bid_x) {
-		g_string_printf(s, "<b>XX</b>");
+		g_string_printf(s, "<span%s><b>XX</b></span>", bg);
 	} else {
 		switch (DENOM(c)) {
 			case NT: su = "NT"; break;
@@ -145,7 +147,7 @@ GString *bid_string (card c)
 			case diamond: su = "<span foreground=\"orange\">♦</span>"; break;
 			case club: su = "<span foreground=\"green\">♣</span>"; break;
 		}
-		g_string_printf(s, "%d%s", LEVEL(c), su);
+		g_string_printf(s, "<span%s>%d%s</span>", bg, LEVEL(c), su);
 	}
 	return s;
 }

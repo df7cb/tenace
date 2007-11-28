@@ -929,6 +929,7 @@ create_window_hand (void)
   treeview_bidding = gtk_tree_view_new ();
   gtk_widget_show (treeview_bidding);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), treeview_bidding);
+  gtk_tooltips_set_tip (tooltips, treeview_bidding, " ", NULL);
 
   statusbar1 = gtk_statusbar_new ();
   gtk_widget_show (statusbar1);

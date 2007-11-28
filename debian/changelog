@@ -1,3 +1,9 @@
+tenace (0.2) unstable; urgency=low
+
+  * New snapshot.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 28 Nov 2007 20:25:04 +0100
+
 tenace (0.1) unstable; urgency=low
 
   * Initial release.

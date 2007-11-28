@@ -1578,6 +1578,7 @@ EW: 0</property>
 		  <child>
 		    <widget class="GtkTreeView" id="treeview_bidding">
 		      <property name="visible">True</property>
+		      <property name="tooltip"> </property>
 		      <property name="can_focus">True</property>
 		      <property name="headers_visible">True</property>
 		      <property name="rules_hint">False</property>

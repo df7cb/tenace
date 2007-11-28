@@ -110,12 +110,15 @@ bidding_update (window_board_t *win, board *b)
 	int col = b->dealer - 1;
 	int last_col = 5;
 	for (i = 0; i < b->n_bids; i++) {
-		char buf[50];
+		char buf[100];
 		if (last_col > col)
 			gtk_list_store_append (win->bidding_store, &iter);
 		snprintf (buf, sizeof (buf), "%s%s", bid_string(b->bidding[i])->str,
 				b->alerts[i] ? (*b->alerts[i] ? "!!" : "!") : "");
-		gtk_list_store_set (win->bidding_store, &iter, col, buf, -1);
+		gtk_list_store_set (win->bidding_store, &iter,
+				2 * col, buf,
+				2 * col + 1, b->alerts[i],
+				-1);
 		last_col = col;
 		col = (col + 1) % 4;
 	}
@@ -370,6 +373,37 @@ bidding_clicked (GtkTreeViewColumn *column, void *data)
 	printf ("clicked bidd\n");
 }
 
+static gboolean
+bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode,
+		GtkTooltip *tooltip, window_board_t *bidding_store)
+{
+	if (keyboard_mode) {
+		printf ("no ponies for keyboard users\n");
+		return FALSE;
+	}
+	GtkTreeIter iter;
+	gboolean ret = gtk_tree_view_get_tooltip_context (GTK_TREE_VIEW (widget),
+			&x, &y, keyboard_mode, NULL, NULL, &iter);
+	if (!ret)
+		return FALSE;
+
+	int i;
+	int width = 0;
+	for (i = 0; i < 4; i++) {
+		width += gtk_tree_view_column_get_width (win->bidding_column[i]); // TODO: cache this?
+		if (x < width)
+			break;
+	}
+	assert (i < 4);
+
+	gchar *alert;
+	gtk_tree_model_get (GTK_TREE_MODEL (win->bidding_store), &iter, 2 * i + 1, &alert, -1);
+	if (!alert)
+		return FALSE;
+	gtk_tooltip_set_text (tooltip, *alert ? alert : "(no explanation)");
+	return TRUE;
+}
+
 static gboolean autoplay ()
 {
 	board *b = CUR_BOARD;
@@ -445,13 +479,16 @@ create_bidding_widget (window_board_t *win)
 	GtkTreeView *bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
 	//gtk_widget_modify_bg (GTK_WIDGET (bidding), GTK_STATE_NORMAL, &bg);
 	//gdk_window_set_background (gtk_tree_view_get_bin_window (bidding), &bidding_vuln);
-	win->bidding_store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING,
+	win->bidding_store = gtk_list_store_new (8,
+		G_TYPE_STRING, G_TYPE_STRING,
+		G_TYPE_STRING, G_TYPE_STRING,
+		G_TYPE_STRING, G_TYPE_STRING,
 		G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model (bidding, GTK_TREE_MODEL (win->bidding_store));
+	g_signal_connect (G_OBJECT (bidding), "query-tooltip",
+			G_CALLBACK (bidding_query_tooltip), win);
 
 	GtkCellRenderer *renderer;
-	GtkTreeViewColumn *column;
-
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "xalign", 0.5,
 				"cell-background", "yellow",
@@ -461,7 +498,9 @@ create_bidding_widget (window_board_t *win)
 	char *dir[] = {"W", "N", "E", "S"};
 	int i;
 	for (i = 0; i < 4; i++) {
-		column = gtk_tree_view_column_new_with_attributes (dir[i], renderer, "markup", i, NULL);
+		GtkTreeViewColumn *column;
+		column = gtk_tree_view_column_new_with_attributes (dir[i], renderer,
+				"markup", 2 * i, NULL);
 		gtk_tree_view_column_set_expand (column, TRUE);
 		gtk_tree_view_column_set_min_width (column, 35);
 		gtk_tree_view_column_set_alignment (column, 0.5);
@@ -474,6 +513,7 @@ create_bidding_widget (window_board_t *win)
 		gtk_widget_show (win->bidding_label[i]);
 		*/
 		gtk_tree_view_append_column (bidding, column);
+		win->bidding_column[i] = column;
 	}
 
 	gtk_container_forall (GTK_CONTAINER (bidding), (GtkCallback) create_bidding_widget_cb, win);
