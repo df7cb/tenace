@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "bridge.h"
+#include "functions.h"
 
 int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
 
@@ -131,7 +132,7 @@ GString *bid_string (card c, int alert)
 	if (!s)
 		s = g_string_new(NULL);
 
-	bg = alert ? " background=\"yellow\"" : "";
+	bg = alert ? " background=\"white\"" : "";
 
 	if (c == bid_pass) {
 		g_string_printf(s, "<span%s>‒</span>", bg); /* FIGURE DASH */

@@ -48,7 +48,7 @@ window_bids_init ()
 	int d, l;
 	for (l = 1; l <= 7; l++) {
 		for (d = 0; d <= 4; d++) {
-			GString *b = bid_string (5 * l + d);
+			GString *b = bid_string (5 * l + d, 0);
 			lab = gtk_button_new_with_label (b->str);
 			gtk_table_attach(bids_table, lab, d, d+1, l, l+1, GTK_FILL, 0, 0, 0);
 			//bids_label[5 * l + d] = GTK_LABEL(lab);

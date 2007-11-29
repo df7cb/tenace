@@ -8,7 +8,7 @@ int parse_card(char *tok);
 int parse_bid(char **tok);
 rank parse_rank_char (char c);
 GString *card_string (card c);
-GString *bid_string (card c);
+GString *bid_string (card c, int alert);
 char *seat_string (seat s);
 GString *hand_string (board *b, seat h);
 //GString *gib_string (hand *h);

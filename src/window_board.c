@@ -113,7 +113,7 @@ bidding_update (window_board_t *win, board *b)
 		char buf[100];
 		if (last_col > col)
 			gtk_list_store_append (win->bidding_store, &iter);
-		snprintf (buf, sizeof (buf), "%s%s", bid_string(b->bidding[i])->str,
+		snprintf (buf, sizeof (buf), "%s%s", bid_string(b->bidding[i], b->alerts[i] != NULL)->str,
 				b->alerts[i] ? (*b->alerts[i] ? "!!" : "!") : "");
 		gtk_list_store_set (win->bidding_store, &iter,
 				2 * col, buf,
