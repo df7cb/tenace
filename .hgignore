@@ -7,7 +7,7 @@
 Makefile\.in$
 ^(|contrib/|handdisplay/|po/|src/)Makefile$
 ^po/.*\.gmo$
-^po/POTFILES$
+^po/(POTFILES|tenace.pot)$
 ^src/\.deps/.*\.Po$
 ^stamp-h1$
 
