@@ -167,14 +167,13 @@ draw (GtkWidget *hand, cairo_t *cr)
 					return; /* stop here */
 			}
 
-			if (handdisp->style == HAND_DISPLAY_STYLE_CARDS)
-				render_card (cr, x, y, handdisp->table_card[i], HAND_DISPLAY_CARD);
+			render_card (cr, x, y, handdisp->table_card[i], HAND_DISPLAY_CARD);
 
 		}
 		return;
 	}
 
-	if (handdisp->mode == HAND_DISPLAY_MODE_TABLE) {
+	if (handdisp->mode == HAND_DISPLAY_MODE_TABLE) { /* text */
 		cairo_set_font_size (cr, 20);
 
 		int i;
@@ -188,25 +187,28 @@ draw (GtkWidget *hand, cairo_t *cr)
 			snprintf (cs, 6, "%s%s", suit_str[suit], rank_str[rank]);
 			cairo_text_extents (cr, cs, &extents);
 
+#define XOFF 10
+#define YOFF 20
 			switch (handdisp->table_seat[i]) { /* lower left point */
-				case 1: x = hand->allocation.width / 2 - extents.width - 10;
+				case 1: x = hand->allocation.width / 2 - extents.width - XOFF;
 				/*W*/	y = (hand->allocation.height + extents.height) / 2;
 					break;
 				case 2: x = (hand->allocation.width - extents.width) / 2;
-				/*N*/	y = hand->allocation.height / 2 - 10;
+				/*N*/	y = hand->allocation.height / 2 - YOFF;
 					break;
-				case 3: x = hand->allocation.width / 2 + 10;
+				case 3: x = hand->allocation.width / 2 + XOFF;
 				/*E*/	y = (hand->allocation.height + extents.height) / 2;
 					break;
 				case 4: x = (hand->allocation.width - extents.width) / 2;
-				/*S*/	y = hand->allocation.height / 2 + extents.height + 10;
+				/*S*/	y = hand->allocation.height / 2 + extents.height + YOFF;
 					break;
 				default:
 					return; /* stop here */
 			}
 
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
-			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2, extents.width + 4, -extents.height - 4);
+			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2,
+					extents.width + 4, -extents.height - 4);
 			cairo_fill (cr);
 
 			cairo_move_to (cr, x, y);
