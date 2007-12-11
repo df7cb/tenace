@@ -161,6 +161,8 @@ create_window_hand (void)
   GtkIconSize tmp_toolbar_icon_size;
   GtkWidget *button_hand_open;
   GtkWidget *button_hand_save;
+  GtkWidget *button_prev_board;
+  GtkWidget *button_next_board;
   GtkWidget *separatortoolitem2;
   GtkWidget *tmp_image;
   GtkWidget *rewind_button;
@@ -759,6 +761,16 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (toolbar1), button_hand_save);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_hand_save), tooltips, _("Save board"), NULL);
 
+  button_prev_board = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-go-back");
+  gtk_widget_show (button_prev_board);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_prev_board);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_prev_board), tooltips, _("Previous board"), NULL);
+
+  button_next_board = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-go-forward");
+  gtk_widget_show (button_next_board);
+  gtk_container_add (GTK_CONTAINER (toolbar1), button_next_board);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (button_next_board), tooltips, _("Next board"), NULL);
+
   separatortoolitem2 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem2);
   gtk_container_add (GTK_CONTAINER (toolbar1), separatortoolitem2);
@@ -845,7 +857,7 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (frame_s), alignment_s);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_s), 0, 0, 5, 5);
 
-  label_south = gtk_label_new (_("S\303\274d"));
+  label_south = gtk_label_new (_("South"));
   gtk_widget_show (label_south);
   gtk_frame_set_label_widget (GTK_FRAME (frame_s), label_south);
   gtk_label_set_use_markup (GTK_LABEL (label_south), TRUE);
@@ -863,7 +875,7 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (frame_n), alignment_n);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_n), 0, 0, 5, 5);
 
-  label_north = gtk_label_new (_("Nord"));
+  label_north = gtk_label_new (_("North"));
   gtk_widget_show (label_north);
   gtk_frame_set_label_widget (GTK_FRAME (frame_n), label_north);
   gtk_label_set_use_markup (GTK_LABEL (label_north), TRUE);
@@ -881,7 +893,7 @@ create_window_hand (void)
   gtk_container_add (GTK_CONTAINER (frame_e), alignment_e);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_e), 0, 0, 5, 5);
 
-  label_east = gtk_label_new (_("Ost"));
+  label_east = gtk_label_new (_("East"));
   gtk_widget_show (label_east);
   gtk_frame_set_label_widget (GTK_FRAME (frame_e), label_east);
   gtk_label_set_use_markup (GTK_LABEL (label_east), TRUE);
@@ -904,7 +916,7 @@ create_window_hand (void)
   gtk_label_set_selectable (GTK_LABEL (par_label), TRUE);
   gtk_misc_set_alignment (GTK_MISC (par_label), 0, 1);
 
-  label_tricks = gtk_label_new (_("NS: 0\nEW: 0"));
+  label_tricks = gtk_label_new (_("NS: %d\nEW: %d"));
   gtk_widget_show (label_tricks);
   gtk_table_attach (GTK_TABLE (table1), label_tricks, 2, 3, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
@@ -924,7 +936,7 @@ create_window_hand (void)
   scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow2);
   gtk_container_add (GTK_CONTAINER (alignment1), scrolledwindow2);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
   treeview_bidding = gtk_tree_view_new ();
   gtk_widget_show (treeview_bidding);
@@ -1160,6 +1172,12 @@ create_window_hand (void)
   g_signal_connect ((gpointer) button_hand_save, "clicked",
                     G_CALLBACK (on_button_hand_save_clicked),
                     NULL);
+  g_signal_connect ((gpointer) button_prev_board, "clicked",
+                    G_CALLBACK (on_button_prev_board_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) button_next_board, "clicked",
+                    G_CALLBACK (on_button_next_board_clicked),
+                    NULL);
   g_signal_connect ((gpointer) rewind_button, "clicked",
                     G_CALLBACK (on_rewind_button_clicked),
                     NULL);
@@ -1300,6 +1318,8 @@ create_window_hand (void)
   GLADE_HOOKUP_OBJECT (window_hand, toolbar1, "toolbar1");
   GLADE_HOOKUP_OBJECT (window_hand, button_hand_open, "button_hand_open");
   GLADE_HOOKUP_OBJECT (window_hand, button_hand_save, "button_hand_save");
+  GLADE_HOOKUP_OBJECT (window_hand, button_prev_board, "button_prev_board");
+  GLADE_HOOKUP_OBJECT (window_hand, button_next_board, "button_next_board");
   GLADE_HOOKUP_OBJECT (window_hand, separatortoolitem2, "separatortoolitem2");
   GLADE_HOOKUP_OBJECT (window_hand, rewind_button, "rewind_button");
   GLADE_HOOKUP_OBJECT (window_hand, button_back, "button_back");
@@ -1589,6 +1609,7 @@ create_window_imps (void)
   vbox4 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox4);
   gtk_container_add (GTK_CONTAINER (window_imps), vbox4);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox4), 5);
 
   table8 = gtk_table_new (12, 4, FALSE);
   gtk_widget_show (table8);
@@ -1900,11 +1921,11 @@ create_window_imps (void)
 
   hseparator1 = gtk_hseparator_new ();
   gtk_widget_show (hseparator1);
-  gtk_box_pack_start (GTK_BOX (vbox4), hseparator1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox4), hseparator1, TRUE, TRUE, 5);
 
   hbuttonbox2 = gtk_hbutton_box_new ();
   gtk_widget_show (hbuttonbox2);
-  gtk_box_pack_start (GTK_BOX (vbox4), hbuttonbox2, FALSE, FALSE, 5);
+  gtk_box_pack_start (GTK_BOX (vbox4), hbuttonbox2, FALSE, FALSE, 0);
 
   imps_ok = gtk_button_new_from_stock ("gtk-ok");
   gtk_widget_show (imps_ok);
@@ -1978,58 +1999,6 @@ create_window_imps (void)
   GLADE_HOOKUP_OBJECT (window_imps, imps_ok, "imps_ok");
 
   return window_imps;
-}
-
-GtkWidget*
-create_window_info (void)
-{
-  GtkWidget *window_info;
-  GtkWidget *vbox5;
-  GtkWidget *info_label;
-  GtkWidget *hbuttonbox3;
-  GtkWidget *info_ok;
-
-  window_info = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (window_info), _("Info"));
-
-  vbox5 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox5);
-  gtk_container_add (GTK_CONTAINER (window_info), vbox5);
-
-  info_label = gtk_label_new (_("<b>tenace</b>\n\n(C) 2007 Christoph Berg &lt;cb@df7cb.de&gt;"));
-  gtk_widget_show (info_label);
-  gtk_box_pack_start (GTK_BOX (vbox5), info_label, FALSE, FALSE, 0);
-  gtk_label_set_use_markup (GTK_LABEL (info_label), TRUE);
-  gtk_label_set_justify (GTK_LABEL (info_label), GTK_JUSTIFY_CENTER);
-  gtk_misc_set_padding (GTK_MISC (info_label), 5, 0);
-
-  hbuttonbox3 = gtk_hbutton_box_new ();
-  gtk_widget_show (hbuttonbox3);
-  gtk_box_pack_start (GTK_BOX (vbox5), hbuttonbox3, TRUE, TRUE, 5);
-
-  info_ok = gtk_button_new_from_stock ("gtk-ok");
-  gtk_widget_show (info_ok);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox3), info_ok);
-  GTK_WIDGET_SET_FLAGS (info_ok, GTK_CAN_DEFAULT);
-
-  g_signal_connect ((gpointer) window_info, "delete_event",
-                    G_CALLBACK (on_window_info_delete_event),
-                    NULL);
-  g_signal_connect ((gpointer) window_info, "destroy_event",
-                    G_CALLBACK (on_window_info_delete_event),
-                    NULL);
-  g_signal_connect ((gpointer) info_ok, "clicked",
-                    G_CALLBACK (on_info_ok_clicked),
-                    NULL);
-
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (window_info, window_info, "window_info");
-  GLADE_HOOKUP_OBJECT (window_info, vbox5, "vbox5");
-  GLADE_HOOKUP_OBJECT (window_info, info_label, "info_label");
-  GLADE_HOOKUP_OBJECT (window_info, hbuttonbox3, "hbuttonbox3");
-  GLADE_HOOKUP_OBJECT (window_info, info_ok, "info_ok");
-
-  return window_info;
 }
 
 GtkWidget*
@@ -2283,5 +2252,44 @@ create_window_options (void)
   GLADE_HOOKUP_OBJECT (window_options, options_ok, "options_ok");
 
   return window_options;
+}
+
+GtkWidget*
+create_aboutdialog1 (void)
+{
+  GtkWidget *aboutdialog1;
+  const gchar *authors[] = {
+    "Christoph Berg <cb@df7cb.de>",
+    NULL
+  };
+  /* TRANSLATORS: Replace this string with your names, one name per line. */
+  gchar *translators = _("translator-credits");
+
+  aboutdialog1 = gtk_about_dialog_new ();
+  gtk_window_set_destroy_with_parent (GTK_WINDOW (aboutdialog1), TRUE);
+  gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (aboutdialog1), VERSION);
+  gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (aboutdialog1), _("Tenace"));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (aboutdialog1), _("(c) 2007 Christoph Berg"));
+  gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (aboutdialog1), _("Bridge Hand Viewer and Editor"));
+  gtk_about_dialog_set_license (GTK_ABOUT_DIALOG (aboutdialog1), _("GPL v2"));
+  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (aboutdialog1), "http://www.df7cb.de/bridge/tenace/");
+  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (aboutdialog1), _("Homepage"));
+  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (aboutdialog1), authors);
+  gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (aboutdialog1), translators);
+
+  g_signal_connect ((gpointer) aboutdialog1, "close",
+                    G_CALLBACK (on_aboutdialog1_close),
+                    NULL);
+  g_signal_connect ((gpointer) aboutdialog1, "response",
+                    G_CALLBACK (on_aboutdialog1_response),
+                    NULL);
+  g_signal_connect ((gpointer) aboutdialog1, "delete_event",
+                    G_CALLBACK (on_aboutdialog1_delete_event),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog1, aboutdialog1, "aboutdialog1");
+
+  return aboutdialog1;
 }
 

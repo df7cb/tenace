@@ -47,7 +47,7 @@ static const char *dds_error[] = {
 
 static const int card_bits[] = {0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
 static const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
-static const char seat_char[] = {'E', 'S', 'W', 'N'};
+static const char *seat_char[] = {"E", "S", "W", "N"};
 
 int run_dd = 0;
 
@@ -67,6 +67,7 @@ static int dds_suit_conv(int s) /* works both ways */
 	return s == NT ? NT : 3 - s;
 }
 
+/*
 void board_dds(board *b)
 {
 	FILE *f;
@@ -99,6 +100,7 @@ void board_dds(board *b)
 	g_string_free(out, TRUE);
 	system("dds dd&");
 }
+*/
 
 static int score_to_tricks(board *b, int score) /* result: tricks for declarer */
 {
@@ -117,7 +119,7 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 	char str[100];
 
 	if (!assert_board(b)) { /* FIXME: do not call this every time */
-		board_statusbar("Error: hands have different numbers of cards");
+		board_statusbar(_("Error: hands have different numbers of cards"));
 		return;
 	}
 
@@ -156,10 +158,9 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 		b->played_cards[b->n_played_cards] = old_next;
 	}
 
-	solve_statusbar("Thinking...");
+	solve_statusbar(_("Thinking..."));
 	while (gtk_events_pending ())
 		gtk_main_iteration();
-	printf ("Thinking...\n"); // XXX
 	i = SolveBoard(d, -1, 3, 1, &fut);
 	solve_statusbar(NULL);
 	if (i <= 0) {
@@ -167,17 +168,17 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 		board_statusbar(str);
 		return;
 	}
-	printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
+	//printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
 
 	for (i = 0; i < fut.cards; i++) {
 		c = 13 * (3 - fut.suit[i]) + fut.rank[i] - 2;
-		printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);
+		//printf("card: %s = %d\n", card_string(c)->str, fut.score[i]);
 		dd->card_score[c] = score_to_tricks(b, fut.score[i]);
 
 		for (j = fut.rank[i] - 2; j >= 0; j--) { /* equals */
 			if (fut.equals[i] & card_bits[j]) {
 				c = 13 * (3 - fut.suit[i]) + j;
-				printf("      %s = %d\n", card_string(c)->str, fut.score[i]);
+				//printf("      %s = %d\n", card_string(c)->str, fut.score[i]);
 				dd->card_score[c] = score_to_tricks(b, fut.score[i]);
 			}
 		}
@@ -243,13 +244,13 @@ static void compute_par_arr(board *b)
 		}
 	}
 
-	GString *str = g_string_new("Thinking...");
+	GString *str = g_string_new(_("Thinking..."));
 	int h, t;
 	for (t = 4; t >= 0; t--) {
-		g_string_append_printf(str, " %s ", trump_str[t]);
+		g_string_append_printf(str, " %s ", _(trump_str[t]));
 
 		for (h = 0; h < 4; h++) {
-			g_string_append_printf(str, "%c", seat_char[h]);
+			g_string_append_printf(str, "%s", _(seat_char[h]));
 			solve_statusbar(str->str);
 			while (gtk_events_pending ())
 				gtk_main_iteration();
@@ -324,24 +325,26 @@ void parscore(board *b)
 		}
 	}
 
-	GString *par = g_string_new("Par: PASS (0)\n");
+	GString *par = g_string_new(_("Par: PASS (0)\n"));
 	if (b->par_score != 0)
-		g_string_printf(par, "Par: %s %s (%+d)\n",
+		g_string_printf(par, _("Par: %s %s (%+d)\n"),
 			contract_string(b->par_level, b->par_suit, b->par_dec,
 				b->par_tricks < b->par_level + 6),
 			overtricks(b->par_tricks - b->par_level - 6),
 			b->par_score);
 
 	for (t = 4; t >= 0; t--) {
-		g_string_append_printf(par, "%s: ", trump_str[t]);
+		g_string_append_printf(par, "%s: ", _(trump_str[t]));
 		if (b->par_arr[1][t] == b->par_arr[3][t])
-			g_string_append_printf(par, "NS<b>%d</b> ", b->par_arr[1][t]);
+			g_string_append_printf(par, "%s<b>%d</b> ", _("NS"), b->par_arr[1][t]);
 		else
-			g_string_append_printf(par, "N<b>%d</b>S<b>%d</b> ", b->par_arr[1][t], b->par_arr[3][t]);
+			g_string_append_printf(par, "%s<b>%d</b>%s<b>%d</b> ",
+					_("N"), b->par_arr[1][t], _("S"), b->par_arr[3][t]);
 		if (b->par_arr[0][t] == b->par_arr[2][t])
-			g_string_append_printf(par, "EW<b>%d</b>", b->par_arr[2][t]);
+			g_string_append_printf(par, "%s<b>%d</b>", _("EW"), b->par_arr[2][t]);
 		else
-			g_string_append_printf(par, "E<b>%d</b>W<b>%d</b>", b->par_arr[2][t], b->par_arr[0][t]);
+			g_string_append_printf(par, "%s<b>%d</b>%s<b>%d</b>",
+					_("E"), b->par_arr[2][t], _("W"), b->par_arr[0][t]);
 		if (t > 0)
 			g_string_append_printf(par, "\n");
 	}

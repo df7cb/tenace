@@ -33,6 +33,7 @@
 #include "window_play.h"
 
 window_board_t *win; // FIXME static?
+int protect = 0;
 static GString *rcfile = 0;
 static int autoplay_running = 0;
 
@@ -42,8 +43,11 @@ static GdkColor bidding_vuln = { 0, 0.8*65535, 0, 0 };
 static void
 board_menu_select (GtkWidget *menuitem, int *n)
 {
+	PROTECT_BEGIN;
 	win->cur = *n;
+	assert (0 <= *n && *n < win->n_boards);
 	show_board (win->boards[*n], REDRAW_BOARD);
+	PROTECT_END;
 }
 
 static void
@@ -128,8 +132,7 @@ void show_board (board *b, redraw_t redraw)
 {
 	GtkWidget *w;
 	GString *str = g_string_new(NULL);
-	if (!b)
-		return;
+	assert (b);
 
 	if (redraw & REDRAW_BOARD_LIST)
 		board_window_rebuild_board_menu (win);
@@ -276,6 +279,7 @@ void show_board (board *b, redraw_t redraw)
 
 static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 {
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	//printf("Clicked: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
 	int redraw = 0;
@@ -293,10 +297,13 @@ static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 
 	if (redraw)
 		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD | REDRAW_PLAY);
+
+	PROTECT_END;
 }
 
 static void card_enter (HandDisplay *handdisp, int card, int *seatp)
 {
+	PROTECT_BEGIN;
 	char buf[100];
 
 	board_statusbar(NULL);
@@ -304,7 +311,7 @@ static void card_enter (HandDisplay *handdisp, int card, int *seatp)
 	board *b = CUR_BOARD;
 	if (!b->current_dd || b->current_dd->card_score[card] < 0 ||
 			!seat_mask (*seatp, win->show_dd_scores))
-		return;
+		PROTECT_RETURN;
 
 	snprintf(buf, 99, "%s: %s",
 		card_string(card)->str,
@@ -315,35 +322,39 @@ static void card_enter (HandDisplay *handdisp, int card, int *seatp)
 	/* what-if */
 	//hilight_next_dd_scores (b, card);
 	//show_board (b, REDRAW_DD);
+	PROTECT_END;
 }
 
 static void card_leave (HandDisplay *handdisp, int card, int *seatp)
 {
+	PROTECT_BEGIN;
 	//board *b = CUR_BOARD;
 	board_statusbar(NULL);
 	//show_board (b, REDRAW_DD);
+	PROTECT_END;
 }
 
 static void
 card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 {
+	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	printf("Dropped: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
 	if (on_card >= 0)
 		printf("Dropped on: %s.\n", card_string(on_card)->str);
 
 	if (b->dealt_cards[card] && b->dealt_cards[card] == *seatp) /* card didn't move */
-		return;
+		PROTECT_RETURN;
 
 	if (b->dealt_cards[card] && !b->cards[card]) {
 		board_statusbar(_("Card is in play and cannot be moved"));
-		return;
+		PROTECT_RETURN;
 	}
 
 	if (on_card >= 0) { /* exchange 2 cards */
 		if (b->dealt_cards[on_card] && !b->cards[on_card]) {
 			board_statusbar(_("Card is in play and cannot be exchanged"));
-			return;
+			PROTECT_RETURN;
 		}
 
 		seat from_seat = b->dealt_cards[card];
@@ -354,7 +365,7 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 	} else { /* move single card */
 		if (b->hand_cards[*seatp-1] == 13) {
 			board_statusbar(_("Hand has already 13 cards"));
-			return;
+			PROTECT_RETURN;
 		}
 
 		if (b->dealt_cards[card])
@@ -365,6 +376,7 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 	board_statusbar(NULL);
 	card_window_update(b->dealt_cards);
 	show_board(b, REDRAW_HANDS);
+	PROTECT_END;
 }
 
 static void
@@ -398,10 +410,9 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	}
 	assert (i < 4);
 
-	//printf ("bidding_query_tooltip\n");
 	gchar *alert;
 	gtk_tree_model_get (GTK_TREE_MODEL (win->bidding_store), &iter, 2 * i + 1, &alert, -1);
-	gtk_tooltip_set_markup (tooltip, !alert || *alert ? alert : _("<i>no explanation</i>"));
+	gtk_tooltip_set_markup (tooltip, !alert || *alert ? alert : _("(no explanation)"));
 	return TRUE;
 }
 
@@ -503,7 +514,7 @@ create_bidding_widget (window_board_t *win)
 		column = gtk_tree_view_column_new_with_attributes (_(dir[i]), renderer,
 				"markup", 2 * i, NULL);
 		gtk_tree_view_column_set_expand (column, TRUE);
-		gtk_tree_view_column_set_min_width (column, 35);
+		gtk_tree_view_column_set_min_width (column, 36);
 		gtk_tree_view_column_set_alignment (column, 0.5);
 		//g_signal_connect_swapped (column, "clicked", G_CALLBACK (bidding_clicked), 0);
 		/*
@@ -531,7 +542,8 @@ void board_window_set_style (window_board_t *win, int style)
 		hand_display_set_style(win->handdisp[h], style, NULL);
 	}
 	hand_display_set_style(win->table, style, NULL);
-	show_board(CUR_BOARD, REDRAW_HANDS);
+	if (CUR_BOARD)
+		show_board(CUR_BOARD, REDRAW_HANDS);
 }
 
 int

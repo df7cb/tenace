@@ -102,7 +102,7 @@ board *board_new(void)
 	b->name = g_string_new("Board 1");
 	b->n = 0; /* will be set by the board menu hander */
 	for (i = 0; i < 4; i++) {
-		b->hand_name[i] = g_string_new(names[i]);
+		b->hand_name[i] = g_string_new (_(names[i]));
 	}
 
 	b->dealer = north;

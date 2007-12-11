@@ -10,8 +10,9 @@
 #define CUR_BOARD (win->boards[win->cur])
 
 /* make sure some code is not called twice */
-#define PROTECT_BEGIN static int protect = 0; if (protect++) return;
-#define PROTECT_END protect = 0;
+#define PROTECT_BEGIN do { if (protect++) return; } while (0)
+#define PROTECT_END do { protect = 0; } while (0)
+#define PROTECT_RETURN do { protect = 0; return; } while (0)
 
 /* types */
 
@@ -63,6 +64,7 @@ typedef enum _redraw_t {
 /* global variable */
 
 extern window_board_t *win;
+extern int protect; /* inhibit infinite loops in handlers */
 
 /* interface */
 

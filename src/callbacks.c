@@ -36,7 +36,6 @@
 #include "window_play.h"
 
 static GtkWidget *window_imps = NULL;
-static GtkWidget *window_info = NULL;
 
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
@@ -115,19 +114,6 @@ on_l__schen1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 
-}
-
-
-void
-on_info1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (!window_info) {
-		window_info = create_window_info ();
-		GtkWidget *info_label = lookup_widget (window_info, "info_label");
-		gtk_label_set_markup (GTK_LABEL (info_label), "<b>tenace</b> " VERSION"\n\n(C) 2007 Christoph Berg &lt;cb@df7cb.de&gt;");
-		gtk_widget_show (window_info);
-	}
 }
 
 
@@ -471,27 +457,6 @@ on_window_imps_delete_event            (GtkWidget       *widget,
 	window_imps = NULL;
 	return FALSE;
 }
-
-
-void
-on_info_ok_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	if (window_info) {
-		gtk_widget_destroy(GTK_WIDGET(window_info));
-		window_info = NULL;
-	}
-}
-
-gboolean
-on_window_info_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	window_info = NULL;
-	return FALSE;
-}
-
 
 
 void
@@ -966,4 +931,89 @@ on_append1_activate                    (GtkMenuItem     *menuitem,
 {
 
 }
+
+
+void
+on_button_prev_board_clicked           (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	printf ("prev cur %d\n", win->cur);
+	if (win->cur == 0) {
+		board_statusbar (_("No previous board"));
+		return;
+	}
+	PROTECT_BEGIN;
+	board_statusbar (NULL);
+	win->cur--;
+	show_board (win->boards[win->cur], REDRAW_FULL);
+	PROTECT_END;
+}
+
+
+void
+on_button_next_board_clicked           (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	printf ("next cur %d\n", win->cur);
+	if (win->cur == win->n_boards - 1) {
+		board_statusbar (_("No next board"));
+		return;
+	}
+	PROTECT_BEGIN;
+	board_statusbar (NULL);
+	win->cur++;
+	assert (0 <= win->cur && win->cur < win->n_boards);
+	show_board (win->boards[win->cur], REDRAW_FULL);
+	PROTECT_END;
+}
+
+
+/* about dialog */
+
+static GtkWidget *window_info = NULL;
+
+void
+on_info1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (!window_info) {
+		window_info = create_aboutdialog1 ();
+		gtk_widget_show (window_info);
+	}
+}
+
+
+void
+on_aboutdialog1_close                  (GtkDialog       *dialog,
+                                        gpointer         user_data)
+{
+	if (window_info) {
+		gtk_widget_destroy(GTK_WIDGET(window_info));
+		window_info = NULL;
+	}
+}
+
+
+void
+on_aboutdialog1_response               (GtkDialog       *dialog,
+                                        gint             response_id,
+                                        gpointer         user_data)
+{
+	if (window_info) {
+		gtk_widget_destroy(GTK_WIDGET(window_info));
+		window_info = NULL;
+	}
+}
+
+
+gboolean
+on_aboutdialog1_delete_event           (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	window_info = NULL;
+	return FALSE;
+}
+
+/* -- */
 

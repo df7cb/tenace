@@ -37,10 +37,6 @@ void
 on_l__schen1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-void
-on_info1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
 gboolean
 on_window_hand_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -227,15 +223,6 @@ on_window_imps_delete_event            (GtkWidget       *widget,
 gboolean
 on_window_imps_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_window_info_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_info_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data);
 
 void
@@ -458,4 +445,30 @@ on_button_hand_open_clicked            (GtkToolButton   *toolbutton,
 
 void
 on_append1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_button_prev_board_clicked           (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_button_next_board_clicked           (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_info1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_aboutdialog1_close                  (GtkDialog       *dialog,
+                                        gpointer         user_data);
+
+void
+on_aboutdialog1_response               (GtkDialog       *dialog,
+                                        gint             response_id,
+                                        gpointer         user_data);
+
+gboolean
+on_aboutdialog1_delete_event           (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data);
