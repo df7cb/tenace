@@ -92,7 +92,6 @@ void
 bidding_update (window_board_t *win, board *b)
 {
 	gtk_list_store_clear (win->bidding_store);
-	GtkTreeIter iter; /* Acquire an iterator */
 
 	int i;
 	for (i = 0; i < 2; i++) {
@@ -109,12 +108,13 @@ bidding_update (window_board_t *win, board *b)
 
 	int col = b->dealer - 1;
 	int last_col = 5;
+	GtkTreeIter iter;
 	for (i = 0; i < b->n_bids; i++) {
 		char buf[100];
 		if (last_col > col)
 			gtk_list_store_append (win->bidding_store, &iter);
 		snprintf (buf, sizeof (buf), "%s%s", bid_string(b->bidding[i], b->alerts[i] != NULL)->str,
-				b->alerts[i] ? (*b->alerts[i] ? "!!" : "!") : "");
+				b->alerts[i] ? (*b->alerts[i] ? _("*") : _("!")) : "");
 		gtk_list_store_set (win->bidding_store, &iter,
 				2 * col, buf,
 				2 * col + 1, b->alerts[i],
@@ -384,8 +384,10 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	GtkTreeIter iter;
 	gboolean ret = gtk_tree_view_get_tooltip_context (GTK_TREE_VIEW (widget),
 			&x, &y, keyboard_mode, NULL, NULL, &iter);
-	if (!ret)
+	if (!ret) {
+		gtk_tooltip_set_text (tooltip, NULL);
 		return FALSE;
+	}
 
 	int i;
 	int width = 0;
@@ -396,11 +398,10 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	}
 	assert (i < 4);
 
+	//printf ("bidding_query_tooltip\n");
 	gchar *alert;
 	gtk_tree_model_get (GTK_TREE_MODEL (win->bidding_store), &iter, 2 * i + 1, &alert, -1);
-	if (!alert)
-		return FALSE;
-	gtk_tooltip_set_text (tooltip, *alert ? alert : "(no explanation)");
+	gtk_tooltip_set_markup (tooltip, !alert || *alert ? alert : _("<i>no explanation</i>"));
 	return TRUE;
 }
 

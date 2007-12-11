@@ -406,7 +406,7 @@ void board_append_bid(board *b, card bid)
 	if (b->n_bids >= b->n_bid_alloc) {
 		b->n_bid_alloc <<= 2;
 		b->bidding = realloc(b->bidding, b->n_bid_alloc * sizeof (card));
-		b->alerts = realloc(b->alerts, b->n_bid_alloc * sizeof (card));
+		b->alerts = realloc(b->alerts, b->n_bid_alloc * sizeof (char *));
 		assert(b->bidding && b->alerts);
 		int i; /* I wished there was recalloc() */
 		for (i = b->n_bid_alloc >> 2; i < b->n_bid_alloc; i++)

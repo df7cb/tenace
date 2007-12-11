@@ -300,7 +300,7 @@ board_parse_lin (char *line, FILE *f)
 			} while (*bidp);
 		} else if (!strcmp(tok, "an")) {
 			tok = STRTOK;
-			board_set_alert (b, tok);
+			board_set_alert (b, !strcmp (tok, "!") ? "" : tok); /* filter uninteresting ! */
 		} else if (!strcmp(tok, "pc")) {
 			int c = parse_card(tok = STRTOK);
 			if (c == -1) {

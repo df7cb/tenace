@@ -77,16 +77,19 @@ typedef struct board_t {
 	int level;
 	int doubled;
 
+	/* play */
 	int n_played_cards;
 	card played_cards[52];
 	seat current_turn;
 	int tricks[2]; /* 0 = NS, 1 = EW */
 
+	/* bidding */
 	card *bidding;
 	char **alerts;
 	int n_bids;
 	int n_bid_alloc;
 
+	/* DD */
 	dd_t *current_dd;
 	dd_t *next_dd[52];
 	int target[2]; /* sum might be less than 13 for partial deals */

@@ -19,6 +19,7 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "support.h"
 
 int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
 
@@ -132,17 +133,18 @@ GString *bid_string (card c, int alert)
 	if (!s)
 		s = g_string_new(NULL);
 
-	bg = alert ? " background=\"white\"" : "";
+	//bg = alert ? " weight=\"bold\"" : "";
+	bg = "";
 
 	if (c == bid_pass) {
 		g_string_printf(s, "<span%s>‒</span>", bg); /* FIGURE DASH */
 	} else if (c == bid_x) {
-		g_string_printf(s, "<span%s><b>X</b></span>", bg);
+		g_string_printf(s, _("<span%s>X</span>"), bg);
 	} else if (c == bid_x) {
-		g_string_printf(s, "<span%s><b>XX</b></span>", bg);
+		g_string_printf(s, _("<span%s>XX</span>"), bg);
 	} else {
 		switch (DENOM(c)) {
-			case NT: su = "NT"; break;
+			case NT: su = _("NT"); break;
 			case spade: su = "<span foreground=\"blue\">♠</span>"; break;
 			case heart: su = "<span foreground=\"red\">♥</span>"; break;
 			case diamond: su = "<span foreground=\"orange\">♦</span>"; break;
