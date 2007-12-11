@@ -196,7 +196,7 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_TRICKS) {
 		w = lookup_widget(win->window, "label_tricks");
-		g_string_printf(str, "NS: %d\nEW: %d", b->tricks[0], b->tricks[1]);
+		g_string_printf(str, _("NS: %d\nEW: %d"), b->tricks[0], b->tricks[1]);
 		gtk_label_set_markup((GtkLabel*) w, str->str);
 	}
 
@@ -500,7 +500,7 @@ create_bidding_widget (window_board_t *win)
 	int i;
 	for (i = 0; i < 4; i++) {
 		GtkTreeViewColumn *column;
-		column = gtk_tree_view_column_new_with_attributes (dir[i], renderer,
+		column = gtk_tree_view_column_new_with_attributes (_(dir[i]), renderer,
 				"markup", 2 * i, NULL);
 		gtk_tree_view_column_set_expand (column, TRUE);
 		gtk_tree_view_column_set_min_width (column, 35);

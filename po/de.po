@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-11 01:19+0100\n"
-"PO-Revision-Date: 2007-12-11 01:20+0100\n"
+"POT-Creation-Date: 2007-12-11 01:45+0100\n"
+"PO-Revision-Date: 2007-12-11 01:46+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -61,6 +61,46 @@ msgstr ""
 msgid "NT"
 msgstr "SA"
 
+#: src/functions.c:190 src/functions.c:201
+msgid " XX"
+msgstr ""
+
+#: src/functions.c:191 src/functions.c:202
+msgid " X"
+msgstr ""
+
+#: src/functions.c:296 src/interface.c:2108 src/interface.c:2132
+msgid "W"
+msgstr ""
+
+#: src/functions.c:297 src/interface.c:2114 src/interface.c:2138
+msgid "N"
+msgstr ""
+
+#: src/functions.c:298 src/interface.c:2120 src/interface.c:2144
+msgid "E"
+msgstr "O"
+
+#: src/functions.c:299 src/interface.c:2126
+msgid "S"
+msgstr ""
+
+#: src/functions.c:301
+msgid "Sp"
+msgstr "P"
+
+#: src/functions.c:302
+msgid "He"
+msgstr "C"
+
+#: src/functions.c:303
+msgid "Di"
+msgstr "K"
+
+#: src/functions.c:304
+msgid "Cl"
+msgstr "T"
+
 #: src/interface.c:201
 msgid "Tenace"
 msgstr ""
@@ -90,13 +130,12 @@ msgid "_Random"
 msgstr "_Zufällig"
 
 #: src/interface.c:267
-#, fuzzy
 msgid "_Flip"
-msgstr "_Datei"
+msgstr "_Tauschen"
 
 #: src/interface.c:274
 msgid "E-W"
-msgstr ""
+msgstr "O-W"
 
 #: src/interface.c:278
 msgid "N-S"
@@ -108,7 +147,7 @@ msgstr ""
 
 #: src/interface.c:286
 msgid "N-E"
-msgstr ""
+msgstr "N-O"
 
 #: src/interface.c:290
 msgid "S-W"
@@ -116,7 +155,7 @@ msgstr ""
 
 #: src/interface.c:294
 msgid "S-E"
-msgstr ""
+msgstr "S-O"
 
 #: src/interface.c:298
 msgid "_Dealer"
@@ -304,28 +343,24 @@ msgid "_Played cards"
 msgstr "_Gespielte Karten"
 
 #: src/interface.c:614
-#, fuzzy
 msgid "Hands"
-msgstr "Karten"
+msgstr "Hände"
 
 #: src/interface.c:621 src/interface.c:652 src/interface.c:709
-#, fuzzy
 msgid "East-West"
-msgstr "_Ost-West"
+msgstr "Ost-West"
 
 #: src/interface.c:633 src/interface.c:664 src/interface.c:721
-#, fuzzy
 msgid "All"
-msgstr "_Alle"
+msgstr "Alle"
 
 #: src/interface.c:639
 msgid "DD Scores"
 msgstr ""
 
 #: src/interface.c:646
-#, fuzzy
 msgid "No one"
-msgstr "_Keiner"
+msgstr "Keiner"
 
 #: src/interface.c:670
 msgid "Display _style"
@@ -344,9 +379,8 @@ msgid "Autoplay"
 msgstr ""
 
 #: src/interface.c:703
-#, fuzzy
 msgid "None"
-msgstr "_Keiner"
+msgstr "Keiner"
 
 #: src/interface.c:727
 msgid "Boards"
@@ -483,22 +517,6 @@ msgstr "Hand als Zeile"
 msgid "63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853"
 msgstr ""
 
-#: src/interface.c:2108 src/interface.c:2132
-msgid "W"
-msgstr ""
-
-#: src/interface.c:2114 src/interface.c:2138
-msgid "N"
-msgstr ""
-
-#: src/interface.c:2120 src/interface.c:2144
-msgid "E"
-msgstr ""
-
-#: src/interface.c:2126
-msgid "S"
-msgstr ""
-
 #: src/interface.c:2191
 msgid "Options"
 msgstr "Optionen"
@@ -528,6 +546,15 @@ msgstr ""
 msgid "!"
 msgstr ""
 
+#: src/window_board.c:199
+#, c-format
+msgid ""
+"NS: %d\n"
+"EW: %d"
+msgstr ""
+"NS: %d\n"
+"OW: %d"
+
 #: src/window_board.c:339
 msgid "Card is in play and cannot be moved"
 msgstr ""
@@ -537,9 +564,8 @@ msgid "Card is in play and cannot be exchanged"
 msgstr ""
 
 #: src/window_board.c:356 src/window_card.c:67 src/window_card.c:97
-#, fuzzy
 msgid "Hand has already 13 cards"
-msgstr "Karte wurde schon gespielt"
+msgstr "Hand hat schon 13 Karten"
 
 #: src/window_board.c:404
 msgid "<i>no explanation</i>"

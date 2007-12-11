@@ -155,12 +155,6 @@ GString *bid_string (card c, int alert)
 	return s;
 }
 
-char *seat_string (seat s)
-{
-	char *str[] = {0, "West", "North", "East", "South"};
-	return str[s];
-}
-
 GString *hand_string (board *b, seat h)
 {
 	static GString *s = NULL;
@@ -187,50 +181,25 @@ GString *hand_string (board *b, seat h)
 	return s;
 }
 
-/*
-GString *gib_string (hand *h)
-{
-	static GString *s = NULL;
-	char rank_char[] = {'2', '3', '4', '5', '6', '7', '8', '9', 't', 'j', 'q', 'k', 'a'};
-	if (!s)
-		s = g_string_new(NULL);
-	assert(h);
-	card *c = h->cards;
-	g_string_truncate(s, 0);
-	while (*c >= 0 && SUIT(*c) == spade)
-		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
-	g_string_append_printf(s, ".");
-	while (*c >= 0 && SUIT(*c) == heart)
-		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
-	g_string_append_printf(s, ".");
-	while (*c >= 0 && SUIT(*c) == diamond)
-		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
-	g_string_append_printf(s, ".");
-	while (*c >= 0 && SUIT(*c) == club)
-		g_string_append_printf(s, "%c", rank_char[RANK(*c++)]);
-	return s;
-}
-*/
-
 char *contract_string(int level, suit trumps, seat declarer, int doubled)
 {
 	static char buf[20];
 	char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
 	char *declarer_str[] = {0, "W", "N", "E", "S"};
-	snprintf(buf, 20, "%d%s %s%s", level, trump_str[trumps], declarer_str[declarer],
-		doubled == 2 ? " XX" :
-			doubled == 1 ? " X" : "");
+	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(declarer_str[declarer]),
+		doubled == 2 ? _(" XX") :
+			doubled == 1 ? _(" X") : "");
 	return buf;
 }
 
 char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 {
 	static char buf[20];
-	char *trump_str[] = {"C", "D", "H", "S", "NT"};
+	char *trump_str[] = {"Cl", "Di", "He", "Sp", "NT"};
 	char *declarer_str[] = {0, "W", "N", "E", "S"};
-	snprintf(buf, 20, "%d%s %s%s", level, trump_str[trumps], declarer_str[declarer],
-		doubled == 2 ? " XX" :
-			doubled == 1 ? " X" : "");
+	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(declarer_str[declarer]),
+		doubled == 2 ? _(" XX") :
+			doubled == 1 ? _(" X") : "");
 	return buf;
 }
 
@@ -318,4 +287,19 @@ char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln,
 		overtricks(tricks - 6 - level),
 		flip * score(level, trumps, doubled, vuln, tricks));
 	return buf;
+}
+
+/* some strings not translated elsewhere */
+void
+unused ()
+{
+	_("W");
+	_("N");
+	_("E");
+	_("S");
+
+	_("Sp");
+	_("He");
+	_("Di");
+	_("Cl");
 }
