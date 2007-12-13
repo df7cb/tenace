@@ -143,7 +143,27 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 	/* "card" mode for drap&drop icon */
 	if (handdisp->mode == HAND_DISPLAY_MODE_CARD) {
-		cairo_set_font_size (cr, 20);
+		if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
+			if (card_width != handdisp->want_width) { /* adjust window */
+				handdisp->want_width = card_width;
+				gdk_window_resize (gtk_widget_get_parent_window (hand),
+						card_width, card_height);
+
+				/* shaped drag icon
+				 * credits to Mirco "MacSlow" Mueller <macslow@bangang.de>
+				 * http://macslow.thepimp.net/?p=26 */
+				GdkBitmap *pShapeBitmap = (GdkBitmap*) gdk_pixmap_new (NULL, card_width, card_height, 1);
+				assert (pShapeBitmap);
+				cairo_t *pCairoContext = gdk_cairo_create (pShapeBitmap);
+				assert (cairo_status (pCairoContext) == CAIRO_STATUS_SUCCESS);
+				render_card (pCairoContext, 0, 0, handdisp->table_card[0], HAND_DISPLAY_CARD);
+				cairo_destroy (pCairoContext);
+				gdk_window_shape_combine_mask (gtk_widget_get_parent_window (hand), pShapeBitmap, 0, 0);
+				g_object_unref ((gpointer) pShapeBitmap);
+			}
+			render_card (cr, 0, 0, handdisp->table_card[0], HAND_DISPLAY_CARD);
+			return;
+		}
 
 		char cs[6];
 		int c = handdisp->table_card[0];
@@ -151,6 +171,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		int rank = c % 13;
 
 		snprintf (cs, 6, "%s%s", suit_str[suit], rank_str[rank]);
+		cairo_set_font_size (cr, 20);
 		cairo_text_extents (cr, cs, &extents);
 #define XPAD 4
 #define YPAD 2
@@ -174,6 +195,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_show_text (cr, rank_str[rank]);
 
 		if (w + 2 != handdisp->want_width) { /* adjust window */
+			printf ("booom\n");
 			handdisp->want_width = w + 2;
 			//gtk_widget_queue_resize (handdisp->card_window);
 			//gtk_window_resize (hand->parent->window, w + 2, h + 2);
@@ -249,8 +271,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 					return; /* stop here */
 			}
 
-#define XPAD 4
-#define YPAD 2
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
 			cairo_rectangle (cr, x + extents.x_bearing - XPAD,
 					y - YPAD + extents.y_bearing - 1,
@@ -603,13 +623,15 @@ hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
 static void
 hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
-	int dragged = HAND_DISPLAY (hand)->cur_click;
+	HandDisplay *handdisp = HAND_DISPLAY (hand);
+	int dragged = handdisp->cur_click;
 	if (dragged < 0)
 		return;
 
 	assert (drag_win == NULL);
 	drag_win = gtk_window_new (GTK_WINDOW_POPUP);
 	GtkWidget *card = hand_display_new (HAND_DISPLAY_MODE_CARD);
+	hand_display_set_style (card, handdisp->style, NULL);
 	hand_display_card_set_card (HAND_DISPLAY (card), dragged);
 	gtk_container_add (GTK_CONTAINER (drag_win), card);
 	gtk_drag_set_icon_widget (dc, drag_win, 0, 0);
