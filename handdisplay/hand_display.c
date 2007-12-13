@@ -320,7 +320,10 @@ draw (GtkWidget *hand, cairo_t *cr)
 			int c;
 			for (c = 13 * (handdisp->suits[suit] + 1) - 1; c >= 13 * handdisp->suits[suit]; c--) {
 				if (handdisp->cards[c]) {
-					x = floor (n * (hand->allocation.width - card_width) / 12.0);
+					x = floor (n++ * (hand->allocation.width - card_width) / 12.0);
+					if (handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD)
+						continue; /* only increment n (and hence x) */
+
 					int sc = handdisp->card_score[c];
 					int yy = c == handdisp->cur_focus ? y - 15 :
 						(sc != HAND_DISPLAY_NO_SCORE &&
@@ -331,7 +334,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 					handdisp->r[c] = x + card_width;
 					handdisp->t[c] = y - 15;
 					handdisp->b[c] = y + card_height;
-					n++;
 
 					if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD) {
 						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
@@ -360,7 +362,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 					cairo_restore (cr);
 				}
 			}
-			/* we do not yet support MODE_X here */
+			/* we do not support MODE_X here */
 		}
 
 		return;
@@ -393,7 +395,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 		int c;
 		for (c = 13 * suit + 12; c >= 13 * suit; c--) {
-			if (handdisp->cards[c]) {
+			if (handdisp->cards[c] && !(handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD)) {
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
 				handdisp->l[c] = x + extents.x_bearing;
 				handdisp->r[c] = x + extents.x_bearing + extents.width;
@@ -432,6 +434,10 @@ draw (GtkWidget *hand, cairo_t *cr)
 				x += extents.x_advance; y += extents.y_advance;
 			} else {
 				handdisp->l[c] = handdisp->r[c] = handdisp->t[c] = handdisp->b[c] = 0;
+				if (handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD) {
+					cairo_text_extents (cr, rank_str[c % 13], &extents);
+					x += extents.x_advance; y += extents.y_advance;
+				}
 			}
 		}
 
@@ -627,7 +633,9 @@ hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 	int dragged = handdisp->cur_click;
 	if (dragged < 0)
 		return;
+	handdisp->cards[dragged] |= HAND_DISPLAY_INVISIBLE_CARD;
 
+	/* create drag widget */
 	assert (drag_win == NULL);
 	drag_win = gtk_window_new (GTK_WINDOW_POPUP);
 	GtkWidget *card = hand_display_new (HAND_DISPLAY_MODE_CARD);
@@ -715,7 +723,12 @@ hand_display_drag_data_delete (GtkWidget *hand, GdkDragContext *dc, gpointer dat
 static void
 hand_display_drag_end (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
-	fprintf (stderr, "drag end\n");
+	HandDisplay *handdisp = HAND_DISPLAY (hand);
+	int dragged = handdisp->cur_click;
+	if (dragged >= 0) {
+		handdisp->cards[dragged] &= ~HAND_DISPLAY_INVISIBLE_CARD;
+		redraw_card (hand, dragged);
+	}
 	gtk_widget_destroy (drag_win);
 	drag_win = NULL;
 }
