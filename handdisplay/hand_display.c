@@ -25,6 +25,16 @@
 
 static int render_init = 0, card_width = 80, card_height = 0;
 static GdkPixbuf *card_pixbuf[53];
+static GtkWidget *drag_win = NULL; /* current drag icon */
+
+static char *suit_str[] = {"♣", "♦", "♥", "♠"};
+static char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+static double suit_color[4][3] = {
+	{ HAND_DISPLAY_CLUBS_FONT    },
+	{ HAND_DISPLAY_DIAMONDS_FONT },
+	{ HAND_DISPLAY_HEARTS_FONT   },
+	{ HAND_DISPLAY_SPADES_FONT   },
+};
 
 /* internal functions */
 
@@ -81,7 +91,7 @@ render_card_init (char *card_fname)
 	for (i = 0; i < 52; i++) {
 		card_pixbuf[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, card_width, card_height);
 		if (!card_pixbuf[i]) {
-			printf ("card_pixbuf[i]\n");
+			printf ("moo: card_pixbuf[i]\n");
 			return;
 		}
 		int col = (i + 1) % 13;
@@ -129,16 +139,49 @@ draw (GtkWidget *hand, cairo_t *cr)
 	cairo_text_extents_t extents;
 	cairo_font_extents_t fextents;
 
-	char *suit_str[] = {"♣", "♦", "♥", "♠"};
-	char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-	double suit_color[4][3] = {
-		{ HAND_DISPLAY_CLUBS_FONT    },
-		{ HAND_DISPLAY_DIAMONDS_FONT },
-		{ HAND_DISPLAY_HEARTS_FONT   },
-		{ HAND_DISPLAY_SPADES_FONT   },
-	};
-
 	FONT_SANS;
+
+	/* "card" mode for drap&drop icon */
+	if (handdisp->mode == HAND_DISPLAY_MODE_CARD) {
+		cairo_set_font_size (cr, 20);
+
+		char cs[6];
+		int c = handdisp->table_card[0];
+		int suit = c / 13;
+		int rank = c % 13;
+
+		snprintf (cs, 6, "%s%s", suit_str[suit], rank_str[rank]);
+		cairo_text_extents (cr, cs, &extents);
+#define XPAD 4
+#define YPAD 2
+		int w = extents.width + 2 * XPAD + 5;
+		int h = extents.height + 2 * YPAD;
+
+		cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
+		cairo_rectangle (cr, 1, 1, w, h);
+		cairo_fill (cr);
+		cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+		cairo_rectangle (cr, 1, 1, w, h);
+		cairo_stroke (cr);
+
+		cairo_move_to (cr, XPAD - extents.x_bearing + 1, YPAD - extents.y_bearing + 2);
+		FONT_SYMBOL;
+		cairo_set_source_rgb (cr, suit_color[suit][0],
+			suit_color[suit][1], suit_color[suit][2]);
+		cairo_show_text (cr, suit_str[suit]);
+		FONT_SANS;
+		cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+		cairo_show_text (cr, rank_str[rank]);
+
+		if (w + 2 != handdisp->want_width) { /* adjust window */
+			handdisp->want_width = w + 2;
+			//gtk_widget_queue_resize (handdisp->card_window);
+			//gtk_window_resize (hand->parent->window, w + 2, h + 2);
+			gdk_window_resize (gtk_widget_get_parent_window (hand), w + 2, h + 2);
+		}
+
+		return;
+	}
 
 	cairo_set_source_rgb (cr, HAND_DISPLAY_TABLE_BG);
 	cairo_rectangle (cr, 0, 0, hand->allocation.width, hand->allocation.height);
@@ -206,10 +249,20 @@ draw (GtkWidget *hand, cairo_t *cr)
 					return; /* stop here */
 			}
 
+#define XPAD 4
+#define YPAD 2
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
-			cairo_rectangle (cr, x + extents.x_bearing - 2, y + 2,
-					extents.width + 4, -extents.height - 4);
+			cairo_rectangle (cr, x + extents.x_bearing - XPAD,
+					y - YPAD + extents.y_bearing - 1,
+					extents.width + 2 * XPAD + 5,
+					extents.height + 2 * YPAD);
 			cairo_fill (cr);
+			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+			cairo_rectangle (cr, x + extents.x_bearing - XPAD,
+					y - YPAD + extents.y_bearing - 1,
+					extents.width + 2 * XPAD + 5,
+					extents.height + 2 * YPAD);
+			cairo_stroke (cr);
 
 			cairo_move_to (cr, x, y);
 			FONT_SYMBOL;
@@ -457,13 +510,13 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 	int card = which_card(handdisp, event->x, event->y);
 
 	handdisp->cur_focus = card;
+	if (event->type == GDK_BUTTON_PRESS)
+		handdisp->cur_click = card;
 	if (handdisp->cur_focus == -1)
 		return FALSE;
 	redraw_card (hand, card);
 
-	if (event->type == GDK_BUTTON_PRESS) {
-		handdisp->cur_click = card;
-	} else if (event->type == GDK_BUTTON_RELEASE && handdisp->cur_click == card) {
+	if (event->type == GDK_BUTTON_RELEASE && handdisp->cur_click == card) {
 		g_signal_emit_by_name (handdisp, "card-clicked", card);
 	}
 	return FALSE;
@@ -526,7 +579,7 @@ hand_display_size_request (GtkWidget *hand, GtkRequisition *requisition)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	requisition->width = handdisp->want_width;
-	requisition->height = 90;
+	requisition->height = handdisp->mode != HAND_DISPLAY_MODE_CARD ? 90 : 10;
 }
 
 static void
@@ -550,7 +603,17 @@ hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
 static void
 hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
-	gtk_drag_set_icon_stock (dc, "gtk-home", 0, 0);
+	int dragged = HAND_DISPLAY (hand)->cur_click;
+	if (dragged < 0)
+		return;
+
+	assert (drag_win == NULL);
+	drag_win = gtk_window_new (GTK_WINDOW_POPUP);
+	GtkWidget *card = hand_display_new (HAND_DISPLAY_MODE_CARD);
+	hand_display_card_set_card (HAND_DISPLAY (card), dragged);
+	gtk_container_add (GTK_CONTAINER (drag_win), card);
+	gtk_drag_set_icon_widget (dc, drag_win, 0, 0);
+	gtk_widget_show_all (drag_win);
 }
 
 static gboolean
@@ -596,6 +659,8 @@ hand_display_drag_data_get (GtkWidget *hand, GdkDragContext *dc,
         GtkSelectionData *selection_data, guint targettype, guint t, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
+	if (handdisp->cur_click < 0)
+		return;
 	assert (targettype == 0);
 	gtk_selection_data_set (selection_data, selection_data->target,
 			32, (guchar *) &(handdisp->cur_click), sizeof (int));
@@ -626,6 +691,14 @@ hand_display_drag_data_delete (GtkWidget *hand, GdkDragContext *dc, gpointer dat
 */
 
 static void
+hand_display_drag_end (GtkWidget *hand, GdkDragContext *dc, gpointer data)
+{
+	fprintf (stderr, "drag end\n");
+	gtk_widget_destroy (drag_win);
+	drag_win = NULL;
+}
+
+static void
 setup_dnd (HandDisplay *handdisp)
 {
 	GtkTargetEntry target_entry[1];
@@ -652,20 +725,22 @@ setup_dnd (HandDisplay *handdisp)
 		GDK_ACTION_COPY
 	);
 
-	g_signal_connect (GTK_OBJECT(hand), "drag_begin",
+	g_signal_connect (GTK_OBJECT(hand), "drag-begin",
 			GTK_SIGNAL_FUNC(hand_display_drag_begin), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag_leave",
+	g_signal_connect (GTK_OBJECT(hand), "drag-leave",
 			GTK_SIGNAL_FUNC(hand_display_drag_leave), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag_motion",
+	g_signal_connect (GTK_OBJECT(hand), "drag-motion",
 			GTK_SIGNAL_FUNC(hand_display_drag_motion), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag_drop",
+	g_signal_connect (GTK_OBJECT(hand), "drag-drop",
 			GTK_SIGNAL_FUNC(hand_display_drag_drop), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag_data_get",
+	g_signal_connect (GTK_OBJECT(hand), "drag-data-get",
 			GTK_SIGNAL_FUNC(hand_display_drag_data_get), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag_data_received",
+	g_signal_connect (GTK_OBJECT(hand), "drag-data-received",
 			GTK_SIGNAL_FUNC(hand_display_drag_data_received), NULL);
 	//g_signal_connect (GTK_OBJECT(hand), "drag_data_delete",
 			//GTK_SIGNAL_FUNC(hand_display_drag_data_delete), NULL);
+	g_signal_connect (GTK_OBJECT(hand), "drag-end",
+			GTK_SIGNAL_FUNC(hand_display_drag_end), NULL);
 }
 
 /* initializers */
@@ -774,7 +849,7 @@ hand_display_new (int mode)
 {
 	HandDisplay *handdisp = g_object_new (TYPE_HAND_DISPLAY, NULL);
 	handdisp->mode = mode;
-	handdisp->want_width = 100;
+	handdisp->want_width = mode != HAND_DISPLAY_MODE_CARD ? 100 : 10;
 	return GTK_WIDGET(handdisp);
 }
 
@@ -842,5 +917,13 @@ hand_display_table_set_card (HandDisplay *handdisp, int n, int seat, int card)
 	assert (card >= 0 && card < 52);
 	handdisp->table_seat[n] = seat;
 	handdisp->table_card[n] = card;
+}
+
+/* card interface */
+void
+hand_display_card_set_card (HandDisplay *handdisp, int card)
+{
+	assert (card >= 0 && card < 52);
+	handdisp->table_card[0] = card;
 }
 

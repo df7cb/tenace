@@ -32,6 +32,7 @@ extern "C" {
 #define HAND_DISPLAY_MODE_HAND     0
 #define HAND_DISPLAY_MODE_HAND_X   1
 #define HAND_DISPLAY_MODE_TABLE    2
+#define HAND_DISPLAY_MODE_CARD     3
 
 /* display styles */
 #define HAND_DISPLAY_STYLE_TEXT    0
@@ -109,6 +110,9 @@ void hand_display_set_card_score_neg (HandDisplay *handdisp, int neg);
 /* table interface */
 void hand_display_table_reset_cards (HandDisplay *handdisp);
 void hand_display_table_set_card (HandDisplay *handdisp, int n, int seat, int card);
+
+/* card interface */
+void hand_display_card_set_card (HandDisplay *handdisp, int card);
 
 #ifdef __cplusplus
 }
