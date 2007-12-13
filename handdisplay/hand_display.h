@@ -42,7 +42,7 @@ extern "C" {
 #define HAND_DISPLAY_CARD          1 /* show */
 #define HAND_DISPLAY_GREY_CARD     2 /* used in MODE_X for not-in-this-hand cards */
 #define HAND_DISPLAY_OLD_CARD      4 /* played card (grey) */
-#define HAND_DISPLAY_HILIGHT_CARD  8 /* hilight card (orange in text mode, lifted in card mode) */
+#define HAND_DISPLAY_HILIGHT_CARD  8 /* hilight card (orange in text mode, orange marker card mode) */
 #define HAND_DISPLAY_INVISIBLE_CARD 16 /* don't render card, leave space (for drag and drop) */
 
 #define HAND_DISPLAY_NO_SCORE      (0x1000) /* score undefined */
@@ -80,6 +80,7 @@ struct _HandDisplay
 	/* hand */
 	int cur_focus;
 	int cur_click;
+	int cur_drag;
 	int cards[52];
 	int card_score[52];
 	int card_score_neg;

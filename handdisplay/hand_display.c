@@ -46,8 +46,9 @@ which_card (HandDisplay *handdisp, int x, int y)
 	int max_x = -1;
 	int max = -1;
 	for (c = 0; c < (handdisp->mode == HAND_DISPLAY_MODE_HAND_X ? 56 : 52); c++) {
-		if (handdisp->cards[c] && x >= handdisp->l[c] && x <= handdisp->r[c]
-				&& y >= handdisp->t[c] && y <= handdisp->b[c]) {
+		if ((handdisp->cards[c] & ~HAND_DISPLAY_INVISIBLE_CARD) &&
+				x >= handdisp->l[c] && x <= handdisp->r[c] &&
+				y >= handdisp->t[c] && y <= handdisp->b[c]) {
 			if (handdisp->r[c] > max_x) {
 				max = c;
 				max_x = handdisp->r[c];
@@ -195,10 +196,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_show_text (cr, rank_str[rank]);
 
 		if (w + 2 != handdisp->want_width) { /* adjust window */
-			printf ("booom\n");
 			handdisp->want_width = w + 2;
-			//gtk_widget_queue_resize (handdisp->card_window);
-			//gtk_window_resize (hand->parent->window, w + 2, h + 2);
 			gdk_window_resize (gtk_widget_get_parent_window (hand), w + 2, h + 2);
 		}
 
@@ -321,20 +319,21 @@ draw (GtkWidget *hand, cairo_t *cr)
 			for (c = 13 * (handdisp->suits[suit] + 1) - 1; c >= 13 * handdisp->suits[suit]; c--) {
 				if (handdisp->cards[c]) {
 					x = floor (n++ * (hand->allocation.width - card_width) / 12.0);
-					if (handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD)
-						continue; /* only increment n (and hence x) */
 
 					int sc = handdisp->card_score[c];
 					int yy = c == handdisp->cur_focus ? y - 15 :
 						(sc != HAND_DISPLAY_NO_SCORE &&
 						 handdisp->best_card_score == sc ? y - 5 : y);
 					yy = MAX (yy, 0);
-					render_card (cr, x, yy, c, handdisp->cards[c]);
 					handdisp->l[c] = x;
 					handdisp->r[c] = x + card_width;
 					handdisp->t[c] = y - 15;
 					handdisp->b[c] = y + card_height;
 
+					if (handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD)
+						continue;
+
+					render_card (cr, x, yy, c, handdisp->cards[c]);
 					if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD) {
 						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
 						cairo_move_to (cr, x + 3 + (hand->allocation.width - card_width - 10) / 24.0, yy);
@@ -395,49 +394,47 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 		int c;
 		for (c = 13 * suit + 12; c >= 13 * suit; c--) {
-			if (handdisp->cards[c] && !(handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD)) {
+			if (handdisp->cards[c]) {
 				cairo_text_extents (cr, rank_str[c % 13], &extents);
 				handdisp->l[c] = x + extents.x_bearing;
 				handdisp->r[c] = x + extents.x_bearing + extents.width;
 				handdisp->t[c] = y + extents.y_bearing;
 				handdisp->b[c] = y + extents.y_bearing + extents.height;
-				if (c == handdisp->cur_focus) {
-					cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
-					cairo_rectangle (cr, handdisp->l[c] - 1, handdisp->t[c] - 1,
-						extents.width + 2, extents.height + 2);
-					cairo_fill (cr);
-				}
-				if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) {
-					if (handdisp->cards[c] == HAND_DISPLAY_CARD)
-						cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
-					else if (handdisp->cards[c] == HAND_DISPLAY_GREY_CARD)
-						cairo_set_source_rgb (cr, HAND_DISPLAY_GREY_FONT);
-					else if (handdisp->cards[c] == HAND_DISPLAY_OLD_CARD)
-						cairo_set_source_rgb (cr, HAND_DISPLAY_OLD_FONT);
-					else if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD)
-						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
-				} else {
-					/* invert colors if the score is for the opps */
-					if (handdisp->card_score_neg ^ (handdisp->card_score[c] >= 0))
-						if (handdisp->best_card_score == handdisp->card_score[c])
-							cairo_set_source_rgb (cr, HAND_DISPLAY_BEST_POS_FONT);
+				if (!(handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD)) {
+					if (c == handdisp->cur_focus) {
+						cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
+						cairo_rectangle (cr, handdisp->l[c] - 1, handdisp->t[c] - 1,
+							extents.width + 2, extents.height + 2);
+						cairo_fill (cr);
+					}
+					if (handdisp->card_score[c] == HAND_DISPLAY_NO_SCORE) {
+						if (handdisp->cards[c] == HAND_DISPLAY_CARD)
+							cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
+						else if (handdisp->cards[c] == HAND_DISPLAY_GREY_CARD)
+							cairo_set_source_rgb (cr, HAND_DISPLAY_GREY_FONT);
+						else if (handdisp->cards[c] == HAND_DISPLAY_OLD_CARD)
+							cairo_set_source_rgb (cr, HAND_DISPLAY_OLD_FONT);
+						else if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD)
+							cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
+					} else {
+						/* invert colors if the score is for the opps */
+						if (handdisp->card_score_neg ^ (handdisp->card_score[c] >= 0))
+							if (handdisp->best_card_score == handdisp->card_score[c])
+								cairo_set_source_rgb (cr, HAND_DISPLAY_BEST_POS_FONT);
+							else
+								cairo_set_source_rgb (cr, HAND_DISPLAY_POS_FONT);
 						else
-							cairo_set_source_rgb (cr, HAND_DISPLAY_POS_FONT);
-					else
-						if (handdisp->best_card_score == handdisp->card_score[c])
-							cairo_set_source_rgb (cr, HAND_DISPLAY_BEST_NEG_FONT);
-						else
-							cairo_set_source_rgb (cr, HAND_DISPLAY_NEG_FONT);
+							if (handdisp->best_card_score == handdisp->card_score[c])
+								cairo_set_source_rgb (cr, HAND_DISPLAY_BEST_NEG_FONT);
+							else
+								cairo_set_source_rgb (cr, HAND_DISPLAY_NEG_FONT);
+					}
+					cairo_move_to (cr, x, y);
+					cairo_show_text (cr, rank_str[c % 13]);
 				}
-				cairo_move_to (cr, x, y);
-				cairo_show_text (cr, rank_str[c % 13]);
 				x += extents.x_advance; y += extents.y_advance;
 			} else {
 				handdisp->l[c] = handdisp->r[c] = handdisp->t[c] = handdisp->b[c] = 0;
-				if (handdisp->cards[c] & HAND_DISPLAY_INVISIBLE_CARD) {
-					cairo_text_extents (cr, rank_str[c % 13], &extents);
-					x += extents.x_advance; y += extents.y_advance;
-				}
 			}
 		}
 
@@ -535,7 +532,8 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, event->x, event->y);
 
-	handdisp->cur_focus = card;
+	if (event->type != GDK_BUTTON_RELEASE) /* don't trigger after dnd */
+		handdisp->cur_focus = card;
 	if (event->type == GDK_BUTTON_PRESS)
 		handdisp->cur_click = card;
 	if (handdisp->cur_focus == -1)
@@ -630,17 +628,22 @@ static void
 hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	int dragged = handdisp->cur_click;
-	if (dragged < 0)
+	handdisp->cur_drag = handdisp->cur_click;
+	if (handdisp->cur_drag < 0)
 		return;
-	handdisp->cards[dragged] |= HAND_DISPLAY_INVISIBLE_CARD;
+	handdisp->cards[handdisp->cur_drag] |= HAND_DISPLAY_INVISIBLE_CARD;
+	handdisp->cur_click = -1;
+	redraw_card (hand, handdisp->cur_drag);
 
 	/* create drag widget */
-	assert (drag_win == NULL);
+	if (drag_win) { /* should be NULL, but happens sometimes */
+		gtk_widget_destroy (drag_win);
+		drag_win = NULL;
+	}
 	drag_win = gtk_window_new (GTK_WINDOW_POPUP);
 	GtkWidget *card = hand_display_new (HAND_DISPLAY_MODE_CARD);
 	hand_display_set_style (card, handdisp->style, NULL);
-	hand_display_card_set_card (HAND_DISPLAY (card), dragged);
+	hand_display_card_set_card (HAND_DISPLAY (card), handdisp->cur_drag);
 	gtk_container_add (GTK_CONTAINER (drag_win), card);
 	gtk_drag_set_icon_widget (dc, drag_win, 0, 0);
 	gtk_widget_show_all (drag_win);
@@ -689,11 +692,11 @@ hand_display_drag_data_get (GtkWidget *hand, GdkDragContext *dc,
         GtkSelectionData *selection_data, guint targettype, guint t, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	if (handdisp->cur_click < 0)
+	if (handdisp->cur_drag < 0)
 		return;
 	assert (targettype == 0);
 	gtk_selection_data_set (selection_data, selection_data->target,
-			32, (guchar *) &(handdisp->cur_click), sizeof (int));
+			32, (guchar *) &(handdisp->cur_drag), sizeof (int));
 }
 
 static void
@@ -724,11 +727,12 @@ static void
 hand_display_drag_end (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	int dragged = handdisp->cur_click;
-	if (dragged >= 0) {
-		handdisp->cards[dragged] &= ~HAND_DISPLAY_INVISIBLE_CARD;
-		redraw_card (hand, dragged);
+	printf ("drag end %d\n", handdisp->cur_drag);
+	if (handdisp->cur_drag >= 0) {
+		handdisp->cards[handdisp->cur_drag] &= ~HAND_DISPLAY_INVISIBLE_CARD;
+		redraw_card (hand, handdisp->cur_drag);
 	}
+	handdisp->cur_drag = -1;
 	gtk_widget_destroy (drag_win);
 	drag_win = NULL;
 }
@@ -753,7 +757,7 @@ setup_dnd (HandDisplay *handdisp)
 	gtk_drag_dest_set(
 		hand,
 		GTK_DEST_DEFAULT_MOTION |
-		GTK_DEST_DEFAULT_HIGHLIGHT |
+		// GTK_DEST_DEFAULT_HIGHLIGHT |
 		GTK_DEST_DEFAULT_DROP,
 		target_entry,
 		1,
@@ -849,7 +853,7 @@ hand_display_init (HandDisplay *handdisp)
 	handdisp->card_score_neg = 0;
 	handdisp->best_card_score = HAND_DISPLAY_NO_SCORE;
 
-	handdisp->cur_focus = handdisp->cur_click = -1;
+	handdisp->cur_focus = handdisp->cur_click = handdisp->cur_drag = -1;
 }
 
 /* public interface */
