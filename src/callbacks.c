@@ -937,7 +937,6 @@ void
 on_button_prev_board_clicked           (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	printf ("prev cur %d\n", win->cur);
 	if (win->cur == 0) {
 		board_statusbar (_("No previous board"));
 		return;
@@ -954,7 +953,6 @@ void
 on_button_next_board_clicked           (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	printf ("next cur %d\n", win->cur);
 	if (win->cur == win->n_boards - 1) {
 		board_statusbar (_("No next board"));
 		return;

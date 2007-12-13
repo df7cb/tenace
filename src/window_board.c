@@ -339,9 +339,11 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
+	/*
 	printf("Dropped: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
 	if (on_card >= 0)
 		printf("Dropped on: %s.\n", card_string(on_card)->str);
+	*/
 
 	if (b->dealt_cards[card] && b->dealt_cards[card] == *seatp) /* card didn't move */
 		PROTECT_RETURN;
@@ -390,7 +392,7 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 		GtkTooltip *tooltip, window_board_t *bidding_store)
 {
 	if (keyboard_mode) {
-		printf ("no ponies for keyboard users\n");
+		printf ("FIXME: keyboard usage\n");
 		return FALSE;
 	}
 	GtkTreeIter iter;

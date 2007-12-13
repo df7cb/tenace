@@ -727,7 +727,6 @@ static void
 hand_display_drag_end (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	printf ("drag end %d\n", handdisp->cur_drag);
 	if (handdisp->cur_drag >= 0) {
 		handdisp->cards[handdisp->cur_drag] &= ~HAND_DISPLAY_INVISIBLE_CARD;
 		redraw_card (hand, handdisp->cur_drag);
