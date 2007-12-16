@@ -34,7 +34,6 @@ typedef struct _window_board_t {
 	int show_played_cards;
 	seat show_hands;
 	seat show_dd_scores;
-	seat autoplay;
 	int card_width;
 
 	/* boards */
@@ -69,7 +68,6 @@ extern int protect; /* inhibit infinite loops in handlers */
 /* interface */
 
 void show_board (board *b, redraw_t redraw);
-void start_autoplay ();
 
 int board_window_append_board (window_board_t *win, board *b); /* returns number of appended board */
 void board_window_init ();

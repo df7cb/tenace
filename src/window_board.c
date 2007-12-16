@@ -35,7 +35,6 @@
 window_board_t *win; // FIXME static?
 int protect = 0;
 static GString *rcfile = 0;
-static int autoplay_running = 0;
 
 static GdkColor bidding_non_vuln = { 0, 0.8*65535, 0.8*65535, 0.8*65535 };
 static GdkColor bidding_vuln = { 0, 0.8*65535, 0, 0 };
@@ -292,7 +291,6 @@ static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 
 	if (play_card(b, *seatp, card)) {
 		redraw = 1;
-		start_autoplay ();
 	}
 
 	if (redraw)
@@ -416,28 +414,6 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	gtk_tree_model_get (GTK_TREE_MODEL (win->bidding_store), &iter, 2 * i + 1, &alert, -1);
 	gtk_tooltip_set_markup (tooltip, !alert || *alert ? alert : _("(no explanation)"));
 	return TRUE;
-}
-
-static gboolean autoplay ()
-{
-	board *b = CUR_BOARD;
-	if (!seat_mask (b->current_turn, win->autoplay))
-		return autoplay_running = FALSE;
-
-	compute_dd_scores (b);
-
-	printf ("auto %c\n", "WNES"[b->current_turn - 1]);
-	int i = next_card (b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD);
-	return autoplay_running = i;
-}
-
-void start_autoplay ()
-{
-	if (autoplay_running)
-		return;
-	if (autoplay ())
-		g_timeout_add (1000, autoplay, NULL);
 }
 
 /* infrastructure */
@@ -577,7 +553,6 @@ board_window_init (window_board_t *win)
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;
 	win->show_dd_scores = seat_all;
-	win->autoplay = seat_none;
 	win->card_width = 80;
 
 	win->filename = NULL;
