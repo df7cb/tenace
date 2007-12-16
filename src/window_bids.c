@@ -23,8 +23,15 @@
 #include "window_board.h"
 
 static GtkWidget *window_bids = 0;
-static GtkTable *bids_table;
-//static GtkButton *bids_button[52];
+
+static void
+bid_clicked (GtkWidget *lab, int *bid)
+{
+	printf ("bid %d clicked\n", *bid);
+	board *b = CUR_BOARD;
+	board_append_bid (b, *bid);
+	show_board (b, REDRAW_BIDDING);
+}
 
 void
 window_bids_init ()
@@ -32,26 +39,35 @@ window_bids_init ()
 	if (window_bids)
 		return;
 
+	static int pass = bid_pass, x = bid_x, xx = bid_xx;
+	static int bid[35];
+
 	window_bids = create_window_bids ();
 	gtk_widget_show (window_bids);
-	bids_table = GTK_TABLE(lookup_widget(window_bids, "bids_table"));
+	GtkTable *bids_table = GTK_TABLE(lookup_widget(window_bids, "bids_table"));
 	assert (bids_table);
 	GtkWidget *lab;
 
-	lab = gtk_button_new_with_label ("PASS");
+	lab = gtk_button_new_with_label (_("PASS"));
 	gtk_table_attach (bids_table, lab, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
-	lab = gtk_button_new_with_label ("X");
+	g_signal_connect (lab, "clicked", G_CALLBACK (bid_clicked), &pass);
+	lab = gtk_button_new_with_label (_("X"));
 	gtk_table_attach (bids_table, lab, 3, 4, 0, 1, GTK_FILL, 0, 0, 0);
-	lab = gtk_button_new_with_label ("XX");
+	g_signal_connect (lab, "clicked", G_CALLBACK (bid_clicked), &x);
+	lab = gtk_button_new_with_label (_("XX"));
 	gtk_table_attach (bids_table, lab, 4, 5, 0, 1, GTK_FILL, 0, 0, 0);
+	g_signal_connect (lab, "clicked", G_CALLBACK (bid_clicked), &xx);
 
 	int d, l;
 	for (l = 1; l <= 7; l++) {
 		for (d = 0; d <= 4; d++) {
 			GString *b = bid_string (5 * l + d, 0);
-			lab = gtk_button_new_with_label (b->str);
+			lab = gtk_button_new_with_label (_(b->str));
+			gtk_label_set_use_markup (gtk_bin_get_child (lab), TRUE);
 			gtk_table_attach(bids_table, lab, d, d+1, l, l+1, GTK_FILL, 0, 0, 0);
-			//bids_label[5 * l + d] = GTK_LABEL(lab);
+			bid[5 * (l - 1) + d] = 5 * l + d;
+			g_signal_connect (lab, "clicked",
+					G_CALLBACK (bid_clicked), bid + (5 * (l - 1) + d));
 		}
 	}
 	gtk_widget_show_all (window_bids);

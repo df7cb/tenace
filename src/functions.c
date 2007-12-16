@@ -140,7 +140,7 @@ GString *bid_string (card c, int alert)
 		g_string_printf(s, "<span%s>‒</span>", bg); /* FIGURE DASH */
 	} else if (c == bid_x) {
 		g_string_printf(s, _("<span%s>X</span>"), bg);
-	} else if (c == bid_x) {
+	} else if (c == bid_xx) {
 		g_string_printf(s, _("<span%s>XX</span>"), bg);
 	} else {
 		switch (DENOM(c)) {

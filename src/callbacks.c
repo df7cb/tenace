@@ -89,7 +89,7 @@ void
 on_ausschneiden1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
@@ -97,7 +97,7 @@ void
 on_kopieren1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
@@ -105,7 +105,7 @@ void
 on_einf__gen1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
@@ -113,7 +113,7 @@ void
 on_l__schen1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
@@ -730,7 +730,7 @@ on_options_cards_filechooser_file_activated
                                         (GtkFileChooser  *filechooser,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
@@ -877,7 +877,7 @@ void
 on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
@@ -885,7 +885,13 @@ void
 on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-
+	board *b = CUR_BOARD;
+	if (b->n_bids) {
+		b->n_bids--;
+		if (b->alerts[b->n_bids])
+			free (b->alerts[b->n_bids]);
+	}
+	show_board(b, REDRAW_BIDDING);
 }
 
 
@@ -894,7 +900,7 @@ void
 on_append1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+assert(0);
 }
 
 
