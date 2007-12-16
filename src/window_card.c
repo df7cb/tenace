@@ -31,7 +31,7 @@ card_window_update (seat *cards)
 {
 	if (!window_card)
 		return;
-	static *cards_ptr = NULL;
+	static seat *cards_ptr = NULL;
 	if (cards)
 		cards_ptr = cards;
 	if (!cards_ptr)
@@ -125,7 +125,7 @@ window_card_init ()
 	window_card = create_window_card ();
 	GtkWidget *vbox = lookup_widget (window_card, "vbox2");
 	gtk_widget_show (w);
-	gtk_box_pack_start_defaults (vbox, w);
+	gtk_box_pack_start_defaults (GTK_BOX (vbox), w);
 	gtk_widget_show (window_card);
 	card_window_update(CUR_BOARD->dealt_cards);
 }

@@ -89,7 +89,6 @@ static char *lin_bid(card bid)
 	return buf;
 }
 
-// pn|Frederic,gm,Myon,mecky|st||md|4S27KAHKD49C3589TJ,S36H48AD358KC27QK,STJH259TJQD26TJQC,|rh||ah|Board 14|sv|o|mb|p|mb|p|mb|1D|mb|2H|mb|2S|mb|p|mb|p|mb|p|pg||pc|HK|pc|H4|pc|H2|pc|H6|pg||pc|CJ|pc|CK|pc|ST|pc|C4|pg||pc|H9|pc|H3|pc|S2|pc|H8|pg||pc|CT|pc|C2|pc|SJ|pc|C6|pg||pc|HQ|pc|H7|pc|S7|pc|HA|pg||pc|D9|pc|D3|pc|DT|pc|DA|pg||pc|S4|pc|SK|pc|S3|pc|H5|pg||pc|SA|pc|S6|pc|HT|pc|S5|pg||pc|D4|pc|DK|pc|D2|pc|D7|pg||pc|C7|pc|D6|pc|CA|pc|C3|pg||mc|6|
 static int board_save_lin(board *b, const char *filename)
 {
 	FILE *f;

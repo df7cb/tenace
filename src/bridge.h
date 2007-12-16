@@ -110,6 +110,7 @@ int card_is_good (board *b, card c);
 void board_clear(board *b);
 void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled);
 board *board_new(void);
+board *board_dup (board *b0);
 void board_free(board *b);
 
 int assert_board(board *b);

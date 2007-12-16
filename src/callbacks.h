@@ -156,10 +156,6 @@ on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_board1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
