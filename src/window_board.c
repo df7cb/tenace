@@ -613,7 +613,7 @@ board_set_dealer (seat dealer)
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->dealer = dealer;
-	// FIXME: redraw something?
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_BIDDING);
 	PROTECT_END;
 }
 
