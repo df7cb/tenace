@@ -125,6 +125,8 @@ int next_card(board *b);
 void board_fast_forward(board *b);
 
 void board_append_bid(board *b, card bid);
-void board_set_alert (board *b, char *alert);
+void board_remove_bid (board *b);
+void board_clear_bidding (board *b);
+void board_set_alert (board *b, const char *alert);
 
 #endif

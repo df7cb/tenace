@@ -412,11 +412,31 @@ void board_append_bid(board *b, card bid)
 		for (i = b->n_bid_alloc >> 2; i < b->n_bid_alloc; i++)
 			b->alerts[i] = NULL;
 	}
-	b->bidding[b->n_bids++] = bid;
+	b->bidding[b->n_bids] = bid;
+	b->alerts[b->n_bids] = NULL;
+	b->n_bids++;
 }
 
 void
-board_set_alert (board *b, char *alert)
+board_remove_bid (board *b)
+{
+	assert (b->n_bids > 0);
+	b->n_bids--;
+	if (b->alerts[b->n_bids]) {
+		free (b->alerts[b->n_bids]);
+		b->alerts[b->n_bids] = NULL;
+	}
+}
+
+void
+board_clear_bidding (board *b)
+{
+	while (b->n_bids > 0)
+		board_remove_bid (b);
+}
+
+void
+board_set_alert (board *b, const char *alert)
 {
 	assert (b->n_bids > 0);
 	if (b->alerts[b->n_bids - 1])
@@ -425,6 +445,4 @@ board_set_alert (board *b, char *alert)
 		b->alerts[b->n_bids - 1] = strdup (alert);
 	else
 		b->alerts[b->n_bids - 1] = NULL;
-	//if (alert)
-		//printf ("alert: %s\n");
 }

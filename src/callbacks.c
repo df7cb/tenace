@@ -877,7 +877,9 @@ void
 on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-assert(0);
+	board *b = CUR_BOARD;
+	board_clear_bidding (b);
+	show_board(b, REDRAW_BIDDING);
 }
 
 
@@ -887,13 +889,10 @@ on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	if (b->n_bids) {
-		b->n_bids--;
-		if (b->alerts[b->n_bids])
-			free (b->alerts[b->n_bids]);
+		board_remove_bid (b);
 	}
 	show_board(b, REDRAW_BIDDING);
 }
-
 
 
 void

@@ -110,8 +110,18 @@ bidding_update (window_board_t *win, board *b)
 	*/
 
 	int col = b->dealer - 1;
-	int last_col = 5;
 	GtkTreeIter iter;
+
+	if (!b->n_bids) {
+		gtk_list_store_append (win->bidding_store, &iter);
+		gtk_list_store_set (win->bidding_store, &iter,
+				2 * col, _("•"),
+				2 * col + 1, _("Dealer"),
+				-1);
+		return;
+	}
+
+	int last_col = 5;
 	for (i = 0; i < b->n_bids; i++) {
 		char buf[100];
 		if (last_col > col)

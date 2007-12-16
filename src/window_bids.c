@@ -27,9 +27,18 @@ static GtkWidget *window_bids = 0;
 static void
 bid_clicked (GtkWidget *lab, int *bid)
 {
-	printf ("bid %d clicked\n", *bid);
+	static GtkWidget *alert_entry = NULL;
+	if (! alert_entry)
+		alert_entry = lookup_widget (window_bids, "alert_entry");
+
 	board *b = CUR_BOARD;
 	board_append_bid (b, *bid);
+
+	const char *alert = gtk_entry_get_text (GTK_ENTRY (alert_entry));
+	if (*alert) {
+		board_set_alert (b, !strcmp (alert, "!") ? "" : alert);
+		gtk_entry_set_text (GTK_ENTRY (alert_entry), "");
+	}
 	show_board (b, REDRAW_BIDDING);
 }
 
@@ -63,7 +72,7 @@ window_bids_init ()
 		for (d = 0; d <= 4; d++) {
 			GString *b = bid_string (5 * l + d, 0);
 			lab = gtk_button_new_with_label (_(b->str));
-			gtk_label_set_use_markup (gtk_bin_get_child (lab), TRUE);
+			gtk_label_set_use_markup (GTK_LABEL (gtk_bin_get_child (GTK_BIN (lab))), TRUE);
 			gtk_table_attach(bids_table, lab, d, d+1, l, l+1, GTK_FILL, 0, 0, 0);
 			bid[5 * (l - 1) + d] = 5 * l + d;
 			g_signal_connect (lab, "clicked",
