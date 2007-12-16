@@ -66,7 +66,7 @@ main (int argc, char *argv[])
   read_config (win);
 
   if (argc > 1) {
-	if (!board_load(argv[1])) {
+	if (! board_load (win, argv[1])) {
 		printf ("open failed.\n");
 		exit (1);
 	}

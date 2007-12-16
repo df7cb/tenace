@@ -56,15 +56,22 @@ void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board_load_dialog ();
+	board_load_dialog (win, 0);
 }
+
+void
+on_append1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board_load_dialog (win, 1);
+}
+
 
 void
 on_speichern1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board *b = CUR_BOARD;
-	board_save_dialog(b, 0);
+	board_save_dialog (win, 0);
 }
 
 
@@ -72,8 +79,7 @@ void
 on_speichern_unter1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	board *b = CUR_BOARD;
-	board_save_dialog(b, 1);
+	board_save_dialog (win, 1);
 }
 
 
@@ -152,7 +158,7 @@ void
 on_button_hand_open_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	board_load_dialog ();
+	board_load_dialog (win, 0);
 }
 
 
@@ -160,8 +166,7 @@ void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	board *b = CUR_BOARD;
-	board_save_dialog(b, 0);
+	board_save_dialog(win, 0);
 }
 
 
@@ -911,14 +916,6 @@ on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
 		board_remove_bid (b);
 	}
 	show_board(b, REDRAW_BIDDING);
-}
-
-
-void
-on_append1_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-assert(0);
 }
 
 

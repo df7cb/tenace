@@ -542,7 +542,11 @@ board_window_append_board (window_board_t *win, board *b)
 		g_string_printf (b->name, _("Board %d"), win->n_boards + 1);
 	}
 
-	if (win->n_boards >= win->n_boards_alloc) {
+	if (! win->n_boards_alloc) {
+		win->n_boards_alloc = 4;
+		win->boards = malloc (win->n_boards_alloc * sizeof (board *));
+		assert(win->boards);
+	} else if (win->n_boards >= win->n_boards_alloc) {
 		win->n_boards_alloc <<= 2;
 		win->boards = realloc(win->boards, win->n_boards_alloc * sizeof (board*));
 		assert(win->boards);

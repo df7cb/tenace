@@ -1,7 +1,10 @@
-GString *board_format_line(board *b, char handsep, char suitsep);
-void board_save(board *b, char *filename);
+#include "window_board.h"
+
 int board_parse_line(const char *line, board *b, char handsep, char suitsep);
-int board_load (char *fname);
-int board_load_dialog (void);
-void board_save_dialog (board *b, int save_as);
+int board_load (window_board_t *win1, char *fname);
+int board_load_dialog (window_board_t *win, int append);
+
+GString *board_format_line(board *b, char handsep, char suitsep);
+int board_save (window_board_t *win, char *filename);
+int board_save_dialog (window_board_t *win, int save_as);
 

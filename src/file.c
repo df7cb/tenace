@@ -15,138 +15,19 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "bridge.h"
 #include "functions.h"
-#include "window_board.h"
 #include "window_card.h"
+#include "file.h"
 
-GString *board_format_line(board *b, char handsep, char suitsep)
-{
-	GString *out = g_string_new(NULL);
-
-	int h;
-	for (h = 1; h < 5; h++) {
-		int c;
-		for (c = 51; c >= 39; c--)
-			if (b->dealt_cards[c] == h)
-				g_string_append_printf(out, "%c", rank_char(RANK(c)));
-		g_string_append_printf(out, "%c", suitsep);
-		for (c = 38; c >= 26; c--)
-			if (b->dealt_cards[c] == h)
-				g_string_append_printf(out, "%c", rank_char(RANK(c)));
-		g_string_append_printf(out, "%c", suitsep);
-		for (c = 25; c >= 13; c--)
-			if (b->dealt_cards[c] == h)
-				g_string_append_printf(out, "%c", rank_char(RANK(c)));
-		g_string_append_printf(out, "%c", suitsep);
-		for (c = 12; c >= 0; c--)
-			if (b->dealt_cards[c] == h)
-				g_string_append_printf(out, "%c", rank_char(RANK(c)));
-
-		if (h < 4)
-			g_string_append_printf(out, "%c", handsep);
-	}
-	return out;
-}
-
-static char *lin_card_string(board *b)
-{
-	static char out[39+16+4+1];
-	int i = 0, h;
-	for (h = 4; h != 3; h = (h == 4 ? 1 : h + 1)) {
-		int c;
-		out[i++] = 'S';
-		for (c = 39; c < 52; c++)
-			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
-		out[i++] = 'H';
-		for (c = 26; c < 39; c++)
-			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
-		out[i++] = 'D';
-		for (c = 13; c < 26; c++)
-			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
-		out[i++] = 'C';
-		for (c = 0; c < 13; c++)
-			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
-		out[i++] = ',';
-	}
-	return out;
-}
-
-static char *lin_bid(card bid)
-{
-	static char buf[3];
-	if (bid == bid_pass)
-		return "p";
-	else if (bid == bid_x)
-		return "d";
-	else if (bid == bid_xx)
-		return "r";
-	sprintf(buf, "%d%c", LEVEL(bid), "CDHSN"[DENOM(bid)]);
-	return buf;
-}
-
-static int board_save_lin(board *b, const char *filename)
-{
-	FILE *f;
-	int i;
-
-	if (!(f = fopen(filename, "w"))) {
-		perror(filename);
-		return -1;
-	}
-
-	fprintf(f, "pn|%s,%s,%s,%s|", b->hand_name[south-1]->str, b->hand_name[west-1]->str,
-		b->hand_name[north-1]->str, b->hand_name[east-1]->str);
-	fprintf(f, "st||");
-	fprintf(f, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b));
-	fprintf(f, "rh||");
-	fprintf(f, "ah|%s|", b->name->str);
-	fprintf(f, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
-					: (b->vuln[1] ? 'e' : 'o'));
-	for (i = 0; i < b->n_bids; i++)
-		fprintf(f, "mb|%s|", lin_bid(b->bidding[i]));
-	for (i = 0; i < 52; i++) {
-		if (i % 4 == 0)
-			fprintf(f, "pg||");
-		card c = b->played_cards[i];
-		if (c < 0)
-			break;
-		if (c == claim_rest) {
-			fprintf(f, "mc|%d|", 0); // TODO: what to claim here?
-			break;
-		}
-		fprintf(f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
-	}
-	fprintf(f, "\n");
-	fclose(f);
-	return 1;
-}
-
-void board_save(board *b, char *filename)
-{
-	int i;
-	if ((i = strlen(filename)) > 4) {
-		if (!strcmp(filename + i - 4, ".lin")) {
-			board_save_lin(b, filename);
-		} else if (!strcmp(filename + i - 4, ".pbn")) {
-			printf("pbn not yet implemented\n");
-		} else {
-			printf("unrecognized suffix\n");
-			/*
-			int h;
-			printf("%s\n", b->name->str);
-			for (h = 1; h < 5; h++) {
-				printf("%s\n", b->hand_name[h-1]->str);
-				printf("%s\n", hand_string(b, h)->str);
-			}
-			*/
-		}
-	}
-}
+/*
+ * loading
+ */
 
 static char *sane_strtok_r (char *str, const char *delim, char **saveptr)
 {
@@ -175,7 +56,7 @@ static char *sane_strtok_r (char *str, const char *delim, char **saveptr)
 	contract = 0; \
 	doubled = 0;
 static int
-board_parse_lin (char *line, FILE *f)
+board_parse_lin (window_board_t *win, char *line, FILE *f)
 {
 	char *saveptr;
 	char *tok;
@@ -392,42 +273,45 @@ int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 }
 
 int
-board_load(char *fname)
+board_load (window_board_t *win, char *fname)
 {
 	FILE *f;
 	char buf[1024];
-	if (!(f = fopen(fname, "r"))) {
-		perror(fname);
+	if (! (f = fopen (fname, "r")))
 		return 0;
-	}
-	if (fgets(buf, 1023, f) == NULL)
+	if (fgets (buf, 1023, f) == NULL)
 		return 0;
 
 	int ret;
 	if (!strncmp(buf, "pn", 2) || !strncmp(buf, "vg", 2)) {
-		ret = board_parse_lin(buf, f);
+		ret = board_parse_lin (win, buf, f);
 	} else {
 		board *b = board_new ();
 		ret = board_parse_line(buf, b, ' ', '.');
 		if (ret)
 			board_window_append_board (win, b);
-		else
+		else {
+			errno = EMEDIUMTYPE;
 			board_free (b);
+		}
 	}
+	int e = errno;
 	fclose(f);
 	if (ret) {
 		if (win->filename)
 			g_string_free (win->filename, TRUE);
 		win->filename = g_string_new (fname);
 	}
+	errno = e;
 	return ret;
 }
 
 int
-board_load_dialog (void)
+board_load_dialog (window_board_t *win, int append)
 {
 	GtkWidget *dialog;
 	int ret = 0;
+	int i;
 
 	dialog = gtk_file_chooser_dialog_new ("Open File",
 			GTK_WINDOW (win->window),
@@ -437,29 +321,203 @@ board_load_dialog (void)
 			NULL);
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
-		char *filename;
+		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		window_board_t *win1 = malloc(sizeof(window_board_t));
+		win1->n_boards = win1->n_boards_alloc = 0;
+		win1->filename = win1->title = NULL;
 
-		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		if (board_load(filename)) {
-			card_window_update(win->boards[0]->dealt_cards);
-			show_board(win->boards[0], REDRAW_FULL);
+		if (board_load (win1, filename)) {
+			if (append) {
+				int n = win->n_boards;
+				for (i = 0; i < win1->n_boards; i++)
+					board_window_append_board (win, win1->boards[i]);
+				if (win->n_boards > n) /* set to first new board */
+					win->cur = n;
+			} else {
+				if (win->filename)
+					g_string_free (win->filename, TRUE);
+				win->filename = win1->filename;
+				if (win->title)
+					g_string_free (win->title, TRUE);
+				win->title = win1->title;
+				for (i = 0; i < win->n_boards_alloc; i++)
+					if (win->boards[i])
+						board_free (win->boards[i]);
+				win->boards = win1->boards;
+				win->n_boards = win1->n_boards;
+				win->n_boards_alloc = win1->n_boards_alloc;
+				win->cur = 0;
+			}
+
+			card_window_update(win->boards[win->cur]->dealt_cards);
+			show_board(win->boards[win->cur], REDRAW_FULL);
 			ret = 1;
 		} else {
-			// FIXME: the control flow here is totally bad
-			printf ("open failed.\n");
+			GtkWidget *error = gtk_message_dialog_new (GTK_WINDOW (win->window),
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_CLOSE,
+					"Error loading file '%s': %s",
+					filename, g_strerror (errno));
+			gtk_dialog_run (GTK_DIALOG (error));
+			gtk_widget_destroy (error);
 		}
+
+		free (win1);
 	}
 
 	gtk_widget_destroy (dialog);
 	return ret;
 }
 
-void board_save_dialog (board *b, int save_as)
+/*
+ * saving
+ */
+
+GString *board_format_line(board *b, char handsep, char suitsep)
+{
+	GString *out = g_string_new(NULL);
+
+	int h;
+	for (h = 1; h < 5; h++) {
+		int c;
+		for (c = 51; c >= 39; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+		g_string_append_printf(out, "%c", suitsep);
+		for (c = 38; c >= 26; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+		g_string_append_printf(out, "%c", suitsep);
+		for (c = 25; c >= 13; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+		g_string_append_printf(out, "%c", suitsep);
+		for (c = 12; c >= 0; c--)
+			if (b->dealt_cards[c] == h)
+				g_string_append_printf(out, "%c", rank_char(RANK(c)));
+
+		if (h < 4)
+			g_string_append_printf(out, "%c", handsep);
+	}
+	return out;
+}
+
+static char *lin_card_string(board *b)
+{
+	static char out[39+16+4+1];
+	int i = 0, h;
+	for (h = 4; h != 3; h = (h == 4 ? 1 : h + 1)) {
+		int c;
+		out[i++] = 'S';
+		for (c = 39; c < 52; c++)
+			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
+		out[i++] = 'H';
+		for (c = 26; c < 39; c++)
+			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
+		out[i++] = 'D';
+		for (c = 13; c < 26; c++)
+			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
+		out[i++] = 'C';
+		for (c = 0; c < 13; c++)
+			if (b->dealt_cards[c] == h) out[i++] = rank_char(RANK(c));
+		out[i++] = ',';
+	}
+	return out;
+}
+
+static char *lin_bid(card bid)
+{
+	static char buf[3];
+	if (bid == bid_pass)
+		return "p";
+	else if (bid == bid_x)
+		return "d";
+	else if (bid == bid_xx)
+		return "r";
+	sprintf(buf, "%d%c", LEVEL(bid), "CDHSN"[DENOM(bid)]);
+	return buf;
+}
+
+static int
+board_save_lin(window_board_t *win, char *filename)
+{
+	FILE *f;
+	int i;
+
+	if (!(f = fopen(filename, "w")))
+		return 0;
+
+	board *b = CUR_BOARD; // FIXME
+
+	fprintf(f, "pn|%s,%s,%s,%s|", b->hand_name[south-1]->str, b->hand_name[west-1]->str,
+		b->hand_name[north-1]->str, b->hand_name[east-1]->str);
+	fprintf(f, "st||");
+	fprintf(f, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b));
+	fprintf(f, "rh||");
+	fprintf(f, "ah|%s|", b->name->str);
+	fprintf(f, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
+					: (b->vuln[1] ? 'e' : 'o'));
+	for (i = 0; i < b->n_bids; i++)
+		fprintf(f, "mb|%s|", lin_bid(b->bidding[i]));
+	for (i = 0; i < 52; i++) {
+		if (i % 4 == 0)
+			fprintf(f, "pg||");
+		card c = b->played_cards[i];
+		if (c < 0)
+			break;
+		if (c == claim_rest) {
+			fprintf(f, "mc|%d|", 0); // TODO: what to claim here?
+			break;
+		}
+		fprintf(f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
+	}
+
+	int ret = 1, e = 0;
+	if (fprintf (f, "\n") <= 0) {
+		ret = 0;
+		e = errno;
+	}
+	fclose(f);
+	errno = e;
+	return ret;
+}
+
+int
+board_save(window_board_t *win, char *filename)
+{
+	int len, ret;
+	if ((len = strlen(filename)) > 4) {
+		if (!strcmp(filename + len - 4, ".lin")) {
+			ret = board_save_lin (win, filename);
+		} else if (!strcmp(filename + len - 4, ".pbn")) {
+			printf("pbn not yet implemented\n");
+			ret = 0;
+			errno = EMEDIUMTYPE;
+		} else {
+			printf("unrecognized suffix\n");
+			ret = 0;
+			errno = EMEDIUMTYPE;
+			/*
+			int h;
+			printf("%s\n", b->name->str);
+			for (h = 1; h < 5; h++) {
+				printf("%s\n", b->hand_name[h-1]->str);
+				printf("%s\n", hand_string(b, h)->str);
+			}
+			*/
+		}
+	}
+	return ret;
+}
+
+int
+board_save_dialog (window_board_t *win, int save_as)
 {
 	GtkWidget *dialog;
 
 	if (!save_as && win->filename) {
-		board_save(b, win->filename->str);
+		board_save(win, win->filename->str);
 		return;
 	}
 
@@ -482,12 +540,16 @@ void board_save_dialog (board *b, int save_as)
 		char *filename;
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		board_save (win, filename);
+
+		//XXX
 		if (win->filename)
 			g_string_free(win->filename, TRUE);
 		win->filename = g_string_new(filename);
 		g_free (filename);
-		board_save (b, win->filename->str);
+		show_board (CUR_BOARD, REDRAW_TITLE);
 	}
 
 	gtk_widget_destroy (dialog);
+	return 1;
 }
