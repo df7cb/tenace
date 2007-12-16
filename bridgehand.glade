@@ -68,7 +68,7 @@
 		      <signal name="activate" handler="on_append1_activate" last_modification_time="Tue, 27 Nov 2007 22:21:59 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image294">
+			<widget class="GtkImage" id="image307">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-paste</property>
 			  <property name="icon_size">1</property>
@@ -142,7 +142,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image295">
+			<widget class="GtkImage" id="image308">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-home</property>
 			  <property name="icon_size">1</property>
@@ -161,7 +161,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_West</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_dealer_west1_activate" last_modification_time="Wed, 13 Jun 2007 21:59:48 GMT"/>
 			    </widget>
 			  </child>
@@ -171,7 +171,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_North</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">dealer_west1</property>
 			      <signal name="activate" handler="on_dealer_north1_activate" last_modification_time="Wed, 13 Jun 2007 21:59:48 GMT"/>
 			    </widget>
@@ -182,7 +182,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_East</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">dealer_west1</property>
 			      <signal name="activate" handler="on_dealer_east1_activate" last_modification_time="Wed, 13 Jun 2007 21:59:48 GMT"/>
 			    </widget>
@@ -210,7 +210,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image296">
+			<widget class="GtkImage" id="image309">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -229,7 +229,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">N_one</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_vuln_none_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
 			  </child>
@@ -239,7 +239,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_North-South</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">vuln_none</property>
 			      <signal name="activate" handler="on_vuln_ns_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
@@ -250,7 +250,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_East-West</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">vuln_none</property>
 			      <signal name="activate" handler="on_vuln_ew_activate" last_modification_time="Sat, 17 Feb 2007 00:50:04 GMT"/>
 			    </widget>
@@ -285,7 +285,7 @@
 		      <signal name="activate" handler="on_deal_new_activate" last_modification_time="Sun, 22 Jul 2007 21:36:40 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image297">
+			<widget class="GtkImage" id="image310">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-new</property>
 			  <property name="icon_size">1</property>
@@ -299,38 +299,29 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="ausschneiden1">
+		    <widget class="GtkImageMenuItem" id="deal_cut">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-cut</property>
 		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_ausschneiden1_activate" last_modification_time="Thu, 29 Dec 2005 19:20:17 GMT"/>
+		      <signal name="activate" handler="on_deal_cut_activate" last_modification_time="Sun, 16 Dec 2007 14:07:39 GMT"/>
 		    </widget>
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="kopieren1">
+		    <widget class="GtkImageMenuItem" id="deal_copy">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-copy</property>
 		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_kopieren1_activate" last_modification_time="Thu, 29 Dec 2005 19:20:17 GMT"/>
+		      <signal name="activate" handler="on_deal_copy_activate" last_modification_time="Sun, 16 Dec 2007 14:07:39 GMT"/>
 		    </widget>
 		  </child>
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="einfügen1">
+		    <widget class="GtkImageMenuItem" id="deal_paste">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-paste</property>
 		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_einfügen1_activate" last_modification_time="Thu, 29 Dec 2005 19:20:17 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkImageMenuItem" id="löschen1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-delete</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_löschen1_activate" last_modification_time="Thu, 29 Dec 2005 19:20:17 GMT"/>
+		      <signal name="activate" handler="on_deal_paste_activate" last_modification_time="Sun, 16 Dec 2007 14:07:39 GMT"/>
 		    </widget>
 		  </child>
 
@@ -348,7 +339,7 @@
 		      <signal name="activate" handler="on_deal_clear_activate" last_modification_time="Tue, 20 Feb 2007 17:40:03 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image298">
+			<widget class="GtkImage" id="image311">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-delete</property>
 			  <property name="icon_size">1</property>
@@ -369,7 +360,7 @@
 		      <signal name="activate" handler="on_deal_random_activate" last_modification_time="Mon, 19 Feb 2007 01:09:50 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image299">
+			<widget class="GtkImage" id="image312">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-select-color</property>
 			  <property name="icon_size">1</property>
@@ -389,7 +380,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image300">
+			<widget class="GtkImage" id="image313">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -501,7 +492,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image301">
+			<widget class="GtkImage" id="image314">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -520,7 +511,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_1</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_level1_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
 			  </child>
@@ -530,7 +521,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_2</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level2_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -541,7 +532,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_3</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level3_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -552,7 +543,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_4</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level4_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -563,7 +554,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_5</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level5_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -574,7 +565,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_6</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">level1</property>
 			      <signal name="activate" handler="on_level6_activate" last_modification_time="Sat, 03 Feb 2007 20:47:32 GMT"/>
 			    </widget>
@@ -600,7 +591,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">No _Trump</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <signal name="activate" handler="on_contract_no_trump1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
 		  </child>
@@ -610,7 +601,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♠ S_pades</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_spades1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -621,7 +612,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♥ _Hearts</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_hearts1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -632,7 +623,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">♦ _Diamonds</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">contract_no_trump1</property>
 		      <signal name="activate" handler="on_contract_diamonds1_activate" last_modification_time="Sat, 03 Feb 2007 20:46:09 GMT"/>
 		    </widget>
@@ -656,7 +647,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image302">
+			<widget class="GtkImage" id="image315">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-stop</property>
 			  <property name="icon_size">1</property>
@@ -675,7 +666,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_No double</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_level_doubled0_activate" last_modification_time="Wed, 13 Jun 2007 21:46:31 GMT"/>
 			    </widget>
 			  </child>
@@ -685,7 +676,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">X _Doubled</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">level_doubled0</property>
 			      <signal name="activate" handler="on_level_doubled1_activate" last_modification_time="Sat, 03 Feb 2007 20:56:20 GMT"/>
 			    </widget>
@@ -717,7 +708,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_West</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <signal name="activate" handler="on_declarer_west1_activate" last_modification_time="Sat, 03 Feb 2007 20:43:59 GMT"/>
 		    </widget>
 		  </child>
@@ -727,7 +718,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_North</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">declarer_west1</property>
 		      <signal name="activate" handler="on_declarer_north1_activate" last_modification_time="Sat, 03 Feb 2007 20:43:59 GMT"/>
 		    </widget>
@@ -738,7 +729,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_East</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">declarer_west1</property>
 		      <signal name="activate" handler="on_declarer_east1_activate" last_modification_time="Sat, 03 Feb 2007 20:43:59 GMT"/>
 		    </widget>
@@ -793,7 +784,7 @@
 		      <signal name="activate" handler="on_double_dummy1_activate" last_modification_time="Fri, 16 Feb 2007 22:28:46 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image303">
+			<widget class="GtkImage" id="image316">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-convert</property>
 			  <property name="icon_size">1</property>
@@ -815,7 +806,7 @@
 		      <signal name="activate" handler="on_parscore1_activate" last_modification_time="Fri, 16 Feb 2007 22:28:46 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image304">
+			<widget class="GtkImage" id="image317">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -837,7 +828,7 @@
 		      <signal name="activate" handler="on_set_par1_activate" last_modification_time="Sat, 17 Feb 2007 01:27:52 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image305">
+			<widget class="GtkImage" id="image318">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find-and-replace</property>
 			  <property name="icon_size">1</property>
@@ -881,7 +872,7 @@
 		      <signal name="activate" handler="on_imp_table1_activate" last_modification_time="Sat, 17 Feb 2007 12:03:34 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image306">
+			<widget class="GtkImage" id="image319">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-justify-fill</property>
 			  <property name="icon_size">1</property>
@@ -902,7 +893,7 @@
 		      <signal name="activate" handler="on_info1_activate" last_modification_time="Thu, 29 Dec 2005 19:20:17 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image307">
+			<widget class="GtkImage" id="image320">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-info</property>
 			  <property name="icon_size">1</property>
@@ -945,7 +936,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">East-West</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_handseastwest1_activate" last_modification_time="Sat, 06 Oct 2007 17:30:47 GMT"/>
 			    </widget>
 			  </child>
@@ -955,7 +946,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">North-South</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">handseastwest1</property>
 			      <signal name="activate" handler="on_handsnorthsouth1_activate" last_modification_time="Sat, 06 Oct 2007 17:30:47 GMT"/>
 			    </widget>
@@ -990,7 +981,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">No one</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_ddno_one1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
 			    </widget>
 			  </child>
@@ -1000,7 +991,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">East-West</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">ddno_one1</property>
 			      <signal name="activate" handler="on_ddeastwest1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
 			    </widget>
@@ -1011,7 +1002,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">North-South</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">ddno_one1</property>
 			      <signal name="activate" handler="on_ddnorthsouth1_activate" last_modification_time="Sat, 06 Oct 2007 16:26:32 GMT"/>
 			    </widget>
@@ -1046,7 +1037,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">North-South</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_pos_north_south_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
 			    </widget>
 			  </child>
@@ -1056,7 +1047,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">Declarer</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <property name="group">pos_north_south</property>
 			      <signal name="activate" handler="on_pos_declarer_activate" last_modification_time="Sun, 18 Feb 2007 18:04:00 GMT"/>
 			    </widget>
@@ -1091,7 +1082,7 @@
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">_Text</property>
 			      <property name="use_underline">True</property>
-			      <property name="active">True</property>
+			      <property name="active">False</property>
 			      <signal name="activate" handler="on_style_text_activate" last_modification_time="Mon, 09 Jul 2007 20:12:39 GMT"/>
 			    </widget>
 			  </child>

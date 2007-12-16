@@ -85,38 +85,6 @@ on_beenden1_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_ausschneiden1_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-assert(0);
-}
-
-
-void
-on_kopieren1_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-assert(0);
-}
-
-
-void
-on_einf__gen1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-assert(0);
-}
-
-
-void
-on_l__schen1_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-assert(0);
-}
-
-
 gboolean
 on_window_hand_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -741,6 +709,64 @@ on_deal_new_activate                   (GtkMenuItem     *menuitem,
 	win->cur = board_window_append_board (win, NULL);
 	card_window_update(win->boards[win->cur]->dealt_cards);
 	show_board(win->boards[win->cur], REDRAW_FULL);
+}
+
+
+void
+on_deal_cut_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (! win->n_boards) {
+		board_statusbar (_("No board"));
+		return;
+	}
+	if (win->cutbuf)
+		board_free (win->cutbuf);
+	board *b = CUR_BOARD;
+	win->cutbuf = b;
+	int i;
+	for (i = win->cur; i < win->n_boards - 1; i++)
+		win->boards[i] = win->boards[i + 1];
+	win->n_boards--;
+	win->boards[win->n_boards] = NULL;
+	if (! win->n_boards) { /* last board was cut */
+		board_window_append_board (win, NULL);
+	}
+	if (win->cur == win->n_boards)
+		win->cur--;
+	show_board (win->boards[win->cur], REDRAW_FULL);
+}
+
+
+void
+on_deal_copy_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (! win->n_boards) {
+		board_statusbar (_("No board"));
+		return;
+	}
+	if (win->cutbuf)
+		board_free (win->cutbuf);
+	board *b = CUR_BOARD;
+	win->cutbuf = board_dup (b);
+	assert (b);
+}
+
+
+void
+on_deal_paste_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (! win->cutbuf) {
+		board_statusbar (_("Cut buffer is empty"));
+		return;
+	}
+
+	board *b = board_dup (win->cutbuf);
+	win->cur = board_window_append_board (win, b);
+	g_string_printf (b->name, _("Board %d"), win->cur + 1);
+	show_board (win->boards[win->cur], REDRAW_FULL);
 }
 
 

@@ -146,7 +146,7 @@ void show_board (board *b, redraw_t redraw)
 	if (redraw & REDRAW_BOARD_LIST)
 		board_window_rebuild_board_menu (win);
 
-	if (redraw & REDRAW_TITLE) {
+	if (redraw & (REDRAW_TITLE | REDRAW_CONTRACT)) {
 		g_string_printf(str, "Tenace - %s (%s)", b->name->str,
 			contract_string_asc (b->level, b->trumps, b->declarer, b->doubled));
 		if (win->title) {
@@ -539,7 +539,7 @@ board_window_append_board (window_board_t *win, board *b)
 {
 	if (!b) {
 		b = board_new ();
-		g_string_printf (b->name, "Board %d", win->n_boards + 1);
+		g_string_printf (b->name, _("Board %d"), win->n_boards + 1);
 	}
 
 	if (win->n_boards >= win->n_boards_alloc) {
@@ -572,6 +572,8 @@ board_window_init (window_board_t *win)
 	win->n_boards_alloc = 4;
 	win->n_boards = 0;
 
+	win->cutbuf = NULL;
+
 	win->cur = 0;
 
 	GdkColor bg = { 0, HAND_DISPLAY_TABLE_GDK_BG };
@@ -600,7 +602,7 @@ board_set_declarer (seat declarer)
 	board_rewind(b);
 	b->declarer = declarer;
 	b->current_turn = seat_mod(declarer + 1);
-	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS | REDRAW_NAMES);
+	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS | REDRAW_NAMES | REDRAW_BOARD_LIST);
 	// FIXME: redraw less?
 	PROTECT_END;
 }
@@ -621,7 +623,7 @@ board_set_trumps (suit trumps)
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->trumps = trumps;
-	show_board(b, REDRAW_CONTRACT);
+	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
 }
 
@@ -629,10 +631,11 @@ void
 board_set_level (int level)
 {
 	PROTECT_BEGIN;
+	// FIXME: don't call show_board when called from show_board
 	board *b = CUR_BOARD;
 	b->level = level;
 	calculate_target(b);
-	show_board(b, REDRAW_CONTRACT);
+	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
 }
 
@@ -654,7 +657,7 @@ board_set_doubled (int doubled)
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->doubled = doubled;
-	show_board(b, REDRAW_CONTRACT);
+	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
 }
 

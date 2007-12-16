@@ -44,6 +44,8 @@ typedef struct _window_board_t {
 	int cur;
 	board **boards;
 
+	board *cutbuf;
+
 } window_board_t;
 
 typedef enum _redraw_t {

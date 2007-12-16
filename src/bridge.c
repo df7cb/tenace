@@ -124,6 +124,37 @@ board *board_new(void)
 	return b;
 }
 
+board *
+board_dup (board *b0)
+{
+	int i;
+	board *b = malloc(sizeof(board));
+	assert(b);
+	*b = *b0;
+
+	b->name = g_string_new(b0->name->str);
+	for (i = 0; i < 4; i++) {
+		b->hand_name[i] = g_string_new (b0->hand_name[i]->str);
+	}
+
+	b->current_dd = NULL;
+	for (i = 0; i < 52; i++) {
+		b->next_dd[i] = NULL;
+	}
+
+	b->bidding = calloc(b0->n_bid_alloc, sizeof(card));
+	assert(b->bidding);
+	b->alerts = calloc(b0->n_bid_alloc, sizeof(char *));
+	assert(b->alerts);
+
+	for (i = 0; i < b0->n_bids; i++) {
+		board_append_bid (b, b0->bidding[i]);
+		board_set_alert (b, b0->alerts[i]);
+	}
+
+	return b;
+}
+
 void board_free(board *b)
 {
 	int i;

@@ -21,22 +21,6 @@ void
 on_beenden1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-void
-on_ausschneiden1_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_kopieren1_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_einf__gen1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_l__schen1_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
 gboolean
 on_window_hand_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -471,4 +455,16 @@ on_aboutdialog1_response               (GtkDialog       *dialog,
 gboolean
 on_aboutdialog1_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
+                                        gpointer         user_data);
+
+void
+on_deal_cut_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_deal_copy_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_deal_paste_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
