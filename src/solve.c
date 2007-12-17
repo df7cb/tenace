@@ -282,7 +282,7 @@ void parscore(board *b)
 
 	if (b->par_score == -1) {
 		if (!assert_board(b)) {
-			board_statusbar("Error: hands have different numbers of cards");
+			board_statusbar (_("Error: hands have different numbers of cards"));
 			return;
 		}
 		compute_par_arr(b);
@@ -309,7 +309,7 @@ void parscore(board *b)
 			}
 			ha = east, tr = b->par_arr[2][t];
 			if (b->par_arr[0][t] > b->par_arr[2][t]) {
-				ha = south;
+				ha = west;
 				tr = b->par_arr[0][t];
 			}
 			sc = -score(l, t, -1, b->vuln[1], tr);
