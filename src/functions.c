@@ -21,6 +21,9 @@
 #include "functions.h"
 #include "support.h"
 
+const char *
+seat_str[] = {0, "W", "N", "E", "S"};
+
 int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
 
 char *rank_string (rank r)
@@ -196,8 +199,7 @@ char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 {
 	static char buf[20];
 	char *trump_str[] = {"Cl", "Di", "He", "Sp", "NT"};
-	char *declarer_str[] = {0, "W", "N", "E", "S"};
-	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(declarer_str[declarer]),
+	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(seat_str[declarer]),
 		doubled == 2 ? _(" XX") :
 			doubled == 1 ? _(" X") : "");
 	return buf;

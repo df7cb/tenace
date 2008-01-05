@@ -81,12 +81,17 @@ board_window_rebuild_board_menu (window_board_t *win)
 }
 
 static void
-board_set_player_name (GtkWidget *w, int vuln, int current, char *name)
+board_set_player_name (GtkWidget *w, seat s, int dealer, int vuln,
+		int declarer, int current, char *name)
 {
 	GString *str = g_string_new (NULL);
-	g_string_printf(str, "<span background=\"%s\"%s>%s</span>",
-		current ? "#ffa000" : (vuln ? "#cc0000" : "#00cc00"),
-		current ? " weight=\"bold\"" : "", name);
+	g_string_printf(str, "<span background=\"%s\"%s> %s </span><span%s%s> %s </span>",
+		vuln ? "#cc0000" : "#00cc00",
+		dealer ? " weight=\"bold\"" : "",
+		_(seat_str[s]),
+		declarer ? " weight=\"bold\"" : "",
+		current ? " background=\"#ffa000\"" : "",
+		name);
 	gtk_label_set_markup((GtkLabel*) w, str->str);
 	g_string_free (str, TRUE);
 }
@@ -197,13 +202,21 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_NAMES) {
 		w = lookup_widget(win->window, "label_west");
-		board_set_player_name (w, b->vuln[1], b->current_turn == west, b->hand_name[0]->str);
+		board_set_player_name (w, west, b->dealer == west, b->vuln[1],
+				b->declarer == west,
+				b->current_turn == west, b->hand_name[0]->str);
 		w = lookup_widget(win->window, "label_north");
-		board_set_player_name (w, b->vuln[0], b->current_turn == north, b->hand_name[1]->str);
+		board_set_player_name (w, north, b->dealer == north, b->vuln[0],
+				b->declarer == north,
+				b->current_turn == north, b->hand_name[1]->str);
 		w = lookup_widget(win->window, "label_east");
-		board_set_player_name (w, b->vuln[1], b->current_turn == east, b->hand_name[2]->str);
+		board_set_player_name (w, east, b->dealer == east, b->vuln[1],
+				b->declarer == east,
+				b->current_turn == east, b->hand_name[2]->str);
 		w = lookup_widget(win->window, "label_south");
-		board_set_player_name (w, b->vuln[0], b->current_turn == south, b->hand_name[3]->str);
+		board_set_player_name (w, south, b->dealer == south, b->vuln[0],
+				b->declarer == south,
+				b->current_turn == south, b->hand_name[3]->str);
 	}
 
 	if (redraw & REDRAW_TRICKS) {
@@ -408,7 +421,9 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 			&x, &y, keyboard_mode, NULL, NULL, &iter);
 	if (!ret) {
 		gtk_tooltip_set_text (tooltip, NULL);
-		return FALSE;
+		// TODO: don't show anything at all, or something interesting
+		// y<0 -> headings
+		return TRUE;
 	}
 
 	int i;

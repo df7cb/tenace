@@ -1,6 +1,8 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+extern const char *seat_str[];
+
 char *rank_string (rank r);
 char rank_char (rank r);
 int parse_suit(char c);

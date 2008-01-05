@@ -250,7 +250,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 			snprintf (cs, 6, "%s%s", suit_str[suit], rank_str[rank]);
 			cairo_text_extents (cr, cs, &extents);
 
-#define XOFF 10
+#define XOFF 18
 #define YOFF 20
 			switch (handdisp->table_seat[i]) { /* lower left point */
 				case 1: x = hand->allocation.width / 2 - extents.width - XOFF;
