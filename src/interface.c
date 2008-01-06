@@ -835,7 +835,6 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table1), frame_w, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_frame_set_label_align (GTK_FRAME (frame_w), 0.5, 0.5);
   gtk_frame_set_shadow_type (GTK_FRAME (frame_w), GTK_SHADOW_ETCHED_OUT);
 
   alignment_w = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -853,7 +852,6 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table1), frame_s, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_frame_set_label_align (GTK_FRAME (frame_s), 0.5, 0.5);
   gtk_frame_set_shadow_type (GTK_FRAME (frame_s), GTK_SHADOW_ETCHED_OUT);
 
   alignment_s = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -871,7 +869,6 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table1), frame_n, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_frame_set_label_align (GTK_FRAME (frame_n), 0.5, 0.5);
   gtk_frame_set_shadow_type (GTK_FRAME (frame_n), GTK_SHADOW_ETCHED_OUT);
 
   alignment_n = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -889,7 +886,6 @@ create_window_hand (void)
   gtk_table_attach (GTK_TABLE (table1), frame_e, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_frame_set_label_align (GTK_FRAME (frame_e), 0.5, 0.5);
   gtk_frame_set_shadow_type (GTK_FRAME (frame_e), GTK_SHADOW_ETCHED_OUT);
 
   alignment_e = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -1488,6 +1484,7 @@ create_window_bids (void)
   GtkIconSize tmp_toolbar_icon_size;
   GtkWidget *bid_clear;
   GtkWidget *bid_undo;
+  GtkWidget *bid_set_contract;
   GtkWidget *alert_entry;
   GtkWidget *bids_table;
   GtkTooltips *tooltips;
@@ -1518,6 +1515,11 @@ create_window_bids (void)
   gtk_container_add (GTK_CONTAINER (toolbar3), bid_undo);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (bid_undo), tooltips, _("Remove last bid"), NULL);
 
+  bid_set_contract = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-index");
+  gtk_widget_show (bid_set_contract);
+  gtk_container_add (GTK_CONTAINER (toolbar3), bid_set_contract);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (bid_set_contract), tooltips, _("Make bids for the current contract"), NULL);
+
   alert_entry = gtk_entry_new ();
   gtk_widget_show (alert_entry);
   gtk_box_pack_start (GTK_BOX (vbox3), alert_entry, FALSE, FALSE, 0);
@@ -1536,6 +1538,9 @@ create_window_bids (void)
   g_signal_connect ((gpointer) bid_undo, "clicked",
                     G_CALLBACK (on_bid_undo_clicked),
                     NULL);
+  g_signal_connect ((gpointer) bid_set_contract, "clicked",
+                    G_CALLBACK (on_bid_set_contract_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (window_bids, window_bids, "window_bids");
@@ -1543,6 +1548,7 @@ create_window_bids (void)
   GLADE_HOOKUP_OBJECT (window_bids, toolbar3, "toolbar3");
   GLADE_HOOKUP_OBJECT (window_bids, bid_clear, "bid_clear");
   GLADE_HOOKUP_OBJECT (window_bids, bid_undo, "bid_undo");
+  GLADE_HOOKUP_OBJECT (window_bids, bid_set_contract, "bid_set_contract");
   GLADE_HOOKUP_OBJECT (window_bids, alert_entry, "alert_entry");
   GLADE_HOOKUP_OBJECT (window_bids, bids_table, "bids_table");
   GLADE_HOOKUP_OBJECT_NO_REF (window_bids, tooltips, "tooltips");

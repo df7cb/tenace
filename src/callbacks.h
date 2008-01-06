@@ -464,3 +464,7 @@ on_deal_copy_activate                  (GtkMenuItem     *menuitem,
 void
 on_deal_paste_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);

@@ -82,10 +82,10 @@ void board_clear(board *b)
 	b->par_dec = b->par_suit = b->par_level = b->par_tricks = 0;
 }
 
-void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled)
+void board_set_contract(board *b, int level, suit trumps, seat declarer, int doubled)
 {
 	b->level = level;
-	b->trumps = trump;
+	b->trumps = trumps;
 	b->declarer = declarer;
 	b->current_turn = seat_mod(declarer + 1);
 	b->doubled = doubled;
@@ -148,7 +148,7 @@ board_dup (board *b0)
 	assert(b->alerts);
 
 	for (i = 0; i < b0->n_bids; i++) {
-		board_append_bid (b, b0->bidding[i]);
+		board_append_bid (b, b0->bidding[i], 0);
 		board_set_alert (b, b0->alerts[i]);
 	}
 
@@ -433,8 +433,47 @@ void board_fast_forward(board *b)
 
 /* bidding */
 
-void board_append_bid(board *b, card bid)
+int
+board_append_bid(board *b, card bid, int set_contract)
 {
+	int cur_bid = 0, cur_bid_i = 0, n_pass = 0, doubl = 0, redoubl = 0;
+	int i;
+	for (i = b->n_bids - 1; i >= 0; i--) {
+		if (b->bidding[i] == bid_pass && !doubl && !redoubl)
+			n_pass++; /* number of trailing passes */
+		if (b->bidding[i] == bid_x)
+			doubl = 1;
+		if (b->bidding[i] == bid_xx)
+			redoubl = 1;
+		if (b->bidding[i] > bid_xx) {
+			cur_bid = b->bidding[i];
+			cur_bid_i = i;
+			break;
+		}
+	}
+
+	if (n_pass == 4 || (n_pass == 3 && cur_bid)) {
+		board_statusbar(_("Bidding is over"));
+		return 0;
+	}
+
+	if (bid == bid_x)
+		if (doubl || redoubl || cur_bid == 0 || n_pass % 2 != 0) {
+			board_statusbar(_("Invalid double"));
+			return 0;
+		}
+
+	if (bid == bid_xx)
+		if (!doubl || redoubl || cur_bid == 0 || n_pass % 2 != 0) {
+			board_statusbar(_("Invalid redouble"));
+			return 0;
+		}
+
+	if (bid > bid_xx && bid <= cur_bid) {
+		board_statusbar(_("Insufficient bid"));
+		return 0;
+	}
+
 	if (b->n_bids >= b->n_bid_alloc) {
 		b->n_bid_alloc <<= 2;
 		b->bidding = realloc(b->bidding, b->n_bid_alloc * sizeof (card));
@@ -444,9 +483,31 @@ void board_append_bid(board *b, card bid)
 		for (i = b->n_bid_alloc >> 2; i < b->n_bid_alloc; i++)
 			b->alerts[i] = NULL;
 	}
+
 	b->bidding[b->n_bids] = bid;
 	b->alerts[b->n_bids] = NULL;
 	b->n_bids++;
+
+	if (bid == bid_pass && (n_pass == 3 || (n_pass == 2 && cur_bid))) {
+		if (set_contract) {
+			int trumps = DENOM (cur_bid);
+			int declarer = 0;
+			if (cur_bid) { /* find declarer */
+				for (i = cur_bid_i % 2; i < b->n_bids; i += 2)
+					if (DENOM (b->bidding[i]) == trumps) {
+						declarer = seat_mod (b->dealer + i);
+						break;
+					}
+				assert (declarer); /* someone must actually bid the contract */
+			} else {
+				declarer = b->dealer; /* default for passed boards */
+			}
+			board_set_contract (b, LEVEL (cur_bid), trumps, declarer, doubl + redoubl);
+		}
+		return 2; /* signal end of bidding */
+	}
+
+	return 1;
 }
 
 void

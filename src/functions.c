@@ -179,6 +179,8 @@ GString *hand_string (board *b, seat h)
 
 char *contract_string(int level, suit trumps, seat declarer, int doubled)
 {
+	if (level == 0)
+		return _("PASS");
 	static char buf[20];
 	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(seat_str[declarer]),
 		doubled == 2 ? _(" XX") :
@@ -188,6 +190,8 @@ char *contract_string(int level, suit trumps, seat declarer, int doubled)
 
 char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 {
+	if (level == 0)
+		return _("PASS");
 	static char buf[20];
 	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str_asc[trumps]), _(seat_str[declarer]),
 		doubled == 2 ? _(" XX") :

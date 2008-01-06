@@ -181,7 +181,7 @@ void show_board (board *b, redraw_t redraw)
 		w = lookup_widget(win->window, declarermenu[b->declarer]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
-		char *levelmenu[] = { 0, "level1", "level2", "level3",
+		char *levelmenu[] = { "level1" /* PASS */, "level1", "level2", "level3",
 			"level4", "level5", "level6", "level7" };
 		w = lookup_widget(win->window, levelmenu[b->level]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);

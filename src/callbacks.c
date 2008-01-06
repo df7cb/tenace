@@ -926,6 +926,25 @@ on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
 
 
 void
+on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+
+	board_append_bid (b, 5 * b->level + b->trumps, 0);
+	if (b->doubled)
+		board_append_bid (b, bid_x, 0);
+	if (b->doubled == bid_xx)
+		board_append_bid (b, bid_xx, 0);
+	board_append_bid (b, bid_pass, 0);
+	board_append_bid (b, bid_pass, 0);
+	board_append_bid (b, bid_pass, 0);
+
+	show_board(b, REDRAW_BIDDING);
+}
+
+
+void
 on_button_prev_board_clicked           (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {

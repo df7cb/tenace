@@ -166,7 +166,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 					printf("Invalid bid %s/%s\n", tok, bidp);
 					break;
 				}
-				board_append_bid(b, bid);
+				board_append_bid(b, bid, 0);
 				if (al) {
 					board_set_alert (b, al);
 					al = NULL;

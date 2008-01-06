@@ -74,8 +74,8 @@ typedef struct board_t {
 	GString *hand_name[4];
 	seat declarer;
 	suit trumps;
-	int level;
-	int doubled;
+	int level; /* 0 = PASS */
+	int doubled; /* 1 = X, 2 = XX */
 
 	/* play */
 	int n_played_cards;
@@ -108,7 +108,7 @@ int card_overtricks (board *b, card c);
 int card_is_good (board *b, card c);
 
 void board_clear(board *b);
-void board_set_contract(board *b, int level, suit trump, seat declarer, int doubled);
+void board_set_contract(board *b, int level, suit trumps, seat declarer, int doubled);
 board *board_new(void);
 board *board_dup (board *b0);
 void board_free(board *b);
@@ -125,7 +125,7 @@ void board_rewind(board *b);
 int next_card(board *b);
 void board_fast_forward(board *b);
 
-void board_append_bid(board *b, card bid);
+int board_append_bid(board *b, card bid, int set_contract);
 void board_remove_bid (board *b);
 void board_clear_bidding (board *b);
 void board_set_alert (board *b, const char *alert);

@@ -1338,7 +1338,7 @@
 	  <child>
 	    <widget class="GtkFrame" id="frame_w">
 	      <property name="visible">True</property>
-	      <property name="label_xalign">0.5</property>
+	      <property name="label_xalign">0</property>
 	      <property name="label_yalign">0.5</property>
 	      <property name="shadow_type">GTK_SHADOW_ETCHED_OUT</property>
 
@@ -1394,7 +1394,7 @@
 	  <child>
 	    <widget class="GtkFrame" id="frame_s">
 	      <property name="visible">True</property>
-	      <property name="label_xalign">0.5</property>
+	      <property name="label_xalign">0</property>
 	      <property name="label_yalign">0.5</property>
 	      <property name="shadow_type">GTK_SHADOW_ETCHED_OUT</property>
 
@@ -1451,7 +1451,7 @@
 	  <child>
 	    <widget class="GtkFrame" id="frame_n">
 	      <property name="visible">True</property>
-	      <property name="label_xalign">0.5</property>
+	      <property name="label_xalign">0</property>
 	      <property name="label_yalign">0.5</property>
 	      <property name="shadow_type">GTK_SHADOW_ETCHED_OUT</property>
 
@@ -1508,7 +1508,7 @@
 	  <child>
 	    <widget class="GtkFrame" id="frame_e">
 	      <property name="visible">True</property>
-	      <property name="label_xalign">0.5</property>
+	      <property name="label_xalign">0</property>
 	      <property name="label_yalign">0.5</property>
 	      <property name="shadow_type">GTK_SHADOW_ETCHED_OUT</property>
 
@@ -1950,6 +1950,22 @@ EW: %d</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
 	      <signal name="clicked" handler="on_bid_undo_clicked" last_modification_time="Sat, 17 Nov 2007 22:27:30 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="expand">False</property>
+	      <property name="homogeneous">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkToolButton" id="bid_set_contract">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Make bids for the current contract</property>
+	      <property name="stock_id">gtk-index</property>
+	      <property name="visible_horizontal">True</property>
+	      <property name="visible_vertical">True</property>
+	      <property name="is_important">False</property>
+	      <signal name="clicked" handler="on_bid_set_contract_clicked" last_modification_time="Sun, 06 Jan 2008 14:12:59 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
