@@ -920,7 +920,7 @@ on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
 	if (b->n_bids) {
 		board_remove_bid (b);
 	}
-	show_board(b, REDRAW_BIDDING);
+	show_board(b, REDRAW_BIDDING | REDRAW_BIDDING_SCROLL);
 }
 
 
@@ -939,7 +939,7 @@ on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
 	board_append_bid (b, bid_pass, 0);
 	board_append_bid (b, bid_pass, 0);
 
-	show_board(b, REDRAW_BIDDING);
+	show_board(b, REDRAW_BIDDING | REDRAW_BIDDING_SCROLL);
 }
 
 

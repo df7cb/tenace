@@ -12,9 +12,9 @@ Package: tenace
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, gnome-cards-data, librsvg2-common
 Description: Bridge hand viewer and editor
- Tenace is a Bridge hand viewer and editor. Hand records are read using BBO's
- .lin format. The board editor allows to easily move cards around to simulate
- different distributions. The double dummy solver computes optimal lines of
- play and par scores.
+ Tenace is a Bridge hand viewer and editor. Hand records are read using
+ BBO's .lin format. The board editor allows to easily move cards around to
+ simulate different distributions. The double dummy solver computes optimal
+ lines of play and par scores.
  .
  Bridge is an intellectually challenging card game for four players.

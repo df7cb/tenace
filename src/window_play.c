@@ -44,7 +44,7 @@ void window_play_update (board *b)
 				h = b->dealt_cards[c];
 			GtkLabel *l = play_label[7*t + h++ - 1];
 			if (c == claim_rest)
-				gtk_label_set_markup(l, "CL");
+				gtk_label_set_markup(l, _("CL"));
 			else {
 				gtk_label_set_markup(l, card_string_color (c));
 				gtk_widget_set_sensitive(GTK_WIDGET(l), 4*t + i < b->n_played_cards);

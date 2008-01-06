@@ -49,17 +49,18 @@ typedef struct _window_board_t {
 } window_board_t;
 
 typedef enum _redraw_t {
-	REDRAW_TITLE	= 1 << 0,
-	REDRAW_NAMES	= 1 << 1,
-	REDRAW_CONTRACT	= 1 << 2,
-	REDRAW_TRICKS	= 1 << 3,
-	REDRAW_HANDS	= 1 << 4,
-	REDRAW_DD	= 1 << 5,
-	REDRAW_PLAY	= 1 << 6,
-	REDRAW_BIDDING	= 1 << 7,
-	REDRAW_BOARD_LIST = 1 << 8,
-	REDRAW_BOARD	= 0xff, /* everything except the menu */
-	REDRAW_FULL	= -1
+	REDRAW_TITLE		= 1 << 0,
+	REDRAW_NAMES		= 1 << 1,
+	REDRAW_CONTRACT		= 1 << 2,
+	REDRAW_TRICKS		= 1 << 3,
+	REDRAW_HANDS		= 1 << 4,
+	REDRAW_DD		= 1 << 5,
+	REDRAW_PLAY		= 1 << 6,
+	REDRAW_BIDDING		= 1 << 7,
+	REDRAW_BOARD		= 0xff, /* everything above */
+	REDRAW_BOARD_LIST	= 1 << 8, /* menu */
+	REDRAW_FULL		= 0x1ff, /* everythin above */
+	REDRAW_BIDDING_SCROLL	= 1 << 9,
 } redraw_t;
 
 /* global variable */

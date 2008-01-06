@@ -44,7 +44,7 @@ bid_clicked (GtkWidget *lab, int *bid)
 		gtk_entry_set_text (GTK_ENTRY (alert_entry), "");
 	}
 
-	show_board (b, ret == 2 ? REDRAW_FULL : REDRAW_BIDDING);
+	show_board (b, (ret == 2 ? REDRAW_FULL : REDRAW_BIDDING) | REDRAW_BIDDING_SCROLL);
 
 	if (ret == 2) {
 		char buf[50];

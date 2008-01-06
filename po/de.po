@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-06 23:28+0100\n"
+"POT-Creation-Date: 2008-01-07 00:32+0100\n"
 "PO-Revision-Date: 2008-01-06 23:15+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -40,26 +40,30 @@ msgid "Which card should I play?"
 msgstr "Welche Karte soll ich spielen?"
 
 #: src/bridge.c:417
+msgid "Claim"
+msgstr ""
+
+#: src/bridge.c:421
 msgid "Card was already played"
 msgstr "Karte wurde schon gespielt"
 
-#: src/bridge.c:421
+#: src/bridge.c:425
 msgid "Card belongs to wrong player"
 msgstr "Karte gehört falschem Spieler"
 
-#: src/bridge.c:458
+#: src/bridge.c:462
 msgid "Bidding is over"
 msgstr "Reizung ist zu Ende"
 
-#: src/bridge.c:464
+#: src/bridge.c:468
 msgid "Invalid double"
 msgstr ""
 
-#: src/bridge.c:470
+#: src/bridge.c:474
 msgid "Invalid redouble"
 msgstr ""
 
-#: src/bridge.c:475
+#: src/bridge.c:479
 msgid "Insufficient bid"
 msgstr ""
 
@@ -71,7 +75,7 @@ msgstr "Kein Board"
 msgid "Cut buffer is empty"
 msgstr ""
 
-#: src/callbacks.c:771 src/window_board.c:557
+#: src/callbacks.c:771 src/window_board.c:566
 #, c-format
 msgid "Board %d"
 msgstr ""
@@ -478,7 +482,7 @@ msgid ""
 "4♦X S"
 msgstr ""
 
-#: src/interface.c:919 src/window_board.c:224
+#: src/interface.c:919 src/window_board.c:232
 #, c-format
 msgid ""
 "NS: %d\n"
@@ -641,19 +645,19 @@ msgstr ""
 msgid "!"
 msgstr ""
 
-#: src/window_board.c:373
+#: src/window_board.c:381
 msgid "Card is in play and cannot be moved"
 msgstr "Karte ist im Spiel und kann nicht bewegt werden"
 
-#: src/window_board.c:379
+#: src/window_board.c:387
 msgid "Card is in play and cannot be exchanged"
 msgstr "Karte ist im Spiel und kann nicht ausgetauscht werden"
 
-#: src/window_board.c:390 src/window_card.c:67 src/window_card.c:97
+#: src/window_board.c:398 src/window_card.c:67 src/window_card.c:97
 msgid "Hand has already 13 cards"
 msgstr "Hand hat schon 13 Karten"
 
-#: src/window_board.c:440
+#: src/window_board.c:449
 msgid "(no explanation)"
 msgstr "(keine Erklärung)"
 
@@ -664,3 +668,7 @@ msgstr "Alle Karten dieser Farbe wurden geteilt"
 #: src/window_card.c:89
 msgid "Card is in play and cannot be removed"
 msgstr "Karte ist im Spiel und kann nicht entfernt werden"
+
+#: src/window_play.c:47
+msgid "CL"
+msgstr ""

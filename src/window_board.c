@@ -96,8 +96,8 @@ board_set_player_name (GtkWidget *w, seat s, int dealer, int vuln,
 	g_string_free (str, TRUE);
 }
 
-void
-bidding_update (window_board_t *win, board *b)
+static void
+bidding_update (window_board_t *win, board *b, int scroll)
 {
 	gtk_list_store_clear (win->bidding_store);
 
@@ -139,6 +139,14 @@ bidding_update (window_board_t *win, board *b)
 				-1);
 		last_col = col;
 		col = (col + 1) % 4;
+	}
+
+	if (scroll) {
+		GtkTreePath *path = gtk_tree_model_get_path
+			(GTK_TREE_MODEL (win->bidding_store), &iter);
+		gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (win->bidding), path,
+			NULL, FALSE, 0.0, 0.0);
+		gtk_tree_path_free (path);
 	}
 }
 
@@ -293,7 +301,7 @@ void show_board (board *b, redraw_t redraw)
 		window_play_update(b);
 
 	if (redraw & REDRAW_BIDDING) {
-		bidding_update (win, b);
+		bidding_update (win, b, redraw & REDRAW_BIDDING_SCROLL);
 	}
 }
 
@@ -429,7 +437,8 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	int i;
 	int width = 0;
 	for (i = 0; i < 4; i++) {
-		width += gtk_tree_view_column_get_width (win->bidding_column[i]); // TODO: cache this?
+		width += gtk_tree_view_column_get_width (win->bidding_column[i]);
+		// TODO: cache this, or use gtk_tree_view_get_path_at_pos
 		if (x < width)
 			break;
 	}
@@ -491,7 +500,7 @@ create_bidding_widget (window_board_t *win)
 	gtk_widget_modify_bg (GTK_WIDGET (scroll), GTK_STATE_NORMAL, &bg);
 	*/
 
-	GtkTreeView *bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
+	win->bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
 	//gtk_widget_modify_bg (GTK_WIDGET (bidding), GTK_STATE_NORMAL, &bg);
 	//gdk_window_set_background (gtk_tree_view_get_bin_window (bidding), &bidding_vuln);
 	win->bidding_store = gtk_list_store_new (8,
@@ -499,8 +508,8 @@ create_bidding_widget (window_board_t *win)
 		G_TYPE_STRING, G_TYPE_STRING,
 		G_TYPE_STRING, G_TYPE_STRING,
 		G_TYPE_STRING, G_TYPE_STRING);
-	gtk_tree_view_set_model (bidding, GTK_TREE_MODEL (win->bidding_store));
-	g_signal_connect (G_OBJECT (bidding), "query-tooltip",
+	gtk_tree_view_set_model (win->bidding, GTK_TREE_MODEL (win->bidding_store));
+	g_signal_connect (G_OBJECT (win->bidding), "query-tooltip",
 			G_CALLBACK (bidding_query_tooltip), win);
 
 	GtkCellRenderer *renderer;
@@ -527,11 +536,11 @@ create_bidding_widget (window_board_t *win)
 		gtk_tree_view_column_set_widget (column, win->bidding_label[i]);
 		gtk_widget_show (win->bidding_label[i]);
 		*/
-		gtk_tree_view_append_column (bidding, column);
+		gtk_tree_view_append_column (win->bidding, column);
 		win->bidding_column[i] = column;
 	}
 
-	gtk_container_forall (GTK_CONTAINER (bidding), (GtkCallback) create_bidding_widget_cb, win);
+	gtk_container_forall (GTK_CONTAINER (win->bidding), (GtkCallback) create_bidding_widget_cb, win);
 
 	GdkColormap *cmap = gdk_colormap_get_system ();
 	gdk_colormap_alloc_color (cmap, &bidding_non_vuln, FALSE, TRUE);

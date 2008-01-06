@@ -413,6 +413,10 @@ int next_card(board *b)
 		board_statusbar(_("Which card should I play?"));
 		return 0;
 	}
+	if (b->played_cards[b->n_played_cards] == claim_rest) {
+		board_statusbar(_("Claim"));
+		return 0;
+	}
 	if (b->cards[b->played_cards[b->n_played_cards]] == 0) {
 		board_statusbar(_("Card was already played"));
 		return 0;
