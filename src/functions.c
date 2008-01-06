@@ -286,14 +286,15 @@ char *score_string(int level, suit trumps, seat declarer, int doubled, int vuln,
 }
 
 /* some strings not translated elsewhere */
-void
-unused ()
+static void
+translate_me ()
 {
 	_("W");
 	_("N");
 	_("E");
 	_("S");
 
+	_("NT");
 	_("Sp");
 	_("He");
 	_("Di");

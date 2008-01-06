@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-06 02:37+0100\n"
+"POT-Creation-Date: 2008-01-06 20:05+0100\n"
 "PO-Revision-Date: 2007-12-16 15:54+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -47,6 +47,22 @@ msgstr ""
 msgid "Card belongs to wrong player"
 msgstr ""
 
+#: src/bridge.c:456
+msgid "Bidding is over"
+msgstr ""
+
+#: src/bridge.c:462
+msgid "Invalid double"
+msgstr ""
+
+#: src/bridge.c:468
+msgid "Invalid redouble"
+msgstr ""
+
+#: src/bridge.c:473
+msgid "Insufficient bid"
+msgstr ""
+
 #: src/callbacks.c:724 src/callbacks.c:750
 msgid "No board"
 msgstr ""
@@ -60,65 +76,73 @@ msgstr ""
 msgid "Board %d"
 msgstr ""
 
-#: src/callbacks.c:933
+#: src/callbacks.c:952
 msgid "No previous board"
 msgstr ""
 
-#: src/callbacks.c:949
+#: src/callbacks.c:968
 msgid "No next board"
 msgstr ""
 
-#: src/functions.c:144 src/window_bids.c:63
+#: src/functions.c:144 src/window_bids.c:76
 #, c-format
 msgid "X"
 msgstr ""
 
-#: src/functions.c:146 src/window_bids.c:66
+#: src/functions.c:146 src/window_bids.c:79
 #, c-format
 msgid "XX"
 msgstr ""
 
-#: src/functions.c:184 src/functions.c:193
+#: src/functions.c:183 src/functions.c:194 src/window_bids.c:73
+msgid "PASS"
+msgstr ""
+
+#: src/functions.c:186 src/functions.c:197
 msgid " XX"
 msgstr ""
 
-#: src/functions.c:185 src/functions.c:194
+#: src/functions.c:187 src/functions.c:198
 msgid " X"
 msgstr ""
 
-#: src/functions.c:288 src/solve.c:347
+#: src/functions.c:292 src/solve.c:347
 msgid "W"
 msgstr ""
 
-#: src/functions.c:289 src/solve.c:342
+#: src/functions.c:293 src/solve.c:342
 msgid "N"
 msgstr ""
 
-#: src/functions.c:290 src/solve.c:347
+#: src/functions.c:294 src/solve.c:347
 msgid "E"
 msgstr ""
 
-#: src/functions.c:291 src/solve.c:342
+#: src/functions.c:295 src/solve.c:342
 msgid "S"
 msgstr ""
 
-#: src/functions.c:293
+#: src/functions.c:297
+msgid "NT"
+msgstr ""
+
+#: src/functions.c:298
 msgid "Sp"
 msgstr "S"
 
-#: src/functions.c:294
+#: src/functions.c:299
 msgid "He"
 msgstr "H"
 
-#: src/functions.c:295
+#: src/functions.c:300
 msgid "Di"
 msgstr "D"
 
-#: src/functions.c:296
+#: src/functions.c:301
 msgid "Cl"
 msgstr "C"
 
-#: src/interface.c:204 src/interface.c:2277
+#: src/interface.c:204 src/interface.c:2283
 msgid "Tenace"
 msgstr ""
 
@@ -135,7 +159,7 @@ msgid "Append file to board list"
 msgstr ""
 
 #: src/interface.c:255
-msgid "Boards"
+msgid "_Boards"
 msgstr ""
 
 #: src/interface.c:259
@@ -187,7 +211,7 @@ msgid "_New"
 msgstr ""
 
 #: src/interface.c:366
-msgid "_Clear"
+msgid "C_lear"
 msgstr ""
 
 #: src/interface.c:374
@@ -223,11 +247,11 @@ msgid "S-E"
 msgstr ""
 
 #: src/interface.c:417
-msgid "Hand _editor"
+msgid "_Board editor"
 msgstr ""
 
 #: src/interface.c:421
-msgid "_Text input"
+msgid "Text _input"
 msgstr ""
 
 #: src/interface.c:425
@@ -342,7 +366,7 @@ msgstr ""
 msgid "_View"
 msgstr ""
 
-#: src/interface.c:627 src/interface.c:1613
+#: src/interface.c:627 src/interface.c:1619
 msgid "IMP Table"
 msgstr ""
 
@@ -418,24 +442,12 @@ msgstr ""
 msgid "Next board"
 msgstr ""
 
-#: src/interface.c:784
-msgid "Anfang"
-msgstr ""
-
 #: src/interface.c:787
 msgid "Rewind play"
 msgstr ""
 
-#: src/interface.c:791
-msgid "Zurück"
-msgstr ""
-
 #: src/interface.c:794
 msgid "Undo card play"
-msgstr ""
-
-#: src/interface.c:798
-msgid "Vor"
 msgstr ""
 
 #: src/interface.c:801
@@ -450,133 +462,141 @@ msgstr ""
 msgid "Par score"
 msgstr ""
 
-#: src/interface.c:846 src/interface.c:1401 src/interface.c:1407
+#: src/interface.c:845 src/interface.c:1397 src/interface.c:1403
 msgid "West"
 msgstr ""
 
-#: src/interface.c:864 src/interface.c:1440
+#: src/interface.c:862 src/interface.c:1436
 msgid "South"
 msgstr ""
 
-#: src/interface.c:882 src/interface.c:1418
+#: src/interface.c:879 src/interface.c:1414
 msgid "North"
 msgstr ""
 
-#: src/interface.c:900 src/interface.c:1429
+#: src/interface.c:896 src/interface.c:1425
 msgid "East"
 msgstr ""
 
-#: src/interface.c:905
+#: src/interface.c:901
 msgid ""
 "Bd 1\n"
 "4♦X S"
 msgstr ""
 
-#: src/interface.c:923 src/window_board.c:224
+#: src/interface.c:919 src/window_board.c:224
 #, c-format
 msgid ""
 "NS: %d\n"
 "EW: %d"
 msgstr ""
 
-#: src/interface.c:1370 src/interface.c:2206
-msgid "Cards"
+#: src/interface.c:1366
+msgid "Board editor"
 msgstr ""
 
-#: src/interface.c:1387
+#: src/interface.c:1383
 msgid "Clear board"
 msgstr ""
 
-#: src/interface.c:1391
+#: src/interface.c:1387
 msgid "Zufall"
 msgstr ""
 
-#: src/interface.c:1394
+#: src/interface.c:1390
 msgid "Deal randomly"
 msgstr ""
 
-#: src/interface.c:1412
+#: src/interface.c:1408
 msgid "Nord"
 msgstr ""
 
-#: src/interface.c:1423
+#: src/interface.c:1419
 msgid "Ost"
 msgstr ""
 
-#: src/interface.c:1434
+#: src/interface.c:1430
 msgid "Süd"
 msgstr ""
 
-#: src/interface.c:1498
-msgid "Bids"
+#: src/interface.c:1495
+msgid "Bidding editor"
 msgstr ""
 
-#: src/interface.c:1514
+#: src/interface.c:1511
 msgid "Remove all bids"
 msgstr ""
 
-#: src/interface.c:1519
+#: src/interface.c:1516
 msgid "Remove last bid"
 msgstr ""
 
-#: src/interface.c:1524
+#: src/interface.c:1521
+msgid "Make bids for the current contract"
+msgstr ""
+
+#: src/interface.c:1526
 msgid "Alert"
 msgstr ""
 
-#: src/interface.c:2073
+#: src/interface.c:2079
 msgid "Text input"
 msgstr ""
 
-#: src/interface.c:2083
+#: src/interface.c:2089
 msgid "Hand as string"
 msgstr ""
 
-#: src/interface.c:2084
+#: src/interface.c:2090
 msgid "63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853"
 msgstr ""
 
-#: src/interface.c:2089
+#: src/interface.c:2095
 msgid "Set hand"
 msgstr ""
 
-#: src/interface.c:2122
+#: src/interface.c:2128
 msgid "Play"
 msgstr ""
 
-#: src/interface.c:2166
+#: src/interface.c:2172
 msgid "Options"
 msgstr ""
 
-#: src/interface.c:2189
+#: src/interface.c:2195
 msgid "Card width: "
 msgstr ""
 
-#: src/interface.c:2196
+#: src/interface.c:2202
 msgid "label94"
 msgstr ""
 
-#: src/interface.c:2214
+#: src/interface.c:2212
+msgid "Cards"
+msgstr ""
+
+#: src/interface.c:2220
 msgid "label96"
 msgstr ""
 
 #. TRANSLATORS: Replace this string with your names, one name per line.
-#: src/interface.c:2272
+#: src/interface.c:2278
 msgid "translator-credits"
 msgstr ""
 
-#: src/interface.c:2278
+#: src/interface.c:2284
 msgid "(c) 2007 Christoph Berg"
 msgstr ""
 
-#: src/interface.c:2279
+#: src/interface.c:2285
 msgid "Bridge Hand Viewer and Editor"
 msgstr ""
 
-#: src/interface.c:2280
+#: src/interface.c:2286
 msgid "GPL v2"
 msgstr ""
 
-#: src/interface.c:2282
+#: src/interface.c:2288
 msgid "Homepage"
 msgstr ""
 
@@ -611,8 +631,9 @@ msgstr ""
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/window_bids.c:60
-msgid "PASS"
+#: src/window_bids.c:51
+#, c-format
+msgid "Contract set to %s"
 msgstr ""
 
 #: src/window_board.c:123

@@ -37,11 +37,13 @@ bid_clicked (GtkWidget *lab, int *bid)
 	if (!ret)
 		return;
 
+	PROTECT_BEGIN;
 	const char *alert = gtk_entry_get_text (GTK_ENTRY (alert_entry));
 	if (*alert) {
 		board_set_alert (b, !strcmp (alert, "!") ? "" : alert);
 		gtk_entry_set_text (GTK_ENTRY (alert_entry), "");
 	}
+
 	show_board (b, ret == 2 ? REDRAW_FULL : REDRAW_BIDDING);
 
 	if (ret == 2) {
@@ -50,6 +52,7 @@ bid_clicked (GtkWidget *lab, int *bid)
 			contract_string (b->level, b->trumps, b->declarer, b->doubled));
 		board_statusbar (buf);
 	}
+	PROTECT_END;
 }
 
 void

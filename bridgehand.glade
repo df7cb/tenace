@@ -68,7 +68,7 @@
 		      <signal name="activate" handler="on_append1_activate" last_modification_time="Tue, 27 Nov 2007 22:21:59 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image320">
+			<widget class="GtkImage" id="image385">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-paste</property>
 			  <property name="icon_size">1</property>
@@ -121,7 +121,7 @@
 	  <child>
 	    <widget class="GtkMenuItem" id="board_menu1">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Boards</property>
+	      <property name="label" translatable="yes">_Boards</property>
 	      <property name="use_underline">True</property>
 	    </widget>
 	  </child>
@@ -142,7 +142,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image321">
+			<widget class="GtkImage" id="image386">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-home</property>
 			  <property name="icon_size">1</property>
@@ -210,7 +210,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image322">
+			<widget class="GtkImage" id="image387">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-help</property>
 			  <property name="icon_size">1</property>
@@ -285,7 +285,7 @@
 		      <signal name="activate" handler="on_deal_new_activate" last_modification_time="Sun, 22 Jul 2007 21:36:40 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image323">
+			<widget class="GtkImage" id="image388">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-new</property>
 			  <property name="icon_size">1</property>
@@ -334,12 +334,12 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="deal_clear">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Clear</property>
+		      <property name="label" translatable="yes">C_lear</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_deal_clear_activate" last_modification_time="Tue, 20 Feb 2007 17:40:03 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image324">
+			<widget class="GtkImage" id="image389">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-delete</property>
 			  <property name="icon_size">1</property>
@@ -360,7 +360,7 @@
 		      <signal name="activate" handler="on_deal_random_activate" last_modification_time="Mon, 19 Feb 2007 01:09:50 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image325">
+			<widget class="GtkImage" id="image390">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-select-color</property>
 			  <property name="icon_size">1</property>
@@ -380,7 +380,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image326">
+			<widget class="GtkImage" id="image391">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -455,7 +455,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="cards1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Hand _editor</property>
+		      <property name="label" translatable="yes">_Board editor</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_cards1_activate" last_modification_time="Fri, 15 Jun 2007 22:12:11 GMT"/>
@@ -465,7 +465,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="deal_line">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Text input</property>
+		      <property name="label" translatable="yes">Text _input</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_deal_line_activate" last_modification_time="Mon, 19 Feb 2007 01:09:50 GMT"/>
@@ -492,7 +492,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image327">
+			<widget class="GtkImage" id="image392">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-index</property>
 			  <property name="icon_size">1</property>
@@ -647,7 +647,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image328">
+			<widget class="GtkImage" id="image393">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-stop</property>
 			  <property name="icon_size">1</property>
@@ -784,7 +784,7 @@
 		      <signal name="activate" handler="on_double_dummy1_activate" last_modification_time="Fri, 16 Feb 2007 22:28:46 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image329">
+			<widget class="GtkImage" id="image394">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-convert</property>
 			  <property name="icon_size">1</property>
@@ -806,7 +806,7 @@
 		      <signal name="activate" handler="on_parscore1_activate" last_modification_time="Fri, 16 Feb 2007 22:28:46 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image330">
+			<widget class="GtkImage" id="image395">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find</property>
 			  <property name="icon_size">1</property>
@@ -828,7 +828,7 @@
 		      <signal name="activate" handler="on_set_par1_activate" last_modification_time="Sat, 17 Feb 2007 01:27:52 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image331">
+			<widget class="GtkImage" id="image396">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-find-and-replace</property>
 			  <property name="icon_size">1</property>
@@ -872,7 +872,7 @@
 		      <signal name="activate" handler="on_imp_table1_activate" last_modification_time="Sat, 17 Feb 2007 12:03:34 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image332">
+			<widget class="GtkImage" id="image397">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-justify-fill</property>
 			  <property name="icon_size">1</property>
@@ -893,7 +893,7 @@
 		      <signal name="activate" handler="on_info1_activate" last_modification_time="Thu, 29 Dec 2005 19:20:17 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image333">
+			<widget class="GtkImage" id="image398">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-info</property>
 			  <property name="icon_size">1</property>
@@ -1202,7 +1202,7 @@
 	    <widget class="GtkToolButton" id="rewind_button">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Rewind play</property>
-	      <property name="label" translatable="yes">Anfang</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-media-previous</property>
 	      <property name="visible_horizontal">True</property>
@@ -1220,7 +1220,7 @@
 	    <widget class="GtkToolButton" id="button_back">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Undo card play</property>
-	      <property name="label" translatable="yes">Zurück</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-media-rewind</property>
 	      <property name="visible_horizontal">True</property>
@@ -1235,10 +1235,10 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkToolButton" id="button_next">
+	    <widget class="GtkToolButton" id="toolbutton1">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Play next card</property>
-	      <property name="label" translatable="yes">Vor</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-media-forward</property>
 	      <property name="visible_horizontal">True</property>
@@ -1723,7 +1723,7 @@ EW: %d</property>
 
 <widget class="GtkWindow" id="window_card">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Cards</property>
+  <property name="title" translatable="yes">Board editor</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -1896,7 +1896,7 @@ EW: %d</property>
 
 <widget class="GtkWindow" id="window_bids">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Bids</property>
+  <property name="title" translatable="yes">Bidding editor</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>

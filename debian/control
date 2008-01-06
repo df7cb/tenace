@@ -3,19 +3,18 @@ Section: games
 Priority: extra
 Maintainer: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>> 5), libgtk2.0-dev, libdds-dev (>> 1.0.4)
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 XS-Vcs-Browser: http://hg.df7cb.de/hg/tenace
 XS-Vcs-Hg: http://hg.df7cb.de/hg/tenace
+Homepage: http://www.df7cb.de/bridge/tenace/
 
 Package: tenace
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, gnome-cards-data, librsvg2-common
-Description: bridge hand viewer and editor
- Tenace is a bridge hand viewer and editor.
+Description: Bridge hand viewer and editor
+ Tenace is a Bridge hand viewer and editor. Hand records are read using BBO's
+ .lin format. The board editor allows to easily move cards around to simulate
+ different distributions. The double dummy solver computes optimal lines of
+ play and par scores.
  .
-  * load, edit, and write hand records in .lin, .pbn, and ad-hoc formats
-  * play cards
-  * double dummy analysis, parscore computation
-  * random dealing using conditons
- .
- http://www.df7cb.de/bridge/tenace/
+ Bridge is an intellectually challenging card game for four players.
