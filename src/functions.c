@@ -182,9 +182,9 @@ char *contract_string(int level, suit trumps, seat declarer, int doubled)
 	if (level == 0)
 		return _("PASS");
 	static char buf[20];
-	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(seat_str[declarer]),
-		doubled == 2 ? _(" XX") :
-			doubled == 1 ? _(" X") : "");
+	snprintf(buf, 20, "%d%s%s %s", level, _(trump_str[trumps]),
+		doubled == 2 ? _("XX") : doubled == 1 ? _("X") : "",
+		_(seat_str[declarer]));
 	return buf;
 }
 
@@ -193,9 +193,9 @@ char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 	if (level == 0)
 		return _("PASS");
 	static char buf[20];
-	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str_asc[trumps]), _(seat_str[declarer]),
-		doubled == 2 ? _(" XX") :
-			doubled == 1 ? _(" X") : "");
+	snprintf(buf, 20, "%d%s%s %s", level, _(trump_str_asc[trumps]),
+		doubled == 2 ? _("XX") : doubled == 1 ? _("X") : "",
+		_(seat_str[declarer]));
 	return buf;
 }
 

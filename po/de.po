@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-06 21:50+0100\n"
-"PO-Revision-Date: 2008-01-06 20:09+0100\n"
+"POT-Creation-Date: 2008-01-06 23:28+0100\n"
+"PO-Revision-Date: 2008-01-06 23:15+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -47,19 +47,19 @@ msgstr "Karte wurde schon gespielt"
 msgid "Card belongs to wrong player"
 msgstr "Karte gehört falschem Spieler"
 
-#: src/bridge.c:456
+#: src/bridge.c:458
 msgid "Bidding is over"
 msgstr "Reizung ist zu Ende"
 
-#: src/bridge.c:462
+#: src/bridge.c:464
 msgid "Invalid double"
 msgstr ""
 
-#: src/bridge.c:468
+#: src/bridge.c:470
 msgid "Invalid redouble"
 msgstr ""
 
-#: src/bridge.c:473
+#: src/bridge.c:475
 msgid "Insufficient bid"
 msgstr ""
 
@@ -84,26 +84,20 @@ msgstr ""
 msgid "No next board"
 msgstr "Kein nächstes Board"
 
-#: src/functions.c:144 src/window_bids.c:76
+#: src/functions.c:144 src/functions.c:186 src/functions.c:197
+#: src/window_bids.c:76
 #, c-format
 msgid "X"
 msgstr ""
 
-#: src/functions.c:146 src/window_bids.c:79
+#: src/functions.c:146 src/functions.c:186 src/functions.c:197
+#: src/window_bids.c:79
 #, c-format
 msgid "XX"
 msgstr ""
 
 #: src/functions.c:183 src/functions.c:194 src/window_bids.c:73
 msgid "PASS"
-msgstr ""
-
-#: src/functions.c:186 src/functions.c:197
-msgid " XX"
-msgstr ""
-
-#: src/functions.c:187 src/functions.c:198
-msgid " X"
 msgstr ""
 
 #: src/functions.c:292 src/solve.c:347
@@ -360,11 +354,11 @@ msgstr "Setze Kontrakt auf berechneten Par"
 
 #: src/interface.c:616
 msgid "Show pla_y"
-msgstr ""
+msgstr "Spiel _zeigen"
 
 #: src/interface.c:620
 msgid "_View"
-msgstr ""
+msgstr "_Ansicht"
 
 #: src/interface.c:627 src/interface.c:1619
 msgid "IMP Table"
@@ -396,7 +390,7 @@ msgstr "Alle"
 
 #: src/interface.c:677
 msgid "DD Scores"
-msgstr ""
+msgstr "DD-Scores"
 
 #: src/interface.c:684
 msgid "No one"
@@ -436,7 +430,7 @@ msgstr "Speichere Board"
 
 #: src/interface.c:771
 msgid "Previous board"
-msgstr ""
+msgstr "Vorheriges Board"
 
 #: src/interface.c:776
 msgid "Next board"
@@ -460,9 +454,9 @@ msgstr "Alle Karten spielen"
 
 #: src/interface.c:826
 msgid "Par score"
-msgstr ""
+msgstr "Parscore"
 
-#: src/interface.c:845 src/interface.c:1397 src/interface.c:1403
+#: src/interface.c:845 src/interface.c:1403
 msgid "West"
 msgstr "West"
 
@@ -501,25 +495,9 @@ msgstr "_Boardeditor"
 msgid "Clear board"
 msgstr "Board leeren"
 
-#: src/interface.c:1387
-msgid "Zufall"
-msgstr ""
-
 #: src/interface.c:1390
 msgid "Deal randomly"
 msgstr "Zufällig teilen"
-
-#: src/interface.c:1408
-msgid "Nord"
-msgstr ""
-
-#: src/interface.c:1419
-msgid "Ost"
-msgstr ""
-
-#: src/interface.c:1430
-msgid "Süd"
-msgstr ""
 
 #: src/interface.c:1495
 msgid "Bidding editor"
@@ -527,15 +505,15 @@ msgstr "Reizeditor"
 
 #: src/interface.c:1511
 msgid "Remove all bids"
-msgstr ""
+msgstr "Alle Ansagen entfernen"
 
 #: src/interface.c:1516
 msgid "Remove last bid"
-msgstr ""
+msgstr "Letzte Ansage entfernen"
 
 #: src/interface.c:1521
 msgid "Make bids for the current contract"
-msgstr ""
+msgstr "Ansagen für aktuellen Kontrakt machen"
 
 #: src/interface.c:1526
 msgid "Alert"
@@ -567,7 +545,7 @@ msgstr "Optionen"
 
 #: src/interface.c:2195
 msgid "Card width: "
-msgstr ""
+msgstr "Kartenbreite: "
 
 #: src/interface.c:2202
 msgid "label94"
@@ -587,7 +565,7 @@ msgstr ""
 
 #: src/interface.c:2285
 msgid "Bridge Hand Viewer and Editor"
-msgstr ""
+msgstr "Bridgehand-Betrachter und -Editor"
 
 #: src/interface.c:2286
 msgid ""
@@ -614,7 +592,7 @@ msgstr ""
 #. FIXME: do not call this every time
 #: src/solve.c:122 src/solve.c:285
 msgid "Error: hands have different numbers of cards"
-msgstr ""
+msgstr "Fehler: Hände haben unterschiedlich viele Karten"
 
 #: src/solve.c:161 src/solve.c:247
 msgid "Thinking..."
@@ -645,7 +623,7 @@ msgstr "Konnte pixmap nicht finden: %s"
 #: src/window_bids.c:51
 #, c-format
 msgid "Contract set to %s"
-msgstr ""
+msgstr "Kontrakt auf %s gesetzt"
 
 #: src/window_board.c:123
 msgid "•"
@@ -665,11 +643,11 @@ msgstr ""
 
 #: src/window_board.c:373
 msgid "Card is in play and cannot be moved"
-msgstr ""
+msgstr "Karte ist im Spiel und kann nicht bewegt werden"
 
 #: src/window_board.c:379
 msgid "Card is in play and cannot be exchanged"
-msgstr ""
+msgstr "Karte ist im Spiel und kann nicht ausgetauscht werden"
 
 #: src/window_board.c:390 src/window_card.c:67 src/window_card.c:97
 msgid "Hand has already 13 cards"
@@ -677,33 +655,12 @@ msgstr "Hand hat schon 13 Karten"
 
 #: src/window_board.c:440
 msgid "(no explanation)"
-msgstr ""
+msgstr "(keine Erklärung)"
 
 #: src/window_card.c:84
 msgid "All cards of that suit dealt"
-msgstr ""
+msgstr "Alle Karten dieser Farbe wurden geteilt"
 
 #: src/window_card.c:89
 msgid "Card is in play and cannot be removed"
-msgstr ""
-
-#~ msgid "_Text input"
-#~ msgstr "_Texteingabe"
-
-#~ msgid "Bids"
-#~ msgstr "Gebote"
-
-#~ msgid "Bi_ds"
-#~ msgstr "_Gebote"
-
-#~ msgid "Pla_y"
-#~ msgstr "_Spiel"
-
-#~ msgid "None"
-#~ msgstr "Keiner"
-
-#~ msgid "_Help"
-#~ msgstr "_Hilfe"
-
-#~ msgid "Bidding"
-#~ msgstr "Reizung"
+msgstr "Karte ist im Spiel und kann nicht entfernt werden"

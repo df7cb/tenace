@@ -1384,7 +1384,7 @@ create_window_card (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-select-color", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  toolbutton_card_random = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Zufall"));
+  toolbutton_card_random = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (toolbutton_card_random);
   gtk_container_add (GTK_CONTAINER (toolbar2), toolbutton_card_random);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolbutton_card_random), tooltips, _("Deal randomly"), NULL);
@@ -1394,7 +1394,7 @@ create_window_card (void)
   gtk_container_add (GTK_CONTAINER (toolbar2), separatortoolitem1);
 
   radiotoolbutton_west = (GtkWidget*) gtk_radio_tool_button_new (NULL);
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_west), _("West"));
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_west), "");
   tmp_image = gtk_image_new_from_stock ("gtk-go-back", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (radiotoolbutton_west), tmp_image);
@@ -1405,7 +1405,7 @@ create_window_card (void)
   radiotoolbutton_west_group = gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (radiotoolbutton_west));
 
   radiotoolbutton_north = (GtkWidget*) gtk_radio_tool_button_new (NULL);
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_north), _("Nord"));
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_north), "");
   tmp_image = gtk_image_new_from_stock ("gtk-go-up", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (radiotoolbutton_north), tmp_image);
@@ -1416,7 +1416,7 @@ create_window_card (void)
   radiotoolbutton_west_group = gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (radiotoolbutton_north));
 
   radiotoolbutton_east = (GtkWidget*) gtk_radio_tool_button_new (NULL);
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_east), _("Ost"));
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_east), "");
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (radiotoolbutton_east), tmp_image);
@@ -1427,7 +1427,7 @@ create_window_card (void)
   radiotoolbutton_west_group = gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (radiotoolbutton_east));
 
   radiotoolbutton_south = (GtkWidget*) gtk_radio_tool_button_new (NULL);
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_south), _("S\303\274d"));
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (radiotoolbutton_south), "");
   tmp_image = gtk_image_new_from_stock ("gtk-go-down", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (radiotoolbutton_south), tmp_image);

@@ -1774,7 +1774,7 @@ EW: %d</property>
 	    <widget class="GtkToolButton" id="toolbutton_card_random">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Deal randomly</property>
-	      <property name="label" translatable="yes">Zufall</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-select-color</property>
 	      <property name="visible_horizontal">True</property>
@@ -1805,7 +1805,7 @@ EW: %d</property>
 	    <widget class="GtkRadioToolButton" id="radiotoolbutton_west">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">West</property>
-	      <property name="label" translatable="yes">West</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-go-back</property>
 	      <property name="visible_horizontal">True</property>
@@ -1824,7 +1824,7 @@ EW: %d</property>
 	    <widget class="GtkRadioToolButton" id="radiotoolbutton_north">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">North</property>
-	      <property name="label" translatable="yes">Nord</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-go-up</property>
 	      <property name="visible_horizontal">True</property>
@@ -1844,7 +1844,7 @@ EW: %d</property>
 	    <widget class="GtkRadioToolButton" id="radiotoolbutton_east">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">East</property>
-	      <property name="label" translatable="yes">Ost</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-go-forward</property>
 	      <property name="visible_horizontal">True</property>
@@ -1864,7 +1864,7 @@ EW: %d</property>
 	    <widget class="GtkRadioToolButton" id="radiotoolbutton_south">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">South</property>
-	      <property name="label" translatable="yes">Süd</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">True</property>
 	      <property name="stock_id">gtk-go-down</property>
 	      <property name="visible_horizontal">True</property>

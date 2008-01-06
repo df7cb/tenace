@@ -427,8 +427,10 @@ int next_card(board *b)
 void board_fast_forward(board *b)
 {
 	while (b->n_played_cards < b->n_dealt_cards &&
-			b->played_cards[b->n_played_cards] != -1)
-		next_card(b);
+			b->played_cards[b->n_played_cards] != -1) {
+		if (! next_card (b))
+			return;
+	}
 }
 
 /* bidding */

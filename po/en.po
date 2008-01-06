@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-06 21:50+0100\n"
-"PO-Revision-Date: 2007-12-16 15:54+0100\n"
+"POT-Creation-Date: 2008-01-06 23:28+0100\n"
+"PO-Revision-Date: 2008-01-06 22:58+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -47,19 +47,19 @@ msgstr ""
 msgid "Card belongs to wrong player"
 msgstr ""
 
-#: src/bridge.c:456
+#: src/bridge.c:458
 msgid "Bidding is over"
 msgstr ""
 
-#: src/bridge.c:462
+#: src/bridge.c:464
 msgid "Invalid double"
 msgstr ""
 
-#: src/bridge.c:468
+#: src/bridge.c:470
 msgid "Invalid redouble"
 msgstr ""
 
-#: src/bridge.c:473
+#: src/bridge.c:475
 msgid "Insufficient bid"
 msgstr ""
 
@@ -84,26 +84,20 @@ msgstr ""
 msgid "No next board"
 msgstr ""
 
-#: src/functions.c:144 src/window_bids.c:76
+#: src/functions.c:144 src/functions.c:186 src/functions.c:197
+#: src/window_bids.c:76
 #, c-format
 msgid "X"
 msgstr ""
 
-#: src/functions.c:146 src/window_bids.c:79
+#: src/functions.c:146 src/functions.c:186 src/functions.c:197
+#: src/window_bids.c:79
 #, c-format
 msgid "XX"
 msgstr ""
 
 #: src/functions.c:183 src/functions.c:194 src/window_bids.c:73
 msgid "PASS"
-msgstr ""
-
-#: src/functions.c:186 src/functions.c:197
-msgid " XX"
-msgstr ""
-
-#: src/functions.c:187 src/functions.c:198
-msgid " X"
 msgstr ""
 
 #: src/functions.c:292 src/solve.c:347
@@ -462,7 +456,7 @@ msgstr ""
 msgid "Par score"
 msgstr ""
 
-#: src/interface.c:845 src/interface.c:1397 src/interface.c:1403
+#: src/interface.c:845 src/interface.c:1403
 msgid "West"
 msgstr ""
 
@@ -499,24 +493,8 @@ msgstr ""
 msgid "Clear board"
 msgstr ""
 
-#: src/interface.c:1387
-msgid "Zufall"
-msgstr ""
-
 #: src/interface.c:1390
 msgid "Deal randomly"
-msgstr ""
-
-#: src/interface.c:1408
-msgid "Nord"
-msgstr ""
-
-#: src/interface.c:1419
-msgid "Ost"
-msgstr ""
-
-#: src/interface.c:1430
-msgid "Süd"
 msgstr ""
 
 #: src/interface.c:1495
