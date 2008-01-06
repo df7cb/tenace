@@ -3820,15 +3820,28 @@ EW: %d</property>
   <property name="visible">True</property>
   <property name="destroy_with_parent">True</property>
   <property name="name" translatable="yes">Tenace</property>
-  <property name="copyright" translatable="yes">(c) 2007 Christoph Berg</property>
+  <property name="copyright" translatable="yes">(C) 2005-2008 Christoph Berg</property>
   <property name="comments" translatable="yes">Bridge Hand Viewer and Editor</property>
-  <property name="license" translatable="yes">GPL v2</property>
+  <property name="license" translatable="yes">/*
+ *  tenace - bridge hand viewer and editor
+ *  Copyright (C) 2005-2008 Christoph Berg &lt;cb@df7cb.de&gt;
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ */</property>
   <property name="wrap_license">False</property>
   <property name="website">http://www.df7cb.de/bridge/tenace/</property>
   <property name="website_label" translatable="yes">Homepage</property>
   <property name="authors">Christoph Berg &lt;cb@df7cb.de&gt;</property>
   <property name="documenters"></property>
-  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">translator-credits</property>
+  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">de: Christoph Berg &lt;cb@df7cb.de&gt;</property>
   <signal name="close" handler="on_aboutdialog1_close" last_modification_time="Tue, 11 Dec 2007 22:01:18 GMT"/>
   <signal name="response" handler="on_aboutdialog1_response" last_modification_time="Tue, 11 Dec 2007 22:01:26 GMT"/>
   <signal name="delete_event" handler="on_aboutdialog1_delete_event" last_modification_time="Tue, 11 Dec 2007 22:01:38 GMT"/>

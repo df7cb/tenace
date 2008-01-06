@@ -27,7 +27,6 @@
 #include "bridge.h"
 #include "file.h"
 #include "functions.h"
-#include "main.h"
 #include "solve.h"
 #include "window_bids.h"
 #include "window_board.h"

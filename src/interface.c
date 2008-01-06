@@ -2275,15 +2275,15 @@ create_aboutdialog1 (void)
     NULL
   };
   /* TRANSLATORS: Replace this string with your names, one name per line. */
-  gchar *translators = _("translator-credits");
+  gchar *translators = "de: Christoph Berg <cb@df7cb.de>";
 
   aboutdialog1 = gtk_about_dialog_new ();
   gtk_window_set_destroy_with_parent (GTK_WINDOW (aboutdialog1), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (aboutdialog1), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (aboutdialog1), _("Tenace"));
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (aboutdialog1), _("(c) 2007 Christoph Berg"));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (aboutdialog1), _("(C) 2005-2008 Christoph Berg"));
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (aboutdialog1), _("Bridge Hand Viewer and Editor"));
-  gtk_about_dialog_set_license (GTK_ABOUT_DIALOG (aboutdialog1), _("GPL v2"));
+  gtk_about_dialog_set_license (GTK_ABOUT_DIALOG (aboutdialog1), _("/*\n *  tenace - bridge hand viewer and editor\n *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>\n *\n *  This program is free software; you can redistribute it and/or modify\n *  it under the terms of the GNU General Public License as published by\n *  the Free Software Foundation; either version 2 of the License, or\n *  (at your option) any later version.\n *\n *  This program is distributed in the hope that it will be useful,\n *  but WITHOUT ANY WARRANTY; without even the implied warranty of\n *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n *  GNU General Public License for more details.\n */"));
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (aboutdialog1), "http://www.df7cb.de/bridge/tenace/");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (aboutdialog1), _("Homepage"));
   gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (aboutdialog1), authors);

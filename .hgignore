@@ -5,7 +5,7 @@
 ^configure$
 ^config\.(h|h\.in|log|status)$
 Makefile\.in$
-^(|contrib/|handdisplay/|po/|src/)Makefile$
+^(|cards/|contrib/|doc/|examples/|handdisplay/|po/|src/)Makefile$
 ^po/.*\.gmo$
 ^po/(POTFILES|tenace.pot)$
 ^src/\.deps/.*\.Po$
@@ -35,3 +35,4 @@ debian/*.debhelper
 # stuff
 *.bak
 *.swp
+src/tags

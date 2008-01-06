@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-06 20:05+0100\n"
+"POT-Creation-Date: 2008-01-06 21:50+0100\n"
 "PO-Revision-Date: 2008-01-06 20:09+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -63,24 +63,24 @@ msgstr ""
 msgid "Insufficient bid"
 msgstr ""
 
-#: src/callbacks.c:724 src/callbacks.c:750
+#: src/callbacks.c:723 src/callbacks.c:749
 msgid "No board"
 msgstr "Kein Board"
 
-#: src/callbacks.c:766
+#: src/callbacks.c:765
 msgid "Cut buffer is empty"
 msgstr ""
 
-#: src/callbacks.c:772 src/window_board.c:557
+#: src/callbacks.c:771 src/window_board.c:557
 #, c-format
 msgid "Board %d"
 msgstr ""
 
-#: src/callbacks.c:952
+#: src/callbacks.c:951
 msgid "No previous board"
 msgstr ""
 
-#: src/callbacks.c:968
+#: src/callbacks.c:967
 msgid "No next board"
 msgstr "Kein nächstes Board"
 
@@ -581,13 +581,8 @@ msgstr "Karten"
 msgid "label96"
 msgstr ""
 
-#. TRANSLATORS: Replace this string with your names, one name per line.
-#: src/interface.c:2278
-msgid "translator-credits"
-msgstr ""
-
 #: src/interface.c:2284
-msgid "(c) 2007 Christoph Berg"
+msgid "(C) 2005-2008 Christoph Berg"
 msgstr ""
 
 #: src/interface.c:2285
@@ -595,7 +590,21 @@ msgid "Bridge Hand Viewer and Editor"
 msgstr ""
 
 #: src/interface.c:2286
-msgid "GPL v2"
+msgid ""
+"/*\n"
+" *  tenace - bridge hand viewer and editor\n"
+" *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>\n"
+" *\n"
+" *  This program is free software; you can redistribute it and/or modify\n"
+" *  it under the terms of the GNU General Public License as published by\n"
+" *  the Free Software Foundation; either version 2 of the License, or\n"
+" *  (at your option) any later version.\n"
+" *\n"
+" *  This program is distributed in the hope that it will be useful,\n"
+" *  but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+" *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+" *  GNU General Public License for more details.\n"
+" */"
 msgstr ""
 
 #: src/interface.c:2288

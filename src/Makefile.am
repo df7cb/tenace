@@ -8,7 +8,7 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = tenace
 
 tenace_SOURCES = \
-	main.c main.h \
+	main.c \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \

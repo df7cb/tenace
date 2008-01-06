@@ -19,7 +19,6 @@ install: build-stamp
 	dh_clean -k
 	$(MAKE) install DESTDIR=$D
 	install -m644 -D contrib/mailcap $D/usr/lib/mime/packages/tenace
-	install -m644 -D cards/grey.svg $D/usr/share/tenace/grey.svg
 
 binary-indep:
 
@@ -27,7 +26,6 @@ binary-arch: install
 	dh_installchangelogs -a
 	dh_installdocs -a
 	dh_installman -a doc/tenace.6
-	dh_installexamples -a examples
 	dh_installmime -a
 	dh_strip -a
 	dh_compress -a
@@ -42,7 +40,7 @@ binary: binary-indep binary-arch
 
 clean:
 	dh_testdir
-	$(MAKE) clean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	dh_clean build-stamp configure-stamp
 
 .PHONY: build build-indep build-arch clean binary binary-indep binary-arch install configure patch unpatch

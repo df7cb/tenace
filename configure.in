@@ -28,7 +28,10 @@ XGETTEXT="xgettext --from-code=utf-8"
 
 AC_OUTPUT([
 Makefile
+cards/Makefile
 contrib/Makefile
+doc/Makefile
+examples/Makefile
 handdisplay/Makefile
 src/Makefile
 po/Makefile.in
