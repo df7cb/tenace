@@ -303,7 +303,7 @@ static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
-	//printf("Clicked: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
+	//printf("Clicked: %s for %c.\n", card_string(card), "WNES"[*seatp - 1]);
 	int redraw = 0;
 
 	if (*seatp != b->current_turn && b->n_played_cards > 0 &&
@@ -335,7 +335,7 @@ static void card_enter (HandDisplay *handdisp, int card, int *seatp)
 		PROTECT_RETURN;
 
 	snprintf(buf, 99, "%s: %s",
-		card_string(card)->str,
+		card_string(card),
 		score_string(b->level, b->trumps, b->declarer, b->doubled, b->vuln[b->declarer % 2],
 			b->current_dd->card_score[card], b->current_turn));
 	board_statusbar(buf);
@@ -361,9 +361,9 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	/*
-	printf("Dropped: %s for %c.\n", card_string(card)->str, "WNES"[*seatp - 1]);
+	printf("Dropped: %s for %c.\n", card_string(card), "WNES"[*seatp - 1]);
 	if (on_card >= 0)
-		printf("Dropped on: %s.\n", card_string(on_card)->str);
+		printf("Dropped on: %s.\n", card_string(on_card));
 	*/
 
 	if (b->dealt_cards[card] && b->dealt_cards[card] == *seatp) /* card didn't move */

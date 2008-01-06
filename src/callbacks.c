@@ -432,9 +432,8 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	rewind_card(b); /* extra call to show warning if there's nothing to do */
 	board_rewind(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
 }
-
 
 
 void
@@ -443,7 +442,7 @@ on_button_back_clicked                 (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	rewind_card(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -453,7 +452,7 @@ on_button_next_clicked                 (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	next_card(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -462,8 +461,9 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
+	next_card (b); /* extra call to show warning if there's nothing to do */
 	board_fast_forward(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
 }
 
 
@@ -527,11 +527,13 @@ void
 on_deal_line_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	PROTECT_BEGIN;
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
 		board *b = CUR_BOARD;
 		window_line_entry_init (b);
 	} else
 		window_line_entry_delete ();
+	PROTECT_END;
 }
 
 
@@ -558,7 +560,11 @@ on_window_line_entry_delete_event      (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	window_line_entry = NULL;
+	PROTECT_BEGIN;
+	GtkWidget *menuitem = lookup_widget (win->window, "deal_line");
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), FALSE);
+	window_line_entry_delete ();
+	PROTECT_END;
 	return FALSE;
 }
 

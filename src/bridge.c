@@ -364,10 +364,9 @@ int rewind_card(board *b)
 		return 0;
 	}
 
-	b->n_played_cards--;
-
-	if (b->n_played_cards % 4 == 3)
+	if (b->n_played_cards % 4 == 0)
 		b->tricks[b->current_turn % 2]--;
+	b->n_played_cards--;
 
 	card c = b->played_cards[b->n_played_cards];
 	assert (b->cards[c] == 0);
@@ -427,7 +426,9 @@ int next_card(board *b)
 
 void board_fast_forward(board *b)
 {
-	while (next_card(b));
+	while (b->n_played_cards < b->n_dealt_cards &&
+			b->played_cards[b->n_played_cards] != -1)
+		next_card(b);
 }
 
 /* bidding */

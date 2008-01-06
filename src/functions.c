@@ -21,8 +21,11 @@
 #include "functions.h"
 #include "support.h"
 
-const char *
-seat_str[] = {0, "W", "N", "E", "S"};
+const char *seat_str[] = {0, "W", "N", "E", "S"};
+const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
+/* 2 characters so Spade and South can be translated separately */
+const char *trump_str_asc[] = {"Cl", "Di", "He", "Sp", "NT"};
+const char *trump_color[] = {"green", "orange", "red", "blue", "black"};
 
 int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
 
@@ -112,48 +115,38 @@ int parse_bid(char **tok)
 	return (5 * le + su) | alert;
 }
 
-GString *card_string (card c)
+char *
+card_string (card c)
 {
-	char *su = NULL;
-	static GString *s = NULL;
-	if (!s)
-		s = g_string_new(NULL);
+	static char s[8];
+	sprintf(s, "%s%s", trump_str[SUIT(c)], rank_string(RANK(c)));
+	return s;
+}
 
-	switch (SUIT(c)) {
-		case spade: su = "♠"; break;
-		case heart: su = "♥"; break;
-		case diamond: su = "♦"; break;
-		case club: su = "♣"; break;
-	}
-	g_string_printf(s, "%s%s", su, rank_string(RANK(c)));
+char *
+card_string_color (card c)
+{
+	static char s[60];
+	sprintf(s, "<span foreground=\"%s\">%s</span>%s",
+			trump_color[SUIT(c)], trump_str[SUIT(c)], rank_string(RANK(c)));
 	return s;
 }
 
 GString *bid_string (card c, int alert)
 {
-	char *bg, *su;
 	static GString *s = NULL;
 	if (!s)
 		s = g_string_new(NULL);
 
-	//bg = alert ? " weight=\"bold\"" : "";
-	bg = "";
-
 	if (c == bid_pass) {
-		g_string_printf(s, "<span%s>‒</span>", bg); /* FIGURE DASH */
+		g_string_printf(s, "‒"); /* FIGURE DASH */
 	} else if (c == bid_x) {
-		g_string_printf(s, _("<span%s>X</span>"), bg);
+		g_string_printf(s, _("X"));
 	} else if (c == bid_xx) {
-		g_string_printf(s, _("<span%s>XX</span>"), bg);
+		g_string_printf(s, _("XX"));
 	} else {
-		switch (DENOM(c)) {
-			case NT: su = _("NT"); break;
-			case spade: su = "<span foreground=\"blue\">♠</span>"; break;
-			case heart: su = "<span foreground=\"red\">♥</span>"; break;
-			case diamond: su = "<span foreground=\"orange\">♦</span>"; break;
-			case club: su = "<span foreground=\"green\">♣</span>"; break;
-		}
-		g_string_printf(s, "<span%s>%d%s</span>", bg, LEVEL(c), su);
+		g_string_printf(s, "%d<span foreground=\"%s\">%s</span>",
+				LEVEL(c), trump_color[DENOM(c)], _(trump_str[DENOM(c)]));
 	}
 	return s;
 }
@@ -187,9 +180,7 @@ GString *hand_string (board *b, seat h)
 char *contract_string(int level, suit trumps, seat declarer, int doubled)
 {
 	static char buf[20];
-	char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
-	char *declarer_str[] = {0, "W", "N", "E", "S"};
-	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(declarer_str[declarer]),
+	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(seat_str[declarer]),
 		doubled == 2 ? _(" XX") :
 			doubled == 1 ? _(" X") : "");
 	return buf;
@@ -198,8 +189,7 @@ char *contract_string(int level, suit trumps, seat declarer, int doubled)
 char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 {
 	static char buf[20];
-	char *trump_str[] = {"Cl", "Di", "He", "Sp", "NT"};
-	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str[trumps]), _(seat_str[declarer]),
+	snprintf(buf, 20, "%d%s %s%s", level, _(trump_str_asc[trumps]), _(seat_str[declarer]),
 		doubled == 2 ? _(" XX") :
 			doubled == 1 ? _(" X") : "");
 	return buf;

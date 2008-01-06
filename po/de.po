@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-16 15:52+0100\n"
-"PO-Revision-Date: 2007-12-11 01:46+0100\n"
+"POT-Creation-Date: 2008-01-06 02:37+0100\n"
+"PO-Revision-Date: 2008-01-06 02:38+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -31,103 +31,96 @@ msgstr "Bitte Farbe bekennen"
 msgid "Nothing to undo"
 msgstr "Nichts zurück zu nehmen"
 
-#: src/bridge.c:410
+#: src/bridge.c:409
 msgid "No cards left to play"
 msgstr "Keine weiteren Karten zu spielen"
 
-#: src/bridge.c:414
+#: src/bridge.c:413
 msgid "Which card should I play?"
 msgstr "Welche Karte soll ich spielen?"
 
-#: src/bridge.c:418
+#: src/bridge.c:417
 msgid "Card was already played"
 msgstr "Karte wurde schon gespielt"
 
-#: src/bridge.c:422
+#: src/bridge.c:421
 msgid "Card belongs to wrong player"
 msgstr "Karte gehört falschem Spieler"
 
-#: src/callbacks.c:720 src/callbacks.c:746
+#: src/callbacks.c:724 src/callbacks.c:750
 #, fuzzy
 msgid "No board"
 msgstr "Öffne Board"
 
-#: src/callbacks.c:762
+#: src/callbacks.c:766
 msgid "Cut buffer is empty"
 msgstr ""
 
-#: src/callbacks.c:768 src/window_board.c:542
+#: src/callbacks.c:772 src/window_board.c:557
 #, c-format
 msgid "Board %d"
 msgstr ""
 
-#: src/callbacks.c:937
+#: src/callbacks.c:933
 msgid "No previous board"
 msgstr ""
 
-#: src/callbacks.c:953
+#: src/callbacks.c:949
 #, fuzzy
 msgid "No next board"
 msgstr "Nächste Karte spielen"
 
-#: src/functions.c:142
+#: src/functions.c:144 src/window_bids.c:63
 #, c-format
-msgid "<span%s>X</span>"
+msgid "X"
 msgstr ""
 
-#: src/functions.c:144
+#: src/functions.c:146 src/window_bids.c:66
 #, c-format
-msgid "<span%s>XX</span>"
+msgid "XX"
 msgstr ""
 
-#: src/functions.c:147
-msgid "NT"
-msgstr "SA"
-
-#: src/functions.c:190 src/functions.c:201
+#: src/functions.c:184 src/functions.c:193
 msgid " XX"
 msgstr ""
 
-#: src/functions.c:191 src/functions.c:202
+#: src/functions.c:185 src/functions.c:194
 msgid " X"
 msgstr ""
 
-#: src/functions.c:296 src/interface.c:2103 src/interface.c:2127
-#: src/solve.c:347
+#: src/functions.c:288 src/solve.c:347
 msgid "W"
 msgstr ""
 
-#: src/functions.c:297 src/interface.c:2109 src/interface.c:2133
-#: src/solve.c:342
+#: src/functions.c:289 src/solve.c:342
 msgid "N"
 msgstr ""
 
-#: src/functions.c:298 src/interface.c:2115 src/interface.c:2139
-#: src/solve.c:347
+#: src/functions.c:290 src/solve.c:347
 msgid "E"
 msgstr "O"
 
-#: src/functions.c:299 src/interface.c:2121 src/solve.c:342
+#: src/functions.c:291 src/solve.c:342
 msgid "S"
 msgstr ""
 
-#: src/functions.c:301
+#: src/functions.c:293
 msgid "Sp"
 msgstr "P"
 
-#: src/functions.c:302
+#: src/functions.c:294
 msgid "He"
 msgstr "C"
 
-#: src/functions.c:303
+#: src/functions.c:295
 msgid "Di"
 msgstr "K"
 
-#: src/functions.c:304
+#: src/functions.c:296
 msgid "Cl"
 msgstr "T"
 
-#: src/interface.c:204 src/interface.c:2297
+#: src/interface.c:204 src/interface.c:2277
 msgid "Tenace"
 msgstr ""
 
@@ -155,337 +148,337 @@ msgstr "_Austeilung"
 msgid "_Dealer"
 msgstr "_Teiler"
 
-#: src/interface.c:277 src/interface.c:531
+#: src/interface.c:277 src/interface.c:549
 msgid "_West"
 msgstr "_West"
 
-#: src/interface.c:282 src/interface.c:536
+#: src/interface.c:283 src/interface.c:555
 msgid "_North"
 msgstr "_Nord"
 
-#: src/interface.c:287 src/interface.c:541
+#: src/interface.c:289 src/interface.c:561
 msgid "_East"
 msgstr "_Ost"
 
-#: src/interface.c:292 src/interface.c:546
+#: src/interface.c:295 src/interface.c:567
 msgid "_South"
 msgstr "_Süd"
 
-#: src/interface.c:298
+#: src/interface.c:301
 msgid "_Vulnerable"
 msgstr "_Gefahr"
 
-#: src/interface.c:309
+#: src/interface.c:312
 msgid "N_one"
 msgstr "_Keiner"
 
-#: src/interface.c:314
+#: src/interface.c:318
 msgid "_North-South"
 msgstr "_Nord-Süd"
 
-#: src/interface.c:319
+#: src/interface.c:324
 msgid "_East-West"
 msgstr "_Ost-West"
 
-#: src/interface.c:324
+#: src/interface.c:330
 msgid "_All"
 msgstr "_Alle"
 
-#: src/interface.c:335
+#: src/interface.c:341
 msgid "_New"
 msgstr "_Neu"
 
-#: src/interface.c:360
+#: src/interface.c:366
 msgid "_Clear"
 msgstr "_Leeren"
 
-#: src/interface.c:368
+#: src/interface.c:374
 msgid "_Random"
 msgstr "_Zufällig"
 
-#: src/interface.c:376
+#: src/interface.c:382
 msgid "_Flip"
 msgstr "_Tauschen"
 
-#: src/interface.c:387
+#: src/interface.c:393
 msgid "E-W"
 msgstr "O-W"
 
-#: src/interface.c:391
+#: src/interface.c:397
 msgid "N-S"
 msgstr ""
 
-#: src/interface.c:395
+#: src/interface.c:401
 msgid "N-W"
 msgstr ""
 
-#: src/interface.c:399
+#: src/interface.c:405
 msgid "N-E"
 msgstr "N-O"
 
-#: src/interface.c:403
+#: src/interface.c:409
 msgid "S-W"
 msgstr ""
 
-#: src/interface.c:407
+#: src/interface.c:413
 msgid "S-E"
 msgstr "S-O"
 
-#: src/interface.c:411
+#: src/interface.c:417
 msgid "Hand _editor"
 msgstr ""
 
-#: src/interface.c:415
+#: src/interface.c:421
 msgid "_Text input"
-msgstr ""
+msgstr "_Texteingabe"
 
-#: src/interface.c:419
+#: src/interface.c:425
 msgid "_Contract"
 msgstr "_Kontrakt"
 
-#: src/interface.c:426
+#: src/interface.c:432
 msgid "_Level"
 msgstr "Stu_fe"
 
-#: src/interface.c:437
+#: src/interface.c:443
 msgid "_1"
 msgstr ""
 
-#: src/interface.c:442
+#: src/interface.c:449
 msgid "_2"
 msgstr ""
 
-#: src/interface.c:447
+#: src/interface.c:455
 msgid "_3"
 msgstr ""
 
-#: src/interface.c:452
+#: src/interface.c:461
 msgid "_4"
 msgstr ""
 
-#: src/interface.c:457
+#: src/interface.c:467
 msgid "_5"
 msgstr ""
 
-#: src/interface.c:462
+#: src/interface.c:473
 msgid "_6"
 msgstr ""
 
-#: src/interface.c:467
+#: src/interface.c:479
 msgid "_7"
 msgstr ""
 
-#: src/interface.c:473
+#: src/interface.c:485
 msgid "No _Trump"
 msgstr "_Sans Atout"
 
-#: src/interface.c:478
+#: src/interface.c:491
 msgid "♠ S_pades"
 msgstr "♠ _Pik"
 
-#: src/interface.c:483
+#: src/interface.c:497
 msgid "♥ _Hearts"
 msgstr "♥ _Coeur"
 
-#: src/interface.c:488
+#: src/interface.c:503
 msgid "♦ _Diamonds"
 msgstr "♦ _Karo"
 
-#: src/interface.c:493
+#: src/interface.c:509
 msgid "♣ _Clubs"
 msgstr "♣ _Treff"
 
-#: src/interface.c:499
+#: src/interface.c:515
 #, fuzzy
 msgid "Double"
 msgstr "X _Kontra"
 
-#: src/interface.c:510
+#: src/interface.c:526
 msgid "_No double"
 msgstr "Kei_n Kontra"
 
-#: src/interface.c:515
+#: src/interface.c:532
 msgid "X _Doubled"
 msgstr "X _Kontra"
 
-#: src/interface.c:520
+#: src/interface.c:538
 msgid "XX _Redoubled"
 msgstr "XX _Rekontra"
 
-#: src/interface.c:557
+#: src/interface.c:578
 #, fuzzy
 msgid "_Bidding editor"
 msgstr "_Reizung"
 
-#: src/interface.c:561
+#: src/interface.c:582
 #, fuzzy
 msgid "_Play"
 msgstr "Spiel"
 
-#: src/interface.c:568
+#: src/interface.c:589
 msgid "Double dummy"
 msgstr "Double Dummy"
 
-#: src/interface.c:571 src/interface.c:792
+#: src/interface.c:592 src/interface.c:821
 msgid "Double dummy analysis"
 msgstr "Double-Dummy-Analyse"
 
-#: src/interface.c:577
+#: src/interface.c:598
 msgid "Parscore"
 msgstr ""
 
-#: src/interface.c:580
+#: src/interface.c:601
 msgid "Compute par score and contract"
 msgstr "Berechne Parscore und -Kontrakt"
 
-#: src/interface.c:586
+#: src/interface.c:607
 msgid "Play par"
 msgstr "Spiele Par"
 
-#: src/interface.c:589
+#: src/interface.c:610
 msgid "Set contract to computed par contract"
 msgstr "Setze Kontrakt auf berechneten Par"
 
-#: src/interface.c:595
+#: src/interface.c:616
 msgid "Show pla_y"
 msgstr ""
 
-#: src/interface.c:599
+#: src/interface.c:620
 msgid "_View"
 msgstr ""
 
-#: src/interface.c:606 src/interface.c:1582
+#: src/interface.c:627 src/interface.c:1613
 msgid "IMP Table"
 msgstr "IMP-Tabelle"
 
-#: src/interface.c:614
+#: src/interface.c:635
 msgid "_Info"
 msgstr ""
 
-#: src/interface.c:627
+#: src/interface.c:648
 msgid "_Played cards"
 msgstr "_Gespielte Karten"
 
-#: src/interface.c:631
+#: src/interface.c:652
 msgid "Hands"
 msgstr "Hände"
 
-#: src/interface.c:638 src/interface.c:666
+#: src/interface.c:659 src/interface.c:690
 msgid "East-West"
 msgstr "Ost-West"
 
-#: src/interface.c:643 src/interface.c:671 src/interface.c:689
+#: src/interface.c:665 src/interface.c:696 src/interface.c:715
 msgid "North-South"
 msgstr "Nord-Süd"
 
-#: src/interface.c:648 src/interface.c:676
+#: src/interface.c:671 src/interface.c:702
 msgid "All"
 msgstr "Alle"
 
-#: src/interface.c:654
+#: src/interface.c:677
 msgid "DD Scores"
 msgstr ""
 
-#: src/interface.c:661
+#: src/interface.c:684
 msgid "No one"
 msgstr "Keiner"
 
-#: src/interface.c:682
+#: src/interface.c:708
 msgid "Positive for"
 msgstr "Positiv für"
 
-#: src/interface.c:694
+#: src/interface.c:721
 msgid "Declarer"
 msgstr "Alleinspieler"
 
-#: src/interface.c:699
+#: src/interface.c:727
 msgid "Current lead"
 msgstr "Aktuell am Ausspiel"
 
-#: src/interface.c:705
+#: src/interface.c:733
 msgid "Display _style"
 msgstr "Anzeige_stil"
 
-#: src/interface.c:712
+#: src/interface.c:740
 msgid "_Text"
 msgstr ""
 
-#: src/interface.c:717
+#: src/interface.c:746
 msgid "_Cards"
 msgstr "_Karten"
 
-#: src/interface.c:732
+#: src/interface.c:761
 msgid "Open board"
 msgstr "Öffne Board"
 
-#: src/interface.c:737
+#: src/interface.c:766
 msgid "Save board"
 msgstr "Speichere Board"
 
-#: src/interface.c:742
+#: src/interface.c:771
 msgid "Previous board"
 msgstr ""
 
-#: src/interface.c:747
+#: src/interface.c:776
 #, fuzzy
 msgid "Next board"
 msgstr "Öffne Board"
 
-#: src/interface.c:755
+#: src/interface.c:784
 msgid "Anfang"
 msgstr ""
 
-#: src/interface.c:758
+#: src/interface.c:787
 msgid "Rewind play"
 msgstr "Zurückspulen"
 
-#: src/interface.c:762
+#: src/interface.c:791
 msgid "Zurück"
 msgstr ""
 
-#: src/interface.c:765
+#: src/interface.c:794
 msgid "Undo card play"
 msgstr "Karte zurücknehmen"
 
-#: src/interface.c:769
+#: src/interface.c:798
 msgid "Vor"
 msgstr ""
 
-#: src/interface.c:772
+#: src/interface.c:801
 msgid "Play next card"
 msgstr "Nächste Karte spielen"
 
-#: src/interface.c:779
+#: src/interface.c:808
 msgid "Play all cards"
 msgstr "Alle Karten spielen"
 
-#: src/interface.c:797
+#: src/interface.c:826
 msgid "Par score"
 msgstr ""
 
-#: src/interface.c:817 src/interface.c:1372 src/interface.c:1378
+#: src/interface.c:846 src/interface.c:1401 src/interface.c:1407
 msgid "West"
 msgstr "West"
 
-#: src/interface.c:835 src/interface.c:1411
+#: src/interface.c:864 src/interface.c:1440
 msgid "South"
 msgstr "Süd"
 
-#: src/interface.c:853 src/interface.c:1389
+#: src/interface.c:882 src/interface.c:1418
 msgid "North"
 msgstr "Nord"
 
-#: src/interface.c:871 src/interface.c:1400
+#: src/interface.c:900 src/interface.c:1429
 msgid "East"
 msgstr "Ost"
 
-#: src/interface.c:876
+#: src/interface.c:905
 msgid ""
 "Bd 1\n"
 "4♦X S"
 msgstr ""
 
-#: src/interface.c:894 src/window_board.c:211
+#: src/interface.c:923 src/window_board.c:224
 #, c-format
 msgid ""
 "NS: %d\n"
@@ -494,93 +487,109 @@ msgstr ""
 "NS: %d\n"
 "OW: %d"
 
-#: src/interface.c:1341 src/interface.c:2226
+#: src/interface.c:1370 src/interface.c:2206
 msgid "Cards"
 msgstr "Karten"
 
-#: src/interface.c:1358
+#: src/interface.c:1387
 msgid "Clear board"
 msgstr "Board leeren"
 
-#: src/interface.c:1362
+#: src/interface.c:1391
 msgid "Zufall"
 msgstr ""
 
-#: src/interface.c:1365
+#: src/interface.c:1394
 msgid "Deal randomly"
 msgstr "Zufällig teilen"
 
-#: src/interface.c:1383
+#: src/interface.c:1412
 msgid "Nord"
 msgstr ""
 
-#: src/interface.c:1394
+#: src/interface.c:1423
 msgid "Ost"
 msgstr ""
 
-#: src/interface.c:1405
+#: src/interface.c:1434
 msgid "Süd"
 msgstr ""
 
-#: src/interface.c:1469
+#: src/interface.c:1498
 msgid "Bids"
 msgstr "Gebote"
 
-#: src/interface.c:1493
+#: src/interface.c:1514
+msgid "Remove all bids"
+msgstr ""
+
+#: src/interface.c:1519
+msgid "Remove last bid"
+msgstr ""
+
+#: src/interface.c:1524
 msgid "Alert"
 msgstr ""
 
-#: src/interface.c:2039
-msgid "Hand Line"
-msgstr "Hand als Zeile"
+#: src/interface.c:2073
+msgid "Text input"
+msgstr "Texteingabe"
 
-#: src/interface.c:2049
+#: src/interface.c:2083
+msgid "Hand as string"
+msgstr "Hand als Text"
+
+#: src/interface.c:2084
 msgid "63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853"
 msgstr ""
 
-#: src/interface.c:2092
+#: src/interface.c:2089
+msgid "Set hand"
+msgstr "Hand setzen"
+
+#: src/interface.c:2122
 msgid "Play"
 msgstr "Spiel"
 
-#: src/interface.c:2186
+#: src/interface.c:2166
 msgid "Options"
 msgstr "Optionen"
 
-#: src/interface.c:2209
+#: src/interface.c:2189
 msgid "Card width: "
 msgstr ""
 
-#: src/interface.c:2216
+#: src/interface.c:2196
 msgid "label94"
 msgstr ""
 
-#: src/interface.c:2234
+#: src/interface.c:2214
 msgid "label96"
 msgstr ""
 
 #. TRANSLATORS: Replace this string with your names, one name per line.
-#: src/interface.c:2292
+#: src/interface.c:2272
 msgid "translator-credits"
 msgstr ""
 
-#: src/interface.c:2298
+#: src/interface.c:2278
 msgid "(c) 2007 Christoph Berg"
 msgstr ""
 
-#: src/interface.c:2299
+#: src/interface.c:2279
 msgid "Bridge Hand Viewer and Editor"
 msgstr ""
 
-#: src/interface.c:2300
+#: src/interface.c:2280
 msgid "GPL v2"
 msgstr ""
 
-#: src/interface.c:2302
+#: src/interface.c:2282
 msgid "Homepage"
 msgstr ""
 
 #. FIXME: do not call this every time
-#: src/solve.c:122
+#: src/solve.c:122 src/solve.c:285
 msgid "Error: hands have different numbers of cards"
 msgstr ""
 
@@ -615,44 +624,36 @@ msgstr "Konnte pixmap nicht finden: %s"
 msgid "PASS"
 msgstr ""
 
-#: src/window_bids.c:63
-msgid "X"
-msgstr ""
-
-#: src/window_bids.c:66
-msgid "XX"
-msgstr ""
-
-#: src/window_board.c:118
+#: src/window_board.c:123
 msgid "•"
 msgstr ""
 
-#: src/window_board.c:119
+#: src/window_board.c:124
 #, fuzzy
 msgid "Dealer"
 msgstr "_Teiler"
 
-#: src/window_board.c:130
+#: src/window_board.c:135
 msgid "*"
 msgstr ""
 
-#: src/window_board.c:130
+#: src/window_board.c:135
 msgid "!"
 msgstr ""
 
-#: src/window_board.c:360
+#: src/window_board.c:373
 msgid "Card is in play and cannot be moved"
 msgstr ""
 
-#: src/window_board.c:366
+#: src/window_board.c:379
 msgid "Card is in play and cannot be exchanged"
 msgstr ""
 
-#: src/window_board.c:377 src/window_card.c:67 src/window_card.c:97
+#: src/window_board.c:390 src/window_card.c:67 src/window_card.c:97
 msgid "Hand has already 13 cards"
 msgstr "Hand hat schon 13 Karten"
 
-#: src/window_board.c:425
+#: src/window_board.c:440
 msgid "(no explanation)"
 msgstr ""
 
@@ -663,6 +664,9 @@ msgstr ""
 #: src/window_card.c:89
 msgid "Card is in play and cannot be removed"
 msgstr ""
+
+#~ msgid "NT"
+#~ msgstr "SA"
 
 #~ msgid "Bi_ds"
 #~ msgstr "_Gebote"

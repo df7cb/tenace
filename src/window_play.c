@@ -46,7 +46,7 @@ void window_play_update (board *b)
 			if (c == claim_rest)
 				gtk_label_set_markup(l, "CL");
 			else {
-				gtk_label_set_markup(l, card_string(c)->str);
+				gtk_label_set_markup(l, card_string_color (c));
 				gtk_widget_set_sensitive(GTK_WIDGET(l), 4*t + i < b->n_played_cards);
 			}
 		}
@@ -59,13 +59,18 @@ void window_play_init (board *b)
 		return;
 
 	window_play = create_window_play();
-	//gtk_widget_show(window_play);
 	play_table = GTK_TABLE(lookup_widget(window_play, "play_table"));
 	assert (play_table);
 	int cr, cc;
+	char str[20];
+	for (cc = 1; cc < 8; cc++) {
+		GtkWidget *lab = gtk_label_new (NULL);
+		snprintf (str, sizeof (str), "<b>%s</b>", _(seat_str[seat_mod (cc)]));
+		gtk_label_set_markup (GTK_LABEL (lab), str);
+		gtk_table_attach(play_table, lab, cc, cc+1, 0, 1, 0, 0, 0, 0);
+	}
 	for (cr = 0; cr <= 12; cr++) {
-		char str[5];
-		snprintf(str, 5, " %d ", cr+1);
+		snprintf(str, sizeof (str), " %d ", cr+1);
 		GtkWidget *lab = gtk_label_new(str);
 		gtk_table_attach(play_table, lab, 0, 1, cr+1, cr+2, 0, 0, 0, 0);
 		for (cc = 0; cc < 7; cc++) {
