@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-07 00:32+0100\n"
-"PO-Revision-Date: 2008-01-06 23:15+0100\n"
+"PO-Revision-Date: 2008-01-08 23:56+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -493,7 +493,7 @@ msgstr ""
 
 #: src/interface.c:1366
 msgid "Board editor"
-msgstr "_Boardeditor"
+msgstr "Boardeditor"
 
 #: src/interface.c:1383
 msgid "Clear board"
