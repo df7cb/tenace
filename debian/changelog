@@ -1,3 +1,11 @@
+tenace (0.4-1) unstable; urgency=low
+
+  * New upstream version.
+  * lin parser:
+    + EW vuln was parsed incorrectly.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 20 Jan 2008 03:07:42 +0100
+
 tenace (0.3-1) unstable; urgency=low
 
   * Initial release.

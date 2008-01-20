@@ -146,7 +146,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			switch (*tok) {
 				case 'o': b->vuln[0] = 0; b->vuln[1] = 0; break;
 				case 'n': b->vuln[0] = 1; b->vuln[1] = 0; break;
-				case 'e': b->vuln[0] = 1; b->vuln[1] = 1; break;
+				case 'e': b->vuln[0] = 0; b->vuln[1] = 1; break;
 				case 'b': b->vuln[0] = 1; b->vuln[1] = 1; break;
 				default: printf("Unknown vulnerability: %s\n", tok);
 			}
