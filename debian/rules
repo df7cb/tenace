@@ -23,7 +23,7 @@ install: build-stamp
 binary-indep:
 
 binary-arch: install
-	dh_installchangelogs -a
+	dh_installchangelogs -a ChangeLog
 	dh_installdocs -a
 	dh_installman -a doc/tenace.6
 	dh_installmime -a
