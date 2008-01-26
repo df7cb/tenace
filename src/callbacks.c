@@ -924,21 +924,36 @@ on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
 }
 
 
+#define TRY(x) { if (!(x)) goto end; }
+
 void
 on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
+	int i;
 	board *b = CUR_BOARD;
+	seat cur_seat = seat_mod (b->dealer + b->n_bids);
+	int passes = (b->declarer - cur_seat) % 4;
 
-	board_append_bid (b, 5 * b->level + b->trumps, 0);
+	for (i = (b->n_bids + passes - 2) % 4; i < b->n_bids; i += 4)
+		if (b->bidding[i] >= 5 && DENOM (b->bidding[i]) == b->trumps) {
+			board_statusbar (_("Suit was already bid from wrong side"));
+			goto end;
+		}
+
+	for (i = 0; i < passes; i++)
+		TRY (board_append_bid (b, bid_pass, 0));
+
+	TRY (board_append_bid (b, 5 * b->level + b->trumps, 0));
 	if (b->doubled)
-		board_append_bid (b, bid_x, 0);
+		TRY (board_append_bid (b, bid_x, 0));
 	if (b->doubled == bid_xx)
-		board_append_bid (b, bid_xx, 0);
-	board_append_bid (b, bid_pass, 0);
-	board_append_bid (b, bid_pass, 0);
-	board_append_bid (b, bid_pass, 0);
+		TRY (board_append_bid (b, bid_xx, 0));
+	TRY (board_append_bid (b, bid_pass, 0));
+	TRY (board_append_bid (b, bid_pass, 0));
+	TRY (board_append_bid (b, bid_pass, 0));
 
+end:
 	show_board(b, REDRAW_BIDDING | REDRAW_BIDDING_SCROLL);
 }
 

@@ -1,0 +1,14 @@
+tenace (0.4) upstream; urgency=low
+
+  * lin parser:
+    + EW vuln was parsed incorrectly.
+  * Bidding:
+    + Fix "make bids for current contract".
+
+ -- Christoph Berg <myon@debian.org>  Sat, 26 Jan 2008 23:51:56 +0100
+
+tenace (0.3) upstream; urgency=low
+
+  * Initial release.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 06 Jan 2008 22:28:27 +0100

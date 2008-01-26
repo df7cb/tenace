@@ -15,7 +15,6 @@ syntax: glob
 stamp-h.in
 
 AUTHORS
-ChangeLog
 NEWS
 README
 
