@@ -20,6 +20,7 @@
 #include <gtk/gtk.h>
 
 #include <assert.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -67,7 +68,11 @@ main (int argc, char *argv[])
 
   if (argc > 1) {
 	if (! board_load (win, argv[1])) {
-		printf ("open failed.\n");
+		if (errno == EMEDIUMTYPE) {
+			perror (argv[1]);
+			puts (_("Hint: tenace can only read files in .lin format"));
+		} else
+			perror (argv[1]);
 		exit (1);
 	}
 	card_window_update(win->boards[0]->dealt_cards);

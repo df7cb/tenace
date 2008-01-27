@@ -22,6 +22,7 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "support.h"
 #include "window_card.h"
 #include "file.h"
 
@@ -86,12 +87,13 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				if (name_n < 8)
 					name_arr[name_n++] = strdup(name);
 			} while ((name = sane_strtok_r(NULL, ",", &nameptr)));
-		} else if (!strcmp(tok, "md")) {
+		} else if (!strcmp(tok, "md")) { /* make deal */
 			assert (!board_filled);
 			tok = STRTOK;
 			char *c;
 			seat se = south;
 			suit su = spade;
+			assert (*tok && *tok != '0'); /* "keep deal" mode not supported */
 			b->dealer = seat_mod(*tok - '0' - 1);
 			for (c = tok + 1; *c; c++) {
 				int i;
@@ -107,6 +109,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 					goto error;
 				}
 			}
+			// TODO: end positions
 			deal_random(b); /* compute east hand */
 			board_filled = 1; /* consider this board finished on next qx token */
 		} else if (!strcmp(tok, "ah")) { /* board name */
@@ -128,7 +131,9 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			}
 			if (strlen (tok) >= 1)
 				g_string_printf(b->name, "%s %s",
-					tok[0] == 'c' ? "Closed" : "Open", tok + 1);
+					tok[0] == 'c' ? _("Closed") :
+						(tok[0] == 'o' ? _("Open") : _("Board")),
+					tok + 1);
 		} else if (!strcmp(tok, "sv")) {
 			tok = STRTOK;
 			switch (*tok) {
@@ -137,7 +142,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				case 'n': b->vuln[0] = 1; b->vuln[1] = 0; break;
 				case 'e': b->vuln[0] = 0; b->vuln[1] = 1; break;
 				case 'b': b->vuln[0] = 1; b->vuln[1] = 1; break;
-				default: printf("Unknown vulnerability: %s\n", tok);
+				default: printf("Unknown vulnerability: sv|%s\n", tok);
 			}
 		} else if (!strcmp(tok, "mb")) {
 			/* mb|-ppp1Cp1Hp3Np4Dp4Hppp| */
@@ -177,7 +182,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
 		} else if (!strcmp(tok, "mc")) {
-			tok = STRTOK; // TODO: store number of claimed tricks
+			tok = STRTOK; // TODO: store number of (total) claimed tricks
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
 
 		/* vugraph file */
@@ -451,7 +456,7 @@ board_save_lin(window_board_t *win, char *filename)
 	fprintf(f, "pn|%s,%s,%s,%s|", b->hand_name[south-1]->str, b->hand_name[west-1]->str,
 		b->hand_name[north-1]->str, b->hand_name[east-1]->str);
 	fprintf(f, "st||");
-	fprintf(f, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b));
+	fprintf(f, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b)); // TODO: end positions
 	fprintf(f, "rh||");
 	fprintf(f, "ah|%s|", b->name->str);
 	fprintf(f, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
@@ -465,7 +470,7 @@ board_save_lin(window_board_t *win, char *filename)
 		if (c < 0)
 			break;
 		if (c == claim_rest) {
-			fprintf(f, "mc|%d|", 0); // TODO: what to claim here?
+			fprintf(f, "mc|%d|", 0); // TODO: claim number of tricks by declarer
 			break;
 		}
 		fprintf(f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
