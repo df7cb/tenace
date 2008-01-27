@@ -30,25 +30,25 @@ void window_play_update (board *b)
 		return;
 
 	int t, i;
-	for (t = 0; t < 13; t++) {
+	for (t = 0; t < 13; t++) { /* trick */
 		for (i = 0; i < 7; i++) {
 			GtkLabel *l = play_label[7*t + i];
 			gtk_label_set_markup(l, "");
 		}
-		int h = 0; /* current column */
-		for (i = 0; i < 4; i++) {
+		int col = -1; /* current column */
+		for (i = 0; i < 4; i++) { /* card in trick */
 			card c = b->played_cards[4*t + i];
 			if (c == -1)
 				continue;
-			if (!h)
-				h = b->dealt_cards[c];
-			GtkLabel *l = play_label[7*t + h++ - 1];
+			if (col < 0)
+				col = c == claim_rest ? 0 : b->dealt_cards[c] - 1;
+			GtkLabel *l = play_label[7*t + col++];
 			if (c == claim_rest)
 				gtk_label_set_markup(l, _("CL"));
 			else {
 				gtk_label_set_markup(l, card_string_color (c));
-				gtk_widget_set_sensitive(GTK_WIDGET(l), 4*t + i < b->n_played_cards);
 			}
+			gtk_widget_set_sensitive(GTK_WIDGET(l), 4*t + i < b->n_played_cards);
 		}
 	}
 }
@@ -69,7 +69,7 @@ void window_play_init (board *b)
 		gtk_label_set_markup (GTK_LABEL (lab), str);
 		gtk_table_attach(play_table, lab, cc, cc+1, 0, 1, 0, 0, 0, 0);
 	}
-	for (cr = 0; cr <= 12; cr++) {
+	for (cr = 0; cr < 13; cr++) {
 		snprintf(str, sizeof (str), " %d ", cr+1);
 		GtkWidget *lab = gtk_label_new(str);
 		gtk_table_attach(play_table, lab, 0, 1, cr+1, cr+2, 0, 0, 0, 0);

@@ -37,8 +37,9 @@ typedef struct _window_board_t {
 	int card_width;
 
 	/* boards */
-	GString *filename;
-	GString *title;
+	char *filename;
+	char *title, *subtitle, *team1, *team2;
+
 	int n_boards;
 	int n_boards_alloc;
 	int cur;

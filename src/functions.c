@@ -25,7 +25,9 @@ const char *seat_str[] = {0, "W", "N", "E", "S"};
 const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
 /* 2 characters so Spade and South can be translated separately */
 const char *trump_str_asc[] = {"Cl", "Di", "He", "Sp", "NT"};
+const char *trump_str_char[] = {"C", "D", "H", "S", "N"};
 const char *trump_color[] = {"green", "orange", "red", "blue", "black"};
+const char *double_str[] = {"", "X", "XX"};
 
 int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
 
@@ -119,7 +121,7 @@ char *
 card_string (card c)
 {
 	static char s[8];
-	sprintf(s, "%s%s", trump_str[SUIT(c)], rank_string(RANK(c)));
+	snprintf(s, sizeof (s), "%s%s", trump_str[SUIT(c)], rank_string(RANK(c)));
 	return s;
 }
 
@@ -127,7 +129,7 @@ char *
 card_string_color (card c)
 {
 	static char s[60];
-	sprintf(s, "<span foreground=\"%s\">%s</span>%s",
+	snprintf(s, sizeof (s), "<span foreground=\"%s\">%s</span>%s",
 			trump_color[SUIT(c)], trump_str[SUIT(c)], rank_string(RANK(c)));
 	return s;
 }

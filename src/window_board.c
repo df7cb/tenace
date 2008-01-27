@@ -163,9 +163,14 @@ void show_board (board *b, redraw_t redraw)
 		g_string_printf(str, "Tenace - %s (%s)", b->name->str,
 			contract_string_asc (b->level, b->trumps, b->declarer, b->doubled));
 		if (win->title) {
-			g_string_append_printf (str, " - %s", win->title->str);
+			g_string_append_printf (str, " - %s", win->title);
+			if (win->subtitle)
+				g_string_append_printf (str, " - %s", win->subtitle);
+			if (win->team1 && win->team2)
+				g_string_append_printf (str, _(" - %s vs. %s"),
+						win->team1, win->team2);
 		} else if (win->filename) {
-			char *fname = win->filename->str;
+			char *fname = win->filename;
 			if (strrchr(fname, '/'))
 				fname = strrchr(fname, '/') + 1;
 			g_string_append_printf (str, " - %s", fname);
@@ -594,7 +599,7 @@ board_window_init (window_board_t *win)
 	win->card_width = 80;
 
 	win->filename = NULL;
-	win->title = NULL;
+	win->title = win->subtitle = win->team1 = win->team2 = NULL;
 	win->boards = NULL;
 	win->n_boards_alloc = 0;
 	win->n_boards = 0;

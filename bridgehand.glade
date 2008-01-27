@@ -3551,6 +3551,7 @@ EW: %d</property>
 
       <child>
 	<widget class="GtkTable" id="play_table">
+	  <property name="border_width">5</property>
 	  <property name="visible">True</property>
 	  <property name="n_rows">14</property>
 	  <property name="n_columns">8</property>

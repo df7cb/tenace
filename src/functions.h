@@ -2,6 +2,11 @@
 #define FUNCTIONS_H
 
 extern const char *seat_str[];
+extern const char *trump_str[];
+extern const char *trump_str_asc[];
+extern const char *trump_str_char[];
+extern const char *trump_color[];
+extern const char *double_str[];
 
 char *rank_string (rank r);
 char rank_char (rank r);

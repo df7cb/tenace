@@ -46,8 +46,6 @@ static const char *dds_error[] = {
 };
 
 static const int card_bits[] = {0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
-static const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};
-static const char *seat_char[] = {"E", "S", "W", "N"};
 
 int run_dd = 0;
 
@@ -250,7 +248,7 @@ static void compute_par_arr(board *b)
 		g_string_append_printf(str, " %s ", _(trump_str[t]));
 
 		for (h = 0; h < 4; h++) {
-			g_string_append_printf(str, "%s", _(seat_char[h]));
+			g_string_append_printf(str, "%s", _(seat_str[h + 1]));
 			solve_statusbar(str->str);
 			while (gtk_events_pending ())
 				gtk_main_iteration();

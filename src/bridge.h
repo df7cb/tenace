@@ -66,22 +66,24 @@ typedef struct board_t {
 	int vuln[2]; /* 0 = NS, 1 = EW */
 	seat dealer;
 
-	seat cards[52]; // 0 = not dealt
+	seat cards[52]; /* cards (still) in hand, 0 = not dealt */
 	int n_dealt_cards;
-	seat dealt_cards[52]; // 0 = not dealt
-	int hand_cards[4];
+	seat dealt_cards[52]; /* cards dealt, differs from cards[] when cards was played */
+	int hand_cards[4]; /* number of cards in hand */
 
 	GString *hand_name[4];
 	seat declarer;
 	suit trumps;
 	int level; /* 0 = PASS */
 	int doubled; /* 1 = X, 2 = XX */
+	int declarer_tricks; /* final result */
+	int mp[2]; /* IMPs, Matchpoints * 100 */
 
 	/* play */
 	int n_played_cards;
-	card played_cards[52];
+	card played_cards[52]; /* -1 = none */
 	seat current_turn;
-	int tricks[2]; /* 0 = NS, 1 = EW */
+	int tricks[2]; /* 0 = NS, 1 = EW (running) */
 
 	/* bidding */
 	card *bidding;

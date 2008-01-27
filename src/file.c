@@ -184,25 +184,40 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 		} else if (!strcmp(tok, "mc")) {
 			tok = STRTOK; // TODO: store number of (total) claimed tricks
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
+			b->declarer_tricks = atoi (tok);
 
 		/* vugraph file */
 		} else if (!strcmp(tok, "vg")) { /* match title */
 			tok = STRTOK;
 			printf ("Match title: %s\n", tok);
+			if (win->title)
+				free (win->title);
+			if (win->subtitle)
+				free (win->subtitle);
+			if (win->team1)
+				free (win->team1);
+			if (win->team2)
+				free (win->team2);
+
 			char *t_ptr;
 			char *title = sane_strtok_r (tok, ",", &t_ptr);
+			if (title)
+				win->title = strdup (title);
 			char *subtitle = sane_strtok_r (NULL, ",", &t_ptr);
+			if (subtitle)
+				win->subtitle = strdup (subtitle);
 			sane_strtok_r (NULL, ",", &t_ptr); /* scoring I IMPs P MPs B board-a-match */
 			sane_strtok_r (NULL, ",", &t_ptr); /* first board nr */
 			sane_strtok_r (NULL, ",", &t_ptr); /* last board nr */
 			char *team1 = sane_strtok_r (NULL, ",", &t_ptr);
+			if (team1)
+				win->team1 = strdup (team1);
 			sane_strtok_r (NULL, ",", &t_ptr); /* carry-over score team 1 */
 			char *team2 = sane_strtok_r (NULL, ",", &t_ptr);
+			if (team2)
+				win->team2 = strdup (team2);
 			/* carry-over score team 2 */
-			if (win->title)
-				g_string_free (win->title, TRUE);
-			win->title = g_string_new (NULL);
-			g_string_printf (win->title, "%s %s %s - %s", title, subtitle, team1, team2);
+
 		} else if (!strcmp(tok, "pw")) { /* more player names */
 			tok = STRTOK;
 			printf ("Players: %s\n", tok);
@@ -217,7 +232,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			printf ("Scores: %s\n", tok);
 		} else if (!strcmp(tok, "nt")) { /* comment (new text) */
 			tok = STRTOK;
-			printf ("Comment: %s\n", tok);
+			//printf ("Comment: %s\n", tok);
 
 		} else if (!strcmp(tok, "st")) { /* small text */
 			STRTOK;
@@ -302,8 +317,8 @@ board_load (window_board_t *win, char *fname)
 	fclose(f);
 	if (ret) {
 		if (win->filename)
-			g_string_free (win->filename, TRUE);
-		win->filename = g_string_new (fname);
+			free (win->filename);
+		win->filename = strdup (fname);
 	}
 	errno = e;
 	return ret;
@@ -325,9 +340,7 @@ board_load_dialog (window_board_t *win, int append)
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		window_board_t *win1 = malloc(sizeof(window_board_t));
-		win1->n_boards = win1->n_boards_alloc = 0;
-		win1->filename = win1->title = NULL;
+		window_board_t *win1 = calloc (1, sizeof (window_board_t));
 
 		if (board_load (win1, filename)) {
 			if (append) {
@@ -338,11 +351,21 @@ board_load_dialog (window_board_t *win, int append)
 					win->cur = n;
 			} else {
 				if (win->filename)
-					g_string_free (win->filename, TRUE);
+					free (win->filename);
 				win->filename = win1->filename;
 				if (win->title)
-					g_string_free (win->title, TRUE);
+					free (win->title);
 				win->title = win1->title;
+				if (win->subtitle)
+					free (win->subtitle);
+				win->subtitle = win1->subtitle;
+				if (win->team1)
+					free (win->team1);
+				win->team1 = win1->team1;
+				if (win->team2)
+					free (win->team2);
+				win->team2 = win1->team2;
+
 				for (i = 0; i < win->n_boards; i++)
 					if (win->boards[i])
 						board_free (win->boards[i]);
@@ -438,46 +461,122 @@ static char *lin_bid(card bid)
 		return "d";
 	else if (bid == bid_xx)
 		return "r";
-	sprintf(buf, "%d%c", LEVEL(bid), "CDHSN"[DENOM(bid)]);
+	snprintf(buf, sizeof (buf), "%d%c", LEVEL(bid), "CDHSN"[DENOM(bid)]);
+	return buf;
+}
+
+static char *
+lin_contract (board *b)
+{
+	static char buf[10];
+	if (b->level == 0) {
+		snprintf (buf, sizeof (buf), "P");
+	} else {
+		snprintf (buf, sizeof (buf), "%d%s%s%s%s",
+			b->level, trump_str_char[b->trumps],
+			seat_str[b->declarer], double_str[b->doubled],
+			overtricks (b->declarer_tricks - b->level - 6));
+	}
 	return buf;
 }
 
 static int
 board_save_lin(window_board_t *win, char *filename)
 {
+	int cur;
 	FILE *f;
-	int i;
-
 	if (!(f = fopen(filename, "w")))
 		return 0;
 
-	board *b = CUR_BOARD; // FIXME
+	if (win->title) {
+		fprintf (f, "vg|%s,%s,%s,%d,%d,%s,,%s,|\n",
+			win->title,
+			win->subtitle ? win->subtitle : "",
+			"P", // FIXME
+			1, win->n_boards,
+			win->team1 ? win->team1 : "",
+			win->team2 ? win->team2 : "");
 
-	fprintf(f, "pn|%s,%s,%s,%s|", b->hand_name[south-1]->str, b->hand_name[west-1]->str,
-		b->hand_name[north-1]->str, b->hand_name[east-1]->str);
-	fprintf(f, "st||");
-	fprintf(f, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b)); // TODO: end positions
-	fprintf(f, "rh||");
-	fprintf(f, "ah|%s|", b->name->str);
-	fprintf(f, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
-					: (b->vuln[1] ? 'e' : 'o'));
-	for (i = 0; i < b->n_bids; i++)
-		fprintf(f, "mb|%s|", lin_bid(b->bidding[i]));
-	for (i = 0; i < 52; i++) {
-		if (i % 4 == 0)
-			fprintf(f, "pg||");
-		card c = b->played_cards[i];
-		if (c < 0)
-			break;
-		if (c == claim_rest) {
-			fprintf(f, "mc|%d|", 0); // TODO: claim number of tricks by declarer
-			break;
+		fprintf (f, "rs|");
+		for (cur = 0; cur < win->n_boards; cur++) {
+			board *b = win->boards[cur];
+			fprintf (f, "%s,", lin_contract (b));
+			if (cur != win->n_boards - 1)
+				fprintf (f, ",");
 		}
-		fprintf(f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
+		fprintf (f, "|\n");
+
+		fprintf (f, "pw|");
+		for (cur = 0; cur < win->n_boards; cur++) {
+			board *b = win->boards[cur];
+			fprintf (f, "%s,%s,%s,%s",
+				b->hand_name[south-1]->str, b->hand_name[west-1]->str,
+				b->hand_name[north-1]->str, b->hand_name[east-1]->str);
+			if (cur != win->n_boards - 1)
+				fprintf (f, ",");
+		}
+		fprintf (f, "|\n");
+
+		fprintf (f, "mp|");
+		for (cur = 0; cur < win->n_boards; cur++) {
+			board *b = win->boards[cur];
+			fprintf (f, "1.0,"); // TODO
+			if (cur != win->n_boards - 1)
+				fprintf (f, ",");
+		}
+		fprintf (f, "|\n");
+
+		fprintf (f, "bn|");
+		for (cur = 0; cur < win->n_boards; cur++) {
+			board *b = win->boards[cur];
+			fprintf (f, "%d", cur + 1); // TODO: original number?
+			if (cur != win->n_boards - 1)
+				fprintf (f, ",");
+		}
+		fprintf (f, "|\n");
+
+		fprintf (f, "pg||\n");
+	}
+
+	for (cur = 0; cur < win->n_boards; cur++) {
+		board *b = win->boards[cur];
+		int i;
+
+		if (win->n_boards > 1)
+			fprintf (f, "qx|o%d|", cur + 1); // TODO: open/closed, real board number
+
+		fprintf (f, "pn|%s,%s,%s,%s|",
+			b->hand_name[south-1]->str, b->hand_name[west-1]->str,
+			b->hand_name[north-1]->str, b->hand_name[east-1]->str);
+		fprintf (f, "st||");
+		fprintf (f, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b)); // TODO: end positions
+		fprintf (f, "rh||");
+		fprintf (f, "ah|%s|", b->name->str);
+		fprintf (f, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
+						: (b->vuln[1] ? 'e' : 'o'));
+		for (i = 0; i < b->n_bids; i++) {
+			fprintf(f, "mb|%s|", lin_bid(b->bidding[i]));
+			if (b->alerts[i])
+				fprintf (f, "an|%s|", *b->alerts[i] ? b->alerts[i] : "!");
+		}
+		for (i = 0; i < 52; i++) {
+			if (i % 4 == 0)
+				fprintf(f, "pg||");
+			card c = b->played_cards[i];
+			if (c < 0)
+				break;
+			if (c == claim_rest) {
+				fprintf(f, "mc|%d|",
+					b->declarer_tricks >= 0 ? b->declarer_tricks : 0);
+				break;
+			}
+			fprintf(f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
+		}
+		fprintf (f, "pg||\n");
 	}
 
 	int ret = 1, e = 0;
-	if (fprintf (f, "\n") <= 0) {
+	if (ferror (f)) {
 		ret = 0;
 		e = errno;
 	}
@@ -520,7 +619,7 @@ board_save_dialog (window_board_t *win, int save_as)
 	GtkWidget *dialog;
 
 	if (!save_as && win->filename) {
-		board_save(win, win->filename->str);
+		board_save(win, win->filename);
 		return;
 	}
 
@@ -537,7 +636,7 @@ board_save_dialog (window_board_t *win, int save_as)
 		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "hand.lin");
 	}
 	else
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename->str);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename);
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename;
@@ -545,10 +644,9 @@ board_save_dialog (window_board_t *win, int save_as)
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 		board_save (win, filename);
 
-		//XXX
 		if (win->filename)
-			g_string_free(win->filename, TRUE);
-		win->filename = g_string_new(filename);
+			free (win->filename);
+		win->filename = strdup (filename);
 		g_free (filename);
 		show_board (CUR_BOARD, REDRAW_TITLE);
 	}

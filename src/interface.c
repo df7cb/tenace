@@ -2135,6 +2135,7 @@ create_window_play (void)
   play_table = gtk_table_new (14, 8, TRUE);
   gtk_widget_show (play_table);
   gtk_box_pack_start (GTK_BOX (vbox6), play_table, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (play_table), 5);
 
   g_signal_connect ((gpointer) window_play, "delete_event",
                     G_CALLBACK (on_window_play_delete_event),

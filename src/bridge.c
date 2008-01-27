@@ -73,6 +73,7 @@ void board_clear(board *b)
 		b->hand_cards[i] = 0;
 	b->current_turn = seat_mod(b->declarer + 1);
 	b->tricks[0] = b->tricks[1] = 0;
+	b->declarer_tricks = -1;
 
 	if (b->current_dd) {
 		free (b->current_dd);
@@ -96,7 +97,7 @@ board *board_new(void)
 {
 	int i;
 	char *names[] = {"West", "North", "East", "South"};
-	board *b = malloc(sizeof(board));
+	board *b = calloc (1, sizeof(board));
 	assert(b);
 
 	b->name = g_string_new("Board 1");
@@ -148,6 +149,7 @@ board_dup (board *b0)
 	b->alerts = calloc(b0->n_bid_alloc, sizeof(char *));
 	assert(b->alerts);
 
+	// FIXME we probably should reset b->n_bids here
 	for (i = 0; i < b0->n_bids; i++) {
 		board_append_bid (b, b0->bidding[i], 0);
 		board_set_alert (b, b0->alerts[i]);
@@ -415,7 +417,10 @@ int next_card(board *b)
 		return 0;
 	}
 	if (b->played_cards[b->n_played_cards] == claim_rest) {
-		board_statusbar(_("Claim"));
+		char buf[50];
+		snprintf (buf, sizeof (buf),
+			_("Declarer claims %d tricks"), b->declarer_tricks);
+		board_statusbar(buf);
 		return 0;
 	}
 	if (b->cards[b->played_cards[b->n_played_cards]] == 0) {
