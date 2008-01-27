@@ -554,7 +554,7 @@ void board_window_set_style (window_board_t *win, int style)
 		hand_display_set_style(win->handdisp[h], style, NULL);
 	}
 	hand_display_set_style(win->table, style, NULL);
-	if (CUR_BOARD)
+	if (win->n_boards)
 		show_board(CUR_BOARD, REDRAW_HANDS);
 }
 
@@ -595,9 +595,8 @@ board_window_init (window_board_t *win)
 
 	win->filename = NULL;
 	win->title = NULL;
-	win->boards = calloc(4, sizeof(board*));
-	assert (win->boards);
-	win->n_boards_alloc = 4;
+	win->boards = NULL;
+	win->n_boards_alloc = 0;
 	win->n_boards = 0;
 
 	win->cutbuf = NULL;

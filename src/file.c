@@ -63,12 +63,12 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 	int card_nr = 0;
 	int contract = 0;
 	int doubled = 0;
-	int i;
 
 	board *b = board_new ();
 	int board_filled = 0;
 	board_window_append_board (win, b);
 
+	/* global list of names for vugraph files */
 	char *name_arr[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	int name_n = 0;
 
@@ -80,17 +80,13 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			tok = STRTOK;
 			char *nameptr;
 			char *name = sane_strtok_r(tok, ",", &nameptr);
-			assert (name_n < 8);
+			int i = 0;
 			do {
-				name_arr[name_n] = strdup(name);
-				if (name_n < 4)
-					g_string_printf(b->hand_name[seat_mod (name_n) - 1], "%s", name);
-				name_n++;
-			} while ((name = sane_strtok_r(NULL, ",", &nameptr)) && name_n < 8);
-			//g_string_printf(b->hand_name[south-1], "%s", strtok_r(NULL, ",|", &saveptr));
-			//g_string_printf(b->hand_name[west-1], "%s", strtok_r(NULL, ",|", &saveptr));
-			//g_string_printf(b->hand_name[north-1], "%s", strtok_r(NULL, ",|", &saveptr));
-			//g_string_printf(b->hand_name[east-1], "%s", strtok_r(NULL, ",|", &saveptr));
+				if (i < 4)
+					g_string_printf(b->hand_name[seat_mod (i++) - 1], "%s", name);
+				if (name_n < 8)
+					name_arr[name_n++] = strdup(name);
+			} while ((name = sane_strtok_r(NULL, ",", &nameptr)));
 		} else if (!strcmp(tok, "md")) {
 			assert (!board_filled);
 			tok = STRTOK;
@@ -99,6 +95,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			suit su = spade;
 			b->dealer = seat_mod(*tok - '0' - 1);
 			for (c = tok + 1; *c; c++) {
+				int i;
 				if ((i = parse_suit(*c)) != -1) {
 					su = i;
 				} else if ((i = parse_rank_char(*c)) != -1) {
@@ -121,23 +118,15 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				FINISH_BOARD;
 				board_filled = 0;
 
-				/* initialize player names for new board */
 				b = board_new ();
 				board_window_append_board (win, b);
+				/* initialize player names, required for vugraph files */
 				int i;
 				for (i = 0; i < 4; i++) {
 					g_string_printf(b->hand_name[seat_mod (i) - 1],
 						"%s", name_arr[i + (tok[0] == 'c' ? 4 : 0)]);
 				}
 			}
-			/*
-			if (res) {
-				if (res_ptr)
-					b->name2 = g_string_new (strtok_r (NULL, ",", &res_ptr));
-				else
-					b->name2 = g_string_new (strtok_r (res, ",", &res_ptr));
-			}
-			*/
 			if (strlen (tok) >= 1)
 				g_string_printf(b->name, "%s %s",
 					tok[0] == 'c' ? "Closed" : "Open", tok + 1);
@@ -150,8 +139,6 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				case 'b': b->vuln[0] = 1; b->vuln[1] = 1; break;
 				default: printf("Unknown vulnerability: %s\n", tok);
 			}
-		} else if (!strcmp(tok, "pw")) { /* more player names */
-			tok = STRTOK;
 		} else if (!strcmp(tok, "mb")) {
 			/* mb|-ppp1Cp1Hp3Np4Dp4Hppp| */
 			tok = STRTOK;
@@ -189,15 +176,15 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			}
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
-		} else if (!strcmp(tok, "st")) {
+		} else if (!strcmp(tok, "st")) { /* small text */
 			STRTOK;
-		} else if (!strcmp(tok, "rh")) {
+		} else if (!strcmp(tok, "rh")) { /* reset heading */
 			STRTOK;
-		} else if (!strcmp(tok, "pg")) { /* new page, e.g. after trick or comment */
+		} else if (!strcmp(tok, "pg")) { /* page break, e.g. after trick or comment */
 			STRTOK;
 		} else if (!strcmp(tok, "mc")) {
+			tok = STRTOK; // TODO: store number of claimed tricks
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
-			STRTOK;
 		/* vugraph file */
 		} else if (!strcmp(tok, "vg")) { /* match title */
 			tok = STRTOK;
@@ -215,30 +202,38 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				g_string_free (win->title, TRUE);
 			win->title = g_string_new (NULL);
 			g_string_printf (win->title, "%s %s %s - %s", title, subtitle, team1, team2);
+		} else if (!strcmp(tok, "pw")) { /* more player names */
+			tok = STRTOK;
+			printf ("Players: %s\n", tok);
+		} else if (!strcmp(tok, "bn")) { /* board numbers */
+			tok = STRTOK;
+			printf ("Board numbers: %s\n", tok);
 		} else if (!strcmp(tok, "rs")) { /* results */
-			STRTOK;
+			tok = STRTOK;
+			printf ("Results: %s\n", tok);
 		} else if (!strcmp(tok, "mp")) { /* MP result */
-			STRTOK;
+			tok = STRTOK;
+			printf ("Scores: %s\n", tok);
 		} else if (!strcmp(tok, "nt")) { /* comment */
 			tok = STRTOK;
-			//printf ("\"%s\"\n", tok);
+			printf ("Comment: %s\n", tok);
 		} else if (!*tok) {
 			// empty token, hopefully end of line
 		} else {
-			printf("Unknown token '%s'\n", tok);
+			printf("Unknown token '%s|%s'\n", tok, STRTOK);
 		}
 	}
 	} while (fgets(line, 1023, f));
 
 	FINISH_BOARD;
 	int ret = 1;
+	int i;
 	goto ok;
 error:
 	ret = 0;
 ok:
 	for (i = 0; i < name_n; i++)
 		free (name_arr[i]);
-	//printf ("returning %d\n", ret);
 	return ret;
 }
 #undef STRTOK
@@ -340,7 +335,7 @@ board_load_dialog (window_board_t *win, int append)
 				if (win->title)
 					g_string_free (win->title, TRUE);
 				win->title = win1->title;
-				for (i = 0; i < win->n_boards_alloc; i++)
+				for (i = 0; i < win->n_boards; i++)
 					if (win->boards[i])
 						board_free (win->boards[i]);
 				win->boards = win1->boards;

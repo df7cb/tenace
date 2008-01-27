@@ -130,7 +130,8 @@ board_dup (board *b0)
 	int i;
 	board *b = malloc(sizeof(board));
 	assert(b);
-	*b = *b0;
+
+	*b = *b0; /* copy "real" struct members */
 
 	b->name = g_string_new(b0->name->str);
 	for (i = 0; i < 4; i++) {
