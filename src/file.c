@@ -74,7 +74,6 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 
 	do {
 	for (tok = sane_strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
-		//printf ("parsing token '%s'\n", tok);
 		/* single hand */
 		if (!strcmp(tok, "pn")) { /* SWNE */
 			tok = STRTOK;
@@ -133,6 +132,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 		} else if (!strcmp(tok, "sv")) {
 			tok = STRTOK;
 			switch (*tok) {
+				case '0':
 				case 'o': b->vuln[0] = 0; b->vuln[1] = 0; break;
 				case 'n': b->vuln[0] = 1; b->vuln[1] = 0; break;
 				case 'e': b->vuln[0] = 0; b->vuln[1] = 1; break;
@@ -176,15 +176,10 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			}
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
-		} else if (!strcmp(tok, "st")) { /* small text */
-			STRTOK;
-		} else if (!strcmp(tok, "rh")) { /* reset heading */
-			STRTOK;
-		} else if (!strcmp(tok, "pg")) { /* page break, e.g. after trick or comment */
-			STRTOK;
 		} else if (!strcmp(tok, "mc")) {
 			tok = STRTOK; // TODO: store number of claimed tricks
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
+
 		/* vugraph file */
 		} else if (!strcmp(tok, "vg")) { /* match title */
 			tok = STRTOK;
@@ -192,12 +187,13 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			char *t_ptr;
 			char *title = sane_strtok_r (tok, ",", &t_ptr);
 			char *subtitle = sane_strtok_r (NULL, ",", &t_ptr);
-			sane_strtok_r (NULL, ",", &t_ptr);
-			sane_strtok_r (NULL, ",", &t_ptr);
-			sane_strtok_r (NULL, ",", &t_ptr);
+			sane_strtok_r (NULL, ",", &t_ptr); /* scoring I IMPs P MPs B board-a-match */
+			sane_strtok_r (NULL, ",", &t_ptr); /* first board nr */
+			sane_strtok_r (NULL, ",", &t_ptr); /* last board nr */
 			char *team1 = sane_strtok_r (NULL, ",", &t_ptr);
-			sane_strtok_r (NULL, ",", &t_ptr);
+			sane_strtok_r (NULL, ",", &t_ptr); /* carry-over score team 1 */
 			char *team2 = sane_strtok_r (NULL, ",", &t_ptr);
+			/* carry-over score team 2 */
 			if (win->title)
 				g_string_free (win->title, TRUE);
 			win->title = g_string_new (NULL);
@@ -214,9 +210,16 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 		} else if (!strcmp(tok, "mp")) { /* MP result */
 			tok = STRTOK;
 			printf ("Scores: %s\n", tok);
-		} else if (!strcmp(tok, "nt")) { /* comment */
+		} else if (!strcmp(tok, "nt")) { /* comment (new text) */
 			tok = STRTOK;
 			printf ("Comment: %s\n", tok);
+
+		} else if (!strcmp(tok, "st")) { /* small text */
+			STRTOK;
+		} else if (!strcmp(tok, "rh")) { /* reset heading */
+			STRTOK;
+		} else if (!strcmp(tok, "pg")) { /* page break, e.g. after trick or comment */
+			STRTOK;
 		} else if (!*tok) {
 			// empty token, hopefully end of line
 		} else {
