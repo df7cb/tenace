@@ -61,7 +61,7 @@ typedef struct _dd_t {
 
 typedef struct board_t {
 	GString *name;
-	int n; /* board number for callbacks */
+	int n; /* board number for board menu */
 
 	int vuln[2]; /* 0 = NS, 1 = EW */
 	seat dealer;

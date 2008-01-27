@@ -144,12 +144,12 @@ board_dup (board *b0)
 		b->next_dd[i] = NULL;
 	}
 
+	b->n_bids = 0;
 	b->bidding = calloc(b0->n_bid_alloc, sizeof(card));
 	assert(b->bidding);
 	b->alerts = calloc(b0->n_bid_alloc, sizeof(char *));
 	assert(b->alerts);
 
-	// FIXME we probably should reset b->n_bids here
 	for (i = 0; i < b0->n_bids; i++) {
 		board_append_bid (b, b0->bidding[i], 0);
 		board_set_alert (b, b0->alerts[i]);

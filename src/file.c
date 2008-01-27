@@ -13,9 +13,11 @@
  *  GNU General Public License for more details.
  */
 
+#include <math.h>
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,7 +32,7 @@
  * loading
  */
 
-static char *sane_strtok_r (char *str, const char *delim, char **saveptr)
+static char *sane_strtok_r (char *const str, const char *delim, char **saveptr)
 {
 	char *this = str ? str : *saveptr;
 	if (!this)
@@ -65,6 +67,8 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 	int contract = 0;
 	int doubled = 0;
 
+	setlocale (LC_NUMERIC, "C");
+
 	board *b = board_new ();
 	int board_filled = 0;
 	board_window_append_board (win, b);
@@ -72,6 +76,9 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 	/* global list of names for vugraph files */
 	char *name_arr[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	int name_n = 0;
+	/* IMP/MP list */
+	char *mp_str = NULL;
+	char *mp_ptr = NULL;
 
 	do {
 	for (tok = sane_strtok_r(line, "|", &saveptr); tok; tok = STRTOK) {
@@ -87,6 +94,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				if (name_n < 8)
 					name_arr[name_n++] = strdup(name);
 			} while ((name = sane_strtok_r(NULL, ",", &nameptr)));
+
 		} else if (!strcmp(tok, "md")) { /* make deal */
 			assert (!board_filled);
 			tok = STRTOK;
@@ -112,8 +120,10 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			// TODO: end positions
 			deal_random(b); /* compute east hand */
 			board_filled = 1; /* consider this board finished on next qx token */
+
 		} else if (!strcmp(tok, "ah")) { /* board name */
 			g_string_printf(b->name, "%s", STRTOK);
+
 		} else if (!strcmp(tok, "qx")) { /* board number, o1, c1, o2, ... */
 			tok = STRTOK;
 			if (board_filled) { /* first token in new vugraph board */
@@ -134,6 +144,16 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 					tok[0] == 'c' ? _("Closed") :
 						(tok[0] == 'o' ? _("Open") : _("Board")),
 					tok + 1);
+
+			/* for now assume qx|| is present in all lin files with mp|| */
+			if (mp_str) {
+				char *score = mp_ptr ? sane_strtok_r (NULL, ",", &mp_ptr) :
+						sane_strtok_r (mp_str, ",", &mp_ptr);
+				b->mp[0] = score ? round (strtod (score, NULL) * 100.0) : 0;
+				score = sane_strtok_r (NULL, ",", &mp_ptr);
+				b->mp[1] = score ? round (strtod (score, NULL) * 100.0) : 0;
+			}
+
 		} else if (!strcmp(tok, "sv")) {
 			tok = STRTOK;
 			switch (*tok) {
@@ -144,6 +164,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				case 'b': b->vuln[0] = 1; b->vuln[1] = 1; break;
 				default: printf("Unknown vulnerability: sv|%s\n", tok);
 			}
+
 		} else if (!strcmp(tok, "mb")) {
 			/* mb|-ppp1Cp1Hp3Np4Dp4Hppp| */
 			tok = STRTOK;
@@ -170,9 +191,11 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 					doubled = bid;
 				}
 			} while (*bidp);
+
 		} else if (!strcmp(tok, "an")) {
 			tok = STRTOK;
 			board_set_alert (b, !strcmp (tok, "!") ? "" : tok); /* filter uninteresting ! */
+
 		} else if (!strcmp(tok, "pc")) {
 			int c = parse_card(tok = STRTOK);
 			if (c == -1) {
@@ -181,6 +204,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			}
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
+
 		} else if (!strcmp(tok, "mc")) {
 			tok = STRTOK; // TODO: store number of (total) claimed tricks
 			b->played_cards[card_nr] = claim_rest; // no card_nr increment here
@@ -230,6 +254,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 		} else if (!strcmp(tok, "mp")) { /* MP result */
 			tok = STRTOK;
 			printf ("Scores: %s\n", tok);
+			mp_str = strdup (tok);
 		} else if (!strcmp(tok, "nt")) { /* comment (new text) */
 			tok = STRTOK;
 			//printf ("Comment: %s\n", tok);
@@ -257,6 +282,11 @@ error:
 ok:
 	for (i = 0; i < name_n; i++)
 		free (name_arr[i]);
+	if (mp_str)
+		free (mp_str);
+
+	setlocale (LC_NUMERIC, "");
+
 	return ret;
 }
 #undef STRTOK
@@ -324,6 +354,9 @@ board_load (window_board_t *win, char *fname)
 	return ret;
 }
 
+#define TRY_FREE(p) if (p) free (p)
+#define MOVE_PTR(dst, src) TRY_FREE (dst); dst = src; src = NULL
+
 int
 board_load_dialog (window_board_t *win, int append)
 {
@@ -350,21 +383,11 @@ board_load_dialog (window_board_t *win, int append)
 				if (win->n_boards > n) /* set to first new board */
 					win->cur = n;
 			} else {
-				if (win->filename)
-					free (win->filename);
-				win->filename = win1->filename;
-				if (win->title)
-					free (win->title);
-				win->title = win1->title;
-				if (win->subtitle)
-					free (win->subtitle);
-				win->subtitle = win1->subtitle;
-				if (win->team1)
-					free (win->team1);
-				win->team1 = win1->team1;
-				if (win->team2)
-					free (win->team2);
-				win->team2 = win1->team2;
+				MOVE_PTR (win->filename, win1->filename);
+				MOVE_PTR (win->title, win1->title);
+				MOVE_PTR (win->subtitle, win1->subtitle);
+				MOVE_PTR (win->team1, win1->team1);
+				MOVE_PTR (win->team2, win1->team2);
 
 				for (i = 0; i < win->n_boards; i++)
 					if (win->boards[i])
@@ -389,6 +412,11 @@ board_load_dialog (window_board_t *win, int append)
 			gtk_widget_destroy (error);
 		}
 
+		TRY_FREE (win1->filename);
+		TRY_FREE (win1->title);
+		TRY_FREE (win1->subtitle);
+		TRY_FREE (win1->team1);
+		TRY_FREE (win1->team2);
 		free (win1);
 	}
 
@@ -488,6 +516,8 @@ board_save_lin(window_board_t *win, char *filename)
 	if (!(f = fopen(filename, "w")))
 		return 0;
 
+	setlocale (LC_NUMERIC, "C");
+
 	if (win->title) {
 		fprintf (f, "vg|%s,%s,%s,%d,%d,%s,,%s,|\n",
 			win->title,
@@ -520,7 +550,15 @@ board_save_lin(window_board_t *win, char *filename)
 		fprintf (f, "mp|");
 		for (cur = 0; cur < win->n_boards; cur++) {
 			board *b = win->boards[cur];
-			fprintf (f, "1.0,"); // TODO
+			if (b->mp[0] == 0 && b->mp[1] == 0)
+				fprintf (f, "--,--");
+			else {
+				if (b->mp[0])
+					fprintf (f, "%.2f", b->mp[0] / 100.0);
+				fprintf (f, ",");
+				if (b->mp[1])
+					fprintf (f, "%.2f", b->mp[1] / 100.0);
+			}
 			if (cur != win->n_boards - 1)
 				fprintf (f, ",");
 		}
@@ -582,6 +620,9 @@ board_save_lin(window_board_t *win, char *filename)
 	}
 	fclose(f);
 	errno = e;
+
+	setlocale (LC_NUMERIC, "");
+
 	return ret;
 }
 
