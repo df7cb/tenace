@@ -13,6 +13,8 @@
  *  GNU General Public License for more details.
  */
 
+#define _GNU_SOURCE
+
 #include <math.h>
 #include <assert.h>
 #include <ctype.h>
@@ -371,6 +373,15 @@ board_load_dialog (window_board_t *win, int append)
 			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 			NULL);
 
+	if (win->filename) {
+		char *cwd = g_path_get_dirname (win->filename);
+		printf ("cwd %s\n", cwd);
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), cwd);
+		g_free (cwd);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename);
+	}
+
+retry:
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 		window_board_t *win1 = calloc (1, sizeof (window_board_t));
@@ -406,7 +417,7 @@ board_load_dialog (window_board_t *win, int append)
 					GTK_DIALOG_DESTROY_WITH_PARENT,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_CLOSE,
-					"Error loading file '%s': %s",
+					_("Error loading file '%s': %s"),
 					filename, g_strerror (errno));
 			gtk_dialog_run (GTK_DIALOG (error));
 			gtk_widget_destroy (error);
@@ -418,6 +429,9 @@ board_load_dialog (window_board_t *win, int append)
 		TRY_FREE (win1->team1);
 		TRY_FREE (win1->team2);
 		free (win1);
+
+		if (!ret)
+			goto retry;
 	}
 
 	gtk_widget_destroy (dialog);
@@ -513,7 +527,7 @@ board_save_lin(window_board_t *win, char *filename)
 {
 	int cur;
 	FILE *f;
-	if (!(f = fopen(filename, "w")))
+	if ((f = fopen (filename, "w")) == NULL)
 		return 0;
 
 	setlocale (LC_NUMERIC, "C");
@@ -566,7 +580,7 @@ board_save_lin(window_board_t *win, char *filename)
 
 		fprintf (f, "bn|");
 		for (cur = 0; cur < win->n_boards; cur++) {
-			board *b = win->boards[cur];
+			//board *b = win->boards[cur];
 			fprintf (f, "%d", cur + 1); // TODO: original number?
 			if (cur != win->n_boards - 1)
 				fprintf (f, ",");
@@ -660,8 +674,18 @@ board_save_dialog (window_board_t *win, int save_as)
 	GtkWidget *dialog;
 
 	if (!save_as && win->filename) {
-		board_save(win, win->filename);
-		return;
+		int ret = board_save(win, win->filename);
+		if (! ret) {
+			GtkWidget *error = gtk_message_dialog_new (GTK_WINDOW (win->window),
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_CLOSE,
+					_("Error saving file '%s': %s"),
+					win->filename, g_strerror (errno));
+			gtk_dialog_run (GTK_DIALOG (error));
+			gtk_widget_destroy (error);
+		}
+		return ret;
 	}
 
 	dialog = gtk_file_chooser_dialog_new ("Save File",
@@ -679,17 +703,30 @@ board_save_dialog (window_board_t *win, int save_as)
 	else
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename);
 
+retry_save:
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
 		char *filename;
 
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		board_save (win, filename);
+		int ret = board_save (win, filename);
 
-		if (win->filename)
-			free (win->filename);
-		win->filename = strdup (filename);
-		g_free (filename);
-		show_board (CUR_BOARD, REDRAW_TITLE);
+		if (ret) {
+			if (win->filename)
+				free (win->filename);
+			win->filename = filename;
+			show_board (CUR_BOARD, REDRAW_TITLE);
+		} else {
+			GtkWidget *error = gtk_message_dialog_new (GTK_WINDOW (win->window),
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_CLOSE,
+					_("Error saving file '%s': %s"),
+					filename, g_strerror (errno));
+			g_free (filename);
+			gtk_dialog_run (GTK_DIALOG (error));
+			gtk_widget_destroy (error);
+			goto retry_save;
+		}
 	}
 
 	gtk_widget_destroy (dialog);

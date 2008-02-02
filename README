@@ -8,9 +8,9 @@ http://www.df7cb.de/bridge/tenace/
 Requirements
 ------------
 
-Tenace was written on Debian GNU/Linux, but should run on any platform that
-features GTK+. Minimum version required is 2.12 due to the usage of GtkTooltip.
-To render images of cards, librsvg is used (though optional).
+Tenace was written on Debian GNU/Linux, but should run on any *NIX platform
+that features GTK+. Minimum version required is 2.12 due to the usage of
+GtkTooltip. To render images of cards, librsvg is used (though optional).
 
 Installation
 ------------
