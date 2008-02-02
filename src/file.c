@@ -359,14 +359,73 @@ board_load (window_board_t *win, char *fname)
 #define TRY_FREE(p) if (p) free (p)
 #define MOVE_PTR(dst, src) TRY_FREE (dst); dst = src; src = NULL
 
+/* tries opening a file in a temporary win structure, and displays errors if unable */
+int
+board_load_popup (window_board_t *win, int append, char *filename)
+{
+	int i;
+	int ret = 0;
+	window_board_t *win1 = calloc (1, sizeof (window_board_t));
+
+	if (board_load (win1, filename)) {
+		if (append) {
+			int n = win->n_boards;
+			for (i = 0; i < win1->n_boards; i++)
+				board_window_append_board (win, win1->boards[i]);
+			if (win->n_boards > n) /* set to first new board */
+				win->cur = n;
+		} else {
+			MOVE_PTR (win->filename, win1->filename);
+			MOVE_PTR (win->title, win1->title);
+			MOVE_PTR (win->subtitle, win1->subtitle);
+			MOVE_PTR (win->team1, win1->team1);
+			MOVE_PTR (win->team2, win1->team2);
+
+			for (i = 0; i < win->n_boards; i++)
+				if (win->boards[i])
+					board_free (win->boards[i]);
+			win->boards = win1->boards;
+			win->n_boards = win1->n_boards;
+			win->n_boards_alloc = win1->n_boards_alloc;
+			win->cur = 0;
+		}
+
+		card_window_update(win->boards[win->cur]->dealt_cards);
+		show_board(win->boards[win->cur], REDRAW_FULL);
+
+		GtkRecentManager *recent = gtk_recent_manager_get_default ();
+		char buf[1024];
+		snprintf (buf, sizeof (buf), "file://%s", filename);
+		gtk_recent_manager_add_item (recent, buf);
+
+		ret = 1;
+	} else {
+		GtkWidget *error = gtk_message_dialog_new (GTK_WINDOW (win->window),
+				GTK_DIALOG_DESTROY_WITH_PARENT,
+				GTK_MESSAGE_ERROR,
+				GTK_BUTTONS_CLOSE,
+				_("Error loading file '%s': %s"),
+				filename, g_strerror (errno));
+		gtk_dialog_run (GTK_DIALOG (error));
+		gtk_widget_destroy (error);
+	}
+
+	TRY_FREE (win1->filename);
+	TRY_FREE (win1->title);
+	TRY_FREE (win1->subtitle);
+	TRY_FREE (win1->team1);
+	TRY_FREE (win1->team2);
+	free (win1);
+
+	return ret;
+}
+
 int
 board_load_dialog (window_board_t *win, int append)
 {
 	GtkWidget *dialog;
-	int ret = 0;
-	int i;
 
-	dialog = gtk_file_chooser_dialog_new ("Open File",
+	dialog = gtk_file_chooser_dialog_new (_("Open File"),
 			GTK_WINDOW (win->window),
 			GTK_FILE_CHOOSER_ACTION_OPEN,
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -375,63 +434,18 @@ board_load_dialog (window_board_t *win, int append)
 
 	if (win->filename) {
 		char *cwd = g_path_get_dirname (win->filename);
-		printf ("cwd %s\n", cwd);
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), cwd);
 		g_free (cwd);
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename);
 	}
 
-retry:
-	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+	int ret = 0;
+	while (ret == 0) {
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) != GTK_RESPONSE_ACCEPT)
+			break;
 		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-		window_board_t *win1 = calloc (1, sizeof (window_board_t));
-
-		if (board_load (win1, filename)) {
-			if (append) {
-				int n = win->n_boards;
-				for (i = 0; i < win1->n_boards; i++)
-					board_window_append_board (win, win1->boards[i]);
-				if (win->n_boards > n) /* set to first new board */
-					win->cur = n;
-			} else {
-				MOVE_PTR (win->filename, win1->filename);
-				MOVE_PTR (win->title, win1->title);
-				MOVE_PTR (win->subtitle, win1->subtitle);
-				MOVE_PTR (win->team1, win1->team1);
-				MOVE_PTR (win->team2, win1->team2);
-
-				for (i = 0; i < win->n_boards; i++)
-					if (win->boards[i])
-						board_free (win->boards[i]);
-				win->boards = win1->boards;
-				win->n_boards = win1->n_boards;
-				win->n_boards_alloc = win1->n_boards_alloc;
-				win->cur = 0;
-			}
-
-			card_window_update(win->boards[win->cur]->dealt_cards);
-			show_board(win->boards[win->cur], REDRAW_FULL);
-			ret = 1;
-		} else {
-			GtkWidget *error = gtk_message_dialog_new (GTK_WINDOW (win->window),
-					GTK_DIALOG_DESTROY_WITH_PARENT,
-					GTK_MESSAGE_ERROR,
-					GTK_BUTTONS_CLOSE,
-					_("Error loading file '%s': %s"),
-					filename, g_strerror (errno));
-			gtk_dialog_run (GTK_DIALOG (error));
-			gtk_widget_destroy (error);
-		}
-
-		TRY_FREE (win1->filename);
-		TRY_FREE (win1->title);
-		TRY_FREE (win1->subtitle);
-		TRY_FREE (win1->team1);
-		TRY_FREE (win1->team2);
-		free (win1);
-
-		if (!ret)
-			goto retry;
+		ret = board_load_popup (win, append, filename);
+		g_free (filename);
 	}
 
 	gtk_widget_destroy (dialog);
@@ -688,7 +702,7 @@ board_save_dialog (window_board_t *win, int save_as)
 		return ret;
 	}
 
-	dialog = gtk_file_chooser_dialog_new ("Save File",
+	dialog = gtk_file_chooser_dialog_new (_("Save File"),
 			GTK_WINDOW (win->window),
 			GTK_FILE_CHOOSER_ACTION_SAVE,
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

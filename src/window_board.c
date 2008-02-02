@@ -455,6 +455,17 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	return TRUE;
 }
 
+static void
+jump_menu_select (GtkWidget *recentchooser, char *unused)
+{
+	PROTECT_BEGIN;
+	char *filename = gtk_recent_chooser_get_current_uri (GTK_RECENT_CHOOSER (recentchooser));
+	if (strncmp (filename, "file://", sizeof ("file://") - 1))
+		return;
+	board_load_popup (win, 0, filename + sizeof ("file://") - 1);
+	PROTECT_END;
+}
+
 /* infrastructure */
 
 static void create_hand_widgets (window_board_t *win)
@@ -592,6 +603,16 @@ board_window_init (window_board_t *win)
 	win->board_menu = lookup_widget(win->window, "board_menu1");
 	create_hand_widgets(win);
 	create_bidding_widget (win);
+
+	/* set up "recently used" menu */
+	GtkWidget *jump_menu = lookup_widget(win->window, "jump_to1");
+	GtkWidget *recentchooser = gtk_recent_chooser_menu_new ();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (jump_menu), recentchooser);
+	g_signal_connect (G_OBJECT (recentchooser), "item-activated",
+			G_CALLBACK (jump_menu_select), NULL);
+	GtkRecentFilter *filter = gtk_recent_filter_new ();
+	gtk_recent_filter_add_pattern (filter, "*.lin");
+	gtk_recent_chooser_add_filter (recentchooser, filter);
 
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;
