@@ -14,9 +14,7 @@ Makefile\.in$
 syntax: glob
 stamp-h.in
 
-AUTHORS
 NEWS
-README
 
 # built
 *.o

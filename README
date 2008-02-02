@@ -1,0 +1,30 @@
+tenace
+======
+
+Tenace is a Bridge hand viewer and editor.
+
+http://www.df7cb.de/bridge/tenace/
+
+Requirements
+------------
+
+Tenace was written on Debian GNU/Linux, but should run on any platform that
+features GTK+. Minimum version required is 2.12 due to the usage of GtkTooltip.
+To render images of cards, librsvg is used (though optional).
+
+Installation
+------------
+
+Get and unpack the tarball.
+$ ./configure --help
+$ ./configure
+$ make
+# make install
+
+Feedback and Bugs
+-----------------
+
+I'd be happy to hear back from you, either by mail, or using the Debian bug
+tracking system.
+
+ -- Christoph Berg <cb@df7cb.de>  Sat, 02 Feb 2008 15:00:57 +0100
