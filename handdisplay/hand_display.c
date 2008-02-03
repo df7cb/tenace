@@ -135,7 +135,7 @@ render_card (cairo_t *cr, int x, int y, int c, int color)
 static void
 draw (GtkWidget *hand, cairo_t *cr)
 {
-	int l, r, t, b, x, y;
+	int x, y;
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 	cairo_font_extents_t fextents;
@@ -250,39 +250,36 @@ draw (GtkWidget *hand, cairo_t *cr)
 			snprintf (cs, 6, "%s%s", suit_str[suit], rank_str[rank]);
 			cairo_text_extents (cr, cs, &extents);
 
-#define XOFF 18
-#define YOFF 20
-			switch (handdisp->table_seat[i]) { /* lower left point */
-				case 1: x = hand->allocation.width / 2 - extents.width - XOFF;
-				/*W*/	y = (hand->allocation.height + extents.height) / 2;
+#define XOFF 38
+#define YOFF 23
+#define WIDTH 52
+#define HEIGHT 28
+			switch (handdisp->table_seat[i]) { /* middle point */
+				case 1: x = hand->allocation.width / 2 - XOFF;
+				/*W*/	y = hand->allocation.height / 2;
 					break;
-				case 2: x = (hand->allocation.width - extents.width) / 2;
+				case 2: x = hand->allocation.width / 2;
 				/*N*/	y = hand->allocation.height / 2 - YOFF;
 					break;
 				case 3: x = hand->allocation.width / 2 + XOFF;
-				/*E*/	y = (hand->allocation.height + extents.height) / 2;
+				/*E*/	y = hand->allocation.height / 2;
 					break;
-				case 4: x = (hand->allocation.width - extents.width) / 2;
-				/*S*/	y = hand->allocation.height / 2 + extents.height + YOFF;
+				case 4: x = hand->allocation.width / 2;
+				/*S*/	y = hand->allocation.height / 2 + YOFF;
 					break;
 				default:
 					return; /* stop here */
 			}
 
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
-			cairo_rectangle (cr, x + extents.x_bearing - XPAD,
-					y - YPAD + extents.y_bearing - 1,
-					extents.width + 2 * XPAD + 5,
-					extents.height + 2 * YPAD);
+			cairo_rectangle (cr, x - WIDTH / 2, y + HEIGHT / 2, WIDTH, -HEIGHT);
 			cairo_fill (cr);
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
-			cairo_rectangle (cr, x + extents.x_bearing - XPAD,
-					y - YPAD + extents.y_bearing - 1,
-					extents.width + 2 * XPAD + 5,
-					extents.height + 2 * YPAD);
+			cairo_rectangle (cr, x - WIDTH / 2, y + HEIGHT / 2, WIDTH, -HEIGHT);
 			cairo_stroke (cr);
 
-			cairo_move_to (cr, x, y);
+			cairo_move_to (cr, x - extents.width / 2 - 3,
+					y + extents.height / 2 - 3);
 			FONT_SYMBOL;
 			cairo_set_source_rgb (cr, suit_color[suit][0],
 				suit_color[suit][1], suit_color[suit][2]);

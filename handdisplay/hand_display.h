@@ -62,10 +62,10 @@ extern "C" {
 #define HAND_DISPLAY_NEG_FONT      0.7, 0.0, 0.0
 #define HAND_DISPLAY_DD_FONT       0.0, 0.0, 1.0
 
-#define HAND_DISPLAY_SPADES_FONT   0.0, 0.0, 0.7
+#define HAND_DISPLAY_SPADES_FONT   0.0, 0.0, 0.8
 #define HAND_DISPLAY_HEARTS_FONT   0.9, 0.0, 0.0
-#define HAND_DISPLAY_DIAMONDS_FONT 1.0, 0.3, 0.0
-#define HAND_DISPLAY_CLUBS_FONT    0.0, 0.3, 0.0
+#define HAND_DISPLAY_DIAMONDS_FONT 1.0, 0.5, 0.0
+#define HAND_DISPLAY_CLUBS_FONT    0.0, 0.4, 0.0
 
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
