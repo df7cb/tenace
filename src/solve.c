@@ -30,19 +30,20 @@ void init_solve()
 }
 
 static const char *dds_error[] = {
-          "",
+          NULL,
  /* -1 */ "Unknown fault",
  /* -2 */ "No of cards = 0",
  /* -3 */ "target > Number of tricks left",
  /* -4 */ "Duplicated cards",
  /* -5 */ "target < -1",
-          "",
+          NULL,
  /* -7 */ "target >13",
  /* -8 */ "solutions < 1",
  /* -9 */ "solutions > 3",
 /* -10 */ "No of cards > 52",
 /* -11 */ "For mode=2: target =-1 or solutions != 2",
 /* -12 */ "Suit or rank value out of range for deal.currentTrickSuit or deal.currentTrickRank",
+	  NULL,
 };
 
 static const int card_bits[] = {0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000};
@@ -108,7 +109,8 @@ static int score_to_tricks(board *b, int score) /* result: tricks for declarer *
 	return score;
 }
 
-static void compute_dd_scores0(board *b, dd_t *dd, card next)
+static int
+compute_dd_scores0 (board *b, dd_t *dd, card next)
 {
 	int i, j, c;
 	card old_next;
@@ -118,7 +120,7 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 
 	if (!assert_board(b)) { /* FIXME: do not call this every time */
 		board_statusbar(_("Error: hands have different numbers of cards"));
-		return;
+		return 0;
 	}
 
 	if (next >= 0) { /* what-if mode: temporarily play this card */
@@ -164,7 +166,7 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 	if (i <= 0) {
 		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
 		board_statusbar(str);
-		return;
+		return 0;
 	}
 	//printf("solve nodes: %d cards: %d\n", fut.nodes, fut.cards);
 
@@ -183,33 +185,26 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 	}
 
 	dd->best_score = score_to_tricks(b, fut.score[0]);
+	return 1;
 }
 
+/* (optionally!) compute DD scores per card and display optimal DD score in statusbar */
 void
-print_dd_score (board *b)
-{
-	if (b->current_dd)
-		board_statusbar (score_string(b->level, b->trumps, b->declarer,
-				b->doubled, b->vuln[b->declarer % 2],
-				b->current_dd->best_score, b->current_turn));
-	//else
-		//solve_statusbar (NULL);
-}
-
-void compute_dd_scores(board *b)
+compute_dd_scores (board *b, int compute)
 {
 	if (b->n_played_cards == 52)
 		return;
 
-	if (!b->current_dd) {
+	if (compute && !b->current_dd) {
 		b->current_dd = malloc (sizeof (dd_t));
 		assert (b->current_dd);
-		compute_dd_scores0(b, b->current_dd, -1);
+		if (!compute_dd_scores0(b, b->current_dd, -1))
+			return;
 	}
 
 	/* next card not defined (i.e. no prior undo), set it to the highest
 	 * optimal card */ // FIXME: 1st and 2nd hand low
-	if (seat_mask (b->current_turn, win->show_dd_scores) &&
+	if (b->current_dd && seat_mask (b->current_turn, win->show_dd_scores) &&
 			b->played_cards[b->n_played_cards] == -1) { // FIXME: update when different card is played?
 		int c;
 		for (c = 51; c >= 0; c--) {
@@ -220,7 +215,10 @@ void compute_dd_scores(board *b)
 		}
 	}
 
-	print_dd_score (b);
+	if (b->current_dd)
+		board_statusbar (score_string(b->level, b->trumps, b->declarer,
+				b->doubled, b->vuln[b->declarer % 2],
+				b->current_dd->best_score, b->current_turn));
 }
 
 /* // FIXME: reanimate
@@ -238,7 +236,8 @@ void compute_next_dd_scores(board *b, card c)
  * Parscore computation
  */
 
-static void compute_par_arr(board *b)
+static int
+compute_par_arr(board *b)
 {
 	int i, j, c;
 	struct deal d;
@@ -281,7 +280,7 @@ static void compute_par_arr(board *b)
 				solve_statusbar(NULL);
 				board_statusbar(str->str);
 				g_string_free(str, TRUE);
-				return;
+				return 0;
 			}
 			b->par_arr[h][t] = 13 - fut.score[0];
 			//printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
@@ -291,6 +290,7 @@ static void compute_par_arr(board *b)
 	solve_statusbar(NULL);
 	g_string_free(str, TRUE);
 	//system("dds -tricks dd&");
+	return 1;
 }
 
 void parscore(board *b)
@@ -298,11 +298,12 @@ void parscore(board *b)
 	int l, t;
 
 	if (b->par_score == -1) {
-		if (!assert_board(b)) {
-			board_statusbar (_("Error: hands have different numbers of cards"));
+		if (b->n_dealt_cards != 52) {
+			board_statusbar (_("Error: board must be fully dealt"));
 			return;
 		}
-		compute_par_arr(b);
+		if (!compute_par_arr(b))
+			return;
 	}
 
 	b->par_score = 0;

@@ -335,8 +335,10 @@ static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 		redraw = 1;
 	}
 
-	if (redraw)
+	if (redraw) {
+		compute_dd_scores (b, run_dd);
 		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
+	}
 
 	PROTECT_END;
 }
@@ -414,10 +416,11 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 			remove_card(b, b->dealt_cards[card], card);
 		add_card(b, *seatp, card);
 	}
+	b->par_score = -1;
 
 	board_statusbar(NULL);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 	PROTECT_END;
 }
 
@@ -665,7 +668,6 @@ board_set_declarer (seat declarer)
 	b->declarer = declarer;
 	b->current_turn = seat_mod(declarer + 1);
 	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS | REDRAW_NAMES | REDRAW_BOARD_LIST);
-	// FIXME: redraw less?
 	PROTECT_END;
 }
 

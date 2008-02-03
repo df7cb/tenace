@@ -249,6 +249,8 @@ flip_hands (board *b, seat h1, seat h2)
 			assert (c);
 		}
 	}
+
+	b->par_score = -1; /* invalidate par score */
 	return 1;
 }
 

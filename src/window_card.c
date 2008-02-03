@@ -73,11 +73,12 @@ card_clicked (HandDisplay *handdisp, int c, int *seatp)
 			int new = (c - 52) * 13 + i;
 			if (b->dealt_cards[new] == 0) {
 				add_card(b, new_card_seat, new);
+				b->par_score = -1;
 
 				board_statusbar(NULL);
 				card_window_update(b->dealt_cards);
 				hand_display_draw(GTK_WIDGET (hand_display)); /* force redraw */
-				show_board(b, REDRAW_HANDS);
+				show_board(b, REDRAW_HANDS | REDRAW_PAR);
 				return;
 			}
 		}
@@ -102,10 +103,11 @@ card_clicked (HandDisplay *handdisp, int c, int *seatp)
 			remove_card(b, b->dealt_cards[c], c);
 		add_card(b, new_card_seat, c);
 	}
+	b->par_score = -1;
 
 	board_statusbar(NULL);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 void

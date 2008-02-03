@@ -139,7 +139,7 @@ on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	board_clear(b);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS | REDRAW_TRICKS);
+	show_board(b, REDRAW_HANDS | REDRAW_TRICKS | REDRAW_PAR);
 }
 
 
@@ -150,9 +150,8 @@ on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
-	if (run_dd)
-		compute_dd_scores (b);
-	show_board(b, REDRAW_HANDS);
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
@@ -327,7 +326,7 @@ on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	compute_dd_scores (b);
+	compute_dd_scores (b, 1);
 	show_board(b, REDRAW_HANDS);
 }
 
@@ -338,8 +337,7 @@ on_dd_always1_activate                 (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	run_dd = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem));
-	if (run_dd)
-		compute_dd_scores (b);
+	compute_dd_scores (b, run_dd);
 	show_board (b, REDRAW_HANDS);
 }
 
@@ -447,8 +445,10 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	rewind_card(b); /* extra call to show warning if there's nothing to do */
+	if (!rewind_card(b)) /* extra call to show warning if there's nothing to do */
+		return;
 	board_rewind(b);
+	compute_dd_scores (b, run_dd);
 	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
@@ -458,7 +458,9 @@ on_button_back_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	rewind_card(b);
+	if (!rewind_card(b))
+		return;
+	compute_dd_scores (b, run_dd);
 	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
@@ -468,7 +470,9 @@ on_button_next_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	next_card(b);
+	if (!next_card(b))
+		return;
+	compute_dd_scores (b, run_dd);
 	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
@@ -478,8 +482,10 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	next_card (b); /* extra call to show warning if there's nothing to do */
+	if (!next_card (b)) /* extra call to show warning if there's nothing to do */
+		return;
 	board_fast_forward(b);
+	compute_dd_scores (b, run_dd);
 	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
@@ -489,10 +495,9 @@ on_button_dd_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	compute_dd_scores (b);
+	compute_dd_scores (b, 1);
 	show_board(b, REDRAW_HANDS);
 }
-
 
 
 void
@@ -526,7 +531,7 @@ on_deal_clear_activate                 (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	board_clear(b);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS | REDRAW_PLAY);
+	show_board(b, REDRAW_HANDS | REDRAW_PLAY | REDRAW_PAR);
 }
 
 
@@ -537,9 +542,8 @@ on_deal_random_activate                (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
-	if (run_dd)
-		compute_dd_scores (b);
-	show_board(b, REDRAW_HANDS);
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
@@ -863,7 +867,7 @@ on_ew1_activate                        (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	flip_hands (b, east, west);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR); /* flip invalidates parscore */
 }
 
 
@@ -874,7 +878,7 @@ on_ns1_activate                        (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	flip_hands (b, north, south);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
@@ -885,7 +889,7 @@ on_nw1_activate                        (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	flip_hands (b, north, west);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
@@ -896,7 +900,7 @@ on_ne1_activate                        (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	flip_hands (b, north, east);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
@@ -907,7 +911,7 @@ on_sw1_activate                        (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	flip_hands (b, south, west);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
@@ -918,7 +922,7 @@ on_se1_activate                        (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	flip_hands (b, south, east);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 
