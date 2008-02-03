@@ -30,6 +30,28 @@
 #include "window_card.h"
 #include "file.h"
 
+static void
+add_filters (GtkFileChooser *dialog)
+{
+	GtkFileFilter *filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Bridge files"));
+	gtk_file_filter_add_pattern (filter, "*.lin");
+	gtk_file_filter_add_pattern (filter, "*.pbn");
+	gtk_file_chooser_add_filter (dialog, filter);
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("LIN files"));
+	gtk_file_filter_add_pattern (filter, "*.lin");
+	gtk_file_chooser_add_filter (dialog, filter);
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("PBN files"));
+	gtk_file_filter_add_pattern (filter, "*.pbn");
+	gtk_file_chooser_add_filter (dialog, filter);
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("All files"));
+	gtk_file_filter_add_pattern (filter, "*");
+	gtk_file_chooser_add_filter (dialog, filter);
+}
+
 /*
  * loading
  */
@@ -392,11 +414,7 @@ board_load_popup (window_board_t *win, int append, char *filename)
 
 		card_window_update(win->boards[win->cur]->dealt_cards);
 		show_board(win->boards[win->cur], REDRAW_FULL);
-
-		GtkRecentManager *recent = gtk_recent_manager_get_default ();
-		char buf[1024];
-		snprintf (buf, sizeof (buf), "file://%s", filename);
-		gtk_recent_manager_add_item (recent, buf);
+		recently_used_add (filename);
 
 		ret = 1;
 	} else {
@@ -431,6 +449,7 @@ board_load_dialog (window_board_t *win, int append)
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 			NULL);
+	add_filters (GTK_FILE_CHOOSER (dialog));
 
 	if (win->filename) {
 		char *cwd = g_path_get_dirname (win->filename);
@@ -657,27 +676,17 @@ board_save_lin(window_board_t *win, char *filename)
 int
 board_save(window_board_t *win, char *filename)
 {
-	int len, ret;
-	if ((len = strlen(filename)) > 4) {
-		if (!strcmp(filename + len - 4, ".lin")) {
-			ret = board_save_lin (win, filename);
-		} else if (!strcmp(filename + len - 4, ".pbn")) {
-			printf("pbn not yet implemented\n");
-			ret = 0;
-			errno = EMEDIUMTYPE;
-		} else {
-			printf("unrecognized suffix\n");
-			ret = 0;
-			errno = EMEDIUMTYPE;
-			/*
-			int h;
-			printf("%s\n", b->name->str);
-			for (h = 1; h < 5; h++) {
-				printf("%s\n", b->hand_name[h-1]->str);
-				printf("%s\n", hand_string(b, h)->str);
-			}
-			*/
-		}
+	int len = strlen(filename);
+	char *suffix = len > 4 ? filename + len - 4 : filename;
+	int ret = 0;
+	if (!strcmp(suffix, ".lin")) {
+		ret = board_save_lin (win, filename);
+	} else if (!strcmp(suffix, ".pbn")) {
+		printf("pbn not yet implemented\n");
+		errno = EMEDIUMTYPE;
+	} else {
+		printf("unrecognized suffix %s\n", suffix);
+		errno = EMEDIUMTYPE;
 	}
 	return ret;
 }
@@ -709,11 +718,10 @@ board_save_dialog (window_board_t *win, int save_as)
 			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 			NULL);
 	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+	add_filters (GTK_FILE_CHOOSER (dialog));
 
-	if (!win->filename) {
-		//gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), default_folder_for_saving);
-		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "hand.lin");
-	}
+	if (!win->filename)
+		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), _("hand.lin"));
 	else
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), win->filename);
 
@@ -729,6 +737,7 @@ retry_save:
 				free (win->filename);
 			win->filename = filename;
 			show_board (CUR_BOARD, REDRAW_TITLE);
+			recently_used_add (filename);
 		} else {
 			GtkWidget *error = gtk_message_dialog_new (GTK_WINDOW (win->window),
 					GTK_DIALOG_DESTROY_WITH_PARENT,

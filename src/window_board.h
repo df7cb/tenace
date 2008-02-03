@@ -72,6 +72,7 @@ extern int protect; /* inhibit infinite loops in handlers */
 /* interface */
 
 void show_board (board *b, redraw_t redraw);
+void recently_used_add (char *filename);
 
 int board_window_append_board (window_board_t *win, board *b); /* returns number of appended board */
 void board_window_init ();

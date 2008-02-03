@@ -81,6 +81,7 @@ main (int argc, char *argv[])
 			perror (fname);
 		exit (1);
 	}
+	recently_used_add (fname);
 	if (! g_path_is_absolute (argv[1]))
 		g_free (fname);
   } else {

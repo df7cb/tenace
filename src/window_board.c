@@ -310,6 +310,18 @@ void show_board (board *b, redraw_t redraw)
 	}
 }
 
+void
+recently_used_add (char *filename)
+{
+	static GtkRecentManager *recent = NULL;
+	if (! recent)
+		recent = gtk_recent_manager_get_default ();
+
+	char buf[1024];
+	snprintf (buf, sizeof (buf), "file://%s", filename);
+	gtk_recent_manager_add_item (recent, buf);
+}
+
 /* callbacks */
 
 static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
@@ -612,6 +624,7 @@ board_window_init (window_board_t *win)
 			G_CALLBACK (jump_menu_select), NULL);
 	GtkRecentFilter *filter = gtk_recent_filter_new ();
 	gtk_recent_filter_add_pattern (filter, "*.lin");
+	gtk_recent_filter_add_pattern (filter, "*.pbn");
 	gtk_recent_chooser_add_filter (recentchooser, filter);
 
 	win->show_played_cards = 0;
