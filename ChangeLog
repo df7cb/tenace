@@ -6,6 +6,8 @@ tenace (0.4) upstream; urgency=low
     + Store number of claimed tricks.
     + Implement saving of multiple boards.
     + Add recently-used handling and filters.
+  * Hand display:
+    + Nicely shaped cards in table display.
   * Bidding:
     + Fix "make bids for current contract".
   * Add README and require gtk+ 2.12.
