@@ -16,7 +16,6 @@
 #define _GNU_SOURCE
 
 #include <math.h>
-#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <locale.h>
@@ -110,12 +109,18 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			} while ((name = sane_strtok_r(NULL, ",", &nameptr)));
 
 		} else if (!strcmp(tok, "md")) { /* make deal */
-			assert (!board_filled);
+			if (board_filled) {
+				printf (_("Duplicate md|| token\n"));
+				goto error;
+			}
 			tok = STRTOK;
 			char *c;
 			seat se = south;
 			suit su = spade;
-			assert (*tok && *tok != '0'); /* "keep deal" mode not supported */
+			if (!*tok == *tok == '0') {
+				printf (_("'keep deal' mode not supported\n"));
+				goto error;
+			}
 			b->dealer = seat_mod(*tok - '0' - 1);
 			for (c = tok + 1; *c; c++) {
 				int i;
