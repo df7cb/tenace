@@ -3507,7 +3507,7 @@ EW: %d</property>
 	  <property name="editable">True</property>
 	  <property name="visibility">True</property>
 	  <property name="max_length">0</property>
-	  <property name="text" translatable="yes">63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853</property>
+	  <property name="text">63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853</property>
 	  <property name="has_frame">True</property>
 	  <property name="invisible_char">*</property>
 	  <property name="activates_default">False</property>
@@ -3685,7 +3685,7 @@ EW: %d</property>
 	  <child>
 	    <widget class="GtkLabel" id="label94">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">label94</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3753,7 +3753,7 @@ EW: %d</property>
 	  <child>
 	    <widget class="GtkLabel" id="label96">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">label96</property>
+	      <property name="label" translatable="yes"></property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>

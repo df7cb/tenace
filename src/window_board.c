@@ -320,8 +320,12 @@ recently_used_add (char *filename)
 
 static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 {
+	if (card == -1)
+		return;
+
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
+	assert (card >= 0 && card < 52);
 	//printf("Clicked: %s for %c.\n", card_string(card), "WNES"[*seatp - 1]);
 	int redraw = 0;
 
@@ -376,16 +380,15 @@ static void card_leave (HandDisplay *handdisp, int card, int *seatp)
 	PROTECT_END;
 }
 
+/* gets called for target widget */
 static void
 card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
-	/*
 	printf("Dropped: %s for %c.\n", card_string(card), "WNES"[*seatp - 1]);
 	if (on_card >= 0)
 		printf("Dropped on: %s.\n", card_string(on_card));
-	*/
 
 	if (b->dealt_cards[card] && b->dealt_cards[card] == *seatp) /* card didn't move */
 		PROTECT_RETURN;

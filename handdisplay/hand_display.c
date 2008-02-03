@@ -709,10 +709,12 @@ hand_display_drag_data_received (GtkWidget *hand, GdkDragContext *dc,
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
 	int *card = (int *) selection_data->data;
 	int on_card = which_card(handdisp, x, y);
+	/*
 	if (*card == on_card) {
 		gtk_drag_finish (dc, FALSE, FALSE, t);
 		return;
 	}
+	*/
 	g_signal_emit_by_name (handdisp, "card-drag-drop", *card, on_card);
 	gtk_drag_finish (dc, TRUE, FALSE, t);
 }

@@ -24,6 +24,7 @@
 
 static GtkWidget *window_card = 0;
 static HandDisplay *hand_display = 0;
+static int seat_null = 0;
 seat new_card_seat = west;
 
 void
@@ -57,6 +58,9 @@ set_new_card_seat (seat s)
 static void
 card_clicked (HandDisplay *handdisp, int c, int *seatp)
 {
+	if (c == -1)
+		return;
+
 	assert (c >= 0 && c < 56);
 	assert (new_card_seat >= 1 && new_card_seat <= 4);
 	board *b = win->boards[win->cur];
@@ -110,6 +114,12 @@ card_clicked (HandDisplay *handdisp, int c, int *seatp)
 	show_board(b, REDRAW_HANDS | REDRAW_PAR);
 }
 
+static void
+card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp /* 0 */)
+{
+	printf ("dropped %d on %d on card window\n", card, on_card);
+}
+
 void
 window_card_init ()
 {
@@ -123,6 +133,9 @@ window_card_init ()
 		hand_display_set_card (hand_display, c, HAND_DISPLAY_CARD);
 	}
 	g_signal_connect (hand_display, "card-clicked", G_CALLBACK (card_clicked), NULL);
+	g_signal_connect (hand_display,
+			"card-drag-drop", G_CALLBACK (card_drag_drop), &seat_null);
+	hand_display_set_drag (hand_display, 1);
 
 	window_card = create_window_card ();
 	GtkWidget *vbox = lookup_widget (window_card, "vbox2");

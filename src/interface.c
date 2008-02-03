@@ -2099,7 +2099,7 @@ create_window_line_entry (void)
   gtk_widget_show (line_entry);
   gtk_box_pack_start (GTK_BOX (hbox4), line_entry, TRUE, TRUE, 0);
   gtk_tooltips_set_tip (tooltips, line_entry, _("Hand as string"), NULL);
-  gtk_entry_set_text (GTK_ENTRY (line_entry), _("63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853"));
+  gtk_entry_set_text (GTK_ENTRY (line_entry), "63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853");
 
   line_entry_ok = gtk_button_new_from_stock ("gtk-ok");
   gtk_widget_show (line_entry_ok);
@@ -2212,7 +2212,7 @@ create_window_options (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label97), 0, 0.5);
 
-  label94 = gtk_label_new (_("label94"));
+  label94 = gtk_label_new ("");
   gtk_widget_show (label94);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label94);
 
@@ -2230,7 +2230,7 @@ create_window_options (void)
   gtk_widget_show (empty_notebook_page);
   gtk_container_add (GTK_CONTAINER (notebook1), empty_notebook_page);
 
-  label96 = gtk_label_new (_("label96"));
+  label96 = gtk_label_new ("");
   gtk_widget_show (label96);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label96);
 
