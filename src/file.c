@@ -171,6 +171,8 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 
 			/* for now assume qx|| is present in all lin files with mp|| */
 			if (mp_str) {
+				// FIXME: skip leading boards that were kibitzed but not played
+				// (01-26-08-3.lin)
 				char *score = mp_ptr ? sane_strtok_r (NULL, ",", &mp_ptr) :
 						sane_strtok_r (mp_str, ",", &mp_ptr);
 				b->mp[0] = score ? round (strtod (score, NULL) * 100.0) : 0;
