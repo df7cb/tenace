@@ -110,7 +110,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 
 		} else if (!strcmp(tok, "md")) { /* make deal */
 			if (board_filled) {
-				printf (_("Duplicate md|| token\n"));
+				printf ("Duplicate md|| token\n");
 				goto error;
 			}
 			tok = STRTOK;
@@ -118,7 +118,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			seat se = south;
 			suit su = spade;
 			if (!*tok == *tok == '0') {
-				printf (_("'keep deal' mode not supported\n"));
+				printf ("md|0| (keep deal) mode not supported\n");
 				goto error;
 			}
 			b->dealer = seat_mod(*tok - '0' - 1);
@@ -183,7 +183,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				case 'n': b->vuln[0] = 1; b->vuln[1] = 0; break;
 				case 'e': b->vuln[0] = 0; b->vuln[1] = 1; break;
 				case 'b': b->vuln[0] = 1; b->vuln[1] = 1; break;
-				default: printf("Unknown vulnerability: sv|%s\n", tok);
+				default: printf("Unknown vulnerability: sv|%s|\n", tok);
 			}
 
 		} else if (!strcmp(tok, "mb")) {
@@ -228,7 +228,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 		/* vugraph file */
 		} else if (!strcmp(tok, "vg")) { /* match title */
 			tok = STRTOK;
-			printf ("Match title: %s\n", tok);
+			//printf ("Match title: %s\n", tok);
 			if (win->title)
 				free (win->title);
 			if (win->subtitle)
@@ -259,16 +259,16 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 
 		} else if (!strcmp(tok, "pw")) { /* more player names */
 			tok = STRTOK;
-			printf ("Players: %s\n", tok);
+			//printf ("Players: %s\n", tok);
 		} else if (!strcmp(tok, "bn")) { /* board numbers */
 			tok = STRTOK;
-			printf ("Board numbers: %s\n", tok);
+			//printf ("Board numbers: %s\n", tok);
 		} else if (!strcmp(tok, "rs")) { /* results */
 			tok = STRTOK;
-			printf ("Results: %s\n", tok);
+			//printf ("Results: %s\n", tok);
 		} else if (!strcmp(tok, "mp")) { /* MP result */
 			tok = STRTOK;
-			printf ("Scores: %s\n", tok);
+			//printf ("Scores: %s\n", tok);
 			mp_str = strdup (tok);
 		} else if (!strcmp(tok, "nt")) { /* comment (new text) */
 			tok = STRTOK;
@@ -283,7 +283,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 		} else if (!*tok) {
 			// empty token, hopefully end of line
 		} else {
-			printf("Unknown token '%s|%s'\n", tok, STRTOK);
+			printf("Unknown token '%s|%s|'\n", tok, STRTOK);
 		}
 	}
 	} while (fgets(line, 1023, f));
