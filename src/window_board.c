@@ -25,10 +25,12 @@
 
 #include "window_board.h"
 
+#include "file.h"
 #include "functions.h"
 #include "interface.h"
 #include "solve.h"
 #include "support.h"
+#include "window_card.h"
 #include "window_line_entry.h"
 #include "window_play.h"
 
@@ -238,22 +240,14 @@ void show_board (board *b, redraw_t redraw)
 		gtk_label_set_markup((GtkLabel*) w, str->str);
 	}
 
-	if (redraw & REDRAW_DD) {
-		//if (b->par_score == -1) {
-			//w = lookup_widget(win->window, "par_label");
-			//gtk_label_set_text(GTK_LABEL(w), "");
-		//}
-
-		if (run_dd) {
-			compute_dd_scores(b);
-
-			if (b->current_dd) {
-				g_string_printf (str, "%s",
-					score_string(b->level, b->trumps, b->declarer,
-						b->doubled, b->vuln[b->declarer % 2],
-						b->current_dd->best_score, b->current_turn));
-				solve_statusbar(str->str);
-			}
+	if (redraw & REDRAW_PAR) {
+		w = lookup_widget (win->window, "par_label");
+		if (b->par_score == -1) {
+			gtk_label_set_text (GTK_LABEL (w), "");
+		} else {
+			char *par = par_label (b);
+			gtk_label_set_markup(GTK_LABEL (w), par);
+			free (par);
 		}
 	}
 
@@ -342,7 +336,7 @@ static void card_clicked (HandDisplay *handdisp, int card, int *seatp)
 	}
 
 	if (redraw)
-		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_DD | REDRAW_PLAY);
+		show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 
 	PROTECT_END;
 }
@@ -427,11 +421,13 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 	PROTECT_END;
 }
 
+/*
 static void
 bidding_clicked (GtkTreeViewColumn *column, void *data)
 {
 	printf ("clicked bidd\n");
 }
+*/
 
 static gboolean
 bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode,
@@ -625,7 +621,7 @@ board_window_init (window_board_t *win)
 	GtkRecentFilter *filter = gtk_recent_filter_new ();
 	gtk_recent_filter_add_pattern (filter, "*.lin");
 	gtk_recent_filter_add_pattern (filter, "*.pbn");
-	gtk_recent_chooser_add_filter (recentchooser, filter);
+	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (recentchooser), filter);
 
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;

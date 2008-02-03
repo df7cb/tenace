@@ -96,6 +96,7 @@ on_window_hand_delete_event            (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	gtk_main_quit ();
+	return FALSE;
 }
 
 
@@ -149,7 +150,9 @@ on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS | REDRAW_DD);
+	if (run_dd)
+		compute_dd_scores (b);
+	show_board(b, REDRAW_HANDS);
 }
 
 
@@ -324,7 +327,20 @@ on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	show_board(b, REDRAW_HANDS | REDRAW_DD);
+	compute_dd_scores (b);
+	show_board(b, REDRAW_HANDS);
+}
+
+
+void
+on_dd_always1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	run_dd = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem));
+	if (run_dd)
+		compute_dd_scores (b);
+	show_board (b, REDRAW_HANDS);
 }
 
 
@@ -334,6 +350,7 @@ on_parscore1_activate                  (GtkMenuItem     *menuitem,
 {
 	board *b = CUR_BOARD;
 	parscore(b);
+	show_board (b, REDRAW_PAR);
 }
 
 
@@ -343,6 +360,7 @@ on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	parscore(b);
+	show_board (b, REDRAW_PAR);
 }
 
 
@@ -431,7 +449,7 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	rewind_card(b); /* extra call to show warning if there's nothing to do */
 	board_rewind(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
 
@@ -441,7 +459,7 @@ on_button_back_clicked                 (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	rewind_card(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
 
@@ -451,7 +469,7 @@ on_button_next_clicked                 (GtkToolButton   *toolbutton,
 {
 	board *b = CUR_BOARD;
 	next_card(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
 
@@ -462,18 +480,19 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	next_card (b); /* extra call to show warning if there's nothing to do */
 	board_fast_forward(b);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY | REDRAW_DD);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
 
 void
-on_button_dd_toggled                   (GtkToggleToolButton *toggletoolbutton,
+on_button_dd_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	run_dd = gtk_toggle_tool_button_get_active(toggletoolbutton);
-	show_board (b, REDRAW_HANDS | REDRAW_DD);
+	compute_dd_scores (b);
+	show_board(b, REDRAW_HANDS);
 }
+
 
 
 void
@@ -518,7 +537,9 @@ on_deal_random_activate                (GtkMenuItem     *menuitem,
 	board *b = CUR_BOARD;
 	deal_random(b);
 	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS | REDRAW_DD);
+	if (run_dd)
+		compute_dd_scores (b);
+	show_board(b, REDRAW_HANDS);
 }
 
 
@@ -559,14 +580,13 @@ on_window_line_entry_delete_event      (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	PROTECT_BEGIN;
+	PROTECT_BEGIN_BOOL;
 	GtkWidget *menuitem = lookup_widget (win->window, "deal_line");
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), FALSE);
 	window_line_entry_delete ();
 	PROTECT_END;
 	return FALSE;
 }
-
 
 
 void

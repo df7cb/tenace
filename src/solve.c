@@ -185,6 +185,17 @@ static void compute_dd_scores0(board *b, dd_t *dd, card next)
 	dd->best_score = score_to_tricks(b, fut.score[0]);
 }
 
+void
+print_dd_score (board *b)
+{
+	if (b->current_dd)
+		board_statusbar (score_string(b->level, b->trumps, b->declarer,
+				b->doubled, b->vuln[b->declarer % 2],
+				b->current_dd->best_score, b->current_turn));
+	//else
+		//solve_statusbar (NULL);
+}
+
 void compute_dd_scores(board *b)
 {
 	if (b->n_played_cards == 52)
@@ -208,8 +219,11 @@ void compute_dd_scores(board *b)
 			}
 		}
 	}
+
+	print_dd_score (b);
 }
 
+/* // FIXME: reanimate
 void compute_next_dd_scores(board *b, card c)
 {
 	if (!b->next_dd[c]) {
@@ -218,6 +232,11 @@ void compute_next_dd_scores(board *b, card c)
 		compute_dd_scores0(b, b->next_dd[c], c);
 	}
 }
+*/
+
+/*
+ * Parscore computation
+ */
 
 static void compute_par_arr(board *b)
 {
@@ -322,7 +341,11 @@ void parscore(board *b)
 			}
 		}
 	}
+}
 
+char *
+par_label (board *b)
+{
 	GString *par = g_string_new(_("Par: PASS (0)\n"));
 	if (b->par_score != 0)
 		g_string_printf(par, _("Par: %s %s (%+d)\n"),
@@ -331,6 +354,7 @@ void parscore(board *b)
 			overtricks(b->par_tricks - b->par_level - 6),
 			b->par_score);
 
+	int t;
 	for (t = 4; t >= 0; t--) {
 		g_string_append_printf(par, "%s: ", _(trump_str[t]));
 		if (b->par_arr[1][t] == b->par_arr[3][t])
@@ -347,7 +371,7 @@ void parscore(board *b)
 			g_string_append_printf(par, "\n");
 	}
 
-	GtkLabel *par_label = GTK_LABEL(lookup_widget(win->window, "par_label"));
-	gtk_label_set_markup(par_label, par->str);
+	char *ret = strdup (par->str);
 	g_string_free(par, TRUE);
+	return ret;
 }

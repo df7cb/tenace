@@ -11,6 +11,7 @@
 
 /* make sure some code is not called twice */
 #define PROTECT_BEGIN do { if (protect++) return; } while (0)
+#define PROTECT_BEGIN_BOOL do { if (protect++) return FALSE; } while (0)
 #define PROTECT_END do { protect = 0; } while (0)
 #define PROTECT_RETURN do { protect = 0; return; } while (0)
 
@@ -55,7 +56,7 @@ typedef enum _redraw_t {
 	REDRAW_CONTRACT		= 1 << 2,
 	REDRAW_TRICKS		= 1 << 3,
 	REDRAW_HANDS		= 1 << 4,
-	REDRAW_DD		= 1 << 5,
+	REDRAW_PAR		= 1 << 5,
 	REDRAW_PLAY		= 1 << 6,
 	REDRAW_BIDDING		= 1 << 7,
 	REDRAW_BOARD		= 0xff, /* everything above */

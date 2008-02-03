@@ -472,3 +472,11 @@ on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
 void
 on_jump_to1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_dd_always1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_button_dd_clicked                   (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
