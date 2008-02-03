@@ -1,4 +1,4 @@
-EXTRA_DIST = 2007_Spingold_Final.First_Quarter.lin
+EXTRA_DIST = README.examples *.lin
 
 install-data-local:
 	install -d $(DESTDIR)$(prefix)/share/doc/$(PACKAGE)/examples
