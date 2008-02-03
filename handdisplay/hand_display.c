@@ -254,6 +254,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 #define YOFF 23
 #define WIDTH 52
 #define HEIGHT 28
+#define RAD 5
 			switch (handdisp->table_seat[i]) { /* middle point */
 				case 1: x = hand->allocation.width / 2 - XOFF;
 				/*W*/	y = hand->allocation.height / 2;
@@ -271,11 +272,15 @@ draw (GtkWidget *hand, cairo_t *cr)
 					return; /* stop here */
 			}
 
+			cairo_new_path (cr);
+			cairo_arc_negative (cr, x-WIDTH/2+RAD, y+HEIGHT/2 - RAD, RAD, M_PI, M_PI_2);
+			cairo_arc_negative (cr, x+WIDTH/2-RAD, y+HEIGHT/2 - RAD, RAD, M_PI_2, 0.0);
+			cairo_arc_negative (cr, x+WIDTH/2-RAD, y-HEIGHT/2 + RAD, RAD, 0.0, -M_PI_2);
+			cairo_arc_negative (cr, x-WIDTH/2+RAD, y-HEIGHT/2 + RAD, RAD, -M_PI_2, M_PI);
+			cairo_close_path (cr);
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FOCUS_BG);
-			cairo_rectangle (cr, x - WIDTH / 2, y + HEIGHT / 2, WIDTH, -HEIGHT);
-			cairo_fill (cr);
+			cairo_fill_preserve (cr);
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
-			cairo_rectangle (cr, x - WIDTH / 2, y + HEIGHT / 2, WIDTH, -HEIGHT);
 			cairo_stroke (cr);
 
 			cairo_move_to (cr, x - extents.width / 2 - 3,
