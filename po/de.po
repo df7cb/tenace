@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-04 00:04+0100\n"
-"PO-Revision-Date: 2008-02-04 00:04+0100\n"
+"POT-Creation-Date: 2008-02-07 00:10+0100\n"
+"PO-Revision-Date: 2008-02-07 00:11+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -76,7 +76,7 @@ msgstr "Kein Board"
 msgid "Cut buffer is empty"
 msgstr "Zwischenablage ist leer"
 
-#: src/callbacks.c:795 src/window_board.c:593
+#: src/callbacks.c:795 src/window_board.c:596
 #, c-format
 msgid "Board %d"
 msgstr ""
@@ -396,8 +396,8 @@ msgid "Double dummy analysis"
 msgstr "Double-Dummy-Analyse"
 
 #: src/interface.c:604
-msgid "Always"
-msgstr "Immer"
+msgid "Run always"
+msgstr "Immer starten"
 
 #: src/interface.c:607
 msgid "Automatically run DD analysis"
@@ -703,27 +703,27 @@ msgstr ""
 msgid " - %s vs. %s"
 msgstr " - %s gegen %s"
 
-#: src/window_board.c:394
+#: src/window_board.c:397
 msgid "Card is in play and cannot be moved"
 msgstr "Karte ist im Spiel und kann nicht bewegt werden"
 
-#: src/window_board.c:400
+#: src/window_board.c:403
 msgid "Card is in play and cannot be exchanged"
 msgstr "Karte ist im Spiel und kann nicht ausgetauscht werden"
 
-#: src/window_board.c:411 src/window_card.c:67 src/window_card.c:98
+#: src/window_board.c:414 src/window_card.c:71 src/window_card.c:102
 msgid "Hand has already 13 cards"
 msgstr "Hand hat schon 13 Karten"
 
-#: src/window_board.c:465
+#: src/window_board.c:468
 msgid "(no explanation)"
 msgstr "(keine Erklärung)"
 
-#: src/window_card.c:85
+#: src/window_card.c:89
 msgid "All cards of that suit dealt"
 msgstr "Alle Karten dieser Farbe wurden geteilt"
 
-#: src/window_card.c:90
+#: src/window_card.c:94
 msgid "Card is in play and cannot be removed"
 msgstr "Karte ist im Spiel und kann nicht entfernt werden"
 
