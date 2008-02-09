@@ -1,3 +1,9 @@
+tenace (0.5-1) unstable; urgency=low
+
+  * New upstream version, will now also compile on Etch.
+
+ -- Christoph Berg <myon@debian.org>  Sat, 09 Feb 2008 00:57:40 +0100
+
 tenace (0.4-1) unstable; urgency=low
 
   * New upstream version.

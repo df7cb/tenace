@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-07 00:10+0100\n"
+"POT-Creation-Date: 2008-02-09 00:59+0100\n"
 "PO-Revision-Date: 2008-01-06 22:58+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Cut buffer is empty"
 msgstr ""
 
-#: src/callbacks.c:795 src/window_board.c:596
+#: src/callbacks.c:795 src/window_board.c:604
 #, c-format
 msgid "Board %d"
 msgstr ""
@@ -701,19 +701,19 @@ msgstr ""
 msgid " - %s vs. %s"
 msgstr ""
 
-#: src/window_board.c:397
+#: src/window_board.c:399
 msgid "Card is in play and cannot be moved"
 msgstr ""
 
-#: src/window_board.c:403
+#: src/window_board.c:405
 msgid "Card is in play and cannot be exchanged"
 msgstr ""
 
-#: src/window_board.c:414 src/window_card.c:71 src/window_card.c:102
+#: src/window_board.c:416 src/window_card.c:71 src/window_card.c:102
 msgid "Hand has already 13 cards"
 msgstr ""
 
-#: src/window_board.c:468
+#: src/window_board.c:471
 msgid "(no explanation)"
 msgstr ""
 

@@ -307,6 +307,7 @@ void show_board (board *b, redraw_t redraw)
 void
 recently_used_add (char *filename)
 {
+#if GTK_CHECK_VERSION (2,10,0)
 	static GtkRecentManager *recent = NULL;
 	if (! recent)
 		recent = gtk_recent_manager_get_default ();
@@ -314,6 +315,7 @@ recently_used_add (char *filename)
 	char buf[1024];
 	snprintf (buf, sizeof (buf), "file://%s", filename);
 	gtk_recent_manager_add_item (recent, buf);
+#endif
 }
 
 /* callbacks */
@@ -435,6 +437,7 @@ bidding_clicked (GtkTreeViewColumn *column, void *data)
 }
 */
 
+#if GTK_CHECK_VERSION (2,12,0)
 static gboolean
 bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode,
 		GtkTooltip *tooltip, window_board_t *bidding_store)
@@ -468,7 +471,9 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 	gtk_tooltip_set_markup (tooltip, !alert || *alert ? alert : _("(no explanation)"));
 	return TRUE;
 }
+#endif
 
+#if GTK_CHECK_VERSION (2,10,0)
 static void
 jump_menu_select (GtkWidget *recentchooser, char *unused)
 {
@@ -479,6 +484,7 @@ jump_menu_select (GtkWidget *recentchooser, char *unused)
 	board_load_popup (win, 0, filename + sizeof ("file://") - 1);
 	PROTECT_END;
 }
+#endif
 
 /* infrastructure */
 
@@ -539,8 +545,10 @@ create_bidding_widget (window_board_t *win)
 		G_TYPE_STRING, G_TYPE_STRING,
 		G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model (win->bidding, GTK_TREE_MODEL (win->bidding_store));
+#if GTK_CHECK_VERSION (2,12,0)
 	g_signal_connect (G_OBJECT (win->bidding), "query-tooltip",
 			G_CALLBACK (bidding_query_tooltip), win);
+#endif
 
 	GtkCellRenderer *renderer;
 	renderer = gtk_cell_renderer_text_new ();
@@ -620,6 +628,7 @@ board_window_init (window_board_t *win)
 
 	/* set up "recently used" menu */
 	GtkWidget *jump_menu = lookup_widget(win->window, "jump_to1");
+#if GTK_CHECK_VERSION (2,10,0)
 	GtkWidget *recentchooser = gtk_recent_chooser_menu_new ();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (jump_menu), recentchooser);
 	g_signal_connect (G_OBJECT (recentchooser), "item-activated",
@@ -628,6 +637,9 @@ board_window_init (window_board_t *win)
 	gtk_recent_filter_add_pattern (filter, "*.lin");
 	gtk_recent_filter_add_pattern (filter, "*.pbn");
 	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (recentchooser), filter);
+#else
+	gtk_widget_set_sensitive (jump_menu, FALSE);
+#endif
 
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;

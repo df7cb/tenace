@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(tenace, 0.4, [cb@df7cb.de])
+AC_INIT(tenace, 0.5, [cb@df7cb.de])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AM_CONFIG_HEADER(config.h)
@@ -11,7 +11,7 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-pkg_modules="gtk+-2.0 >= 2.12.0"
+pkg_modules="gtk+-2.0 >= 2.0.0"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)

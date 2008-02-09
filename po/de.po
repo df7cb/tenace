@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-07 00:10+0100\n"
+"POT-Creation-Date: 2008-02-09 00:59+0100\n"
 "PO-Revision-Date: 2008-02-07 00:11+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -76,7 +76,7 @@ msgstr "Kein Board"
 msgid "Cut buffer is empty"
 msgstr "Zwischenablage ist leer"
 
-#: src/callbacks.c:795 src/window_board.c:596
+#: src/callbacks.c:795 src/window_board.c:604
 #, c-format
 msgid "Board %d"
 msgstr ""
@@ -703,19 +703,19 @@ msgstr ""
 msgid " - %s vs. %s"
 msgstr " - %s gegen %s"
 
-#: src/window_board.c:397
+#: src/window_board.c:399
 msgid "Card is in play and cannot be moved"
 msgstr "Karte ist im Spiel und kann nicht bewegt werden"
 
-#: src/window_board.c:403
+#: src/window_board.c:405
 msgid "Card is in play and cannot be exchanged"
 msgstr "Karte ist im Spiel und kann nicht ausgetauscht werden"
 
-#: src/window_board.c:414 src/window_card.c:71 src/window_card.c:102
+#: src/window_board.c:416 src/window_card.c:71 src/window_card.c:102
 msgid "Hand has already 13 cards"
 msgstr "Hand hat schon 13 Karten"
 
-#: src/window_board.c:468
+#: src/window_board.c:471
 msgid "(no explanation)"
 msgstr "(keine Erklärung)"
 
