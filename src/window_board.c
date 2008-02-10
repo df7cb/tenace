@@ -389,15 +389,15 @@ static void card_leave (HandDisplay *handdisp, int card, int *seatp)
 
 /* gets called for target widget */
 static void
-card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
+card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *to_seat)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
-	printf("Dropped: %s on seat %c.\n", card_string(card), "WNES"[*seatp - 1]);
+	printf("Dropped: %s on seat %c.\n", card_string(card), "WNES"[*to_seat - 1]);
 	if (on_card >= 0)
 		printf("Dropped on: %s.\n", card_string(on_card));
 
-	if (b->dealt_cards[card] && b->dealt_cards[card] == *seatp) /* card didn't move */
+	if (b->dealt_cards[card] && b->dealt_cards[card] == *to_seat) /* card didn't move */
 		PROTECT_RETURN;
 
 	if (b->dealt_cards[card] && !b->cards[card]) {
@@ -405,26 +405,28 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp)
 		PROTECT_RETURN;
 	}
 
+	seat from_seat = b->dealt_cards[card];
 	if (on_card >= 0) { /* exchange 2 cards */
 		if (b->dealt_cards[on_card] && !b->cards[on_card]) {
 			board_statusbar(_("Card is in play and cannot be exchanged"));
 			PROTECT_RETURN;
 		}
 
-		seat from_seat = b->dealt_cards[card];
-		remove_card(b, from_seat, card);
-		remove_card(b, *seatp, on_card);
-		add_card(b, from_seat, on_card);
-		add_card(b, *seatp, card);
+		remove_card(b, *to_seat, on_card);
+		if (from_seat) {
+			remove_card(b, from_seat, card);
+			add_card(b, from_seat, on_card);
+		}
+		add_card(b, *to_seat, card);
 	} else { /* move single card */
-		if (b->hand_cards[*seatp-1] == 13) {
+		if (b->hand_cards[*to_seat-1] == 13) {
 			board_statusbar(_("Hand has already 13 cards"));
 			PROTECT_RETURN;
 		}
 
-		if (b->dealt_cards[card])
-			remove_card(b, b->dealt_cards[card], card);
-		add_card(b, *seatp, card);
+		if (from_seat)
+			remove_card(b, from_seat, card);
+		add_card(b, *to_seat, card);
 	}
 	b->par_score = -1;
 
@@ -771,11 +773,14 @@ read_config (window_board_t *win)
 	}
 	int style;
 	if (fscanf (f, "style %d", &style) == 1) {
+		PROTECT_BEGIN;
 		char *checkitem_name[] = { "style_text", "style_cards" };
 		GtkWidget *checkitem = lookup_widget (win->window, checkitem_name[style > 0]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (checkitem), TRUE);
-		board_window_set_style (win, style > 0 ? HAND_DISPLAY_STYLE_CARDS :
-				HAND_DISPLAY_STYLE_TEXT);
+		int s = style > 0 ? HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
+		board_window_set_style (win, s);
+		window_card_set_style (s);
+		PROTECT_END;
 	}
 	fclose (f);
 	return 1;

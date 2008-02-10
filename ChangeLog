@@ -1,8 +1,10 @@
 tenace (0.6) upstream; urgency=low
 
   * Solver: Always use dealt cards for parscore computation.
-  * UI: Move fast forward/rewind to menu, make to buttons go one trick
-    forward/backward, and generally reorder menu.
+  * UI:
+    + Move fast forward/rewind to menu, make to buttons go one trick
+      forward/backward, and generally reorder menu.
+    + Support dragging to/from card window.
   * Hand widget: Start dragging manually to prevent dragging 'x' and empty
     cards.
 

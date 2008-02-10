@@ -314,7 +314,9 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 	/* "cards" style */
 
-	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
+	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS && handdisp->mode != HAND_DISPLAY_MODE_HAND_X) {
+		/* we do not support MODE_X here, yet we still allow setting
+		 * STYLE_CARDS there to have the right drag icon */
 		y = MAX (hand->allocation.height - card_height - 5, 15);
 		int n = 0;
 		int suit;
@@ -365,7 +367,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 					cairo_restore (cr);
 				}
 			}
-			/* we do not support MODE_X here */
 		}
 
 		return;
@@ -508,6 +509,7 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 	{
 		if (! target_list)
 			target_list = gtk_target_list_new (target_entry, 1);
+		handdisp->cur_drag = handdisp->cur_click;
 		gtk_drag_begin (hand, target_list, GDK_ACTION_COPY, 1, (GdkEvent *) event);
 	}
 	if (handdisp->cur_focus != card) {
@@ -547,15 +549,19 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 		handdisp->cur_focus = card;
 	if (event->type == GDK_BUTTON_PRESS) {
 		handdisp->cur_click = card;
-		handdisp->drag_x = event->x;
-		handdisp->drag_y = event->y;
+		if (handdisp->drag) {
+			handdisp->drag_x = event->x;
+			handdisp->drag_y = event->y;
+		}
 	}
 	if (handdisp->cur_focus == -1)
 		return FALSE;
 	redraw_card (hand, card);
 
-	if (event->type == GDK_BUTTON_RELEASE && handdisp->cur_click == card) {
-		g_signal_emit_by_name (handdisp, "card-clicked", card);
+	if (event->type == GDK_BUTTON_RELEASE) {
+		if (handdisp->cur_click == card)
+			g_signal_emit_by_name (handdisp, "card-clicked", card);
+		handdisp->cur_click = -1;
 	}
 	return FALSE;
 }
@@ -642,7 +648,6 @@ static void
 hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data /* unused */)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	handdisp->cur_drag = handdisp->cur_click;
 	assert (handdisp->cur_drag >= 0 && handdisp->cur_drag < 52);
 	handdisp->cards[handdisp->cur_drag] |= HAND_DISPLAY_INVISIBLE_CARD;
 	handdisp->cur_click = -1;

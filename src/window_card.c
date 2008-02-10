@@ -22,6 +22,8 @@
 #include "support.h"
 #include "window_board.h" /* board b */
 
+#include "window_card.h" /* board b */
+
 static GtkWidget *window_card = 0;
 static HandDisplay *hand_display = 0;
 static int seat_null = 0;
@@ -115,19 +117,44 @@ card_clicked (HandDisplay *handdisp, int c, int *seatp)
 }
 
 static void
-card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp /* 0 */)
+window_card_drag_drop (HandDisplay *handdisp, int c, int on_card, int *seatp /* unused, always 0 here */)
 {
-	printf ("dropped %d on %d on card window\n", card, on_card);
-	if (card == -1)
+	printf ("dropped %d on %d on card window\n", c, on_card);
+	if (c == -1)
 		return;
 
-	assert (card >= 0 && card < 52);
-	assert (new_card_seat >= 1 && new_card_seat <= 4);
 	board *b = win->boards[win->cur];
+
+	if (b->dealt_cards[c] && !b->cards[c]) {
+		board_statusbar(_("Card is in play and cannot be removed"));
+		return;
+	}
+
+	seat from_seat = b->dealt_cards[c];
+	if (! from_seat)
+		return;
+	remove_card(b, from_seat, c);
+
+	if (on_card >= 0 && b->dealt_cards[on_card] == 0)
+		add_card (b, from_seat, on_card);
+
+	b->par_score = -1;
+
+	board_statusbar (NULL);
+	card_window_update (b->dealt_cards);
+	show_board (b, REDRAW_HANDS | REDRAW_PAR);
 }
 
 void
-window_card_init ()
+window_card_set_style (int style)
+{
+	/* doesn't actually set the style, but makes the right drag icon appear */
+	if (window_card)
+		hand_display_set_style(hand_display, style, NULL);
+}
+
+void
+window_card_init (int style)
 {
 	if (window_card)
 		return;
@@ -140,7 +167,7 @@ window_card_init ()
 	}
 	g_signal_connect (hand_display, "card-clicked", G_CALLBACK (card_clicked), NULL);
 	g_signal_connect (hand_display,
-			"card-drag-drop", G_CALLBACK (card_drag_drop), &seat_null);
+			"card-drag-drop", G_CALLBACK (window_card_drag_drop), &seat_null);
 	hand_display_set_drag (hand_display, 1);
 
 	window_card = create_window_card ();
@@ -149,6 +176,8 @@ window_card_init ()
 	gtk_box_pack_start_defaults (GTK_BOX (vbox), w);
 	gtk_widget_show (window_card);
 	card_window_update(CUR_BOARD->dealt_cards);
+
+	window_card_set_style (style);
 }
 
 void

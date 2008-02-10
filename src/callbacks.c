@@ -676,9 +676,11 @@ void
 on_cards1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_card_init ();
-	else
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
+		GtkWidget *checkitem = lookup_widget (win->window, "style_cards");
+		int s = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (checkitem));
+		window_card_init (s ? HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT);
+	} else
 		window_card_delete ();
 }
 
@@ -742,7 +744,10 @@ void
 on_style_text_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	PROTECT_BEGIN;
 	board_window_set_style (win, HAND_DISPLAY_STYLE_TEXT);
+	window_card_set_style (HAND_DISPLAY_STYLE_TEXT);
+	PROTECT_END;
 }
 
 
@@ -750,7 +755,10 @@ void
 on_style_cards_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	PROTECT_BEGIN;
 	board_window_set_style (win, HAND_DISPLAY_STYLE_CARDS);
+	window_card_set_style (HAND_DISPLAY_STYLE_CARDS);
+	PROTECT_END;
 }
 
 
