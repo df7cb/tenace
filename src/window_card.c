@@ -118,6 +118,12 @@ static void
 card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *seatp /* 0 */)
 {
 	printf ("dropped %d on %d on card window\n", card, on_card);
+	if (card == -1)
+		return;
+
+	assert (card >= 0 && card < 52);
+	assert (new_card_seat >= 1 && new_card_seat <= 4);
+	board *b = win->boards[win->cur];
 }
 
 void

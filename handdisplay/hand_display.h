@@ -76,6 +76,7 @@ struct _HandDisplay
 	int mode;
 	int style;
 	int want_width;
+	int drag, drag_x, drag_y;
 
 	/* hand */
 	int cur_focus;

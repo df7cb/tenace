@@ -26,6 +26,8 @@
 static int render_init = 0, card_width = 80, card_height = 0;
 static GdkPixbuf *card_pixbuf[53];
 static GtkWidget *drag_win = NULL; /* current drag icon */
+static GtkTargetEntry target_entry[1] = { "card", 0, 0 };
+static GtkTargetList *target_list = NULL;
 
 static char *suit_str[] = {"♣", "♦", "♥", "♠"};
 static char *rank_str[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -501,6 +503,13 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	int card = which_card(handdisp, event->x, event->y);
+	if (handdisp->drag && handdisp->cur_click >= 0 && handdisp->cur_click < 52 &&
+		gtk_drag_check_threshold (hand, handdisp->drag_x, handdisp->drag_y, event->x, event->y))
+	{
+		if (! target_list)
+			target_list = gtk_target_list_new (target_entry, 1);
+		gtk_drag_begin (hand, target_list, GDK_ACTION_COPY, 1, (GdkEvent *) event);
+	}
 	if (handdisp->cur_focus != card) {
 		if (handdisp->cur_focus != -1) {
 			redraw_card (hand, handdisp->cur_focus);
@@ -536,8 +545,11 @@ hand_display_button_press (GtkWidget *hand, GdkEventButton *event)
 
 	if (event->type != GDK_BUTTON_RELEASE) /* don't trigger after dnd */
 		handdisp->cur_focus = card;
-	if (event->type == GDK_BUTTON_PRESS)
+	if (event->type == GDK_BUTTON_PRESS) {
 		handdisp->cur_click = card;
+		handdisp->drag_x = event->x;
+		handdisp->drag_y = event->y;
+	}
 	if (handdisp->cur_focus == -1)
 		return FALSE;
 	redraw_card (hand, card);
@@ -627,12 +639,11 @@ hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
 /* http://live.gnome.org/GnomeLove/DragNDropTutorial */
 
 static void
-hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
+hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data /* unused */)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
 	handdisp->cur_drag = handdisp->cur_click;
-	if (handdisp->cur_drag < 0)
-		return;
+	assert (handdisp->cur_drag >= 0 && handdisp->cur_drag < 52);
 	handdisp->cards[handdisp->cur_drag] |= HAND_DISPLAY_INVISIBLE_CARD;
 	handdisp->cur_click = -1;
 	redraw_card (hand, handdisp->cur_drag);
@@ -644,7 +655,7 @@ hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 	}
 	drag_win = gtk_window_new (GTK_WINDOW_POPUP);
 	GtkWidget *card = hand_display_new (HAND_DISPLAY_MODE_CARD);
-	hand_display_set_style (card, handdisp->style, NULL);
+	hand_display_set_style (HAND_DISPLAY (card), handdisp->style, NULL);
 	hand_display_card_set_card (HAND_DISPLAY (card), handdisp->cur_drag);
 	gtk_container_add (GTK_CONTAINER (drag_win), card);
 	gtk_drag_set_icon_widget (dc, drag_win, 0, 0);
@@ -743,13 +754,9 @@ hand_display_drag_end (GtkWidget *hand, GdkDragContext *dc, gpointer data)
 static void
 setup_dnd (HandDisplay *handdisp)
 {
-	GtkTargetEntry target_entry[1];
-	target_entry[0].target = "card";
-	target_entry[0].flags = 0;
-	target_entry[0].info = 0;
-
 	GtkWidget *hand = GTK_WIDGET (handdisp);
 
+	/* start manually
 	gtk_drag_source_set(
 		hand,
 		GDK_BUTTON1_MASK | GDK_BUTTON2_MASK,
@@ -757,6 +764,7 @@ setup_dnd (HandDisplay *handdisp)
 		1,
 		GDK_ACTION_COPY
 	);
+	*/
 	gtk_drag_dest_set(
 		hand,
 		GTK_DEST_DEFAULT_MOTION |
@@ -915,6 +923,7 @@ hand_display_set_style (HandDisplay *handdisp, int style, char *fname)
 void
 hand_display_set_drag (HandDisplay *handdisp, int drag)
 {
+	handdisp->drag = drag;
 	if (drag) {
 		setup_dnd (handdisp);
 	}

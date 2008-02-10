@@ -3,6 +3,8 @@ tenace (0.6) upstream; urgency=low
   * Solver: Always use dealt cards for parscore computation.
   * UI: Move fast forward/rewind to menu, make to buttons go one trick
     forward/backward, and generally reorder menu.
+  * Hand widget: Start dragging manually to prevent dragging 'x' and empty
+    cards.
 
  -- Christoph Berg <myon@debian.org>  Sun, 10 Feb 2008 16:09:54 +0100
 
