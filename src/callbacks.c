@@ -399,12 +399,16 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	b->trumps = b->par_suit;
+	parscore (b);
+	if (b->trumps != b->par_suit || b->declarer != b->par_dec) {
+		board_rewind (b); /* incompatible change */
+		b->trumps = b->par_suit;
+		b->declarer = b->par_dec;
+		b->current_turn = seat_mod (b->declarer + 1);
+	}
 	b->level = b->par_level;
-	b->declarer = b->par_dec;
-	b->current_turn = seat_mod(b->declarer + 1);
 	b->doubled = b->par_tricks < b->par_level + 6;
-	show_board(b, REDRAW_CONTRACT | REDRAW_NAMES);
+	show_board (b, REDRAW_FULL);
 }
 
 

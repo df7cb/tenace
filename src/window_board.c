@@ -45,7 +45,12 @@ static void
 board_menu_select (GtkWidget *menuitem, int *n)
 {
 	PROTECT_BEGIN;
+	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
+		PROTECT_RETURN;
+	if (*n == win->cur)
+		PROTECT_RETURN;
 	win->cur = *n;
+	//printf ("jump to %d\n", *n);
 	assert (0 <= *n && *n < win->n_boards);
 	show_board (win->boards[*n], REDRAW_BOARD);
 	PROTECT_END;
@@ -122,7 +127,7 @@ bidding_update (window_board_t *win, board *b, int scroll)
 	if (!b->n_bids) {
 		gtk_list_store_append (win->bidding_store, &iter);
 		gtk_list_store_set (win->bidding_store, &iter,
-				2 * col, _("•"),
+				2 * col, "•",
 				2 * col + 1, _("Dealer"),
 				-1);
 		return;
@@ -480,7 +485,7 @@ jump_menu_select (GtkWidget *recentchooser, char *unused)
 	PROTECT_BEGIN;
 	char *filename = gtk_recent_chooser_get_current_uri (GTK_RECENT_CHOOSER (recentchooser));
 	if (strncmp (filename, "file://", sizeof ("file://") - 1))
-		return;
+		PROTECT_RETURN;
 	board_load_popup (win, 0, filename + sizeof ("file://") - 1);
 	PROTECT_END;
 }
@@ -679,6 +684,8 @@ board_set_declarer (seat declarer)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
+	if (declarer == b->declarer)
+		PROTECT_RETURN;
 	board_rewind(b);
 	b->declarer = declarer;
 	b->current_turn = seat_mod(declarer + 1);
@@ -701,6 +708,9 @@ board_set_trumps (suit trumps)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
+	if (trumps == b->trumps)
+		PROTECT_RETURN;
+	board_rewind (b);
 	b->trumps = trumps;
 	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
@@ -710,8 +720,9 @@ void
 board_set_level (int level)
 {
 	PROTECT_BEGIN;
-	// FIXME: don't call show_board when called from show_board
 	board *b = CUR_BOARD;
+	if (level == b->level)
+		PROTECT_RETURN;
 	b->level = level;
 	calculate_target(b);
 	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);

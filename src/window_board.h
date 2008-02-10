@@ -61,7 +61,7 @@ typedef enum _redraw_t {
 	REDRAW_BIDDING		= 1 << 7,
 	REDRAW_BOARD		= 0xff, /* everything above */
 	REDRAW_BOARD_LIST	= 1 << 8, /* menu */
-	REDRAW_FULL		= 0x1ff, /* everythin above */
+	REDRAW_FULL		= 0x1ff, /* everything above */
 	REDRAW_BIDDING_SCROLL	= 1 << 9,
 } redraw_t;
 
