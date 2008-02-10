@@ -480,3 +480,11 @@ on_dd_always1_activate                 (GtkMenuItem     *menuitem,
 void
 on_button_dd_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
+
+void
+on_rewind_play1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_complete_play1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

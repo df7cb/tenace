@@ -447,7 +447,8 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	if (!rewind_card(b)) /* extra call to show warning if there's nothing to do */
 		return;
-	board_rewind(b);
+	while (b->n_played_cards % 4 != 0)
+		rewind_card (b);
 	compute_dd_scores (b, run_dd);
 	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
@@ -484,7 +485,36 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 	board *b = CUR_BOARD;
 	if (!next_card (b)) /* extra call to show warning if there's nothing to do */
 		return;
-	board_fast_forward(b);
+	while (b->n_played_cards % 4 != 0) {
+		if (! next_card (b))
+			break;
+	}
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
+}
+
+
+void
+on_rewind_play1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	if (!rewind_card (b)) /* extra call to show warning if there's nothing to do */
+		return;
+	board_rewind (b);
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
+}
+
+
+void
+on_complete_play1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	if (!next_card (b)) /* extra call to show warning if there's nothing to do */
+		return;
+	board_fast_forward (b);
 	compute_dd_scores (b, run_dd);
 	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
