@@ -734,10 +734,12 @@ board_set_vuln (int ns, int ew)
 {
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
+	if (ns == b->vuln[0] && ew == b->vuln[1])
+		PROTECT_RETURN;
 	b->vuln[0] = ns;
 	b->vuln[1] = ew;
 	b->par_score = -1;
-	show_board(b, REDRAW_CONTRACT | REDRAW_NAMES | REDRAW_BIDDING);
+	show_board(b, REDRAW_CONTRACT | REDRAW_NAMES | REDRAW_BIDDING | REDRAW_PAR);
 	PROTECT_END;
 }
 
