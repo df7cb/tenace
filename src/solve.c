@@ -243,10 +243,6 @@ compute_par_arr(board *b)
 	struct deal d;
 	struct futureTricks fut;
 
-	/* 0-3, 0=North, 1=East, 2=South, 3=West , Leading hand for the trick.*/
-	card lead = b->played_cards[b->n_played_cards - (b->n_played_cards % 4)];
-	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn : b->dealt_cards[lead];
-	d.first = (leader + 2) % 4;
 	for (i = 0; i < 4; i++) {
 		d.currentTrickSuit[i] = 0;
 		d.currentTrickRank[i] = 0;
@@ -255,8 +251,8 @@ compute_par_arr(board *b)
 	}
 
 	for (c = 0; c < 52; c++) {
-		if (b->cards[c]) {
-			d.remainCards[(b->cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
+		if (b->dealt_cards[c]) {
+			d.remainCards[(b->dealt_cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
 		}
 	}
 
@@ -283,6 +279,7 @@ compute_par_arr(board *b)
 				return 0;
 			}
 			b->par_arr[h][t] = 13 - fut.score[0];
+			/* we could store (one) optimum lead here */
 			//printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
 		}
 	}
