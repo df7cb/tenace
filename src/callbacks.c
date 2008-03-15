@@ -536,30 +536,6 @@ on_button_dd_clicked                   (GtkToolButton   *toolbutton,
 
 
 void
-on_pos_north_south_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	pos_score_for = 0;
-}
-
-
-void
-on_pos_declarer_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	pos_score_for = 1;
-}
-
-
-void
-on_pos_current_lead_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	pos_score_for = 2;
-}
-
-
-void
 on_deal_clear_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -845,69 +821,6 @@ on_deal_paste_activate                 (GtkMenuItem     *menuitem,
 
 
 void
-on_ddno_one1_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_dd_scores = seat_none;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_ddeastwest1_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_dd_scores = east_west;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_ddnorthsouth1_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_dd_scores = north_south;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_ddall1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_dd_scores = seat_all;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_handseastwest1_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_hands = east_west;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_handsnorthsouth1_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_hands = north_south;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_handsall1_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	win->show_hands = seat_all;
-	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
 on_ew1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -1137,6 +1050,41 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 
 	w = lookup_widget (window_options, "spinbutton_card_width");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
+
+	switch (win->show_hands) {
+		case seat_none: /* not yet implemented - is this useful? */
+			w = lookup_widget (window_options, "show_hand_none");
+			break;
+		case east_west:
+			w = lookup_widget (window_options, "show_hand_ew");
+			break;
+		case north_south:
+			w = lookup_widget (window_options, "show_hand_ns");
+			break;
+		case seat_all:
+			w = lookup_widget (window_options, "show_hand_all");
+			break;
+		default: assert (0);
+	}
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
+	switch (win->show_dd_scores) {
+		case seat_none: /* not yet implemented - is this useful? */
+			w = lookup_widget (window_options, "show_dd_none");
+			break;
+		case east_west:
+			w = lookup_widget (window_options, "show_dd_ew");
+			break;
+		case north_south:
+			w = lookup_widget (window_options, "show_dd_ns");
+			break;
+		case seat_all:
+			w = lookup_widget (window_options, "show_dd_all");
+			break;
+		default: assert (0);
+	}
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
 	PROTECT_END;
 }
 
@@ -1184,6 +1132,34 @@ on_options_apply_clicked               (GtkButton       *button,
 			g_free (win->svg);
 		win->svg = fname;
 		hand_display_set_svg (win->svg, win->card_width);
+	}
+
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
+		(lookup_widget (window_options, "show_dd_all"))))
+	{
+		win->show_dd_scores = seat_all;
+	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
+		(lookup_widget (window_options, "show_dd_ns"))))
+	{
+		win->show_dd_scores = north_south;
+	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
+		(lookup_widget (window_options, "show_dd_ew"))))
+	{
+		win->show_dd_scores = east_west;
+	} else {
+		win->show_dd_scores = seat_none;
+	}
+
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
+		(lookup_widget (window_options, "show_hand_all"))))
+	{
+		win->show_hands = seat_all;
+	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
+		(lookup_widget (window_options, "show_hand_ns"))))
+	{
+		win->show_hands = north_south;
+	} else {
+		win->show_hands = east_west;
 	}
 
 	show_board(CUR_BOARD, REDRAW_HANDS);

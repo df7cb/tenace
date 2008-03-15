@@ -29,7 +29,7 @@ const char *trump_str_char[] = {"C", "D", "H", "S", "N"};
 const char *trump_color[] = {"#006600", "#ff8000", "#e60000", "#0000cc", "black"};
 const char *double_str[] = {"", "X", "XX"};
 
-int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */
+int pos_score_for = 0; /* 0 = NS, 1 = declarer, 2 = current lead */ // TODO: implement
 
 char *rank_string (rank r)
 {
