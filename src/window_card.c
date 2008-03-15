@@ -150,7 +150,7 @@ window_card_set_style (int style)
 {
 	/* doesn't actually set the style, but makes the right drag icon appear */
 	if (window_card)
-		hand_display_set_style(hand_display, style, NULL);
+		hand_display_set_style(hand_display, style);
 }
 
 void

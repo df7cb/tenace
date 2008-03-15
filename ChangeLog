@@ -5,10 +5,12 @@ tenace (0.6) upstream; urgency=low
     + Move fast forward/rewind to menu, make to buttons go one trick
       forward/backward, and generally reorder menu.
     + Support dragging to/from card window.
+    + Implement options window and read/write ~/.config/tenacerc as keyfile.
+    + Card filename and rendering size are now configurable.
   * Hand widget: Start dragging manually to prevent dragging 'x' and empty
     cards.
 
- -- Christoph Berg <myon@debian.org>  Sun, 10 Feb 2008 16:09:54 +0100
+ -- Christoph Berg <myon@debian.org>  Sun, 16 Mar 2008 00:11:54 +0100
 
 tenace (0.5) upstream; urgency=low
 

@@ -35,6 +35,7 @@
 #include "window_play.h"
 
 static GtkWidget *window_imps = NULL;
+static GtkWidget *window_options = NULL;
 
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
@@ -666,9 +667,11 @@ on_window_card_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+	PROTECT_BEGIN_BOOL;
 	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "cards1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_card_delete ();
+	PROTECT_END;
 	return FALSE;
 }
 
@@ -676,12 +679,12 @@ void
 on_cards1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	PROTECT_BEGIN;
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
-		GtkWidget *checkitem = lookup_widget (win->window, "style_cards");
-		int s = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (checkitem));
-		window_card_init (s ? HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT);
+		window_card_init (win->hand_display_style);
 	} else
 		window_card_delete ();
+	PROTECT_END;
 }
 
 
@@ -690,9 +693,11 @@ on_window_bids_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+	PROTECT_BEGIN_BOOL;
 	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "bids1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_bids_delete ();
+	PROTECT_END;
 	return FALSE;
 }
 
@@ -1105,4 +1110,94 @@ on_aboutdialog1_delete_event           (GtkWidget       *widget,
 }
 
 /* -- */
+
+
+void
+on_options1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (window_options)
+		return;
+
+	window_options = create_window_options ();
+	gtk_widget_show (window_options);
+
+	PROTECT_BEGIN;
+	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), win->show_played_cards);
+
+	w = lookup_widget (window_options,
+		win->hand_display_style == HAND_DISPLAY_STYLE_CARDS ?
+			"show_as_cards" : "show_as_text");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
+	w = lookup_widget (window_options, "svg_file");
+	if (win->svg)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), win->svg);
+
+	w = lookup_widget (window_options, "spinbutton_card_width");
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
+	PROTECT_END;
+}
+
+
+gboolean
+on_window_options_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	window_options = NULL;
+	return FALSE;
+}
+
+
+void
+on_options_cancel_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gtk_widget_destroy (GTK_WIDGET (window_options));
+	window_options = NULL;
+}
+
+
+void
+on_options_apply_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	PROTECT_BEGIN;
+	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
+	win->show_played_cards = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w));
+
+	w = lookup_widget (window_options, "show_as_cards");
+	int style = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ?
+		HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
+	board_window_set_style (win, style);
+	window_card_set_style (style);
+
+	w = lookup_widget (window_options, "svg_file");
+	gchar *fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (w));
+	w = lookup_widget (window_options, "spinbutton_card_width");
+	win->card_width = gtk_spin_button_get_value (GTK_SPIN_BUTTON (w));
+
+	if (fname) {
+		if (win->svg)
+			g_free (win->svg);
+		win->svg = fname;
+		hand_display_set_svg (win->svg, win->card_width);
+	}
+
+	show_board(CUR_BOARD, REDRAW_HANDS);
+	PROTECT_END;
+}
+
+
+void
+on_options_ok_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	on_options_apply_clicked (button, user_data);
+	gtk_widget_destroy (GTK_WIDGET (window_options));
+	window_options = NULL;
+}
+
 

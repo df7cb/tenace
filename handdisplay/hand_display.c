@@ -17,16 +17,18 @@
 #include <glib/gtypes.h>
 #include <gtk/gtk.h>
 #include <math.h>
+#include <string.h>
 
 #include "hand_display.h"
 #include "int_int_marshal.h"
 
 /* static data */
 
-static int render_init = 0, card_width = 80, card_height = 0;
+static int render_init = 0, card_width = 100, card_height = 0;
+static gchar *svg_filename = NULL;
 static GdkPixbuf *card_pixbuf[53];
 static GtkWidget *drag_win = NULL; /* current drag icon */
-static GtkTargetEntry target_entry[1] = { "card", 0, 0 };
+static GtkTargetEntry target_entry[1] = { { "card", 0, 0 } };
 static GtkTargetList *target_list = NULL;
 
 static char *suit_str[] = {"♣", "♦", "♥", "♠"};
@@ -82,7 +84,8 @@ render_card_init (char *card_fname)
 	}
 
 	GError *error = NULL;
-	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname, card_width * 13, 500, &error);
+	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname,
+			card_width * 13, card_width * 2 * 5, &error);
 	if (!pb) {
 		printf ("%s: %s.\n", card_fname, error->message);
 		return;
@@ -94,7 +97,7 @@ render_card_init (char *card_fname)
 	for (i = 0; i < 52; i++) {
 		card_pixbuf[i] = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, card_width, card_height);
 		if (!card_pixbuf[i]) {
-			printf ("moo: card_pixbuf[i]\n");
+			printf ("%s: rendering card_pixbuf failed\n", card_fname);
 			return;
 		}
 		int col = (i + 1) % 13;
@@ -105,9 +108,9 @@ render_card_init (char *card_fname)
 	g_object_unref (pb);
 
 	card_pixbuf[52] =
-		gdk_pixbuf_new_from_file_at_size ("/usr/share/tenace/grey.svg", card_width, card_height, &error);
+		gdk_pixbuf_new_from_file_at_size (HAND_DISPLAY_GREY_FILE, card_width, card_height, &error);
 	if (!card_pixbuf[52]) {
-		printf ("/usr/share/tenace/grey.svg: %s.\n", error->message);
+		printf (HAND_DISPLAY_GREY_FILE ": %s.\n", error->message);
 		return;
 	}
 
@@ -660,7 +663,7 @@ hand_display_drag_begin (GtkWidget *hand, GdkDragContext *dc, gpointer data /* u
 	}
 	drag_win = gtk_window_new (GTK_WINDOW_POPUP);
 	GtkWidget *card = hand_display_new (HAND_DISPLAY_MODE_CARD);
-	hand_display_set_style (HAND_DISPLAY (card), handdisp->style, NULL);
+	hand_display_set_style (HAND_DISPLAY (card), handdisp->style);
 	hand_display_card_set_card (HAND_DISPLAY (card), handdisp->cur_drag);
 	gtk_container_add (GTK_CONTAINER (drag_win), card);
 	gtk_drag_set_icon_widget (dc, drag_win, 0, 0);
@@ -915,14 +918,24 @@ hand_display_draw (GtkWidget *hand)
 }
 
 void
-hand_display_set_style (HandDisplay *handdisp, int style, char *fname)
+hand_display_set_style (HandDisplay *handdisp, int style)
 {
-	char *card_fname = "/usr/share/pixmaps/gnome-games-common/cards/bonded.svg";
-	if (fname)
-		card_fname = fname;
 	handdisp->style = style;
-	if (style == HAND_DISPLAY_STYLE_CARDS && !render_init)
-		render_card_init (card_fname);
+}
+
+void
+hand_display_set_svg (char *fname, int width)
+{
+	assert (fname);
+	if (svg_filename && ! strcmp (fname, svg_filename) && width == card_width)
+		return; /* no change */
+
+	if (svg_filename)
+		g_free (svg_filename);
+	svg_filename = strdup (fname);
+	card_width = width;
+
+	render_card_init (svg_filename);
 }
 
 void

@@ -67,6 +67,8 @@ extern "C" {
 #define HAND_DISPLAY_DIAMONDS_FONT 1.0, 0.5, 0.0
 #define HAND_DISPLAY_CLUBS_FONT    0.0, 0.4, 0.0
 
+#define HAND_DISPLAY_GREY_FILE     "/usr/share/tenace/grey.svg"
+
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
 
@@ -102,7 +104,8 @@ struct _HandDisplayClass
 GtkType hand_display_get_type (void);
 GtkWidget *hand_display_new (int mode);
 void hand_display_draw (GtkWidget *hand);
-void hand_display_set_style (HandDisplay *handdisp, int style, char *fname);
+void hand_display_set_style (HandDisplay *handdisp, int style);
+void hand_display_set_svg (char *fname, int width);
 void hand_display_set_drag (HandDisplay *handdisp, int drag);
 
 /* hand interface */

@@ -488,3 +488,24 @@ on_rewind_play1_activate               (GtkMenuItem     *menuitem,
 void
 on_complete_play1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_options1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_options_cancel_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_options_apply_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_options_ok_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_window_options_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);

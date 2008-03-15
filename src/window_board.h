@@ -32,9 +32,12 @@ typedef struct _window_board_t {
 	GtkWidget *bidding_header[4];
 
 	/* config */
+	GKeyFile *keyfile;
 	int show_played_cards;
 	seat show_hands;
 	seat show_dd_scores;
+	int hand_display_style;
+	char *svg;
 	int card_width;
 
 	/* boards */
