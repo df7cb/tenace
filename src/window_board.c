@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,9 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 #include "../handdisplay/hand_display.h"
 
@@ -42,10 +39,6 @@ int protect = 0;
 
 static GdkColor bidding_non_vuln = { 0, 0.8*65535, 0.8*65535, 0.8*65535 };
 static GdkColor bidding_vuln = { 0, 0.8*65535, 0, 0 };
-static char *svg_files[] = {
-	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
-	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
-};
 
 static void
 board_menu_select (GtkWidget *menuitem, int *n)
@@ -761,101 +754,4 @@ board_set_doubled (int doubled)
 	b->doubled = doubled;
 	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
-}
-
-int
-read_config (window_board_t *win)
-{
-	char rcfile[1024];
-	snprintf (rcfile, sizeof (rcfile), "%s/%s",
-		g_get_user_config_dir (), "/tenacerc");
-
-	if (! g_key_file_load_from_file (win->keyfile, rcfile,
-		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, NULL) &&
-	    ! g_key_file_load_from_data_dirs (win->keyfile, "tenacerc", NULL,
-		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, NULL)
-	) {
-		return 0;
-	}
-	printf ("moo\n");
-
-	char *p;
-	if ((p = g_key_file_get_string (win->keyfile, "tenace", "show_as", NULL))) {
-		win->hand_display_style = !strcmp (p, "cards") ?
-			HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
-	} else {
-		win->hand_display_style = HAND_DISPLAY_STYLE_CARDS;
-	}
-	if (win->svg)
-		g_free (win->svg);
-	if ((p = g_key_file_get_string (win->keyfile, "tenace", "svg", NULL))) {
-		win->svg = p;
-	} else {
-		win->svg = NULL;
-	}
-	int i;
-	if ((i = g_key_file_get_integer (win->keyfile, "tenace", "card_width", NULL))) {
-		win->card_width = i;
-	}
-	if ((i = g_key_file_get_boolean (win->keyfile, "tenace", "show_played_cards", NULL))) {
-		win->show_played_cards = i;
-	}
-
-	/* check if the file is there */
-	struct stat buf;
-	if (win->svg) {
-		if (stat (win->svg, &buf) == -1) {
-			g_free (win->svg);
-			win->svg = NULL;
-		}
-	}
-	/* set a default */
-	if (! win->svg)
-		for (i = 0; i < sizeof (svg_files); i++) {
-		printf ("trying %s\n", svg_files[i]);
-			if (stat (svg_files[i], &buf) != -1) {
-				win->svg = strdup (svg_files[i]);
-				break;
-			}
-		}
-
-	board_window_set_style (win, win->hand_display_style);
-	window_card_set_style (win->hand_display_style);
-		printf ("using %s\n", win->svg);
-	if (win->hand_display_style = HAND_DISPLAY_STYLE_CARDS && win->svg) {
-		hand_display_set_svg (win->svg, win->card_width);
-	}
-
-	return 1;
-}
-
-int
-write_config (window_board_t *win)
-{
-	g_key_file_set_string (win->keyfile, "tenace", "show_as",
-		win->hand_display_style == HAND_DISPLAY_STYLE_CARDS ? "cards" : "text");
-	if (win->svg)
-		g_key_file_set_string (win->keyfile, "tenace", "svg", win->svg);
-	g_key_file_set_integer (win->keyfile, "tenace", "card_width", win->card_width);
-	g_key_file_set_boolean (win->keyfile, "tenace", "show_played_cards",
-		win->show_played_cards);
-
-	struct stat buf;
-	if (stat (g_get_user_config_dir (), &buf) == -1)
-		mkdir (g_get_user_config_dir (), 0777);
-
-	char rcfile[1024];
-	snprintf (rcfile, sizeof (rcfile), "%s/%s",
-		g_get_user_config_dir (), "/tenacerc");
-	FILE *f;
-	if (!(f = fopen(rcfile, "w"))) {
-		perror (rcfile);
-		return 0;
-	}
-	char *data = g_key_file_to_data (win->keyfile, NULL, NULL);
-	fprintf (f, data);
-	fclose (f);
-	g_free (data);
-
-	return 1;
 }

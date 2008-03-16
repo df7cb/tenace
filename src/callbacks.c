@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "bridge.h"
 #include "file.h"
 #include "functions.h"
+#include "options.h"
 #include "solve.h"
 #include "window_bids.h"
 #include "window_board.h"
@@ -1036,55 +1037,7 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 	gtk_widget_show (window_options);
 
 	PROTECT_BEGIN;
-	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), win->show_played_cards);
-
-	w = lookup_widget (window_options,
-		win->hand_display_style == HAND_DISPLAY_STYLE_CARDS ?
-			"show_as_cards" : "show_as_text");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
-
-	w = lookup_widget (window_options, "svg_file");
-	if (win->svg)
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), win->svg);
-
-	w = lookup_widget (window_options, "spinbutton_card_width");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
-
-	switch (win->show_hands) {
-		case seat_none: /* not yet implemented - is this useful? */
-			w = lookup_widget (window_options, "show_hand_none");
-			break;
-		case east_west:
-			w = lookup_widget (window_options, "show_hand_ew");
-			break;
-		case north_south:
-			w = lookup_widget (window_options, "show_hand_ns");
-			break;
-		case seat_all:
-			w = lookup_widget (window_options, "show_hand_all");
-			break;
-		default: assert (0);
-	}
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
-
-	switch (win->show_dd_scores) {
-		case seat_none: /* not yet implemented - is this useful? */
-			w = lookup_widget (window_options, "show_dd_none");
-			break;
-		case east_west:
-			w = lookup_widget (window_options, "show_dd_ew");
-			break;
-		case north_south:
-			w = lookup_widget (window_options, "show_dd_ns");
-			break;
-		case seat_all:
-			w = lookup_widget (window_options, "show_dd_all");
-			break;
-		default: assert (0);
-	}
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
-
+	window_options_populate (window_options);
 	PROTECT_END;
 }
 
@@ -1113,56 +1066,7 @@ on_options_apply_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
 	PROTECT_BEGIN;
-	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
-	win->show_played_cards = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w));
-
-	w = lookup_widget (window_options, "show_as_cards");
-	int style = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ?
-		HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
-	board_window_set_style (win, style);
-	window_card_set_style (style);
-
-	w = lookup_widget (window_options, "svg_file");
-	gchar *fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (w));
-	w = lookup_widget (window_options, "spinbutton_card_width");
-	win->card_width = gtk_spin_button_get_value (GTK_SPIN_BUTTON (w));
-
-	if (fname) {
-		if (win->svg)
-			g_free (win->svg);
-		win->svg = fname;
-		hand_display_set_svg (win->svg, win->card_width);
-	}
-
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_dd_all"))))
-	{
-		win->show_dd_scores = seat_all;
-	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_dd_ns"))))
-	{
-		win->show_dd_scores = north_south;
-	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_dd_ew"))))
-	{
-		win->show_dd_scores = east_west;
-	} else {
-		win->show_dd_scores = seat_none;
-	}
-
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_hand_all"))))
-	{
-		win->show_hands = seat_all;
-	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_hand_ns"))))
-	{
-		win->show_hands = north_south;
-	} else {
-		win->show_hands = east_west;
-	}
-
-	show_board(CUR_BOARD, REDRAW_HANDS);
+	apply_options (window_options);
 	PROTECT_END;
 }
 

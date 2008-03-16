@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include "support.h"
 #include "bridge.h"
 #include "file.h"
+#include "options.h"
 #include "solve.h"
 #include "window_board.h"
 #include "window_card.h"
@@ -36,9 +37,6 @@
 int
 main (int argc, char *argv[])
 {
-  //GtkWidget *window_bid;
-  //GtkWidget *window_bids;
-
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -53,16 +51,7 @@ main (int argc, char *argv[])
   init_solve();
   srand(time(NULL));
 
-  //window_bid = create_window_bid ();
-  //gtk_widget_show (window_bid);
-  //GtkWidget *window_options = create_window_options ();
-  //gtk_widget_show (window_options);
-  //gtk_widget_show (create_window_line_entry());
-
-  //window_play_init ();
-
   win = malloc(sizeof(window_board_t));
-
   board_window_init (win);
   read_config (win);
 

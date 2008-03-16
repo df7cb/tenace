@@ -117,7 +117,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			char *c;
 			seat se = south;
 			suit su = spade;
-			if (!*tok == *tok == '0') {
+			if (*tok == '0') {
 				printf ("md|0| (keep deal) mode not supported\n");
 				goto error;
 			}

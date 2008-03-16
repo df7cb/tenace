@@ -15,6 +15,7 @@ tenace_SOURCES = \
 	bridge.c bridge.h \
 	file.c file.h \
 	functions.c functions.h \
+	options.c options.h \
 	solve.c solve.h \
 	window_bids.c window_bids.h \
 	window_board.c window_board.h \

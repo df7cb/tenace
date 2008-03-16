@@ -91,8 +91,4 @@ void board_set_level (int level);
 void board_set_vuln (int ns, int ew);
 void board_set_doubled (int doubled);
 
-/* rcfile handling */
-int read_config (window_board_t *win);
-int write_config (window_board_t *win);
-
 #endif /* WINDOW_CARD_H */
