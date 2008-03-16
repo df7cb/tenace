@@ -1,6 +1,8 @@
 tenace (0.6) upstream; urgency=low
 
-  * Solver: Always use dealt cards for parscore computation.
+  * Solver:
+    + Always use dealt cards for parscore computation.
+    + Parscore computation was broken when S makes more tricks than N.
   * UI:
     + Move fast forward/rewind to menu, make to buttons go one trick
       forward/backward, and generally reorder menu.

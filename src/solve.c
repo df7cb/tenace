@@ -310,7 +310,7 @@ void parscore(board *b)
 			int ha = north, tr = b->par_arr[1][t];
 			if (b->par_arr[3][t] > b->par_arr[1][t]) {
 				ha = south;
-				tr = b->par_arr[1][t];
+				tr = b->par_arr[3][t];
 			}
 			int sc = score(l, t, -1, b->vuln[0], tr);
 			//printf("%s %d\n", contract_string(l, t, north, 0), sc);
