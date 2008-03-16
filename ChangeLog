@@ -11,6 +11,7 @@ tenace (0.6) upstream; urgency=low
     + Card filename and rendering size are now configurable.
   * Hand widget: Start dragging manually to prevent dragging 'x' and empty
     cards.
+  * Examples: Add squeeze.lin.
 
  -- Christoph Berg <myon@debian.org>  Sun, 16 Mar 2008 00:11:54 +0100
 
