@@ -1,8 +1,9 @@
 tenace (0.6-1) unstable; urgency=low
 
   * New upstream version.
+  * Suggest gnome-games-extra-data for more svg files.
 
- -- Christoph Berg <myon@debian.org>  Sun, 10 Feb 2008 16:10:29 +0100
+ -- Christoph Berg <myon@debian.org>  Sun, 16 Mar 2008 02:02:04 +0100
 
 tenace (0.5-1) unstable; urgency=low
 

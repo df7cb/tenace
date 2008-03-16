@@ -29,6 +29,8 @@
 static char *svg_files[] = {
 	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
+	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
+	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
 };
 
 /* set options window contents from program data */
