@@ -642,6 +642,8 @@ board_window_init (window_board_t *win)
 	GtkWidget *jump_menu = lookup_widget(win->window, "jump_to1");
 #if GTK_CHECK_VERSION (2,10,0)
 	GtkWidget *recentchooser = gtk_recent_chooser_menu_new ();
+	gtk_recent_chooser_set_sort_type (GTK_RECENT_CHOOSER (recentchooser),
+			GTK_RECENT_SORT_MRU);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (jump_menu), recentchooser);
 	g_signal_connect (G_OBJECT (recentchooser), "item-activated",
 			G_CALLBACK (jump_menu_select), NULL);

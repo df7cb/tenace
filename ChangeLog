@@ -9,6 +9,7 @@ tenace (0.6) upstream; urgency=low
     + Support dragging to/from card window.
     + Implement options window and read/write ~/.config/tenacerc as keyfile.
     + Card filename and rendering size are now configurable.
+    + Sort recently used files by time.
   * Hand widget: Start dragging manually to prevent dragging 'x' and empty
     cards.
   * Examples: Add squeeze.lin.
