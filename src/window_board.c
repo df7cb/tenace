@@ -217,6 +217,8 @@ void show_board (board *b, redraw_t redraw)
 		char *vulnmenu[] = { "vuln_none", "vuln_ns", "vuln_ew", "vuln_all" };
 		w = lookup_widget(win->window, vulnmenu[2 * b->vuln[1] + b->vuln[0]]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
+
+		window_options_board_populate ();
 	}
 
 	if (redraw & REDRAW_NAMES) {
@@ -236,6 +238,8 @@ void show_board (board *b, redraw_t redraw)
 		board_set_player_name (w, south, b->dealer == south, b->vuln[0],
 				b->declarer == south,
 				b->current_turn == south, b->hand_name[3]->str);
+
+		window_options_board_populate ();
 	}
 
 	if (redraw & REDRAW_TRICKS) {

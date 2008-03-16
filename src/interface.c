@@ -2043,6 +2043,17 @@ create_window_options (void)
   GtkWidget *show_dd_ew;
   GtkWidget *show_dd_none;
   GtkWidget *label101;
+  GtkWidget *table11;
+  GtkWidget *label105;
+  GtkWidget *label107;
+  GtkWidget *entry_west;
+  GtkWidget *entry_east;
+  GtkWidget *alignment2;
+  GtkWidget *entry_north;
+  GtkWidget *alignment3;
+  GtkWidget *entry_south;
+  GtkWidget *entry_title;
+  GtkWidget *label104;
   GtkWidget *hbuttonbox4;
   GtkWidget *options_cancel;
   GtkWidget *options_apply;
@@ -2218,6 +2229,69 @@ create_window_options (void)
   gtk_widget_show (label101);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label101);
 
+  table11 = gtk_table_new (4, 3, FALSE);
+  gtk_widget_show (table11);
+  gtk_container_add (GTK_CONTAINER (notebook1), table11);
+  gtk_container_set_border_width (GTK_CONTAINER (table11), 5);
+
+  label105 = gtk_label_new (_("Title  "));
+  gtk_widget_show (label105);
+  gtk_table_attach (GTK_TABLE (table11), label105, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label105), 0, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label105), 0, 5);
+
+  label107 = gtk_label_new (_("Players  "));
+  gtk_widget_show (label107);
+  gtk_table_attach (GTK_TABLE (table11), label107, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label107), 0, 0.5);
+
+  entry_west = gtk_entry_new ();
+  gtk_widget_show (entry_west);
+  gtk_table_attach (GTK_TABLE (table11), entry_west, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  entry_east = gtk_entry_new ();
+  gtk_widget_show (entry_east);
+  gtk_table_attach (GTK_TABLE (table11), entry_east, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  alignment2 = gtk_alignment_new (0.5, 0.5, 0.5, 1);
+  gtk_widget_show (alignment2);
+  gtk_table_attach (GTK_TABLE (table11), alignment2, 1, 3, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment2), 5, 0, 0, 0);
+
+  entry_north = gtk_entry_new ();
+  gtk_widget_show (entry_north);
+  gtk_container_add (GTK_CONTAINER (alignment2), entry_north);
+
+  alignment3 = gtk_alignment_new (0.5, 0.5, 0.5, 1);
+  gtk_widget_show (alignment3);
+  gtk_table_attach (GTK_TABLE (table11), alignment3, 1, 3, 3, 4,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  entry_south = gtk_entry_new ();
+  gtk_widget_show (entry_south);
+  gtk_container_add (GTK_CONTAINER (alignment3), entry_south);
+
+  entry_title = gtk_entry_new ();
+  gtk_widget_show (entry_title);
+  gtk_table_attach (GTK_TABLE (table11), entry_title, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label104 = gtk_label_new (_("Current board"));
+  gtk_widget_show (label104);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label104);
+
   hbuttonbox4 = gtk_hbutton_box_new ();
   gtk_widget_show (hbuttonbox4);
   gtk_box_pack_end (GTK_BOX (vbox7), hbuttonbox4, FALSE, TRUE, 0);
@@ -2282,6 +2356,17 @@ create_window_options (void)
   GLADE_HOOKUP_OBJECT (window_options, show_dd_ew, "show_dd_ew");
   GLADE_HOOKUP_OBJECT (window_options, show_dd_none, "show_dd_none");
   GLADE_HOOKUP_OBJECT (window_options, label101, "label101");
+  GLADE_HOOKUP_OBJECT (window_options, table11, "table11");
+  GLADE_HOOKUP_OBJECT (window_options, label105, "label105");
+  GLADE_HOOKUP_OBJECT (window_options, label107, "label107");
+  GLADE_HOOKUP_OBJECT (window_options, entry_west, "entry_west");
+  GLADE_HOOKUP_OBJECT (window_options, entry_east, "entry_east");
+  GLADE_HOOKUP_OBJECT (window_options, alignment2, "alignment2");
+  GLADE_HOOKUP_OBJECT (window_options, entry_north, "entry_north");
+  GLADE_HOOKUP_OBJECT (window_options, alignment3, "alignment3");
+  GLADE_HOOKUP_OBJECT (window_options, entry_south, "entry_south");
+  GLADE_HOOKUP_OBJECT (window_options, entry_title, "entry_title");
+  GLADE_HOOKUP_OBJECT (window_options, label104, "label104");
   GLADE_HOOKUP_OBJECT (window_options, hbuttonbox4, "hbuttonbox4");
   GLADE_HOOKUP_OBJECT (window_options, options_cancel, "options_cancel");
   GLADE_HOOKUP_OBJECT (window_options, options_apply, "options_apply");

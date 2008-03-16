@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef OPTIONS_H
-#define OPTIONS_H
-
+#include <gtk/gtk.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "interface.h"
+#include "options.h"
 #include "support.h"
 #include "window_board.h"
 #include "window_card.h"
@@ -32,11 +32,33 @@ static char *svg_files[] = {
 	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
 };
+static char *entry_name[] = { "entry_west", "entry_north", "entry_east", "entry_south" };
+
+static GtkWidget *window_options = NULL;
 
 /* set options window contents from program data */
 void
+window_options_board_populate (void) /* no parameter as it is called from window_board.c */
+{
+	if (! window_options)
+		return;
+
+	board *b = CUR_BOARD;
+	GtkWidget *w = lookup_widget (window_options, "entry_title");
+	if (b->name)
+		gtk_entry_set_text (GTK_ENTRY (w), b->name->str);
+	int i;
+	for (i = 0; i < 4; i++) {
+		w = lookup_widget (window_options, entry_name[i]);
+		if (b->hand_name[i])
+			gtk_entry_set_text (GTK_ENTRY (w), b->hand_name[i]->str);
+	}
+}
+
+static void
 window_options_populate (GtkWidget *window_options)
 {
+	/* Card display */
 	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), win->show_played_cards);
 
@@ -52,6 +74,7 @@ window_options_populate (GtkWidget *window_options)
 	w = lookup_widget (window_options, "spinbutton_card_width");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
 
+	/* Hands */
 	switch (win->show_hands) {
 		case seat_none: /* not yet implemented - is this useful? */
 			w = lookup_widget (window_options, "show_hand_none");
@@ -68,7 +91,7 @@ window_options_populate (GtkWidget *window_options)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
 
 	switch (win->show_dd_scores) {
-		case seat_none: /* not yet implemented - is this useful? */
+		case seat_none:
 			w = lookup_widget (window_options, "show_dd_none");
 			break;
 		case east_west:
@@ -81,12 +104,16 @@ window_options_populate (GtkWidget *window_options)
 			w = lookup_widget (window_options, "show_dd_all");
 	}
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
+	/* Current board */
+	window_options_board_populate ();
 }
 
 /* set program data from options window */
-void
+static void
 apply_options (GtkWidget *window_options)
 {
+	/* Card display */
 	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
 	win->show_played_cards = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w));
 
@@ -108,6 +135,7 @@ apply_options (GtkWidget *window_options)
 		hand_display_set_svg (win->svg, win->card_width);
 	}
 
+	/* Hands */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
 		(lookup_widget (window_options, "show_dd_all"))))
 	{
@@ -136,7 +164,18 @@ apply_options (GtkWidget *window_options)
 		win->show_hands = east_west;
 	}
 
-	show_board(CUR_BOARD, REDRAW_HANDS);
+	/* Current board */
+	board *b = CUR_BOARD;
+	w = lookup_widget (window_options, "entry_title");
+	g_string_printf (b->name, "%s", gtk_entry_get_text (GTK_ENTRY (w)));
+	int i;
+	for (i = 0; i < 4; i++) {
+		w = lookup_widget (window_options, entry_name[i]);
+		g_string_printf (b->hand_name[i],
+			"%s", gtk_entry_get_text (GTK_ENTRY (w)));
+	}
+
+	show_board(CUR_BOARD, REDRAW_HANDS | REDRAW_NAMES | REDRAW_CONTRACT);
 }
 
 /* read config from disk */
@@ -289,4 +328,60 @@ write_config (window_board_t *win)
 	return 1;
 }
 
-#endif /* OPTIONS_H */
+/* callbacks */
+
+void
+on_options1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (window_options)
+		return;
+
+	window_options = create_window_options ();
+	gtk_widget_show (window_options);
+
+	PROTECT_BEGIN;
+	window_options_populate (window_options);
+	PROTECT_END;
+}
+
+
+gboolean
+on_window_options_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	window_options = NULL;
+	return FALSE;
+}
+
+
+void
+on_options_cancel_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gtk_widget_destroy (GTK_WIDGET (window_options));
+	window_options = NULL;
+}
+
+
+void
+on_options_apply_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	PROTECT_BEGIN;
+	apply_options (window_options);
+	PROTECT_END;
+}
+
+
+void
+on_options_ok_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	on_options_apply_clicked (button, user_data);
+	gtk_widget_destroy (GTK_WIDGET (window_options));
+	window_options = NULL;
+}
+
+

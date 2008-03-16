@@ -36,7 +36,6 @@
 #include "window_play.h"
 
 static GtkWidget *window_imps = NULL;
-static GtkWidget *window_options = NULL;
 
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
@@ -1024,60 +1023,3 @@ on_aboutdialog1_delete_event           (GtkWidget       *widget,
 }
 
 /* -- */
-
-
-void
-on_options1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (window_options)
-		return;
-
-	window_options = create_window_options ();
-	gtk_widget_show (window_options);
-
-	PROTECT_BEGIN;
-	window_options_populate (window_options);
-	PROTECT_END;
-}
-
-
-gboolean
-on_window_options_delete_event         (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	window_options = NULL;
-	return FALSE;
-}
-
-
-void
-on_options_cancel_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	gtk_widget_destroy (GTK_WIDGET (window_options));
-	window_options = NULL;
-}
-
-
-void
-on_options_apply_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN;
-	apply_options (window_options);
-	PROTECT_END;
-}
-
-
-void
-on_options_ok_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	on_options_apply_clicked (button, user_data);
-	gtk_widget_destroy (GTK_WIDGET (window_options));
-	window_options = NULL;
-}
-
-

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-16 15:36+0100\n"
-"PO-Revision-Date: 2008-03-16 15:38+0100\n"
+"POT-Creation-Date: 2008-03-16 22:46+0100\n"
+"PO-Revision-Date: 2008-03-16 22:48+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
 "MIME-Version: 1.0\n"
@@ -68,28 +68,28 @@ msgstr "Ungültiges Rekontra"
 msgid "Insufficient bid"
 msgstr "Ungenügendes Gebot"
 
-#: src/callbacks.c:771 src/callbacks.c:797
+#: src/callbacks.c:770 src/callbacks.c:796
 msgid "No board"
 msgstr "Kein Board"
 
-#: src/callbacks.c:813
+#: src/callbacks.c:812
 msgid "Cut buffer is empty"
 msgstr "Zwischenablage ist leer"
 
-#: src/callbacks.c:819 src/window_board.c:616
+#: src/callbacks.c:818 src/window_board.c:620
 #, c-format
 msgid "Board %d"
 msgstr ""
 
-#: src/callbacks.c:925
+#: src/callbacks.c:924
 msgid "Suit was already bid from wrong side"
 msgstr "Farbe wurde schon von der falschen Seite geboten"
 
-#: src/callbacks.c:951
+#: src/callbacks.c:950
 msgid "No previous board"
 msgstr "Kein vorheriges Board"
 
-#: src/callbacks.c:967
+#: src/callbacks.c:966
 msgid "No next board"
 msgstr "Kein nächstes Board"
 
@@ -195,7 +195,7 @@ msgstr "K"
 msgid "Cl"
 msgstr "T"
 
-#: src/interface.c:188 src/interface.c:2307
+#: src/interface.c:188 src/interface.c:2392
 msgid "Tenace"
 msgstr ""
 
@@ -503,7 +503,7 @@ msgstr "Nord"
 msgid "East"
 msgstr "Ost"
 
-#: src/interface.c:817 src/window_board.c:243
+#: src/interface.c:817 src/window_board.c:247
 #, c-format
 msgid ""
 "NS: %d\n"
@@ -564,83 +564,95 @@ msgstr "Hand setzen"
 msgid "Play"
 msgstr "Spiel"
 
-#: src/interface.c:2052
+#: src/interface.c:2063
 msgid "Options"
 msgstr "Optionen"
 
-#: src/interface.c:2067
+#: src/interface.c:2078
 msgid "Card width "
 msgstr "Kartenbreite "
 
-#: src/interface.c:2075
+#: src/interface.c:2086
 msgid "Filename"
 msgstr "Dateiname"
 
-#: src/interface.c:2083
+#: src/interface.c:2094
 msgid "Show as "
 msgstr "Anzeigen als"
 
-#: src/interface.c:2097
+#: src/interface.c:2108
 msgid "Text"
 msgstr ""
 
-#: src/interface.c:2104
+#: src/interface.c:2115
 msgid "Cards"
 msgstr "Karten"
 
-#: src/interface.c:2110
+#: src/interface.c:2121
 msgid "Show"
 msgstr "Anzeigen"
 
-#: src/interface.c:2116
+#: src/interface.c:2127
 msgid "Select File"
 msgstr "Datei auswählen"
 
-#: src/interface.c:2130
+#: src/interface.c:2141
 msgid "Played cards  "
 msgstr "Gespielte Karten  "
 
-#: src/interface.c:2138
+#: src/interface.c:2149
 msgid "Card display"
 msgstr "Kartenanzeige"
 
-#: src/interface.c:2147
+#: src/interface.c:2158
 msgid "Show hands  "
 msgstr "Hände zeigen  "
 
-#: src/interface.c:2161 src/interface.c:2193
+#: src/interface.c:2172 src/interface.c:2204
 msgid "All"
 msgstr "Alle"
 
-#: src/interface.c:2167 src/interface.c:2199
+#: src/interface.c:2178 src/interface.c:2210
 msgid "North-South"
 msgstr "Nord-Süd"
 
-#: src/interface.c:2173 src/interface.c:2205
+#: src/interface.c:2184 src/interface.c:2216
 msgid "East-West"
 msgstr "Ost-West"
 
-#: src/interface.c:2179
+#: src/interface.c:2190
 msgid "Show DD scores  "
 msgstr "Zeige DD für  "
 
-#: src/interface.c:2211
+#: src/interface.c:2222
 msgid "None"
 msgstr "Keinen"
 
-#: src/interface.c:2217
+#: src/interface.c:2228
 msgid "Hands"
 msgstr "Hände"
 
-#: src/interface.c:2308
+#: src/interface.c:2237
+msgid "Title  "
+msgstr "Titel  "
+
+#: src/interface.c:2245
+msgid "Players  "
+msgstr "Spieler  "
+
+#: src/interface.c:2291
+msgid "Current board"
+msgstr "Aktuelles Board"
+
+#: src/interface.c:2393
 msgid "(C) 2005-2008 Christoph Berg"
 msgstr ""
 
-#: src/interface.c:2309
+#: src/interface.c:2394
 msgid "Bridge Hand Viewer and Editor"
 msgstr "Bridgehand-Betrachter und -Editor"
 
-#: src/interface.c:2310
+#: src/interface.c:2395
 msgid ""
 "/*\n"
 " *  tenace - bridge hand viewer and editor\n"
@@ -658,7 +670,7 @@ msgid ""
 " */"
 msgstr ""
 
-#: src/interface.c:2312
+#: src/interface.c:2397
 msgid "Homepage"
 msgstr ""
 
@@ -723,27 +735,27 @@ msgstr ""
 msgid " - %s vs. %s"
 msgstr " - %s gegen %s"
 
-#: src/window_board.c:406
+#: src/window_board.c:410
 msgid "Card is in play and cannot be moved"
 msgstr "Karte ist im Spiel und kann nicht bewegt werden"
 
-#: src/window_board.c:413
+#: src/window_board.c:417
 msgid "Card is in play and cannot be exchanged"
 msgstr "Karte ist im Spiel und kann nicht ausgetauscht werden"
 
-#: src/window_board.c:425 src/window_card.c:73 src/window_card.c:104
+#: src/window_board.c:429 src/window_card.c:73 src/window_card.c:104
 msgid "Hand has already 13 cards"
 msgstr "Hand hat schon 13 Karten"
 
-#: src/window_board.c:481
+#: src/window_board.c:485
 msgid "(no explanation)"
 msgstr "(keine Erklärung)"
 
-#: src/window_board.c:698
+#: src/window_board.c:704
 msgid "Cannot change declarer while cards are in play"
 msgstr "Kann Alleinspieler nicht ändern wenn Karten im Spiel sind"
 
-#: src/window_board.c:731
+#: src/window_board.c:737
 msgid "Cannot change trumps while cards are in play"
 msgstr "Kann Trumpf nicht ändern wenn Karten im Spiel sind"
 
