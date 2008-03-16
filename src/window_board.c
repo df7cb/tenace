@@ -657,7 +657,7 @@ board_window_init (window_board_t *win)
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;
 	win->show_dd_scores = seat_all;
-	win->card_width = 80;
+	win->card_width = 70;
 
 	win->filename = NULL;
 	win->title = win->subtitle = win->team1 = win->team2 = NULL;

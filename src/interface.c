@@ -824,17 +824,17 @@ create_window_hand (void)
   gtk_label_set_selectable (GTK_LABEL (label_tricks), TRUE);
   gtk_misc_set_alignment (GTK_MISC (label_tricks), 1, 1);
 
-  alignment1 = gtk_alignment_new (1, 0, 1, 1);
+  alignment1 = gtk_alignment_new (1, 0.26, 1, 1);
   gtk_widget_show (alignment1);
   gtk_table_attach (GTK_TABLE (table1), alignment1, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_SHRINK),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment1), 0, 5, 5, 0);
 
   scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow2);
   gtk_container_add (GTK_CONTAINER (alignment1), scrolledwindow2);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   treeview_bidding = gtk_tree_view_new ();
   gtk_widget_show (treeview_bidding);
@@ -2164,13 +2164,13 @@ create_window_options (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (show_hand_all), show_hand_all_group);
   show_hand_all_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (show_hand_all));
 
-  show_hand_ns = gtk_radio_button_new_with_mnemonic (NULL, _("North/South"));
+  show_hand_ns = gtk_radio_button_new_with_mnemonic (NULL, _("North-South"));
   gtk_widget_show (show_hand_ns);
   gtk_box_pack_start (GTK_BOX (hbox6), show_hand_ns, FALSE, FALSE, 5);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (show_hand_ns), show_hand_all_group);
   show_hand_all_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (show_hand_ns));
 
-  show_hand_ew = gtk_radio_button_new_with_mnemonic (NULL, _("East/West"));
+  show_hand_ew = gtk_radio_button_new_with_mnemonic (NULL, _("East-West"));
   gtk_widget_show (show_hand_ew);
   gtk_box_pack_start (GTK_BOX (hbox6), show_hand_ew, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (show_hand_ew), show_hand_all_group);
@@ -2196,13 +2196,13 @@ create_window_options (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (show_dd_all), show_dd_all_group);
   show_dd_all_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (show_dd_all));
 
-  show_dd_ns = gtk_radio_button_new_with_mnemonic (NULL, _("North/South"));
+  show_dd_ns = gtk_radio_button_new_with_mnemonic (NULL, _("North-South"));
   gtk_widget_show (show_dd_ns);
   gtk_box_pack_start (GTK_BOX (hbox7), show_dd_ns, FALSE, FALSE, 5);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (show_dd_ns), show_dd_all_group);
   show_dd_all_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (show_dd_ns));
 
-  show_dd_ew = gtk_radio_button_new_with_mnemonic (NULL, _("East/West"));
+  show_dd_ew = gtk_radio_button_new_with_mnemonic (NULL, _("East-West"));
   gtk_widget_show (show_dd_ew);
   gtk_box_pack_start (GTK_BOX (hbox7), show_dd_ew, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (show_dd_ew), show_dd_all_group);
