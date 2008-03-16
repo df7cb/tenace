@@ -197,6 +197,7 @@ int add_card(board *b, seat s, card c)
 	b->n_dealt_cards++;
 	b->hand_cards[s-1]++;
 
+	invalidate_dd_scores (b);
 	b->par_score = -1;
 
 	return 1;
@@ -212,6 +213,7 @@ int remove_card(board *b, seat s, card c)
 	b->n_dealt_cards--;
 	b->hand_cards[s-1]--;
 
+	invalidate_dd_scores (b);
 	b->par_score = -1;
 
 	return 1;
@@ -250,7 +252,9 @@ flip_hands (board *b, seat h1, seat h2)
 		}
 	}
 
+	invalidate_dd_scores (b);
 	b->par_score = -1; /* invalidate par score */
+
 	return 1;
 }
 

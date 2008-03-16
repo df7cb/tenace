@@ -277,6 +277,9 @@ void show_board (board *b, redraw_t redraw)
 						seat_mask (i, win->show_dd_scores))
 					hand_display_set_card_score (win->handdisp[i - 1], c,
 						card_overtricks(b, c));
+				else
+					hand_display_set_card_score (win->handdisp[i - 1], c,
+						HAND_DISPLAY_NO_SCORE);
 			}
 			hand_display_set_card_score_neg (win->handdisp[i - 1],
 					i % 2 != b->declarer % 2);
@@ -428,6 +431,7 @@ card_drag_drop (HandDisplay *handdisp, int card, int on_card, int *to_seat)
 		add_card(b, *to_seat, card);
 	}
 	b->par_score = -1;
+	invalidate_dd_scores (b);
 
 	board_statusbar(NULL);
 	card_window_update(b->dealt_cards);
@@ -516,6 +520,7 @@ static void create_hand_widgets (window_board_t *win)
 	}
 	g_object_unref (sizegroup);
 
+	/* trick display */
 	GtkWidget *grid = lookup_widget (win->window, "table1");
 	GtkWidget *table = hand_display_new (HAND_DISPLAY_MODE_TABLE);
 	gtk_table_attach_defaults (GTK_TABLE (grid), table, 1, 2, 1, 2);
@@ -685,13 +690,22 @@ void board_statusbar (char *text)
 void
 board_set_declarer (seat declarer)
 {
-	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	if (declarer == b->declarer)
-		PROTECT_RETURN;
-	board_rewind(b);
+		return;
+
+	if (b->n_played_cards > 0) {
+		board_statusbar (_("Cannot change declarer while cards are in play"));
+		PROTECT_BEGIN;
+		show_board(b, REDRAW_CONTRACT);
+		PROTECT_END;
+		return;
+	}
+
+	PROTECT_BEGIN;
 	b->declarer = declarer;
 	b->current_turn = seat_mod(declarer + 1);
+	invalidate_dd_scores (b);
 	show_board(b, REDRAW_CONTRACT | REDRAW_TRICKS | REDRAW_HANDS | REDRAW_NAMES | REDRAW_BOARD_LIST);
 	PROTECT_END;
 }
@@ -709,12 +723,22 @@ board_set_dealer (seat dealer)
 void
 board_set_trumps (suit trumps)
 {
-	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	if (trumps == b->trumps)
-		PROTECT_RETURN;
+		return;
+
+	if (b->n_played_cards > 0) {
+		board_statusbar (_("Cannot change trumps while cards are in play"));
+		PROTECT_BEGIN;
+		show_board(b, REDRAW_CONTRACT);
+		PROTECT_END;
+		return;
+	}
+
+	PROTECT_BEGIN;
 	board_rewind (b);
 	b->trumps = trumps;
+	invalidate_dd_scores (b);
 	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
 }
@@ -722,11 +746,13 @@ board_set_trumps (suit trumps)
 void
 board_set_level (int level)
 {
-	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	if (level == b->level)
-		PROTECT_RETURN;
+		return;
+
+	PROTECT_BEGIN;
 	b->level = level;
+	invalidate_dd_scores (b);
 	calculate_target(b);
 	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;

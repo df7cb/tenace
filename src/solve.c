@@ -221,6 +221,15 @@ compute_dd_scores (board *b, int compute)
 				b->current_dd->best_score, b->current_turn));
 }
 
+void
+invalidate_dd_scores (board *b)
+{
+	if (b->current_dd) {
+		free (b->current_dd);
+		b->current_dd = NULL;
+	}
+}
+
 /* // FIXME: reanimate
 void compute_next_dd_scores(board *b, card c)
 {
