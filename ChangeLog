@@ -1,8 +1,11 @@
 tenace (0.7) upstream; urgency=low
 
+  * Use the currently loaded file for greying out already played cards, this
+    looks nicer, and fixes the fact that grey.svg was not looked for in
+    --prefix. Thanks to Mark Voorhies for spotting.
   * Board list can be reordered via the options menu.
 
- -- Christoph Berg <myon@debian.org>  Mon, 24 Mar 2008 21:19:40 +0100
+ -- Christoph Berg <myon@debian.org>  Mon, 24 Mar 2008 23:22:04 +0100
 
 tenace (0.6) upstream; urgency=low
 

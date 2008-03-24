@@ -1,6 +1,6 @@
 /*
  *  hand display - bridge hand widget for GTK+
- *  Copyright (C) 2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2007, 2008 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,8 @@
 
 static int render_init = 0, card_width = 100, card_height = 0;
 static gchar *svg_filename = NULL;
-static GdkPixbuf *card_pixbuf[53];
+static GdkPixbuf *card_pixbuf[52];
+static cairo_surface_t *grey_surface = NULL;
 static GtkWidget *drag_win = NULL; /* current drag icon */
 static GtkTargetEntry target_entry[1] = { { "card", 0, 0 } };
 static GtkTargetList *target_list = NULL;
@@ -78,8 +79,9 @@ render_card_init (char *card_fname)
 {
 	int i;
 	if (render_init) {
-		for (i = 0; i < 53; i++)
+		for (i = 0; i < 52; i++)
 			g_object_unref (card_pixbuf[i]);
+		cairo_surface_destroy (grey_surface);
 		render_init = 0;
 	}
 
@@ -103,16 +105,17 @@ render_card_init (char *card_fname)
 		int col = (i + 1) % 13;
 		int row = i / 13;
 		gdk_pixbuf_copy_area (pb, buf_width * col / 13.0, buf_height * row / 5.0,
+		//gdk_pixbuf_copy_area (pb, card_width * col, card_height * row,
 			card_width, card_height, card_pixbuf[i], 0, 0);
 	}
 	g_object_unref (pb);
 
-	card_pixbuf[52] =
-		gdk_pixbuf_new_from_file_at_size (HAND_DISPLAY_GREY_FILE, card_width, card_height, &error);
-	if (!card_pixbuf[52]) {
-		printf (HAND_DISPLAY_GREY_FILE ": %s.\n", error->message);
-		return;
-	}
+	/* construct a alpha channel in card shape for greying out cards */
+	grey_surface = cairo_image_surface_create (CAIRO_FORMAT_A8, card_width, card_height);
+	cairo_t *ct = cairo_create (grey_surface);
+	gdk_cairo_set_source_pixbuf (ct, card_pixbuf[0], 0, 0);
+	cairo_paint_with_alpha (ct, 0.3);
+	cairo_destroy (ct);
 
 	render_init = 1;
 }
@@ -122,14 +125,14 @@ render_card (cairo_t *cr, int x, int y, int c, int color)
 {
 	if (!render_init)
 		return;
-
 	assert (0 <= c && c < 52);
-	
+
 	gdk_cairo_set_source_pixbuf (cr, card_pixbuf[c], x, y);
-	cairo_paint_with_alpha (cr, 1.0);
-	if (color == HAND_DISPLAY_OLD_CARD) {
-		gdk_cairo_set_source_pixbuf (cr, card_pixbuf[52], x, y);
-		cairo_paint_with_alpha (cr, 0.5);
+	cairo_paint (cr);
+
+	if (color == HAND_DISPLAY_OLD_CARD) { /* grey out old card */
+		cairo_set_source_rgb (cr, HAND_DISPLAY_GREY_FONT);
+		cairo_mask_surface (cr, grey_surface, x, y);
 	}
 	return;
 }
@@ -343,7 +346,8 @@ draw (GtkWidget *hand, cairo_t *cr)
 						continue;
 
 					render_card (cr, x, yy, c, handdisp->cards[c]);
-					if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD) {
+
+					if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD) { /* draw triangular arrow */
 						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
 						cairo_move_to (cr, x + 3 + (hand->allocation.width - card_width - 10) / 24.0, yy);
 						cairo_rel_line_to (cr, -5, -5);

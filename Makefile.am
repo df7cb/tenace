@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = cards contrib doc examples handdisplay src po
+SUBDIRS = contrib doc examples handdisplay src po
 
 EXTRA_DIST = \
 	autogen.sh \
