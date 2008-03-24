@@ -13,12 +13,15 @@
  *  GNU General Public License for more details.
  */
 
+#include <assert.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "functions.h"
 #include "interface.h"
 #include "options.h"
 #include "support.h"
@@ -35,6 +38,7 @@ static char *svg_files[] = {
 static char *entry_name[] = { "entry_west", "entry_north", "entry_east", "entry_south" };
 
 static GtkWidget *window_options = NULL;
+static GtkListStore *board_store = NULL;
 
 /* set options window contents from program data */
 void
@@ -55,58 +59,34 @@ window_options_board_populate (void) /* no parameter as it is called from window
 	}
 }
 
-static void
-window_options_populate (GtkWidget *window_options)
+void
+window_options_board_list_populate (void) /* no parameter as it is called from window_board.c */
 {
-	/* Card display */
-	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), win->show_played_cards);
+	if (! window_options)
+		return;
+	assert (board_store);
 
-	w = lookup_widget (window_options,
-		win->hand_display_style == HAND_DISPLAY_STYLE_CARDS ?
-			"show_as_cards" : "show_as_text");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+	PROTECT_BEGIN;
+	GtkWidget *w = lookup_widget (window_options, "board_list");
+	gtk_tree_view_set_model (GTK_TREE_VIEW (w), GTK_TREE_MODEL (board_store));
 
-	w = lookup_widget (window_options, "svg_file");
-	if (win->svg)
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), win->svg);
+	gtk_list_store_clear (board_store);
+	GtkTreeIter iter;
 
-	w = lookup_widget (window_options, "spinbutton_card_width");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
-
-	/* Hands */
-	switch (win->show_hands) {
-		case seat_none: /* not yet implemented - is this useful? */
-			w = lookup_widget (window_options, "show_hand_none");
-			break;
-		case east_west:
-			w = lookup_widget (window_options, "show_hand_ew");
-			break;
-		case north_south:
-			w = lookup_widget (window_options, "show_hand_ns");
-			break;
-		default:
-			w = lookup_widget (window_options, "show_hand_all");
+	int i;
+	GString *name = g_string_new (NULL);
+	for (i = 0; i < win->n_boards; i++) {
+		board *b = win->boards[i];
+		gtk_list_store_append (board_store, &iter);
+		g_string_printf (name, "%s (%s)", b->name->str,
+			contract_string (b->level, b->trumps, b->declarer, b->doubled));
+		gtk_list_store_set (board_store, &iter,
+				0, i + 1,
+				1, name->str,
+				-1);
 	}
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
-
-	switch (win->show_dd_scores) {
-		case seat_none:
-			w = lookup_widget (window_options, "show_dd_none");
-			break;
-		case east_west:
-			w = lookup_widget (window_options, "show_dd_ew");
-			break;
-		case north_south:
-			w = lookup_widget (window_options, "show_dd_ns");
-			break;
-		default:
-			w = lookup_widget (window_options, "show_dd_all");
-	}
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
-
-	/* Current board */
-	window_options_board_populate ();
+	g_string_free (name, TRUE);
+	PROTECT_END;
 }
 
 /* set program data from options window */
@@ -175,7 +155,27 @@ apply_options (GtkWidget *window_options)
 			"%s", gtk_entry_get_text (GTK_ENTRY (w)));
 	}
 
-	show_board(CUR_BOARD, REDRAW_HANDS | REDRAW_NAMES | REDRAW_CONTRACT);
+	/* Board list */
+	board **new_boards = malloc (win->n_boards_alloc * sizeof (board *));
+	int new_cur = 0;
+	i = 0;
+	GtkTreeIter iter;
+	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (board_store), &iter);
+	do {
+		GValue val = { 0 };
+		gtk_tree_model_get_value (GTK_TREE_MODEL (board_store), &iter, 0, &val);
+		int n = g_value_get_int (&val) - 1;
+		assert (0 <= n && n < win->n_boards);
+		new_boards[i] = win->boards[n];
+		if (n == win->cur)
+			new_cur = i;
+		i++;
+	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (board_store), &iter));
+	free (win->boards);
+	win->boards = new_boards;
+
+	show_board(CUR_BOARD, REDRAW_HANDS | REDRAW_NAMES | REDRAW_CONTRACT |
+			REDRAW_BOARD_LIST);
 }
 
 /* read config from disk */
@@ -330,6 +330,7 @@ write_config (window_board_t *win)
 
 /* callbacks */
 
+/* create options window and fill it */
 void
 on_options1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -340,9 +341,78 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 	window_options = create_window_options ();
 	gtk_widget_show (window_options);
 
-	PROTECT_BEGIN;
-	window_options_populate (window_options);
-	PROTECT_END;
+	/* Tab 1: Card display */
+	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), win->show_played_cards);
+
+	w = lookup_widget (window_options,
+		win->hand_display_style == HAND_DISPLAY_STYLE_CARDS ?
+			"show_as_cards" : "show_as_text");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
+	w = lookup_widget (window_options, "svg_file");
+	if (win->svg)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), win->svg);
+
+	w = lookup_widget (window_options, "spinbutton_card_width");
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
+
+	/* Tab 2: Hands */
+	switch (win->show_hands) {
+		case seat_none: /* not yet implemented - is this useful? */
+			w = lookup_widget (window_options, "show_hand_none");
+			break;
+		case east_west:
+			w = lookup_widget (window_options, "show_hand_ew");
+			break;
+		case north_south:
+			w = lookup_widget (window_options, "show_hand_ns");
+			break;
+		default:
+			w = lookup_widget (window_options, "show_hand_all");
+	}
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
+	switch (win->show_dd_scores) {
+		case seat_none:
+			w = lookup_widget (window_options, "show_dd_none");
+			break;
+		case east_west:
+			w = lookup_widget (window_options, "show_dd_ew");
+			break;
+		case north_south:
+			w = lookup_widget (window_options, "show_dd_ns");
+			break;
+		default:
+			w = lookup_widget (window_options, "show_dd_all");
+	}
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+
+	/* Tab 3: Current board */
+	window_options_board_populate ();
+
+	/* Tab 4: Board list */
+	if (! board_store) {
+		board_store = gtk_list_store_new (2,
+			G_TYPE_INT, G_TYPE_STRING);
+	}
+
+	w = lookup_widget (window_options, "board_list");
+	gtk_tree_view_set_model (GTK_TREE_VIEW (w), GTK_TREE_MODEL (board_store));
+
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (
+			_("#"), renderer, "markup", 0, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (w), column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (
+			_("Title"), renderer, "markup", 1, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (w), column);
+
+	window_options_board_list_populate ();
 }
 
 
@@ -369,9 +439,7 @@ void
 on_options_apply_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
-	PROTECT_BEGIN;
 	apply_options (window_options);
-	PROTECT_END;
 }
 
 

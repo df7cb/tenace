@@ -2054,6 +2054,9 @@ create_window_options (void)
   GtkWidget *entry_south;
   GtkWidget *entry_title;
   GtkWidget *label104;
+  GtkWidget *scrolledwindow3;
+  GtkWidget *board_list;
+  GtkWidget *label108;
   GtkWidget *hbuttonbox4;
   GtkWidget *options_cancel;
   GtkWidget *options_apply;
@@ -2292,6 +2295,22 @@ create_window_options (void)
   gtk_widget_show (label104);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label104);
 
+  scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow3);
+  gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow3);
+  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow3), 5);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_SHADOW_IN);
+
+  board_list = gtk_tree_view_new ();
+  gtk_widget_show (board_list);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow3), board_list);
+  gtk_tree_view_set_reorderable (GTK_TREE_VIEW (board_list), TRUE);
+
+  label108 = gtk_label_new (_("Board list"));
+  gtk_widget_show (label108);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 3), label108);
+
   hbuttonbox4 = gtk_hbutton_box_new ();
   gtk_widget_show (hbuttonbox4);
   gtk_box_pack_end (GTK_BOX (vbox7), hbuttonbox4, FALSE, TRUE, 0);
@@ -2367,6 +2386,9 @@ create_window_options (void)
   GLADE_HOOKUP_OBJECT (window_options, entry_south, "entry_south");
   GLADE_HOOKUP_OBJECT (window_options, entry_title, "entry_title");
   GLADE_HOOKUP_OBJECT (window_options, label104, "label104");
+  GLADE_HOOKUP_OBJECT (window_options, scrolledwindow3, "scrolledwindow3");
+  GLADE_HOOKUP_OBJECT (window_options, board_list, "board_list");
+  GLADE_HOOKUP_OBJECT (window_options, label108, "label108");
   GLADE_HOOKUP_OBJECT (window_options, hbuttonbox4, "hbuttonbox4");
   GLADE_HOOKUP_OBJECT (window_options, options_cancel, "options_cancel");
   GLADE_HOOKUP_OBJECT (window_options, options_apply, "options_apply");

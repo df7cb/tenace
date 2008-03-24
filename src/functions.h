@@ -1,6 +1,8 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#include "bridge.h"
+
 extern const char *seat_str[];
 extern const char *trump_str[];
 extern const char *trump_str_asc[];

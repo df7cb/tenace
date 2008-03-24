@@ -20,6 +20,7 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "solve.h"
 #include "support.h"
 #include "window_board.h"
 

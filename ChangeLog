@@ -1,3 +1,9 @@
+tenace (0.7) upstream; urgency=low
+
+  * Board list can be reordered via the options menu.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 24 Mar 2008 21:19:40 +0100
+
 tenace (0.6) upstream; urgency=low
 
   * Solver:

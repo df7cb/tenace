@@ -28,6 +28,7 @@
 #include "file.h"
 #include "functions.h"
 #include "interface.h"
+#include "options.h"
 #include "solve.h"
 #include "support.h"
 #include "window_card.h"
@@ -162,8 +163,10 @@ void show_board (board *b, redraw_t redraw)
 	GString *str = g_string_new(NULL);
 	assert (b);
 
-	if (redraw & REDRAW_BOARD_LIST)
+	if (redraw & REDRAW_BOARD_LIST) {
 		board_window_rebuild_board_menu (win);
+		window_options_board_list_populate ();
+	}
 
 	if (redraw & (REDRAW_TITLE | REDRAW_CONTRACT)) {
 		g_string_printf(str, "Tenace - %s (%s)", b->name->str,
@@ -491,12 +494,10 @@ bidding_query_tooltip (GtkWidget *widget, gint x, gint y, gboolean keyboard_mode
 static void
 jump_menu_select (GtkWidget *recentchooser, char *unused)
 {
-	PROTECT_BEGIN;
 	char *filename = gtk_recent_chooser_get_current_uri (GTK_RECENT_CHOOSER (recentchooser));
 	if (strncmp (filename, "file://", sizeof ("file://") - 1))
-		PROTECT_RETURN;
+		return;
 	board_load_popup (win, 0, filename + sizeof ("file://") - 1);
-	PROTECT_END;
 }
 #endif
 

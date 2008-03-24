@@ -13,3 +13,6 @@ src/window_board.c
 src/window_card.c
 src/window_line_entry.c
 src/window_play.c
+
+# File for strings needed, but not in source
+src/unused.c
