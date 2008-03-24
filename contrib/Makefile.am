@@ -1,1 +1,1 @@
-EXTRA_DIST = mailcap mime.types
+EXTRA_DIST = bonded.svg mailcap mime.types

@@ -21,3 +21,6 @@ License and copyright:
 
 On Debian systems, the complete text of the GNU General Public License can be
 found in the file /usr/share/common-licenses/GPL.
+
+The shipped bonded.svg file has been copied from gnome-cards-data and has been
+around for at least 10 years, author unknown. It is also GPL-licensed.
