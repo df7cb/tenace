@@ -25,3 +25,4 @@ tenace_SOURCES = \
 
 tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds ../handdisplay/hand_display.o
 
+EXTRA_DIST = unused.c
