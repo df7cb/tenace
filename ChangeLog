@@ -1,3 +1,9 @@
+tenace (0.8) upstream; urgency=low
+
+  * Some lin parser improvements to rudimentarily parse BM2000 data.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 27 Mar 2008 23:31:57 +0100
+
 tenace (0.7) upstream; urgency=low
 
   * Use the currently loaded file for greying out already played cards, this

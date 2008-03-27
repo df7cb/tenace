@@ -109,18 +109,28 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			} while ((name = sane_strtok_r(NULL, ",", &nameptr)));
 
 		} else if (!strcmp(tok, "md")) { /* make deal */
-			if (board_filled) {
-				printf ("Duplicate md|| token\n");
-				goto error;
-			}
 			tok = STRTOK;
+			if (*tok == '0') {
+				printf ("md|0| (keep deal) mode not supported\n");
+				continue;
+			}
+			if (board_filled) {
+				/* start new board */
+				card_nr = 0;
+				board_filled = 0;
+
+				b = board_new ();
+				board_window_append_board (win, b);
+				/* initialize player names, required for vugraph files */
+				int i;
+				for (i = 0; i < 4; i++) {
+					g_string_printf(b->hand_name[seat_mod (i) - 1],
+						"%s", name_arr[i + (tok[0] == 'c' ? 4 : 0)]);
+				}
+			}
 			char *c;
 			seat se = south;
 			suit su = spade;
-			if (*tok == '0') {
-				printf ("md|0| (keep deal) mode not supported\n");
-				goto error;
-			}
 			b->dealer = seat_mod(*tok - '0' - 1);
 			for (c = tok + 1; *c; c++) {
 				int i;
@@ -215,7 +225,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			int c = parse_card(tok = STRTOK);
 			if (c == -1) {
 				printf("Invalid card %s\n", tok);
-				goto error;
+				continue;
 			}
 			if (card_nr < 52)
 				b->played_cards[card_nr++] = c;
@@ -274,14 +284,26 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 			tok = STRTOK;
 			//printf ("Comment: %s\n", tok);
 
-		} else if (!strcmp(tok, "st")) { /* small text */
+		} else if (!strcmp(tok, "at")) { /* add text */
 			STRTOK;
+		} else if (!strcmp(tok, "cr") || !strcmp(tok, "cg") ||
+			   !strcmp(tok, "cb")) { /* color */
+			STRTOK;
+		} else if (!strcmp(tok, "hc") || !strcmp(tok, "lc") ||
+			   !strcmp(tok, "hs") || !strcmp(tok, "ls")) {
+			STRTOK; /* hilight card, suit */
+		} else if (!strcmp(tok, "pg")) {
+			STRTOK; /* page break, e.g. after trick or comment */
 		} else if (!strcmp(tok, "rh")) { /* reset heading */
 			STRTOK;
-		} else if (!strcmp(tok, "pg")) { /* page break, e.g. after trick or comment */
+		} else if (!strcmp(tok, "sk")) { /* set kibitzed */
 			STRTOK;
-		} else if (!*tok) {
-			// empty token, hopefully end of line
+		} else if (!strcmp(tok, "st")) { /* small text */
+			STRTOK;
+		} else if (!strcmp(tok, "up")) { /* undo play */
+			tok = STRTOK;
+		} else if (!*tok || *tok == '\n' || *tok == '\r') {
+			/* empty token, hopefully end of line */
 		} else {
 			printf("Unknown token '%s|%s|'\n", tok, STRTOK);
 		}
@@ -344,7 +366,8 @@ board_load (window_board_t *win, char *fname)
 		return 0;
 
 	int ret;
-	if (!strncmp(buf, "pn", 2) || !strncmp(buf, "vg", 2)) {
+	if (!strncmp(buf, "pn|", 3) || !strncmp(buf, "vg|", 3) ||
+	    !strncmp(buf, "st|", 3)) {
 		ret = board_parse_lin (win, buf, f);
 	} else {
 		board *b = board_new ();
