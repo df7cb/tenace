@@ -1,8 +1,9 @@
 tenace (0.8) upstream; urgency=low
 
   * Some lin parser improvements to rudimentarily parse BM2000 data.
+  * New example: triple-coup.lin.
 
- -- Christoph Berg <myon@debian.org>  Thu, 27 Mar 2008 23:31:57 +0100
+ -- Christoph Berg <myon@debian.org>  Mon, 14 Apr 2008 22:37:29 +0200
 
 tenace (0.7) upstream; urgency=low
 
