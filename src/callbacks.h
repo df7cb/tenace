@@ -509,3 +509,7 @@ gboolean
 on_window_options_delete_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
+
+void
+on_export_as_pdf1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

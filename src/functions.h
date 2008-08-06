@@ -20,6 +20,7 @@ char *card_string (card c);
 char *card_string_color (card c);
 GString *bid_string (card c, int alert);
 GString *hand_string (board *b, seat h);
+char *hand_suit_string (board *b, seat h, suit s);
 char *contract_string(int level, suit trumps, seat declarer, int doubled);
 char *contract_string_asc (int level, suit trumps, seat declarer, int doubled);
 seat seat_mod(seat s);

@@ -179,6 +179,21 @@ GString *hand_string (board *b, seat h)
 	return s;
 }
 
+char *
+hand_suit_string (board *b, seat h, suit s)
+{
+	static GString *str = NULL;
+	if (!str)
+		str = g_string_new(NULL);
+	g_string_printf(str, "");
+
+	int c;
+	for (c = s * 13 + 12; c >= (int)s * 13; c--)
+		if (b->dealt_cards[c] == h)
+			g_string_append_printf(str, "%s", rank_string(RANK(c)));
+	return str->str;
+}
+
 char *contract_string(int level, suit trumps, seat declarer, int doubled)
 {
 	if (level == 0)

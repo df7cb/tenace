@@ -84,6 +84,16 @@ on_speichern_unter1_activate           (GtkMenuItem     *menuitem,
 
 
 void
+on_export_as_pdf1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	pdf_board (b);
+	magic_cards (win);
+}
+
+
+void
 on_beenden1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -1023,3 +1033,4 @@ on_aboutdialog1_delete_event           (GtkWidget       *widget,
 }
 
 /* -- */
+
