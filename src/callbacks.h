@@ -363,7 +363,3 @@ on_rewind_play1_activate               (GtkMenuItem     *menuitem,
 void
 on_complete_play1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
-
-void
-on_export_as_pdf1_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);

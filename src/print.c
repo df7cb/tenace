@@ -28,11 +28,17 @@
 #define M 2.0 * 72
 #define B 3.0 * 72
 
-int
-pdf_board (board *b)
+static void
+draw_page (GtkPrintOperation *operation,
+           GtkPrintContext   *context,
+           gint               page_nr,
+           gpointer           user_data)
+
 {
-	cairo_surface_t *cs = cairo_pdf_surface_create ("hand.pdf", 5.0 * 72, 5.0 * 72);
-	cairo_t *cr = cairo_create (cs);
+	cairo_t *cr;
+	cr = gtk_print_context_get_cairo_context (context);
+
+	board *b = CUR_BOARD;
 
 	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size (cr, 12);
@@ -90,10 +96,6 @@ pdf_board (board *b)
 	cairo_line_to (cr, B, C);
 	cairo_close_path (cr);
 	cairo_stroke (cr);
-
-	cairo_show_page (cr);
-	cairo_destroy (cr);
-	cairo_surface_destroy (cs);
 }
 
 static void
@@ -215,62 +217,141 @@ magic_card (cairo_t *cr, window_board_t *win, card c)
 	cairo_restore (cr);
 }
 
-#define COL_WIDTH (7.0 / 2.54 * 72)
-#define ROW_HEIGHT (4.24 / 2.54 * 72)
 #define N_COL 3
 #define N_ROW 7
 #define N_PAGE 3
 
-void
-magic_cards (window_board_t *win)
+static void
+magic_draw_page (GtkPrintOperation *operation,
+           GtkPrintContext   *context,
+           gint               page_nr,
+           gpointer           user_data)
+
 {
-	cairo_surface_t *cs = cairo_pdf_surface_create ("magic.pdf",
-			COL_WIDTH * N_COL, ROW_HEIGHT * N_ROW);
-	cairo_t *cr = cairo_create (cs);
+	cairo_t *cr;
+	cr = gtk_print_context_get_cairo_context (context);
+	double col_width = gtk_print_context_get_width (context) / N_COL;
+	double row_height = gtk_print_context_get_height (context) / N_ROW;
 
-	int p, r, c;
-	int cc = 51;
-	int print_head = 1;
-	for (p = 0; p < N_PAGE; p++) {
-		for (c = 0; c < N_COL; c++) {
-			for (r = 0; r < N_ROW && cc >= 0; r++) {
-				if (print_head) { /* heading */
-					cairo_move_to (cr, c * COL_WIDTH + 80.0, 80.0);
-					cairo_select_font_face (cr, "Symbol",
-						CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-					cairo_set_font_size (cr, 40.0);
-					cairo_show_text (cr, trump_str[SUIT(cc)]);
-					print_head = 0;
-					continue;
-				}
-
-				cairo_save (cr);
-				cairo_translate (cr,
-					COL_WIDTH * c + (COL_WIDTH - 9 * ARROWSIZE) / 2,
-					ROW_HEIGHT * (r + 1) - (ROW_HEIGHT - 6 * ARROWSIZE) / 2);
-				cairo_rotate (cr, -M_PI_2);
-				magic_card (cr, win, cc);
-
-				/* debugging: print card */
-				cairo_move_to (cr, 6, -2);
-				cairo_set_font_size (cr, 10);
-				cairo_select_font_face (cr, "Symbol",
-					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-				cairo_show_text (cr, trump_str[SUIT(cc)]);
-				cairo_select_font_face (cr, "Sans",
-					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-				cairo_show_text (cr, _(rank_string (RANK(cc))));
-
-				cairo_restore (cr);
-				
-				cc--; /* next card */
-				if (RANK(cc) == cardA)
-					print_head = 1;
-			}
-		}
-		cairo_show_page (cr);
+	assert (page_nr < N_PAGE);
+	static int cc, print_head;
+	if (page_nr == 0) { /* restart printing */
+		cc = 51;
+		print_head = 1;
 	}
 
-	cairo_destroy (cr);
-	cairo_surface_destroy (cs);
+	int r, c;
+	for (c = 0; c < N_COL; c++) {
+		for (r = 0; r < N_ROW && cc >= 0; r++) {
+			if (print_head) { /* heading */
+				cairo_move_to (cr, c * col_width + 80.0, 80.0);
+				cairo_select_font_face (cr, "Symbol",
+					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+				cairo_set_font_size (cr, 40.0);
+				cairo_show_text (cr, trump_str[SUIT(cc)]);
+				print_head = 0;
+				continue;
+			}
+
+			cairo_save (cr);
+			cairo_translate (cr,
+				col_width * c + (col_width - 9 * ARROWSIZE) / 2,
+				row_height * (r + 1) - (row_height - 6 * ARROWSIZE) / 2);
+			cairo_rotate (cr, -M_PI_2);
+			magic_card (cr, win, cc);
+
+			/* debugging: print card */
+			cairo_move_to (cr, 6, -2);
+			cairo_set_font_size (cr, 10);
+			cairo_select_font_face (cr, "Symbol",
+				CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+			cairo_show_text (cr, trump_str[SUIT(cc)]);
+			cairo_select_font_face (cr, "Sans",
+				CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+			cairo_show_text (cr, _(rank_string (RANK(cc))));
+
+			cairo_restore (cr);
+			
+			cc--; /* next card */
+			if (RANK(cc) == cardA)
+				print_head = 1;
+		}
+	}
 }
+
+static void
+begin_print (GtkPrintOperation *operation,
+	     GtkPrintContext   *context,
+	     gpointer           user_data)
+{
+	gtk_print_operation_set_n_pages (operation, 1);
+}
+
+static void
+magic_begin_print (GtkPrintOperation *operation,
+	     GtkPrintContext   *context,
+	     gpointer           user_data)
+{
+	gtk_print_operation_set_n_pages (operation, 3);
+	gtk_print_operation_set_use_full_page (operation, TRUE);
+	gtk_print_operation_set_show_progress (operation, TRUE);
+	//gtk_print_operation_set_export_filename (operation, "foo");
+}
+
+static GtkPrintSettings *settings = NULL;
+
+void
+on_menu_print_activate (void)
+{
+	GtkPrintOperation *print;
+	GtkPrintOperationResult res;
+	printf ("printing...\n");
+
+	print = gtk_print_operation_new ();
+
+	if (settings != NULL) 
+		gtk_print_operation_set_print_settings (print, settings);
+
+	g_signal_connect (print, "begin_print", G_CALLBACK (begin_print), NULL);
+	g_signal_connect (print, "draw_page", G_CALLBACK (draw_page), NULL);
+
+	res = gtk_print_operation_run (print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+			GTK_WINDOW (win->window), NULL);
+
+	if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
+	{
+		if (settings != NULL)
+			g_object_unref (settings);
+		settings = g_object_ref (gtk_print_operation_get_print_settings (print));
+	}
+
+	g_object_unref (print);
+}
+
+void
+on_menu_file_magic_activate (void)
+{
+	GtkPrintOperation *print;
+	GtkPrintOperationResult res;
+
+	print = gtk_print_operation_new ();
+
+	if (settings != NULL) 
+		gtk_print_operation_set_print_settings (print, settings);
+
+	g_signal_connect (print, "begin_print", G_CALLBACK (magic_begin_print), NULL);
+	g_signal_connect (print, "draw_page", G_CALLBACK (magic_draw_page), NULL);
+
+	res = gtk_print_operation_run (print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+			GTK_WINDOW (win->window), NULL);
+
+	if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
+	{
+		if (settings != NULL)
+			g_object_unref (settings);
+		settings = g_object_ref (gtk_print_operation_get_print_settings (print));
+	}
+
+	g_object_unref (print);
+}
+
