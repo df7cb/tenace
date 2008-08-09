@@ -25,7 +25,6 @@
 
 #include "bridge.h"
 #include "functions.h"
-#include "support.h"
 #include "window_card.h"
 #include "file.h"
 

@@ -18,8 +18,6 @@
 
 #include "bridge.h"
 #include "functions.h"
-#include "interface.h"
-#include "support.h"
 
 #include "window_board.h"
 
@@ -30,7 +28,7 @@ bid_clicked (GtkWidget *lab, int *bid)
 {
 	static GtkWidget *alert_entry = NULL;
 	if (! alert_entry)
-		alert_entry = lookup_widget (window_bids, "alert_entry");
+		alert_entry = glade_xml_get_widget (win->xml, "alert_entry");
 
 	board *b = CUR_BOARD;
 	int ret = board_append_bid (b, *bid, 1);
@@ -65,9 +63,9 @@ window_bids_init ()
 	static int pass = bid_pass, x = bid_x, xx = bid_xx;
 	static int bid[35];
 
-	window_bids = create_window_bids ();
+	window_bids = glade_xml_get_widget (win->xml, "window_bids");
 	gtk_widget_show (window_bids);
-	GtkTable *bids_table = GTK_TABLE(lookup_widget(window_bids, "bids_table"));
+	GtkTable *bids_table = GTK_TABLE(glade_xml_get_widget (win->xml, "bids_table"));
 	assert (bids_table);
 	GtkWidget *lab;
 

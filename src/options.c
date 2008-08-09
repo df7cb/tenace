@@ -22,9 +22,7 @@
 #include <unistd.h>
 
 #include "functions.h"
-#include "interface.h"
 #include "options.h"
-#include "support.h"
 #include "window_board.h"
 #include "window_card.h"
 
@@ -48,12 +46,12 @@ window_options_board_populate (void) /* no parameter as it is called from window
 		return;
 
 	board *b = CUR_BOARD;
-	GtkWidget *w = lookup_widget (window_options, "entry_title");
+	GtkWidget *w = glade_xml_get_widget (win->xml, "entry_title");
 	if (b->name)
 		gtk_entry_set_text (GTK_ENTRY (w), b->name->str);
 	int i;
 	for (i = 0; i < 4; i++) {
-		w = lookup_widget (window_options, entry_name[i]);
+		w = glade_xml_get_widget (win->xml, entry_name[i]);
 		if (b->hand_name[i])
 			gtk_entry_set_text (GTK_ENTRY (w), b->hand_name[i]->str);
 	}
@@ -67,7 +65,7 @@ window_options_board_list_populate (void) /* no parameter as it is called from w
 	assert (board_store);
 
 	PROTECT_BEGIN;
-	GtkWidget *w = lookup_widget (window_options, "board_list");
+	GtkWidget *w = glade_xml_get_widget (win->xml, "board_list");
 	gtk_tree_view_set_model (GTK_TREE_VIEW (w), GTK_TREE_MODEL (board_store));
 
 	gtk_list_store_clear (board_store);
@@ -94,18 +92,18 @@ static void
 apply_options (GtkWidget *window_options)
 {
 	/* Card display */
-	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
+	GtkWidget *w = glade_xml_get_widget (win->xml, "show_played_cards");
 	win->show_played_cards = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w));
 
-	w = lookup_widget (window_options, "show_as_cards");
+	w = glade_xml_get_widget (win->xml, "show_as_cards");
 	int style = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ?
 		HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
 	board_window_set_style (win, style);
 	window_card_set_style (style);
 
-	w = lookup_widget (window_options, "svg_file");
+	w = glade_xml_get_widget (win->xml, "svg_file");
 	gchar *fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (w));
-	w = lookup_widget (window_options, "spinbutton_card_width");
+	w = glade_xml_get_widget (win->xml, "spinbutton_card_width");
 	win->card_width = gtk_spin_button_get_value (GTK_SPIN_BUTTON (w));
 
 	if (fname) {
@@ -117,15 +115,15 @@ apply_options (GtkWidget *window_options)
 
 	/* Hands */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_dd_all"))))
+		(glade_xml_get_widget (win->xml, "show_dd_all"))))
 	{
 		win->show_dd_scores = seat_all;
 	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_dd_ns"))))
+		(glade_xml_get_widget (win->xml, "show_dd_ns"))))
 	{
 		win->show_dd_scores = north_south;
 	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_dd_ew"))))
+		(glade_xml_get_widget (win->xml, "show_dd_ew"))))
 	{
 		win->show_dd_scores = east_west;
 	} else {
@@ -133,11 +131,11 @@ apply_options (GtkWidget *window_options)
 	}
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_hand_all"))))
+		(glade_xml_get_widget (win->xml, "show_hand_all"))))
 	{
 		win->show_hands = seat_all;
 	} else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON
-		(lookup_widget (window_options, "show_hand_ns"))))
+		(glade_xml_get_widget (win->xml, "show_hand_ns"))))
 	{
 		win->show_hands = north_south;
 	} else {
@@ -146,11 +144,11 @@ apply_options (GtkWidget *window_options)
 
 	/* Current board */
 	board *b = CUR_BOARD;
-	w = lookup_widget (window_options, "entry_title");
+	w = glade_xml_get_widget (win->xml, "entry_title");
 	g_string_printf (b->name, "%s", gtk_entry_get_text (GTK_ENTRY (w)));
 	int i;
 	for (i = 0; i < 4; i++) {
-		w = lookup_widget (window_options, entry_name[i]);
+		w = glade_xml_get_widget (win->xml, entry_name[i]);
 		g_string_printf (b->hand_name[i],
 			"%s", gtk_entry_get_text (GTK_ENTRY (w)));
 	}
@@ -338,53 +336,53 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 	if (window_options)
 		return;
 
-	window_options = create_window_options ();
+	window_options = glade_xml_get_widget (win->xml, "window_options");
 	gtk_widget_show (window_options);
 
 	/* Tab 1: Card display */
-	GtkWidget *w = lookup_widget (window_options, "show_played_cards");
+	GtkWidget *w = glade_xml_get_widget (win->xml, "show_played_cards");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), win->show_played_cards);
 
-	w = lookup_widget (window_options,
+	w = glade_xml_get_widget (win->xml,
 		win->hand_display_style == HAND_DISPLAY_STYLE_CARDS ?
 			"show_as_cards" : "show_as_text");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
 
-	w = lookup_widget (window_options, "svg_file");
+	w = glade_xml_get_widget (win->xml, "svg_file");
 	if (win->svg)
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), win->svg);
 
-	w = lookup_widget (window_options, "spinbutton_card_width");
+	w = glade_xml_get_widget (win->xml, "spinbutton_card_width");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
 
 	/* Tab 2: Hands */
 	switch (win->show_hands) {
 		case seat_none: /* not yet implemented - is this useful? */
-			w = lookup_widget (window_options, "show_hand_none");
+			w = glade_xml_get_widget (win->xml, "show_hand_none");
 			break;
 		case east_west:
-			w = lookup_widget (window_options, "show_hand_ew");
+			w = glade_xml_get_widget (win->xml, "show_hand_ew");
 			break;
 		case north_south:
-			w = lookup_widget (window_options, "show_hand_ns");
+			w = glade_xml_get_widget (win->xml, "show_hand_ns");
 			break;
 		default:
-			w = lookup_widget (window_options, "show_hand_all");
+			w = glade_xml_get_widget (win->xml, "show_hand_all");
 	}
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
 
 	switch (win->show_dd_scores) {
 		case seat_none:
-			w = lookup_widget (window_options, "show_dd_none");
+			w = glade_xml_get_widget (win->xml, "show_dd_none");
 			break;
 		case east_west:
-			w = lookup_widget (window_options, "show_dd_ew");
+			w = glade_xml_get_widget (win->xml, "show_dd_ew");
 			break;
 		case north_south:
-			w = lookup_widget (window_options, "show_dd_ns");
+			w = glade_xml_get_widget (win->xml, "show_dd_ns");
 			break;
 		default:
-			w = lookup_widget (window_options, "show_dd_all");
+			w = glade_xml_get_widget (win->xml, "show_dd_all");
 	}
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
 
@@ -397,7 +395,7 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 			G_TYPE_INT, G_TYPE_STRING);
 	}
 
-	w = lookup_widget (window_options, "board_list");
+	w = glade_xml_get_widget (win->xml, "board_list");
 	gtk_tree_view_set_model (GTK_TREE_VIEW (w), GTK_TREE_MODEL (board_store));
 
 	GtkCellRenderer *renderer;

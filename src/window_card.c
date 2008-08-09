@@ -18,8 +18,6 @@
 
 #include "bridge.h"
 #include "functions.h"
-#include "interface.h"
-#include "support.h"
 #include "window_board.h" /* board b */
 
 #include "window_card.h" /* board b */
@@ -170,8 +168,8 @@ window_card_init (int style)
 			"card-drag-drop", G_CALLBACK (window_card_drag_drop), &seat_null);
 	hand_display_set_drag (hand_display, 1);
 
-	window_card = create_window_card ();
-	GtkWidget *vbox = lookup_widget (window_card, "vbox2");
+	window_card = glade_xml_get_widget (win->xml, "window_card");
+	GtkWidget *vbox = glade_xml_get_widget (win->xml, "vbox2");
 	gtk_widget_show (w);
 	gtk_box_pack_start_defaults (GTK_BOX (vbox), w);
 	gtk_widget_show (window_card);

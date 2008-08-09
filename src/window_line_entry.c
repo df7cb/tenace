@@ -17,8 +17,7 @@
 
 #include "bridge.h"
 #include "file.h"
-#include "interface.h"
-#include "support.h"
+#include "functions.h"
 #include "window_board.h"
 #include "window_card.h"
 
@@ -50,8 +49,8 @@ void line_entry_set_from_board(board *b)
 void window_line_entry_init(board *b)
 {
 	if (!window_line_entry) {
-		window_line_entry = create_window_line_entry ();
-		line_entry = GTK_ENTRY(lookup_widget(window_line_entry, "line_entry"));
+		window_line_entry = glade_xml_get_widget (win->xml, "window_line_entry");
+		line_entry = GTK_ENTRY(glade_xml_get_widget (win->xml, "line_entry"));
 		gtk_widget_show (window_line_entry);
 	}
 	if (b)

@@ -9,8 +9,6 @@ bin_PROGRAMS = tenace
 
 tenace_SOURCES = \
 	main.c \
-	support.c support.h \
-	interface.c interface.h \
 	callbacks.c callbacks.h \
 	bridge.c bridge.h \
 	file.c file.h \
@@ -25,5 +23,6 @@ tenace_SOURCES = \
 	window_play.c window_play.h
 
 tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds ../handdisplay/hand_display.o
+tenace_LDFLAGS = -export-dynamic
 
 EXTRA_DIST = unused.c

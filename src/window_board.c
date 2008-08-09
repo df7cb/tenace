@@ -27,10 +27,8 @@
 
 #include "file.h"
 #include "functions.h"
-#include "interface.h"
 #include "options.h"
 #include "solve.h"
-#include "support.h"
 #include "window_card.h"
 #include "window_line_entry.h"
 #include "window_play.h"
@@ -188,56 +186,56 @@ void show_board (board *b, redraw_t redraw)
 	}
 
 	if (redraw & REDRAW_CONTRACT) {
-		w = lookup_widget(win->window, "label_board");
+		w = glade_xml_get_widget (win->xml, "label_board");
 		g_string_printf(str, "%s\n%s", b->name->str,
 			contract_string(b->level, b->trumps, b->declarer, b->doubled));
 		gtk_label_set_text((GtkLabel*) w, str->str);
 
 		char *dealermenu[] = { 0, "dealer_west1", "dealer_north1",
 			"dealer_east1", "dealer_south1"};
-		w = lookup_widget(win->window, dealermenu[b->dealer]);
+		w = glade_xml_get_widget (win->xml, dealermenu[b->dealer]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
 		char *declarermenu[] = { 0, "declarer_west1", "declarer_north1",
 			"declarer_east1", "declarer_south1"};
-		w = lookup_widget(win->window, declarermenu[b->declarer]);
+		w = glade_xml_get_widget (win->xml, declarermenu[b->declarer]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
 		char *levelmenu[] = { "level1" /* PASS */, "level1", "level2", "level3",
 			"level4", "level5", "level6", "level7" };
-		w = lookup_widget(win->window, levelmenu[b->level]);
+		w = glade_xml_get_widget (win->xml, levelmenu[b->level]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
 		char *suitmenu[] = { "contract_clubs1", "contract_diamonds1",
 			"contract_hearts1", "contract_spades1", "contract_no_trump1" };
-		w = lookup_widget(win->window, suitmenu[b->trumps]);
+		w = glade_xml_get_widget (win->xml, suitmenu[b->trumps]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
 		char *doublemenu[] = { "level_doubled0", "level_doubled1", "level_redoubled1" };
-		w = lookup_widget(win->window, doublemenu[b->doubled]);
+		w = glade_xml_get_widget (win->xml, doublemenu[b->doubled]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
 		char *vulnmenu[] = { "vuln_none", "vuln_ns", "vuln_ew", "vuln_all" };
-		w = lookup_widget(win->window, vulnmenu[2 * b->vuln[1] + b->vuln[0]]);
+		w = glade_xml_get_widget (win->xml, vulnmenu[2 * b->vuln[1] + b->vuln[0]]);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w), TRUE);
 
 		window_options_board_populate ();
 	}
 
 	if (redraw & REDRAW_NAMES) {
-		w = lookup_widget(win->window, "label_west");
+		w = glade_xml_get_widget (win->xml, "label_west");
 		board_set_player_name (w, west, b->dealer == west, b->vuln[1],
 				b->declarer == west,
 				b->current_turn == west, b->hand_name[0]->str);
-		w = lookup_widget(win->window, "label_north");
+		w = glade_xml_get_widget (win->xml, "label_north");
 		board_set_player_name (w, north, b->dealer == north, b->vuln[0],
 				b->declarer == north,
 				b->current_turn == north, b->hand_name[1]->str);
-		w = lookup_widget(win->window, "label_east");
+		w = glade_xml_get_widget (win->xml, "label_east");
 		board_set_player_name (w, east, b->dealer == east, b->vuln[1],
 				b->declarer == east,
 				b->current_turn == east, b->hand_name[2]->str);
-		w = lookup_widget(win->window, "label_south");
+		w = glade_xml_get_widget (win->xml, "label_south");
 		board_set_player_name (w, south, b->dealer == south, b->vuln[0],
 				b->declarer == south,
 				b->current_turn == south, b->hand_name[3]->str);
@@ -246,13 +244,13 @@ void show_board (board *b, redraw_t redraw)
 	}
 
 	if (redraw & REDRAW_TRICKS) {
-		w = lookup_widget(win->window, "label_tricks");
+		w = glade_xml_get_widget (win->xml, "label_tricks");
 		g_string_printf(str, _("NS: %d\nEW: %d"), b->tricks[0], b->tricks[1]);
 		gtk_label_set_markup((GtkLabel*) w, str->str);
 	}
 
 	if (redraw & REDRAW_PAR) {
-		w = lookup_widget (win->window, "par_label");
+		w = glade_xml_get_widget (win->xml, "par_label");
 		if (b->par_score == -1) {
 			gtk_label_set_text (GTK_LABEL (w), "");
 		} else {
@@ -511,7 +509,7 @@ static void create_hand_widgets (window_board_t *win)
 	GtkSizeGroup *sizegroup = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
 	for (h = 0; h < 4; h++) {
-		GtkWidget *alignment = lookup_widget(win->window, alignment_a[h]);
+		GtkWidget *alignment = glade_xml_get_widget (win->xml, alignment_a[h]);
 		GtkWidget *hand = hand_display_new(HAND_DISPLAY_MODE_HAND);
 		gtk_container_add(GTK_CONTAINER(alignment), hand);
 		gtk_widget_show(hand);
@@ -526,7 +524,7 @@ static void create_hand_widgets (window_board_t *win)
 	g_object_unref (sizegroup);
 
 	/* trick display */
-	GtkWidget *grid = lookup_widget (win->window, "table1");
+	GtkWidget *grid = glade_xml_get_widget (win->xml, "table1");
 	GtkWidget *table = hand_display_new (HAND_DISPLAY_MODE_TABLE);
 	gtk_table_attach_defaults (GTK_TABLE (grid), table, 1, 2, 1, 2);
 	gtk_widget_show (table);
@@ -546,13 +544,13 @@ create_bidding_widget (window_board_t *win)
 {
 	/*
 	GtkScrolledWindow *scroll = GTK_SCROLLED_WINDOW
-		(lookup_widget(win->window, "scrolledwindow2"));
+		(glade_xml_get_widget (win->xml, "scrolledwindow2"));
 	GdkColor bg = { 0, 0.8*65535, 0.0, 0.0 };
 	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
 	gtk_widget_modify_bg (GTK_WIDGET (scroll), GTK_STATE_NORMAL, &bg);
 	*/
 
-	win->bidding = GTK_TREE_VIEW (lookup_widget(win->window, "treeview_bidding"));
+	win->bidding = GTK_TREE_VIEW (glade_xml_get_widget (win->xml, "treeview_bidding"));
 	//gtk_widget_modify_bg (GTK_WIDGET (bidding), GTK_STATE_NORMAL, &bg);
 	//gdk_window_set_background (gtk_tree_view_get_bin_window (bidding), &bidding_vuln);
 	win->bidding_store = gtk_list_store_new (8,
@@ -637,14 +635,15 @@ board_window_append_board (window_board_t *win, board *b)
 void
 board_window_init (window_board_t *win)
 {
-	win->window = create_window_hand ();
-	win->statusbar = GTK_STATUSBAR (lookup_widget(win->window, "statusbar1"));
-	win->board_menu = lookup_widget(win->window, "board_menu1");
+	//win->window = create_window_hand ();
+	win->window = glade_xml_get_widget (win->xml, "window_hand");
+	win->statusbar = GTK_STATUSBAR (glade_xml_get_widget (win->xml, "statusbar1"));
+	win->board_menu = glade_xml_get_widget (win->xml, "board_menu1");
 	create_hand_widgets(win);
 	create_bidding_widget (win);
 
 	/* set up "recently used" menu */
-	GtkWidget *jump_menu = lookup_widget(win->window, "jump_to1");
+	GtkWidget *jump_menu = glade_xml_get_widget (win->xml, "jump_to1");
 #if GTK_CHECK_VERSION (2,10,0)
 	GtkWidget *recentchooser = gtk_recent_chooser_menu_new ();
 	gtk_recent_chooser_set_sort_type (GTK_RECENT_CHOOSER (recentchooser),

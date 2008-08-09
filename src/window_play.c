@@ -17,8 +17,7 @@
 
 #include "bridge.h"
 #include "functions.h"
-#include "interface.h"
-#include "support.h"
+#include "window_board.h"
 
 static GtkWidget *window_play = 0;
 static GtkTable *play_table;
@@ -53,13 +52,13 @@ void window_play_update (board *b)
 	}
 }
 
-void window_play_init (board *b)
+void window_play_init (window_board_t *win, board *b)
 {
 	if (window_play)
 		return;
 
-	window_play = create_window_play();
-	play_table = GTK_TABLE(lookup_widget(window_play, "play_table"));
+	window_play = glade_xml_get_widget (win->xml, "window_play");
+	play_table = GTK_TABLE(glade_xml_get_widget (win->xml, "play_table"));
 	assert (play_table);
 	int cr, cc;
 	char str[20];

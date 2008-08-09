@@ -24,10 +24,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "interface.h"
-#include "support.h"
 #include "bridge.h"
 #include "file.h"
+#include "functions.h"
 #include "options.h"
 #include "solve.h"
 #include "window_board.h"
@@ -46,12 +45,15 @@ main (int argc, char *argv[])
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
-  add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+  //add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
 
   init_solve();
   srand(time(NULL));
 
   win = malloc(sizeof(window_board_t));
+  win->xml = glade_xml_new("../bridgehand.glade", NULL, NULL);
+  glade_xml_signal_autoconnect (win->xml);
+
   board_window_init (win);
   read_config (win);
 

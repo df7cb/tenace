@@ -22,8 +22,6 @@
 #include <gtk/gtk.h>
 
 #include "callbacks.h"
-#include "interface.h"
-#include "support.h"
 #include "bridge.h"
 #include "file.h"
 #include "functions.h"
@@ -428,7 +426,7 @@ on_imp_table1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (!window_imps) {
-		window_imps = create_window_imps ();
+		window_imps = glade_xml_get_widget (win->xml, "window_imps");
 		gtk_widget_show (window_imps);
 	}
 }
@@ -606,7 +604,7 @@ on_window_line_entry_delete_event      (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	PROTECT_BEGIN_BOOL;
-	GtkWidget *menuitem = lookup_widget (win->window, "deal_line");
+	GtkWidget *menuitem = glade_xml_get_widget (win->xml, "deal_line");
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), FALSE);
 	window_line_entry_delete ();
 	PROTECT_END;
@@ -654,7 +652,7 @@ on_window_card_delete_event            (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	PROTECT_BEGIN_BOOL;
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "cards1"));
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "cards1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_card_delete ();
 	PROTECT_END;
@@ -680,7 +678,7 @@ on_window_bids_delete_event            (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	PROTECT_BEGIN_BOOL;
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "bids1"));
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "bids1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_bids_delete ();
 	PROTECT_END;
@@ -703,7 +701,7 @@ on_window_play_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (lookup_widget (win->window, "play1"));
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "play1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_play_delete ();
 	return FALSE;
@@ -715,7 +713,7 @@ on_play1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_play_init (CUR_BOARD);
+		window_play_init (win, CUR_BOARD);
 	else
 		window_play_delete ();
 }
@@ -994,7 +992,7 @@ on_info1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (!window_info) {
-		window_info = create_aboutdialog1 ();
+		window_info = glade_xml_get_widget (win->xml, "aboutdialog1");
 		gtk_widget_show (window_info);
 	}
 }

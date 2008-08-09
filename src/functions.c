@@ -19,7 +19,6 @@
 
 #include "bridge.h"
 #include "functions.h"
-#include "support.h"
 
 const char *seat_str[] = {0, "W", "N", "E", "S"};
 const char *trump_str[] = {"♣", "♦", "♥", "♠", "NT"};

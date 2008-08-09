@@ -1,8 +1,9 @@
 #ifndef WINDOW_CARD_H
 #define WINDOW_CARD_H
 
-#include "../handdisplay/hand_display.h"
+#include <glade/glade.h>
 
+#include "../handdisplay/hand_display.h"
 #include "bridge.h"
 
 /* defines */
@@ -19,6 +20,7 @@
 
 typedef struct _window_board_t {
 	/* GTK */
+	GladeXML *xml;
 	GtkWidget *window;
 	GtkStatusbar *statusbar;
 	GtkWidget *board_menu;
