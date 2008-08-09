@@ -13,8 +13,10 @@
  *  GNU General Public License for more details.
  */
 
+#include <assert.h>
 #include <gtk/gtk.h>
 
+#include "config.h"
 #include "window_board.h"
 
 
@@ -26,10 +28,8 @@ void
 on_imp_table1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (!window_imps) {
-		window_imps = glade_xml_get_widget (win->xml, "window_imps");
-		gtk_widget_show (window_imps);
-	}
+	window_imps = glade_xml_get_widget (win->xml, "window_imps");
+	gtk_widget_show (window_imps);
 }
 
 
@@ -37,20 +37,7 @@ void
 on_imps_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	if (window_imps) {
-		gtk_widget_hide (GTK_WIDGET(window_imps));
-		window_imps = NULL;
-	}
-}
-
-
-gboolean
-on_window_imps_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	window_imps = NULL;
-	return FALSE;
+	gtk_widget_hide (GTK_WIDGET(window_imps));
 }
 
 
@@ -62,10 +49,8 @@ void
 on_info1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (!window_info) {
-		window_info = glade_xml_get_widget (win->xml, "aboutdialog1");
-		gtk_widget_show (window_info);
-	}
+	window_info = glade_xml_get_widget (win->xml, "aboutdialog1");
+	gtk_widget_show (window_info);
 }
 
 
@@ -73,10 +58,7 @@ void
 on_aboutdialog1_close                  (GtkDialog       *dialog,
                                         gpointer         user_data)
 {
-	if (window_info) {
-		gtk_widget_hide (GTK_WIDGET(window_info));
-		window_info = NULL;
-	}
+	gtk_widget_hide (GTK_WIDGET(window_info));
 }
 
 
@@ -85,19 +67,6 @@ on_aboutdialog1_response               (GtkDialog       *dialog,
                                         gint             response_id,
                                         gpointer         user_data)
 {
-	if (window_info) {
-		gtk_widget_hide (GTK_WIDGET(window_info));
-		window_info = NULL;
-	}
-}
-
-
-gboolean
-on_aboutdialog1_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	window_info = NULL;
-	return FALSE;
+	gtk_widget_hide (GTK_WIDGET(window_info));
 }
 

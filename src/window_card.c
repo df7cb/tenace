@@ -23,10 +23,10 @@
 
 #include "window_card.h" /* board b */
 
-static GtkWidget *window_card = 0;
-static HandDisplay *hand_display = 0;
+static GtkWidget *window_card = NULL;
+static HandDisplay *hand_display = NULL;
 static int seat_null = 0;
-seat new_card_seat = west;
+static seat new_card_seat = west;
 
 void
 card_window_update (seat *cards)
@@ -155,8 +155,10 @@ window_card_set_style (int style)
 void
 window_card_init (int style)
 {
-	if (window_card)
+	if (window_card) {
+		gtk_widget_show (window_card);
 		return;
+	}
 
 	GtkWidget *w = hand_display_new (HAND_DISPLAY_MODE_HAND_X);
 	hand_display = HAND_DISPLAY (w);
@@ -179,25 +181,17 @@ window_card_init (int style)
 	window_card_set_style (style);
 }
 
-static void
-window_card_delete (void)
-{
-	if (!window_card)
-		return;
-
-	gtk_widget_hide (window_card);
-	window_card = NULL;
-}
-
 gboolean
 on_window_card_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+	printf ("delete... \n");
 	PROTECT_BEGIN_BOOL;
+	printf ("... delete\n");
 	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "cards1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
-	window_card_delete ();
+	gtk_widget_hide (window_card);
 	PROTECT_END;
 	return FALSE;
 }
@@ -210,7 +204,7 @@ on_cards1_activate                     (GtkMenuItem     *menuitem,
 	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
 		window_card_init (win->hand_display_style);
 	} else
-		window_card_delete ();
+		gtk_widget_hide (window_card);
 	PROTECT_END;
 }
 

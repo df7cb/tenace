@@ -1216,6 +1216,7 @@ EW: %d</property>
   <widget class="GtkWindow" id="window_card">
     <property name="title" translatable="yes">Board editor</property>
     <signal name="delete_event" handler="on_window_card_delete_event"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
     <child>
       <widget class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
@@ -1323,6 +1324,7 @@ EW: %d</property>
     <property name="title" translatable="yes">Bidding editor</property>
     <property name="resizable">False</property>
     <signal name="delete_event" handler="on_window_bids_delete_event"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
     <child>
       <widget class="GtkVBox" id="vbox3">
         <property name="visible">True</property>
@@ -1518,8 +1520,7 @@ EW: %d</property>
   <widget class="GtkWindow" id="window_imps">
     <property name="title" translatable="yes">IMP Table</property>
     <property name="resizable">False</property>
-    <signal name="delete_event" handler="on_window_imps_delete_event"/>
-    <signal name="destroy_event" handler="on_window_imps_delete_event"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
@@ -2281,47 +2282,11 @@ EW: %d</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkWindow" id="window_line_entry">
-    <property name="title" translatable="yes">Text input</property>
-    <property name="default_width">580</property>
-    <signal name="delete_event" handler="on_window_line_entry_delete_event"/>
-    <signal name="destroy_event" handler="on_window_line_entry_delete_event"/>
-    <child>
-      <widget class="GtkHBox" id="hbox4">
-        <property name="visible">True</property>
-        <child>
-          <widget class="GtkEntry" id="line_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="tooltip" translatable="yes">Hand as string</property>
-            <property name="invisible_char">*</property>
-            <property name="text">63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853</property>
-            <signal name="activate" handler="on_line_entry_activate"/>
-          </widget>
-        </child>
-        <child>
-          <widget class="GtkButton" id="line_entry_ok">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="tooltip" translatable="yes">Set hand</property>
-            <property name="label">gtk-ok</property>
-            <property name="use_stock">True</property>
-            <property name="response_id">0</property>
-            <signal name="clicked" handler="on_line_entry_ok_clicked"/>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
   <widget class="GtkWindow" id="window_play">
     <property name="title" translatable="yes">Play</property>
     <property name="default_width">150</property>
     <signal name="delete_event" handler="on_window_play_delete_event"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
     <child>
       <widget class="GtkVBox" id="vbox6">
         <property name="visible">True</property>
@@ -2676,6 +2641,7 @@ EW: %d</property>
   <widget class="GtkWindow" id="window_options">
     <property name="title" translatable="yes">Options</property>
     <signal name="delete_event" handler="on_window_options_delete_event"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
     <child>
       <widget class="GtkVBox" id="vbox7">
         <property name="visible">True</property>
@@ -3279,9 +3245,9 @@ EW: %d</property>
     <property name="authors">Christoph Berg &lt;cb@df7cb.de&gt;</property>
     <property name="documenters"></property>
     <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">de: Christoph Berg &lt;cb@df7cb.de&gt;</property>
-    <signal name="close" handler="on_aboutdialog1_close"/>
-    <signal name="delete_event" handler="on_aboutdialog1_delete_event"/>
-    <signal name="response" handler="on_aboutdialog1_response"/>
+    <signal name="close" handler="gtk_widget_hide"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
+    <signal name="response" handler="gtk_widget_hide"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">
         <child internal-child="action_area">
@@ -3290,6 +3256,43 @@ EW: %d</property>
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="window_line_entry">
+    <property name="title" translatable="yes">Text input</property>
+    <property name="default_width">580</property>
+    <signal name="delete_event" handler="on_window_line_entry_delete_event"/>
+    <signal name="delete_event" handler="gtk_widget_hide"/>
+    <child>
+      <widget class="GtkHBox" id="hbox4">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkEntry" id="line_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip" translatable="yes">Hand as string</property>
+            <property name="invisible_char">*</property>
+            <property name="text">63.A84.K853.KQ72 JT.QJT952.QJT62. Q9854.763.A7.A64 AK72.K.94.JT9853</property>
+            <signal name="activate" handler="on_line_entry_activate"/>
+          </widget>
+        </child>
+        <child>
+          <widget class="GtkButton" id="line_entry_ok">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip" translatable="yes">Set hand</property>
+            <property name="label">gtk-ok</property>
+            <property name="use_stock">True</property>
+            <property name="response_id">0</property>
+            <signal name="clicked" handler="on_line_entry_ok_clicked"/>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>

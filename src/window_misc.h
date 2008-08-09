@@ -23,11 +23,6 @@ void
 on_imps_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data);
 
-gboolean
-on_window_imps_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
 /* about dialog */
 
 void
@@ -41,9 +36,4 @@ on_aboutdialog1_close                  (GtkDialog       *dialog,
 void
 on_aboutdialog1_response               (GtkDialog       *dialog,
                                         gint             response_id,
-                                        gpointer         user_data);
-
-gboolean
-on_aboutdialog1_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
                                         gpointer         user_data);
