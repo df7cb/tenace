@@ -93,4 +93,10 @@ void board_set_level (int level);
 void board_set_vuln (int ns, int ew);
 void board_set_doubled (int doubled);
 
+/* callbacks */
+gboolean
+on_window_hand_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
 #endif /* WINDOW_CARD_H */

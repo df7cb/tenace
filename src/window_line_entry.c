@@ -57,7 +57,8 @@ void window_line_entry_init(board *b)
 		line_entry_set_from_board(b);
 }
 
-void window_line_entry_delete (board *b)
+static void
+window_line_entry_delete ()
 {
 	if (window_line_entry) {
 		gtk_widget_hide (window_line_entry);
@@ -66,3 +67,47 @@ void window_line_entry_delete (board *b)
 	}
 }
 
+void
+on_deal_line_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	PROTECT_BEGIN;
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
+		board *b = CUR_BOARD;
+		window_line_entry_init (b);
+	} else
+		window_line_entry_delete ();
+	PROTECT_END;
+}
+
+
+void
+on_line_entry_activate                 (GtkEntry        *entry,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	board_set_from_line_entry(b);
+}
+
+
+void
+on_line_entry_ok_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	board_set_from_line_entry(b);
+}
+
+
+gboolean
+on_window_line_entry_delete_event      (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	PROTECT_BEGIN_BOOL;
+	GtkWidget *menuitem = glade_xml_get_widget (win->xml, "deal_line");
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), FALSE);
+	window_line_entry_delete ();
+	PROTECT_END;
+	return FALSE;
+}

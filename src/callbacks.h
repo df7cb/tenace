@@ -21,34 +21,7 @@ void
 on_beenden1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-gboolean
-on_window_hand_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
 
-void
-on_radiotoolbutton_west_clicked        (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_radiotoolbutton_north_clicked       (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
 
 void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
@@ -184,28 +157,6 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_imp_table1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_imps_ok_clicked                     (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_imps_ok_clicked                     (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_window_imps_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_window_imps_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
 on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
 
@@ -253,18 +204,6 @@ void
 on_deal_clear_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-void
-on_line_entry_ok_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_window_line_entry_delete_event      (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_line_entry_activate                 (GtkEntry        *entry,
-                                        gpointer         user_data);
 
 void
 on_level_doubled0_activate             (GtkMenuItem     *menuitem,
@@ -286,14 +225,6 @@ void
 on_dealer_south1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-gboolean
-on_window_play_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_cards1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
 
 void
 on_bidding1_activate                   (GtkMenuItem     *menuitem,
@@ -303,40 +234,13 @@ void
 on_play1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-gboolean
-on_window_card_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
 void
 on_bids1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-gboolean
-on_window_bidding_delete_event         (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_window_bids_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
 
 void
 on_played_cards1_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_style_text_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_style_cards_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_options_cards_filechooser_file_activated
-                                        (GtkFileChooser  *filechooser,
                                         gpointer         user_data);
 
 void
@@ -411,13 +315,6 @@ void
 on_se1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-void
-on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
 
 void
 on_button_hand_open_clicked            (GtkToolButton   *toolbutton,
@@ -436,24 +333,6 @@ on_button_next_board_clicked           (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
 
 void
-on_info1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_aboutdialog1_close                  (GtkDialog       *dialog,
-                                        gpointer         user_data);
-
-void
-on_aboutdialog1_response               (GtkDialog       *dialog,
-                                        gint             response_id,
-                                        gpointer         user_data);
-
-gboolean
-on_aboutdialog1_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
 on_deal_cut_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -463,10 +342,6 @@ on_deal_copy_activate                  (GtkMenuItem     *menuitem,
 
 void
 on_deal_paste_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
 
 void
@@ -487,27 +362,6 @@ on_rewind_play1_activate               (GtkMenuItem     *menuitem,
 
 void
 on_complete_play1_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_options1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_options_cancel_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_options_apply_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_options_ok_clicked                  (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_window_options_delete_event         (GtkWidget       *widget,
-                                        GdkEvent        *event,
                                         gpointer         user_data);
 
 void

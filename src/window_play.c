@@ -91,3 +91,24 @@ window_play_delete (void)
 	gtk_widget_hide (window_play);
 	window_play = 0;
 }
+
+gboolean
+on_window_play_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "play1"));
+	gtk_check_menu_item_set_active (menuitem, FALSE);
+	window_play_delete ();
+	return FALSE;
+}
+
+void
+on_play1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
+		window_play_init (win, CUR_BOARD);
+	else
+		window_play_delete ();
+}

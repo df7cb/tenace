@@ -1,3 +1,5 @@
+#include "bridge.h"
+
 void init_solve();
 void solve_statusbar(char *text);
 //void board_dds(board *b);

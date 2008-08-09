@@ -22,18 +22,11 @@
 #include <gtk/gtk.h>
 
 #include "callbacks.h"
-#include "bridge.h"
-#include "file.h"
-#include "functions.h"
-#include "options.h"
-#include "solve.h"
-#include "window_bids.h"
+#include "functions.h" /* _() */
+#include "solve.h" /* run_dd */
 #include "window_board.h"
-#include "window_card.h"
-#include "window_line_entry.h"
-#include "window_play.h"
 
-static GtkWidget *window_imps = NULL;
+/* menu */
 
 void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
@@ -98,70 +91,6 @@ on_beenden1_activate                   (GtkMenuItem     *menuitem,
 	gtk_main_quit ();
 }
 
-
-gboolean
-on_window_hand_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	gtk_main_quit ();
-	return FALSE;
-}
-
-
-void
-on_radiotoolbutton_west_clicked        (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	set_new_card_seat (west);
-}
-
-
-void
-on_radiotoolbutton_north_clicked       (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	set_new_card_seat (north);
-}
-
-
-void
-on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	set_new_card_seat (east);
-}
-
-
-void
-on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	set_new_card_seat (south);
-}
-
-
-void
-on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	board_clear(b);
-	card_window_update(b->dealt_cards);
-	show_board(b, REDRAW_HANDS | REDRAW_TRICKS | REDRAW_PAR);
-}
-
-
-void
-on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	deal_random(b);
-	card_window_update(b->dealt_cards);
-	compute_dd_scores (b, run_dd);
-	show_board(b, REDRAW_HANDS | REDRAW_PAR);
-}
 
 
 void
@@ -422,92 +351,6 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
 
 
 void
-on_imp_table1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (!window_imps) {
-		window_imps = glade_xml_get_widget (win->xml, "window_imps");
-		gtk_widget_show (window_imps);
-	}
-}
-
-
-void
-on_imps_ok_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	if (window_imps) {
-		gtk_widget_hide (GTK_WIDGET(window_imps));
-		window_imps = NULL;
-	}
-}
-
-
-gboolean
-on_window_imps_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	window_imps = NULL;
-	return FALSE;
-}
-
-
-void
-on_rewind_button_clicked               (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	if (!rewind_card(b)) /* extra call to show warning if there's nothing to do */
-		return;
-	while (b->n_played_cards % 4 != 0)
-		rewind_card (b);
-	compute_dd_scores (b, run_dd);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
-}
-
-
-void
-on_button_back_clicked                 (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	if (!rewind_card(b))
-		return;
-	compute_dd_scores (b, run_dd);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
-}
-
-
-void
-on_button_next_clicked                 (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	if (!next_card(b))
-		return;
-	compute_dd_scores (b, run_dd);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
-}
-
-
-void
-on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	if (!next_card (b)) /* extra call to show warning if there's nothing to do */
-		return;
-	while (b->n_played_cards % 4 != 0) {
-		if (! next_card (b))
-			break;
-	}
-	compute_dd_scores (b, run_dd);
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
-}
-
-
-void
 on_rewind_play1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -534,16 +377,6 @@ on_complete_play1_activate             (GtkMenuItem     *menuitem,
 
 
 void
-on_button_dd_clicked                   (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	compute_dd_scores (b, 1);
-	show_board(b, REDRAW_HANDS);
-}
-
-
-void
 on_deal_clear_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -566,50 +399,6 @@ on_deal_random_activate                (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_deal_line_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN;
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
-		board *b = CUR_BOARD;
-		window_line_entry_init (b);
-	} else
-		window_line_entry_delete ();
-	PROTECT_END;
-}
-
-
-void
-on_line_entry_activate                 (GtkEntry        *entry,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	board_set_from_line_entry(b);
-}
-
-
-void
-on_line_entry_ok_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	board *b = CUR_BOARD;
-	board_set_from_line_entry(b);
-}
-
-
-gboolean
-on_window_line_entry_delete_event      (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN_BOOL;
-	GtkWidget *menuitem = glade_xml_get_widget (win->xml, "deal_line");
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), FALSE);
-	window_line_entry_delete ();
-	PROTECT_END;
-	return FALSE;
-}
 
 
 void
@@ -644,119 +433,12 @@ on_dealer_south1_activate              (GtkMenuItem     *menuitem,
 }
 
 
-/* window handling */
-
-gboolean
-on_window_card_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN_BOOL;
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "cards1"));
-	gtk_check_menu_item_set_active (menuitem, FALSE);
-	window_card_delete ();
-	PROTECT_END;
-	return FALSE;
-}
-
-void
-on_cards1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN;
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
-		window_card_init (win->hand_display_style);
-	} else
-		window_card_delete ();
-	PROTECT_END;
-}
-
-
-gboolean
-on_window_bids_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN_BOOL;
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "bids1"));
-	gtk_check_menu_item_set_active (menuitem, FALSE);
-	window_bids_delete ();
-	PROTECT_END;
-	return FALSE;
-}
-
-
-void
-on_bids1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_bids_init ();
-	else
-		window_bids_delete ();
-}
-
-gboolean
-on_window_play_delete_event            (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "play1"));
-	gtk_check_menu_item_set_active (menuitem, FALSE);
-	window_play_delete ();
-	return FALSE;
-}
-
-
-void
-on_play1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem)))
-		window_play_init (win, CUR_BOARD);
-	else
-		window_play_delete ();
-}
-
-
-
 void
 on_played_cards1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	win->show_played_cards = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem));
 	show_board (win->boards[win->cur], REDRAW_HANDS);
-}
-
-
-void
-on_style_text_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN;
-	board_window_set_style (win, HAND_DISPLAY_STYLE_TEXT);
-	window_card_set_style (HAND_DISPLAY_STYLE_TEXT);
-	PROTECT_END;
-}
-
-
-void
-on_style_cards_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	PROTECT_BEGIN;
-	board_window_set_style (win, HAND_DISPLAY_STYLE_CARDS);
-	window_card_set_style (HAND_DISPLAY_STYLE_CARDS);
-	PROTECT_END;
-}
-
-
-void
-on_options_cards_filechooser_file_activated
-                                        (GtkFileChooser  *filechooser,
-                                        gpointer         user_data)
-{
-assert(0);
 }
 
 
@@ -894,59 +576,70 @@ on_se1_activate                        (GtkMenuItem     *menuitem,
 }
 
 
+
+/* toolbar */
+
 void
-on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
+on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	board_clear_bidding (b);
-	show_board(b, REDRAW_BIDDING);
+	if (!rewind_card(b)) /* extra call to show warning if there's nothing to do */
+		return;
+	while (b->n_played_cards % 4 != 0)
+		rewind_card (b);
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
 
 void
-on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
+on_button_back_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
 	board *b = CUR_BOARD;
-	if (b->n_bids) {
-		board_remove_bid (b);
+	if (!rewind_card(b))
+		return;
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
+}
+
+
+void
+on_button_next_clicked                 (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	if (!next_card(b))
+		return;
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
+}
+
+
+void
+on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	if (!next_card (b)) /* extra call to show warning if there's nothing to do */
+		return;
+	while (b->n_played_cards % 4 != 0) {
+		if (! next_card (b))
+			break;
 	}
-	show_board(b, REDRAW_BIDDING | REDRAW_BIDDING_SCROLL);
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_TRICKS | REDRAW_PLAY);
 }
 
 
-#define TRY(x) { if (!(x)) goto end; }
-
 void
-on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
+on_button_dd_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
-	int i;
 	board *b = CUR_BOARD;
-	seat cur_seat = seat_mod (b->dealer + b->n_bids);
-	int passes = (b->declarer - cur_seat) % 4;
-
-	for (i = (b->n_bids + passes - 2) % 4; i < b->n_bids; i += 4)
-		if (b->bidding[i] >= 5 && DENOM (b->bidding[i]) == b->trumps) {
-			board_statusbar (_("Suit was already bid from wrong side"));
-			goto end;
-		}
-
-	for (i = 0; i < passes; i++)
-		TRY (board_append_bid (b, bid_pass, 0));
-
-	TRY (board_append_bid (b, 5 * b->level + b->trumps, 0));
-	if (b->doubled)
-		TRY (board_append_bid (b, bid_x, 0));
-	if (b->doubled == bid_xx)
-		TRY (board_append_bid (b, bid_xx, 0));
-	TRY (board_append_bid (b, bid_pass, 0));
-	TRY (board_append_bid (b, bid_pass, 0));
-	TRY (board_append_bid (b, bid_pass, 0));
-
-end:
-	show_board(b, REDRAW_BIDDING | REDRAW_BIDDING_SCROLL);
+	compute_dd_scores (b, 1);
+	show_board(b, REDRAW_HANDS);
 }
 
 
@@ -981,54 +674,4 @@ on_button_next_board_clicked           (GtkToolButton   *toolbutton,
 	show_board (win->boards[win->cur], REDRAW_FULL);
 	PROTECT_END;
 }
-
-
-/* about dialog */
-
-static GtkWidget *window_info = NULL;
-
-void
-on_info1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (!window_info) {
-		window_info = glade_xml_get_widget (win->xml, "aboutdialog1");
-		gtk_widget_show (window_info);
-	}
-}
-
-
-void
-on_aboutdialog1_close                  (GtkDialog       *dialog,
-                                        gpointer         user_data)
-{
-	if (window_info) {
-		gtk_widget_hide (GTK_WIDGET(window_info));
-		window_info = NULL;
-	}
-}
-
-
-void
-on_aboutdialog1_response               (GtkDialog       *dialog,
-                                        gint             response_id,
-                                        gpointer         user_data)
-{
-	if (window_info) {
-		gtk_widget_hide (GTK_WIDGET(window_info));
-		window_info = NULL;
-	}
-}
-
-
-gboolean
-on_aboutdialog1_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-	window_info = NULL;
-	return FALSE;
-}
-
-/* -- */
 

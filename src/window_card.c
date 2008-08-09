@@ -18,6 +18,7 @@
 
 #include "bridge.h"
 #include "functions.h"
+#include "solve.h" /* run_dd */
 #include "window_board.h" /* board b */
 
 #include "window_card.h" /* board b */
@@ -48,7 +49,7 @@ card_window_update (seat *cards)
 	hand_display_draw (GTK_WIDGET (hand_display));
 }
 
-void
+static void
 set_new_card_seat (seat s)
 {
 	new_card_seat = s;
@@ -178,7 +179,7 @@ window_card_init (int style)
 	window_card_set_style (style);
 }
 
-void
+static void
 window_card_delete (void)
 {
 	if (!window_card)
@@ -187,3 +188,84 @@ window_card_delete (void)
 	gtk_widget_hide (window_card);
 	window_card = NULL;
 }
+
+gboolean
+on_window_card_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	PROTECT_BEGIN_BOOL;
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "cards1"));
+	gtk_check_menu_item_set_active (menuitem, FALSE);
+	window_card_delete ();
+	PROTECT_END;
+	return FALSE;
+}
+
+void
+on_cards1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	PROTECT_BEGIN;
+	if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (menuitem))) {
+		window_card_init (win->hand_display_style);
+	} else
+		window_card_delete ();
+	PROTECT_END;
+}
+
+void
+on_radiotoolbutton_west_clicked        (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	set_new_card_seat (west);
+}
+
+
+void
+on_radiotoolbutton_north_clicked       (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	set_new_card_seat (north);
+}
+
+
+void
+on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	set_new_card_seat (east);
+}
+
+
+void
+on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	set_new_card_seat (south);
+}
+
+
+void
+on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	board_clear(b);
+	card_window_update(b->dealt_cards);
+	show_board(b, REDRAW_HANDS | REDRAW_TRICKS | REDRAW_PAR);
+}
+
+
+void
+on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
+                                        gpointer         user_data)
+{
+	board *b = CUR_BOARD;
+	deal_random(b);
+	card_window_update(b->dealt_cards);
+	compute_dd_scores (b, run_dd);
+	show_board(b, REDRAW_HANDS | REDRAW_PAR);
+}
+
+

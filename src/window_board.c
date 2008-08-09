@@ -682,6 +682,15 @@ board_window_init (window_board_t *win)
 	gtk_widget_show (win->window);
 }
 
+gboolean
+on_window_hand_delete_event            (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	gtk_main_quit ();
+	return FALSE;
+}
+
 void board_statusbar (char *text)
 {
 	static guint id = 0;
@@ -787,3 +796,4 @@ board_set_doubled (int doubled)
 	show_board(b, REDRAW_CONTRACT | REDRAW_BOARD_LIST);
 	PROTECT_END;
 }
+
