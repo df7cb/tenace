@@ -100,6 +100,6 @@ window_bids_delete (void)
 	if (!window_bids)
 		return;
 
-	gtk_widget_destroy (window_bids);
+	gtk_widget_hide (window_bids);
 	window_bids = 0;
 }

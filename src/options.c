@@ -428,7 +428,7 @@ void
 on_options_cancel_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-	gtk_widget_destroy (GTK_WIDGET (window_options));
+	gtk_widget_hide (GTK_WIDGET (window_options));
 	window_options = NULL;
 }
 
@@ -446,7 +446,7 @@ on_options_ok_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
 	on_options_apply_clicked (button, user_data);
-	gtk_widget_destroy (GTK_WIDGET (window_options));
+	gtk_widget_hide (GTK_WIDGET (window_options));
 	window_options = NULL;
 }
 

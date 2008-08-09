@@ -437,7 +437,7 @@ on_imps_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
 	if (window_imps) {
-		gtk_widget_destroy(GTK_WIDGET(window_imps));
+		gtk_widget_hide (GTK_WIDGET(window_imps));
 		window_imps = NULL;
 	}
 }
@@ -1003,7 +1003,7 @@ on_aboutdialog1_close                  (GtkDialog       *dialog,
                                         gpointer         user_data)
 {
 	if (window_info) {
-		gtk_widget_destroy(GTK_WIDGET(window_info));
+		gtk_widget_hide (GTK_WIDGET(window_info));
 		window_info = NULL;
 	}
 }
@@ -1015,7 +1015,7 @@ on_aboutdialog1_response               (GtkDialog       *dialog,
                                         gpointer         user_data)
 {
 	if (window_info) {
-		gtk_widget_destroy(GTK_WIDGET(window_info));
+		gtk_widget_hide (GTK_WIDGET(window_info));
 		window_info = NULL;
 	}
 }

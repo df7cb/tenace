@@ -60,7 +60,7 @@ void window_line_entry_init(board *b)
 void window_line_entry_delete (board *b)
 {
 	if (window_line_entry) {
-		gtk_widget_destroy (window_line_entry);
+		gtk_widget_hide (window_line_entry);
 		window_line_entry = NULL;
 		line_entry = NULL;
 	}

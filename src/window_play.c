@@ -88,6 +88,6 @@ window_play_delete (void)
 	if (!window_play)
 		return;
 
-	gtk_widget_destroy (window_play);
+	gtk_widget_hide (window_play);
 	window_play = 0;
 }

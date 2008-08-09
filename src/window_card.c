@@ -184,6 +184,6 @@ window_card_delete (void)
 	if (!window_card)
 		return;
 
-	gtk_widget_destroy (window_card);
-	window_card = 0;
+	gtk_widget_hide (window_card);
+	window_card = NULL;
 }
