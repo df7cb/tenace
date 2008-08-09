@@ -45,13 +45,11 @@ main (int argc, char *argv[])
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
-  //add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
-
   init_solve();
   srand(time(NULL));
 
   win = malloc(sizeof(window_board_t));
-  win->xml = glade_xml_new("../bridgehand.glade", NULL, NULL);
+  win->xml = glade_xml_new (PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".glade", NULL, NULL);
   glade_xml_signal_autoconnect (win->xml);
 
   board_window_init (win);

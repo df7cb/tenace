@@ -2,10 +2,9 @@
 
 SUBDIRS = contrib doc examples handdisplay src po
 
-EXTRA_DIST = \
-	autogen.sh \
-	bridgehand.glade \
-	bridgehand.gladep
+dist_pkgdata_DATA = tenace.glade
+
+EXTRA_DIST = autogen.sh
 
 install-data-local:
 	@$(NORMAL_INSTALL)

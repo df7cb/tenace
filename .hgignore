@@ -4,6 +4,7 @@
 ^config/
 ^configure$
 ^config\.(h|h\.in|log|status)$
+^libtool$
 Makefile\.in$
 ^(|cards/|contrib/|doc/|examples/|handdisplay/|po/|src/)Makefile$
 ^po/.*\.gmo$
@@ -28,6 +29,7 @@ debian/files
 debian/tenace
 debian/tenace.substvars
 debian/*.debhelper
+debian/tenace.debhelper.log
 
 # stuff
 *.bak
