@@ -434,6 +434,64 @@ on_options_cancel_clicked              (GtkButton       *button,
 
 
 void
+on_options_generate_go_clicked         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *number = glade_xml_get_widget (win->xml, "options_generate_number");
+	int n = gtk_spin_button_get_value (GTK_SPIN_BUTTON (number));
+	GtkWidget *view = glade_xml_get_widget (win->xml, "options_generate_entry");
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+	GtkTextIter start, end;
+	gtk_text_buffer_get_iter_at_offset (buffer, &start, 0);
+	gtk_text_buffer_get_iter_at_offset (buffer, &end, -1);
+	char *text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+
+	printf("moo %s\n", text);
+
+	int wfd[2], rfd[2];
+	pid_t cpid;
+
+	if (pipe(wfd) == -1 || pipe(rfd) == -1) {
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+
+	cpid = fork();
+	if (cpid == -1) {
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+
+	if (cpid == 0) {    /* Child reads from pipe */
+		close (wfd[1]);          /* Close unused write end */
+		close (rfd[0]);
+		dup2 (0, wfd[0]);
+		dup2 (1, rfd[1]);
+		execlp ("dealer", "dealer", "-v", NULL);
+		perror ("execlp");
+		_exit(EXIT_FAILURE);
+
+	} else {
+		close (wfd[0]);          /* Close unused read end */
+		close (rfd[1]);
+		write (wfd[1], text, strlen (text));
+		close (wfd[1]);          /* Reader will see EOF */
+	}
+
+	int i;
+	do {
+		char buf[100];
+		i = read (rfd[0], buf, sizeof (buf));
+		buf[i == sizeof (buf) ? sizeof (buf) - 1 : i] = '\0';
+		puts (buf);
+	} while (i > 0);
+	close (rfd[0]);
+
+	g_free (text);
+}
+
+
+void
 on_options_apply_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
