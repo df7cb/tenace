@@ -6,7 +6,7 @@
 ^config\.(h|h\.in|log|status)$
 ^libtool$
 Makefile\.in$
-^(|cards/|contrib/|doc/|examples/|handdisplay/|po/|src/)Makefile$
+^(|cards/|contrib/|dds/|doc/|examples/|handdisplay/|po/|src/)Makefile$
 ^po/.*\.gmo$
 ^po/(POTFILES|tenace.pot)$
 ^src/\.deps/.*\.Po$
