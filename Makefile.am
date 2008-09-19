@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = contrib doc examples handdisplay src po
+SUBDIRS = contrib dds doc examples handdisplay src po
 
 dist_pkgdata_DATA = tenace.glade
 

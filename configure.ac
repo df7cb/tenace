@@ -11,6 +11,11 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
 AM_PROG_CC_STDC
 AC_HEADER_STDC
+AC_CHECK_LIB([dds], [SolveBoard], [havelibdds=yes],
+	     [echo Using internal dds library
+	      CFLAGS="$CFLAGS -I../dds"
+	      LDFLAGS="$LDFLAGS -L../dds"], [])
+AM_CONDITIONAL(HAVE_LIBDDS, [test x$havelibdds = xyes])
 
 pkg_modules="gtk+-2.0 >= 2.0.0 libglade-2.0"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
@@ -30,6 +35,7 @@ XGETTEXT="xgettext --from-code=utf-8"
 AC_OUTPUT([
 Makefile
 contrib/Makefile
+dds/Makefile
 doc/Makefile
 examples/Makefile
 handdisplay/Makefile
