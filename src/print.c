@@ -315,8 +315,32 @@ magic_draw_page (GtkPrintOperation *operation,
 	int r, c;
 	for (c = 0; c < mc.columns; c++) {
 		for (r = 0; r < mc.rows && cc >= 0; r++) {
-			if (print_head) { /* heading */
-				cairo_move_to (cr, c * mc.col_width + 80.0, 80.0);
+			if (print_head && mc.header == 1) { /* page heading */
+				cairo_set_font_size (cr, 10.0);
+
+				int r1, c1;
+				int cc1 = cc;
+				for (c1 = 0; c1 < mc.columns; c1++) {
+					for (r1 = 0; r1 < mc.rows; r1++) {
+						if (c1 == 0 && r1 == 0 || cc1 < 0)
+							continue;
+						cairo_move_to (cr, c1 * (mc.col_width - 2.0*mc.border) / mc.columns + mc.border,
+								r1 * (mc.row_height - 2.0*mc.border) / mc.rows + mc.border + 10.0);
+						cairo_select_font_face (cr, "Symbol",
+							CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+						cairo_show_text (cr, trump_str[SUIT(cc1)]);
+						cairo_select_font_face (cr, "Sans",
+							CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+						cairo_show_text (cr, rank_string (RANK(cc1)));
+						cc1--;
+					}
+				}
+				print_head = 0;
+				continue;
+			}
+			if (print_head && mc.header == 2) { /* suit heading */
+				cairo_move_to (cr, (c + 0.5) * mc.col_width - 15.0,
+						(r + 0.5) * mc.row_height + 30.0);
 				cairo_select_font_face (cr, "Symbol",
 					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 				cairo_set_font_size (cr, 40.0);
@@ -398,7 +422,8 @@ magic_begin_print (GtkPrintOperation *operation,
 			(operation, ceil (52.0 / (mc.columns * mc.rows)));
 	} else if (mc.header == 1) {
 		gtk_print_operation_set_n_pages
-			(operation, ceil (52.0 / (mc.columns * mc.rows - 1)));
+			(operation, ceil (52.0 / (mc.columns * mc.rows -
+						  (mc.columns == 1 && mc.columns == 1 ? 0 : 1))));
 	} else {
 		gtk_print_operation_set_n_pages
 			(operation, ceil (56.0 / (mc.columns * mc.rows)));
@@ -411,15 +436,14 @@ magic_begin_print (GtkPrintOperation *operation,
 
 	/* find fitting number of arrow columns and corresponding arrow size */
 	int n_boards = mc.to - mc.from + 1;
-	int cols;
-	for (cols = 1; cols <= n_boards; cols++) {
-		mc.arrow_size = (mc.row_height - 2*mc.border) / cols;
-		int arrow_rows = ceil ((double) n_boards / cols);
-		if (mc.arrow_size * arrow_rows <= mc.col_width/2.0 - mc.border - TEXTSEP/2.0) {
-			mc.arrow_columns = cols;
+	mc.arrow_columns = 0;
+	do {
+		mc.arrow_columns++;
+		mc.arrow_size = (mc.row_height - 2*mc.border) / mc.arrow_columns;
+		int arrow_rows = ceil ((double) n_boards / mc.arrow_columns);
+		if (mc.arrow_size * arrow_rows <= mc.col_width/2.0 - mc.border - TEXTSEP/2.0)
 			break;
-		}
-	}
+	} while (mc.arrow_columns <= n_boards);
 }
 
 void
