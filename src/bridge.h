@@ -61,6 +61,7 @@ typedef struct _dd_t {
 
 typedef struct board_t {
 	GString *name;
+	/* int number; FIXME: also store "real" board number */
 	int n; /* board number for board menu */
 
 	int vuln[2]; /* 0 = NS, 1 = EW */

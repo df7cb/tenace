@@ -3582,7 +3582,7 @@ EW: %d</property>
           <widget class="GtkSpinButton" id="magic_rows">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="adjustment">7 1 100 1 10 10</property>
+            <property name="adjustment">9 1 100 1 10 10</property>
             <property name="numeric">True</property>
           </widget>
           <packing>

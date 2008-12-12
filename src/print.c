@@ -253,8 +253,8 @@ magic_card_half (cairo_t *cr, window_board_t *win, card c)
 		cairo_translate (cr, col * mc.arrow_size + mc.border,
 				row * mc.arrow_size + mc.border);
 
-		arrow (cr, n + mc.from, (col + row) % 2,
-				win->boards[n + mc.from - 1]->dealt_cards[c], mc.arrow_size);
+		board *b = win->boards[n + mc.from - 1];
+		arrow (cr, n + mc.from, (col + row) % 2, b->dealt_cards[c], mc.arrow_size);
 		cairo_restore (cr);
 
 		/* draw title */
