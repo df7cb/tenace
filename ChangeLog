@@ -1,12 +1,13 @@
 tenace (0.8) upstream; urgency=low
 
+  * Implement printing, including "magic card" labels.
   * Some lin parser improvements to rudimentarily parse BM2000 data.
   * Include dds copy in our source to facilitate compilation on systems not
     providing libdds.a.
   * New example: triple-coup.lin.
   * GUI uses libglade.
 
- -- Christoph Berg <myon@debian.org>  Sat, 20 Sep 2008 01:24:19 +0200
+ -- Christoph Berg <myon@debian.org>  Fri, 12 Dec 2008 21:25:51 +0100
 
 tenace (0.7) upstream; urgency=low
 

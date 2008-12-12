@@ -217,9 +217,17 @@ magic_card (cairo_t *cr, window_board_t *win, card c)
 	cairo_restore (cr);
 }
 
-#define N_COL 3
-#define N_ROW 7
-#define N_PAGE 3
+struct magic_config_t {
+	GtkSpinButton* magic_columns;
+	GtkSpinButton* magic_rows;
+	GtkToggleButton* magic_no_header;
+	GtkToggleButton* magic_page_header;
+	GtkToggleButton* magic_suit_header;
+	int columns;
+	int rows;
+	int header;
+};
+static struct magic_config_t magic_config;
 
 static void
 magic_draw_page (GtkPrintOperation *operation,
@@ -230,19 +238,20 @@ magic_draw_page (GtkPrintOperation *operation,
 {
 	cairo_t *cr;
 	cr = gtk_print_context_get_cairo_context (context);
-	double col_width = gtk_print_context_get_width (context) / N_COL;
-	double row_height = gtk_print_context_get_height (context) / N_ROW;
+	double col_width = gtk_print_context_get_width (context) / magic_config.columns;
+	double row_height = gtk_print_context_get_height (context) / magic_config.rows;
 
-	assert (page_nr < N_PAGE);
 	static int cc, print_head;
 	if (page_nr == 0) { /* restart printing */
 		cc = 51;
-		print_head = 1;
+		print_head = (magic_config.header > 0);
 	}
+	if (magic_config.header == 1) /* new page */
+		print_head = 1;
 
 	int r, c;
-	for (c = 0; c < N_COL; c++) {
-		for (r = 0; r < N_ROW && cc >= 0; r++) {
+	for (c = 0; c < magic_config.columns; c++) {
+		for (r = 0; r < magic_config.rows && cc >= 0; r++) {
 			if (print_head) { /* heading */
 				cairo_move_to (cr, c * col_width + 80.0, 80.0);
 				cairo_select_font_face (cr, "Symbol",
@@ -273,7 +282,7 @@ magic_draw_page (GtkPrintOperation *operation,
 			cairo_restore (cr);
 			
 			cc--; /* next card */
-			if (RANK(cc) == cardA)
+			if (RANK(cc) == cardA && magic_config.header == 2)
 				print_head = 1;
 		}
 	}
@@ -292,10 +301,44 @@ magic_begin_print (GtkPrintOperation *operation,
 	     GtkPrintContext   *context,
 	     gpointer           user_data)
 {
-	gtk_print_operation_set_n_pages (operation, 3);
+	if (magic_config.header == 0) {
+		gtk_print_operation_set_n_pages
+			(operation, ceil (52.0 / (magic_config.columns * magic_config.rows)));
+	} else if (magic_config.header == 1) {
+		gtk_print_operation_set_n_pages
+			(operation, ceil (52.0 / (magic_config.columns * magic_config.rows - 1)));
+	} else {
+		gtk_print_operation_set_n_pages
+			(operation, ceil (56.0 / (magic_config.columns * magic_config.rows)));
+	}
 	gtk_print_operation_set_use_full_page (operation, TRUE);
 	gtk_print_operation_set_show_progress (operation, TRUE);
 	//gtk_print_operation_set_export_filename (operation, "foo");
+}
+
+static GObject *
+magic_custom_create (GtkPrintOperation *operation,
+	     gpointer           user_data)
+{
+	GladeXML *xml = glade_xml_new(PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".glade", "magic_options_table", NULL);
+	GtkWidget *table = glade_xml_get_widget (xml, "magic_options_table");
+	assert (table);
+	magic_config.magic_rows = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_rows"));
+	magic_config.magic_columns = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_columns"));
+	magic_config.magic_no_header = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_no_header"));
+	magic_config.magic_page_header = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_page_header"));
+	magic_config.magic_suit_header = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_suit_header"));
+	g_object_unref (xml);
+	return (GObject *) table;
+}
+
+static void
+magic_custom_apply (GtkPrintOperation *operation, GtkWidget *table, gpointer user_data)
+{
+	magic_config.columns = gtk_spin_button_get_value_as_int (magic_config.magic_columns);
+	magic_config.rows = gtk_spin_button_get_value_as_int (magic_config.magic_rows);
+	magic_config.header = gtk_toggle_button_get_active (magic_config.magic_no_header) ? 0 :
+			      gtk_toggle_button_get_active (magic_config.magic_page_header) ? 1 : 2;
 }
 
 static GtkPrintSettings *settings = NULL;
@@ -339,8 +382,12 @@ on_menu_file_magic_activate (void)
 	if (settings != NULL) 
 		gtk_print_operation_set_print_settings (print, settings);
 
+	gtk_print_operation_set_custom_tab_label (print, _("Labels"));
+
 	g_signal_connect (print, "begin_print", G_CALLBACK (magic_begin_print), NULL);
 	g_signal_connect (print, "draw_page", G_CALLBACK (magic_draw_page), NULL);
+	g_signal_connect (print, "create-custom-widget", G_CALLBACK (magic_custom_create), NULL);
+	g_signal_connect (print, "custom-widget-apply", G_CALLBACK (magic_custom_apply), NULL);
 
 	res = gtk_print_operation_run (print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 			GTK_WINDOW (win->window), NULL);
