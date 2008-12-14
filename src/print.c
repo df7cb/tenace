@@ -149,7 +149,7 @@ arrow (cairo_t *cr, int n, int background, seat dir, double size)
 
 	/* background box */
 	if (background) {
-		cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
+		cairo_set_source_rgb (cr, 0.7, 0.7, 0.7);
 		cairo_move_to (cr, -0.5*size, -0.5*size);
 		cairo_line_to (cr, 0.5*size, -0.5*size);
 		cairo_line_to (cr, 0.5*size, 0.5*size);
@@ -207,7 +207,7 @@ cairo_clip_rectangle (cairo_t *cr, double x0, double y0, double x1, double y1)
 }
 
 /*  row_height
- ***************** border
+ 0**************** border
  *xxx   xxx   xxx* arrow_size
  *xxx   xxx   xxx*
  *   xxx   xxx   *
@@ -229,11 +229,15 @@ struct magic_config_t {
 	GtkToggleButton* magic_mark_cards;
 	GtkSpinButton* magic_from, * magic_to;
 	GtkSpinButton* magic_border;
+	GtkSpinButton* magic_horiz_margin, * magic_vert_margin;
+	GtkSpinButton* magic_horiz_sep, * magic_vert_sep;
 	int columns, rows;
 	int header;
 	int mark_cards;
 	int from, to;
 	double border;
+	double horiz_margin, vert_margin;
+	double horiz_sep, vert_sep;
 	/* metrics */
 	double col_width, row_height;
 	int arrow_columns;
@@ -324,8 +328,8 @@ magic_draw_page (GtkPrintOperation *operation,
 					for (r1 = 0; r1 < mc.rows; r1++) {
 						if (c1 == 0 && r1 == 0 || cc1 < 0)
 							continue;
-						cairo_move_to (cr, c1 * (mc.col_width - 2.0*mc.border) / mc.columns + mc.border,
-								r1 * (mc.row_height - 2.0*mc.border) / mc.rows + mc.border + 10.0);
+						cairo_move_to (cr, c1 * (mc.col_width - 2.0*mc.border) / mc.columns + mc.border + mc.horiz_margin,
+								r1 * (mc.row_height - 2.0*mc.border) / mc.rows + mc.border + mc.vert_margin + 10.0);
 						cairo_select_font_face (cr, "Symbol",
 							CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 						cairo_show_text (cr, trump_str[SUIT(cc1)]);
@@ -339,8 +343,9 @@ magic_draw_page (GtkPrintOperation *operation,
 				continue;
 			}
 			if (print_head && mc.header == 2) { /* suit heading */
-				cairo_move_to (cr, (c + 0.5) * mc.col_width - 15.0,
-						(r + 0.5) * mc.row_height + 30.0);
+				cairo_move_to (cr,
+					(c + 0.5) * mc.col_width + c * mc.horiz_sep + mc.horiz_margin - 15.0,
+					(r + 0.5) * mc.row_height + r * mc.vert_sep + mc.vert_margin + 30.0);
 				cairo_select_font_face (cr, "Symbol",
 					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 				cairo_set_font_size (cr, 40.0);
@@ -350,8 +355,10 @@ magic_draw_page (GtkPrintOperation *operation,
 			}
 
 			cairo_save (cr);
-			cairo_translate (cr, mc.col_width * c, mc.row_height * (r + 1));
-			cairo_rotate (cr, -M_PI_2);
+			cairo_translate (cr, /* lower left point */
+				c * mc.col_width + c * mc.horiz_sep + mc.horiz_margin,
+				(r + 1) * mc.row_height + r * mc.vert_sep + mc.vert_margin);
+			cairo_rotate (cr, -M_PI_2); /* rotate left */
 			magic_card (cr, win, cc);
 
 			if (mc.mark_cards) {
@@ -393,9 +400,15 @@ magic_custom_create (GtkPrintOperation *operation,
 	gtk_spin_button_set_range (mc.magic_to, 1, win->n_boards);
 	gtk_spin_button_set_value (mc.magic_to, win->n_boards);
 	mc.magic_border = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_border"));
+	mc.magic_horiz_margin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_horiz_margin"));
+	mc.magic_vert_margin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_vert_margin"));
+	mc.magic_horiz_sep = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_horiz_sep"));
+	mc.magic_vert_sep = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_vert_sep"));
 	g_object_unref (xml);
 	return (GObject *) table;
 }
+
+#define PTMM (72.0 / 25.4)
 
 static void
 magic_custom_apply (GtkPrintOperation *operation, GtkWidget *table, gpointer user_data)
@@ -409,7 +422,11 @@ magic_custom_apply (GtkPrintOperation *operation, GtkWidget *table, gpointer use
 	mc.to = gtk_spin_button_get_value_as_int (mc.magic_to);
 	if (mc.to < mc.from)
 		mc.to = mc.from;
-	mc.border = gtk_spin_button_get_value_as_float (mc.magic_border);
+	mc.border = PTMM * gtk_spin_button_get_value_as_float (mc.magic_border);
+	mc.horiz_margin = PTMM * gtk_spin_button_get_value_as_float (mc.magic_horiz_margin);
+	mc.vert_margin = PTMM * gtk_spin_button_get_value_as_float (mc.magic_vert_margin);
+	mc.horiz_sep = PTMM * gtk_spin_button_get_value_as_float (mc.magic_horiz_sep);
+	mc.vert_sep = PTMM * gtk_spin_button_get_value_as_float (mc.magic_vert_sep);
 }
 
 static void
@@ -431,8 +448,10 @@ magic_begin_print (GtkPrintOperation *operation,
 	gtk_print_operation_set_use_full_page (operation, TRUE);
 	gtk_print_operation_set_show_progress (operation, TRUE);
 	//gtk_print_operation_set_export_filename (operation, "foo");
-	mc.col_width = gtk_print_context_get_width (context) / mc.columns;
-	mc.row_height = gtk_print_context_get_height (context) / mc.rows;
+	mc.col_width = (gtk_print_context_get_width (context) - 2 * mc.horiz_margin
+			- (mc.columns - 1) * mc.horiz_sep) / mc.columns;
+	mc.row_height = (gtk_print_context_get_height (context) - 2 * mc.vert_margin
+			- (mc.rows - 1) * mc.vert_sep) / mc.rows;
 
 	/* find fitting number of arrow columns and corresponding arrow size */
 	int n_boards = mc.to - mc.from + 1;
