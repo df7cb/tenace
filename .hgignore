@@ -3,12 +3,12 @@
 ^autom4te\.cache/
 ^config/
 ^configure$
-^config\.(h|h\.in|log|status)$
+^config\.(guess|h|h\.in|log|status|sub)$
 ^libtool$
 Makefile\.in$
 ^(|cards/|contrib/|dds/|doc/|examples/|handdisplay/|po/|src/)Makefile$
 ^po/.*\.gmo$
-^po/(POTFILES|tenace.pot)$
+^po/(POTFILES|tenace.pot|stamp-it)$
 ^src/\.deps/.*\.Po$
 ^stamp-h1$
 

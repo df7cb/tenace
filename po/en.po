@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-24 21:17+0100\n"
+"POT-Creation-Date: 2009-01-24 22:31+0100\n"
 "PO-Revision-Date: 2008-02-10 18:52+0100\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -15,610 +15,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bridge.c:304
-msgid "Card is not in your hand"
+#: ../tenace.glade.h:1
+msgid " mm"
 msgstr ""
 
-#: src/bridge.c:309
-msgid "Not your turn"
+#: ../tenace.glade.h:2
+msgid " to "
 msgstr ""
 
-#: src/bridge.c:319
-msgid "Please follow suit"
-msgstr ""
-
-#: src/bridge.c:373
-msgid "Nothing to undo"
-msgstr ""
-
-#: src/bridge.c:419
-msgid "No cards left to play"
-msgstr ""
-
-#: src/bridge.c:423
-msgid "Which card should I play?"
-msgstr ""
-
-#: src/bridge.c:429
-#, c-format
-msgid "Declarer claims %d tricks"
-msgstr ""
-
-#: src/bridge.c:434
-msgid "Card was already played"
-msgstr ""
-
-#: src/bridge.c:438
-msgid "Card belongs to wrong player"
-msgstr ""
-
-#: src/bridge.c:475
-msgid "Bidding is over"
-msgstr ""
-
-#: src/bridge.c:481
-msgid "Invalid double"
-msgstr ""
-
-#: src/bridge.c:487
-msgid "Invalid redouble"
-msgstr ""
-
-#: src/bridge.c:492
-msgid "Insufficient bid"
-msgstr ""
-
-#: src/callbacks.c:770 src/callbacks.c:796
-msgid "No board"
-msgstr ""
-
-#: src/callbacks.c:812
-msgid "Cut buffer is empty"
-msgstr ""
-
-#: src/callbacks.c:818 src/window_board.c:621
-#, c-format
-msgid "Board %d"
-msgstr ""
-
-#: src/callbacks.c:924
-msgid "Suit was already bid from wrong side"
-msgstr ""
-
-#: src/callbacks.c:950
-msgid "No previous board"
-msgstr ""
-
-#: src/callbacks.c:966
-msgid "No next board"
-msgstr ""
-
-#: src/file.c:36
-msgid "Bridge files"
-msgstr ""
-
-#: src/file.c:41
-msgid "LIN files"
-msgstr ""
-
-#: src/file.c:45
-msgid "PBN files"
-msgstr ""
-
-#: src/file.c:49
-msgid "All files"
-msgstr ""
-
-#: src/file.c:163
-msgid "Closed"
-msgstr ""
-
-#: src/file.c:164
-msgid "Open"
-msgstr ""
-
-#: src/file.c:164
-msgid "Board"
-msgstr ""
-
-#: src/file.c:414
-#, c-format
-msgid "Error loading file '%s': %s"
-msgstr ""
-
-#: src/file.c:435
-msgid "Open File"
-msgstr ""
-
-#: src/file.c:695 src/file.c:735
-#, c-format
-msgid "Error saving file '%s': %s"
-msgstr ""
-
-#: src/file.c:703
-msgid "Save File"
-msgstr ""
-
-#: src/file.c:713
-msgid "hand.lin"
-msgstr ""
-
-#: src/functions.c:146 src/functions.c:188 src/functions.c:199
-#: src/window_bids.c:77
-#, c-format
-msgid "X"
-msgstr ""
-
-#: src/functions.c:148 src/functions.c:188 src/functions.c:199
-#: src/window_bids.c:80
-#, c-format
-msgid "XX"
-msgstr ""
-
-#: src/functions.c:185 src/functions.c:196 src/window_bids.c:74
-msgid "PASS"
-msgstr ""
-
-#: src/interface.c:188 src/interface.c:2414
-msgid "Tenace"
-msgstr ""
-
-#: src/interface.c:198
-msgid "_File"
-msgstr ""
-
-#: src/interface.c:217
-msgid "_Append"
-msgstr ""
-
-#: src/interface.c:220
-msgid "Append file to board list"
-msgstr ""
-
-#: src/interface.c:239
-msgid "_New board"
-msgstr ""
-
-#: src/interface.c:264
-msgid "IMP _table..."
-msgstr ""
-
-#: src/interface.c:272
-msgid "O_ptions..."
-msgstr ""
-
-#: src/interface.c:280
-msgid "_Info..."
-msgstr ""
-
-#: src/interface.c:292
-msgid "_Boards"
-msgstr ""
-
-#: src/interface.c:296
-msgid "_Deal"
-msgstr ""
-
-#: src/interface.c:303
-msgid "_Dealer"
-msgstr ""
-
-#: src/interface.c:314 src/interface.c:580
-msgid "_West"
-msgstr ""
-
-#: src/interface.c:319 src/interface.c:585
-msgid "_North"
-msgstr ""
-
-#: src/interface.c:324 src/interface.c:590
-msgid "_East"
-msgstr ""
-
-#: src/interface.c:329 src/interface.c:595
-msgid "_South"
-msgstr ""
-
-#: src/interface.c:335
-msgid "_Vulnerable"
-msgstr ""
-
-#: src/interface.c:346
-msgid "N_one"
-msgstr ""
-
-#: src/interface.c:351
-msgid "_North-South"
-msgstr ""
-
-#: src/interface.c:356
-msgid "_East-West"
-msgstr ""
-
-#: src/interface.c:361
-msgid "_All"
-msgstr ""
-
-#: src/interface.c:372
-msgid "C_lear"
-msgstr ""
-
-#: src/interface.c:380
-msgid "_Random"
-msgstr ""
-
-#: src/interface.c:388
-msgid "_Flip hands"
-msgstr ""
-
-#: src/interface.c:399
-msgid "E-W"
-msgstr ""
-
-#: src/interface.c:403
-msgid "N-S"
-msgstr ""
-
-#: src/interface.c:407
-msgid "N-W"
-msgstr ""
-
-#: src/interface.c:411
-msgid "N-E"
-msgstr ""
-
-#: src/interface.c:415
-msgid "S-W"
-msgstr ""
-
-#: src/interface.c:419
-msgid "S-E"
-msgstr ""
-
-#: src/interface.c:423
-msgid "_Board editor..."
-msgstr ""
-
-#: src/interface.c:427
-msgid "Text _input..."
-msgstr ""
-
-#: src/interface.c:436
-msgid "Rewind play"
-msgstr ""
-
-#: src/interface.c:439
-msgid "Undo all cards"
-msgstr ""
-
-#: src/interface.c:445
-msgid "Complete play"
-msgstr ""
-
-#: src/interface.c:448
-msgid "Play all cards"
-msgstr ""
-
-#: src/interface.c:454
-msgid "Show pla_y..."
-msgstr ""
-
-#: src/interface.c:458
-msgid "_Contract"
-msgstr ""
-
-#: src/interface.c:465
-msgid "_Level"
-msgstr ""
-
-#: src/interface.c:476
-msgid "_1"
-msgstr ""
-
-#: src/interface.c:481
-msgid "_2"
-msgstr ""
-
-#: src/interface.c:486
-msgid "_3"
-msgstr ""
-
-#: src/interface.c:491
-msgid "_4"
-msgstr ""
-
-#: src/interface.c:496
-msgid "_5"
-msgstr ""
-
-#: src/interface.c:501
-msgid "_6"
-msgstr ""
-
-#: src/interface.c:506
-msgid "_7"
-msgstr ""
-
-#: src/interface.c:517
-msgid "No _Trump"
-msgstr ""
-
-#: src/interface.c:522
-msgid "♠ S_pades"
-msgstr ""
-
-#: src/interface.c:527
-msgid "♥ _Hearts"
-msgstr ""
-
-#: src/interface.c:532
-msgid "♦ _Diamonds"
-msgstr ""
-
-#: src/interface.c:537
-msgid "♣ _Clubs"
-msgstr ""
-
-#: src/interface.c:548
-msgid "Double"
-msgstr ""
-
-#: src/interface.c:559
-msgid "_No double"
-msgstr ""
-
-#: src/interface.c:564
-msgid "X _Doubled"
-msgstr ""
-
-#: src/interface.c:569
-msgid "XX _Redoubled"
-msgstr ""
-
-#: src/interface.c:606
-msgid "_Bidding editor..."
-msgstr ""
-
-#: src/interface.c:610
-msgid "_Analysis"
-msgstr ""
-
-#: src/interface.c:617
-msgid "Double dummy"
-msgstr ""
-
-#: src/interface.c:620 src/interface.c:719
-msgid "Double dummy analysis"
-msgstr ""
-
-#: src/interface.c:626
-msgid "Always run DD"
-msgstr ""
-
-#: src/interface.c:629
-msgid "Automatically run DD analysis"
-msgstr ""
-
-#: src/interface.c:636
-msgid "Parscore"
-msgstr ""
-
-#: src/interface.c:639
-msgid "Compute par score and contract"
-msgstr ""
-
-#: src/interface.c:645
-msgid "Play par contract"
-msgstr ""
-
-#: src/interface.c:648
-msgid "Set contract to computed par contract"
-msgstr ""
-
-#: src/interface.c:663
-msgid "Open board"
-msgstr ""
-
-#: src/interface.c:668
-msgid "Save board"
-msgstr ""
-
-#: src/interface.c:673
-msgid "Previous board"
-msgstr ""
-
-#: src/interface.c:678
-msgid "Next board"
-msgstr ""
-
-#: src/interface.c:689
-msgid "Rewind trick"
-msgstr ""
-
-#: src/interface.c:696
-msgid "Rewind card"
-msgstr ""
-
-#: src/interface.c:703
-msgid "Play next card"
-msgstr ""
-
-#: src/interface.c:710
-msgid "Play next trick"
-msgstr ""
-
-#: src/interface.c:724
-msgid "Par score"
-msgstr ""
-
-#: src/interface.c:743 src/interface.c:1262
-msgid "West"
-msgstr ""
-
-#: src/interface.c:760 src/interface.c:1295
-msgid "South"
-msgstr ""
-
-#: src/interface.c:777 src/interface.c:1273
-msgid "North"
-msgstr ""
-
-#: src/interface.c:794 src/interface.c:1284
-msgid "East"
-msgstr ""
-
-#: src/interface.c:817 src/window_board.c:250
-#, c-format
-msgid ""
-"NS: %d\n"
-"EW: %d"
-msgstr ""
-
-#: src/interface.c:1225
-msgid "Board editor"
-msgstr ""
-
-#: src/interface.c:1242
-msgid "Clear board"
-msgstr ""
-
-#: src/interface.c:1249
-msgid "Deal randomly"
-msgstr ""
-
-#: src/interface.c:1354
-msgid "Bidding editor"
-msgstr ""
-
-#: src/interface.c:1370
-msgid "Remove all bids"
-msgstr ""
-
-#: src/interface.c:1375
-msgid "Remove last bid"
-msgstr ""
-
-#: src/interface.c:1380
-msgid "Make bids for the current contract"
-msgstr ""
-
-#: src/interface.c:1385
-msgid "Alert"
-msgstr ""
-
-#: src/interface.c:1478
-msgid "IMP Table"
-msgstr ""
-
-#: src/interface.c:1938
-msgid "Text input"
-msgstr ""
-
-#: src/interface.c:1948
-msgid "Hand as string"
-msgstr ""
-
-#: src/interface.c:1954
-msgid "Set hand"
-msgstr ""
-
-#: src/interface.c:1987
-msgid "Play"
-msgstr ""
-
-#: src/interface.c:2066
-msgid "Options"
-msgstr ""
-
-#: src/interface.c:2081
-msgid "Card width "
-msgstr ""
-
-#: src/interface.c:2089
-msgid "Filename"
-msgstr ""
-
-#: src/interface.c:2097
-msgid "Show as "
-msgstr ""
-
-#: src/interface.c:2111
-msgid "Text"
-msgstr ""
-
-#: src/interface.c:2118
-msgid "Cards"
-msgstr ""
-
-#: src/interface.c:2124
-msgid "Show"
-msgstr ""
-
-#: src/interface.c:2130
-msgid "Select File"
-msgstr ""
-
-#: src/interface.c:2144
-msgid "Played cards  "
-msgstr ""
-
-#: src/interface.c:2152
-msgid "Card display"
-msgstr ""
-
-#: src/interface.c:2161
-msgid "Show hands  "
-msgstr ""
-
-#: src/interface.c:2175 src/interface.c:2207
-msgid "All"
-msgstr ""
-
-#: src/interface.c:2181 src/interface.c:2213
-msgid "North-South"
-msgstr ""
-
-#: src/interface.c:2187 src/interface.c:2219
-msgid "East-West"
-msgstr ""
-
-#: src/interface.c:2193
-msgid "Show DD scores  "
-msgstr ""
-
-#: src/interface.c:2225
-msgid "None"
-msgstr ""
-
-#: src/interface.c:2231
-msgid "Hands"
-msgstr ""
-
-#: src/interface.c:2240
-msgid "Title  "
-msgstr ""
-
-#: src/interface.c:2248
-msgid "Players  "
-msgstr ""
-
-#: src/interface.c:2294
-msgid "Current board"
-msgstr ""
-
-#: src/interface.c:2310
-msgid "Board list"
-msgstr ""
-
-#: src/interface.c:2415
+#: ../tenace.glade.h:3
 msgid "(C) 2005-2008 Christoph Berg"
 msgstr ""
 
-#: src/interface.c:2416
-msgid "Bridge Hand Viewer and Editor"
-msgstr ""
-
-#: src/interface.c:2417
+#: ../tenace.glade.h:4
 msgid ""
 "/*\n"
 " *  tenace - bridge hand viewer and editor\n"
@@ -636,143 +45,822 @@ msgid ""
 " */"
 msgstr ""
 
-#: src/interface.c:2419
+#: ../tenace.glade.h:18
+msgid "Alert"
+msgstr ""
+
+#: ../tenace.glade.h:19
+msgid "All"
+msgstr ""
+
+#: ../tenace.glade.h:20
+msgid "Always run DD"
+msgstr ""
+
+#: ../tenace.glade.h:21
+msgid "Append file to board list"
+msgstr ""
+
+#: ../tenace.glade.h:22
+msgid "Automatically run DD analysis"
+msgstr ""
+
+#: ../tenace.glade.h:23
+msgid "Bidding editor"
+msgstr ""
+
+#: ../tenace.glade.h:24
+msgid "Board editor"
+msgstr ""
+
+#: ../tenace.glade.h:25
+msgid "Board list"
+msgstr ""
+
+#: ../tenace.glade.h:26
+msgid "Boards: "
+msgstr ""
+
+#: ../tenace.glade.h:27
+msgid "Bridge Hand Viewer and Editor"
+msgstr ""
+
+#: ../tenace.glade.h:28
+msgid "C_lear"
+msgstr ""
+
+#: ../tenace.glade.h:29
+msgid "Card display"
+msgstr ""
+
+#: ../tenace.glade.h:30
+msgid "Card width "
+msgstr ""
+
+#: ../tenace.glade.h:31
+msgid "Cards"
+msgstr ""
+
+#: ../tenace.glade.h:32
+msgid "Clear board"
+msgstr ""
+
+#: ../tenace.glade.h:33
+msgid "Columns: "
+msgstr ""
+
+#: ../tenace.glade.h:34
+msgid "Complete play"
+msgstr ""
+
+#: ../tenace.glade.h:35
+msgid "Compute par score and contract"
+msgstr ""
+
+#: ../tenace.glade.h:36
+msgid "Current board"
+msgstr ""
+
+#: ../tenace.glade.h:37
+msgid "Deal randomly"
+msgstr ""
+
+#: ../tenace.glade.h:38
+msgid "Double"
+msgstr ""
+
+#: ../tenace.glade.h:39
+msgid "Double dummy"
+msgstr ""
+
+#: ../tenace.glade.h:40
+msgid "Double dummy analysis"
+msgstr ""
+
+#: ../tenace.glade.h:41
+msgid "E-W"
+msgstr ""
+
+#: ../tenace.glade.h:42
+msgid "East"
+msgstr ""
+
+#: ../tenace.glade.h:43
+msgid "East-West"
+msgstr ""
+
+#: ../tenace.glade.h:44
+msgid "Filename"
+msgstr ""
+
+#: ../tenace.glade.h:45
+msgid "Generate"
+msgstr ""
+
+#: ../tenace.glade.h:46
+msgid "Hand as string"
+msgstr ""
+
+#: ../tenace.glade.h:47
+msgid "Hands"
+msgstr ""
+
+#: ../tenace.glade.h:48
+msgid "Headers: "
+msgstr ""
+
+#: ../tenace.glade.h:49
 msgid "Homepage"
 msgstr ""
 
-#: src/main.c:68
+#: ../tenace.glade.h:50
+msgid "Horizontal margin: "
+msgstr ""
+
+#: ../tenace.glade.h:51
+msgid "Horizontal separation: "
+msgstr ""
+
+#: ../tenace.glade.h:52
+msgid "IMP Table"
+msgstr ""
+
+#: ../tenace.glade.h:53
+msgid "IMP _table..."
+msgstr ""
+
+#: ../tenace.glade.h:54
+msgid "Internal border: "
+msgstr ""
+
+#: ../tenace.glade.h:55
+msgid "Make bids for the current contract"
+msgstr ""
+
+#: ../tenace.glade.h:56
+msgid "Mark cards: "
+msgstr ""
+
+#: ../tenace.glade.h:57
+msgid "N-E"
+msgstr ""
+
+#: ../tenace.glade.h:58
+msgid "N-S"
+msgstr ""
+
+#: ../tenace.glade.h:59
+msgid "N-W"
+msgstr ""
+
+#: ../tenace.glade.h:61 ../src/window_board.c:248
+#, no-c-format
+msgid ""
+"NS: %d\n"
+"EW: %d"
+msgstr ""
+
+#: ../tenace.glade.h:63
+msgid "N_one"
+msgstr ""
+
+#: ../tenace.glade.h:64
+msgid "Next board"
+msgstr ""
+
+#: ../tenace.glade.h:65
+msgid "No _Trump"
+msgstr ""
+
+#: ../tenace.glade.h:66
+msgid "None"
+msgstr ""
+
+#: ../tenace.glade.h:67
+msgid "North"
+msgstr ""
+
+#: ../tenace.glade.h:68
+msgid "North-South"
+msgstr ""
+
+#: ../tenace.glade.h:69
+msgid "O_ptions..."
+msgstr ""
+
+#: ../tenace.glade.h:70
+msgid "Open board"
+msgstr ""
+
+#: ../tenace.glade.h:71
+msgid "Options"
+msgstr ""
+
+#: ../tenace.glade.h:72
+msgid "Par score"
+msgstr ""
+
+#: ../tenace.glade.h:73
+msgid "Parscore"
+msgstr ""
+
+#: ../tenace.glade.h:74
+msgid "Play"
+msgstr ""
+
+#: ../tenace.glade.h:75
+msgid "Play all cards"
+msgstr ""
+
+#: ../tenace.glade.h:76
+msgid "Play next card"
+msgstr ""
+
+#: ../tenace.glade.h:77
+msgid "Play next trick"
+msgstr ""
+
+#: ../tenace.glade.h:78
+msgid "Play par contract"
+msgstr ""
+
+#: ../tenace.glade.h:79
+msgid "Played cards  "
+msgstr ""
+
+#: ../tenace.glade.h:80
+msgid "Players  "
+msgstr ""
+
+#: ../tenace.glade.h:81
+msgid "Previous board"
+msgstr ""
+
+#: ../tenace.glade.h:82
+msgid "Remove all bids"
+msgstr ""
+
+#: ../tenace.glade.h:83
+msgid "Remove last bid"
+msgstr ""
+
+#: ../tenace.glade.h:84
+msgid "Rewind card"
+msgstr ""
+
+#: ../tenace.glade.h:85
+msgid "Rewind play"
+msgstr ""
+
+#: ../tenace.glade.h:86
+msgid "Rewind trick"
+msgstr ""
+
+#: ../tenace.glade.h:87
+msgid "Rows: "
+msgstr ""
+
+#: ../tenace.glade.h:88
+msgid "S-E"
+msgstr ""
+
+#: ../tenace.glade.h:89
+msgid "S-W"
+msgstr ""
+
+#: ../tenace.glade.h:90
+msgid "Save board"
+msgstr ""
+
+#: ../tenace.glade.h:91
+msgid "Select File"
+msgstr ""
+
+#: ../tenace.glade.h:92
+msgid "Set contract to computed par contract"
+msgstr ""
+
+#: ../tenace.glade.h:93
+msgid "Set hand"
+msgstr ""
+
+#: ../tenace.glade.h:94
+msgid "Show"
+msgstr ""
+
+#: ../tenace.glade.h:95
+msgid "Show DD scores  "
+msgstr ""
+
+#: ../tenace.glade.h:96
+msgid "Show as "
+msgstr ""
+
+#: ../tenace.glade.h:97
+msgid "Show hands  "
+msgstr ""
+
+#: ../tenace.glade.h:98
+msgid "Show pla_y..."
+msgstr ""
+
+#: ../tenace.glade.h:99
+msgid "South"
+msgstr ""
+
+#: ../tenace.glade.h:100
+msgid "Tenace"
+msgstr ""
+
+#: ../tenace.glade.h:101
+msgid "Text"
+msgstr ""
+
+#: ../tenace.glade.h:102
+msgid "Text _input..."
+msgstr ""
+
+#: ../tenace.glade.h:103
+msgid "Text input"
+msgstr ""
+
+#: ../tenace.glade.h:104
+msgid "Title  "
+msgstr ""
+
+#: ../tenace.glade.h:105
+msgid "Undo all cards"
+msgstr ""
+
+#: ../tenace.glade.h:106
+msgid "Vertical margin: "
+msgstr ""
+
+#: ../tenace.glade.h:107
+msgid "Vertical separation: "
+msgstr ""
+
+#: ../tenace.glade.h:108
+msgid "West"
+msgstr ""
+
+#: ../tenace.glade.h:109
+msgid "X _Doubled"
+msgstr ""
+
+#: ../tenace.glade.h:110
+msgid "XX _Redoubled"
+msgstr ""
+
+#: ../tenace.glade.h:111
+msgid "_1"
+msgstr ""
+
+#: ../tenace.glade.h:112
+msgid "_2"
+msgstr ""
+
+#: ../tenace.glade.h:113
+msgid "_3"
+msgstr ""
+
+#: ../tenace.glade.h:114
+msgid "_4"
+msgstr ""
+
+#: ../tenace.glade.h:115
+msgid "_5"
+msgstr ""
+
+#: ../tenace.glade.h:116
+msgid "_6"
+msgstr ""
+
+#: ../tenace.glade.h:117
+msgid "_7"
+msgstr ""
+
+#: ../tenace.glade.h:118
+msgid "_All"
+msgstr ""
+
+#: ../tenace.glade.h:119
+msgid "_Analysis"
+msgstr ""
+
+#: ../tenace.glade.h:120
+msgid "_Append"
+msgstr ""
+
+#: ../tenace.glade.h:121
+msgid "_Bidding editor..."
+msgstr ""
+
+#: ../tenace.glade.h:122
+msgid "_Board editor..."
+msgstr ""
+
+#: ../tenace.glade.h:123
+msgid "_Boards"
+msgstr ""
+
+#: ../tenace.glade.h:124
+msgid "_Contract"
+msgstr ""
+
+#: ../tenace.glade.h:125
+msgid "_Dealer"
+msgstr ""
+
+#: ../tenace.glade.h:126
+msgid "_East"
+msgstr ""
+
+#: ../tenace.glade.h:127
+msgid "_East-West"
+msgstr ""
+
+#: ../tenace.glade.h:128
+msgid "_Edit"
+msgstr ""
+
+#: ../tenace.glade.h:129
+msgid "_File"
+msgstr ""
+
+#: ../tenace.glade.h:130
+msgid "_Flip hands"
+msgstr ""
+
+#: ../tenace.glade.h:131
+msgid "_Info..."
+msgstr ""
+
+#: ../tenace.glade.h:132
+msgid "_Level"
+msgstr ""
+
+#: ../tenace.glade.h:133
+msgid "_Magic cards"
+msgstr ""
+
+#: ../tenace.glade.h:134
+msgid "_New board"
+msgstr ""
+
+#: ../tenace.glade.h:135
+msgid "_No double"
+msgstr ""
+
+#: ../tenace.glade.h:136
+msgid "_North"
+msgstr ""
+
+#: ../tenace.glade.h:137
+msgid "_North-South"
+msgstr ""
+
+#: ../tenace.glade.h:138
+msgid "_Random"
+msgstr ""
+
+#: ../tenace.glade.h:139
+msgid "_South"
+msgstr ""
+
+#: ../tenace.glade.h:140
+msgid "_Vulnerable"
+msgstr ""
+
+#: ../tenace.glade.h:141
+msgid "_West"
+msgstr ""
+
+#. TRANSLATORS: Replace this string with your names, one name per line.
+#: ../tenace.glade.h:143
+msgid "de: Christoph Berg <cb@df7cb.de>"
+msgstr ""
+
+#: ../tenace.glade.h:144
+msgid "deals"
+msgstr ""
+
+#: ../tenace.glade.h:145
+msgid "gtk-print"
+msgstr ""
+
+#: ../tenace.glade.h:146
+msgid "none"
+msgstr ""
+
+#: ../tenace.glade.h:147
+msgid "per page"
+msgstr ""
+
+#: ../tenace.glade.h:148
+msgid "per suit"
+msgstr ""
+
+#: ../tenace.glade.h:149
+msgid "♠ S_pades"
+msgstr ""
+
+#: ../tenace.glade.h:150
+msgid "♣ _Clubs"
+msgstr ""
+
+#: ../tenace.glade.h:151
+msgid "♥ _Hearts"
+msgstr ""
+
+#: ../tenace.glade.h:152
+msgid "♦ _Diamonds"
+msgstr ""
+
+#: ../src/bridge.c:303
+msgid "Card is not in your hand"
+msgstr ""
+
+#: ../src/bridge.c:308
+msgid "Not your turn"
+msgstr ""
+
+#: ../src/bridge.c:318
+msgid "Please follow suit"
+msgstr ""
+
+#: ../src/bridge.c:372
+msgid "Nothing to undo"
+msgstr ""
+
+#: ../src/bridge.c:418
+msgid "No cards left to play"
+msgstr ""
+
+#: ../src/bridge.c:422
+msgid "Which card should I play?"
+msgstr ""
+
+#: ../src/bridge.c:428
+#, c-format
+msgid "Declarer claims %d tricks"
+msgstr ""
+
+#: ../src/bridge.c:433
+msgid "Card was already played"
+msgstr ""
+
+#: ../src/bridge.c:437
+msgid "Card belongs to wrong player"
+msgstr ""
+
+#: ../src/bridge.c:474
+msgid "Bidding is over"
+msgstr ""
+
+#: ../src/bridge.c:480
+msgid "Invalid double"
+msgstr ""
+
+#: ../src/bridge.c:486
+msgid "Invalid redouble"
+msgstr ""
+
+#: ../src/bridge.c:491
+msgid "Insufficient bid"
+msgstr ""
+
+#: ../src/callbacks.c:450 ../src/callbacks.c:476
+msgid "No board"
+msgstr ""
+
+#: ../src/callbacks.c:492
+msgid "Cut buffer is empty"
+msgstr ""
+
+#: ../src/callbacks.c:498 ../src/window_board.c:619
+#, c-format
+msgid "Board %d"
+msgstr ""
+
+#: ../src/callbacks.c:641
+msgid "No previous board"
+msgstr ""
+
+#: ../src/callbacks.c:657
+msgid "No next board"
+msgstr ""
+
+#: ../src/file.c:35
+msgid "Bridge files"
+msgstr ""
+
+#: ../src/file.c:40
+msgid "LIN files"
+msgstr ""
+
+#: ../src/file.c:44
+msgid "PBN files"
+msgstr ""
+
+#: ../src/file.c:48
+msgid "All files"
+msgstr ""
+
+#: ../src/file.c:172
+msgid "Closed"
+msgstr ""
+
+#: ../src/file.c:173
+msgid "Open"
+msgstr ""
+
+#: ../src/file.c:173
+msgid "Board"
+msgstr ""
+
+#: ../src/file.c:436
+#, c-format
+msgid "Error loading file '%s': %s"
+msgstr ""
+
+#: ../src/file.c:457
+msgid "Open File"
+msgstr ""
+
+#: ../src/file.c:717 ../src/file.c:757
+#, c-format
+msgid "Error saving file '%s': %s"
+msgstr ""
+
+#: ../src/file.c:725
+msgid "Save File"
+msgstr ""
+
+#: ../src/file.c:735
+msgid "hand.lin"
+msgstr ""
+
+#: ../src/functions.c:145 ../src/functions.c:202 ../src/functions.c:213
+#: ../src/window_bids.c:75
+#, c-format
+msgid "X"
+msgstr ""
+
+#: ../src/functions.c:147 ../src/functions.c:202 ../src/functions.c:213
+#: ../src/window_bids.c:78
+#, c-format
+msgid "XX"
+msgstr ""
+
+#: ../src/functions.c:199 ../src/functions.c:210 ../src/window_bids.c:72
+msgid "PASS"
+msgstr ""
+
+#: ../src/main.c:68
 msgid "Hint: tenace can only read files in .lin format"
 msgstr ""
 
+#: ../src/options.c:405
+msgid "#"
+msgstr ""
+
+#: ../src/options.c:410
+msgid "Title"
+msgstr ""
+
+#: ../src/print.c:479
+msgid "Labels"
+msgstr ""
+
 #. FIXME: do not call this every time
-#: src/solve.c:122
+#: ../src/solve.c:121
 msgid "Error: hands have different numbers of cards"
 msgstr ""
 
-#: src/solve.c:161 src/solve.c:268
+#: ../src/solve.c:160 ../src/solve.c:267
 msgid "Thinking..."
 msgstr ""
 
-#: src/solve.c:308
+#: ../src/solve.c:307
 msgid "Error: board must be fully dealt"
 msgstr ""
 
-#: src/solve.c:356
+#: ../src/solve.c:355
 msgid "Par: PASS (0)\n"
 msgstr ""
 
-#: src/solve.c:358
+#: ../src/solve.c:357
 #, c-format
 msgid "Par: %s %s (%+d)\n"
 msgstr ""
 
-#: src/solve.c:368
+#: ../src/solve.c:367
 msgid "NS"
 msgstr ""
 
-#: src/solve.c:371 src/unused.c:6
+#: ../src/solve.c:370 ../src/unused.c:6
 msgid "N"
 msgstr ""
 
-#: src/solve.c:371 src/unused.c:8
+#: ../src/solve.c:370 ../src/unused.c:8
 msgid "S"
 msgstr ""
 
-#: src/solve.c:373
+#: ../src/solve.c:372
 msgid "EW"
 msgstr ""
 
-#: src/solve.c:376 src/unused.c:7
+#: ../src/solve.c:375 ../src/unused.c:7
 msgid "E"
 msgstr ""
 
-#: src/solve.c:376 src/unused.c:5
+#: ../src/solve.c:375 ../src/unused.c:5
 msgid "W"
 msgstr ""
 
-#: src/support.c:90 src/support.c:114
-#, c-format
-msgid "Couldn't find pixmap file: %s"
-msgstr ""
-
-#: src/window_bids.c:52
+#: ../src/window_bids.c:50
 #, c-format
 msgid "Contract set to %s"
 msgstr ""
 
-#: src/window_board.c:131
+#: ../src/window_bids.c:140
+msgid "Suit was already bid from wrong side"
+msgstr ""
+
+#: ../src/window_board.c:129
 msgid "Dealer"
 msgstr ""
 
-#: src/window_board.c:142
+#: ../src/window_board.c:140
 msgid "*"
 msgstr ""
 
-#: src/window_board.c:142
+#: ../src/window_board.c:140
 msgid "!"
 msgstr ""
 
-#: src/window_board.c:179
+#: ../src/window_board.c:177
 #, c-format
 msgid " - %s vs. %s"
 msgstr ""
 
-#: src/window_board.c:413
+#: ../src/window_board.c:411
 msgid "Card is in play and cannot be moved"
 msgstr ""
 
-#: src/window_board.c:420
+#: ../src/window_board.c:418
 msgid "Card is in play and cannot be exchanged"
 msgstr ""
 
-#: src/window_board.c:432 src/window_card.c:73 src/window_card.c:104
+#: ../src/window_board.c:430 ../src/window_card.c:72 ../src/window_card.c:103
 msgid "Hand has already 13 cards"
 msgstr ""
 
-#: src/window_board.c:488
+#: ../src/window_board.c:486
 msgid "(no explanation)"
 msgstr ""
 
-#: src/window_board.c:705
+#: ../src/window_board.c:713
 msgid "Cannot change declarer while cards are in play"
 msgstr ""
 
-#: src/window_board.c:738
+#: ../src/window_board.c:746
 msgid "Cannot change trumps while cards are in play"
 msgstr ""
 
-#: src/window_card.c:91
+#: ../src/window_card.c:90
 msgid "All cards of that suit dealt"
 msgstr ""
 
-#: src/window_card.c:96 src/window_card.c:129
+#: ../src/window_card.c:95 ../src/window_card.c:128
 msgid "Card is in play and cannot be removed"
 msgstr ""
 
-#: src/window_line_entry.c:34
+#: ../src/window_line_entry.c:33
 msgid "Parse error"
 msgstr ""
 
-#: src/window_play.c:47
+#: ../src/window_play.c:46
 msgid "CL"
 msgstr ""
 
-#: src/unused.c:10
+#: ../src/unused.c:10
 msgid "NT"
 msgstr ""
 
-#: src/unused.c:11
+#: ../src/unused.c:11
 msgid "Sp"
 msgstr "S"
 
-#: src/unused.c:12
+#: ../src/unused.c:12
 msgid "He"
 msgstr "H"
 
-#: src/unused.c:13
+#: ../src/unused.c:13
 msgid "Di"
 msgstr "D"
 
-#: src/unused.c:14
+#: ../src/unused.c:14
 msgid "Cl"
 msgstr "C"
