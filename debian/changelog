@@ -3,7 +3,7 @@ tenace (0.8-1) unstable; urgency=low
   * New upstream version.
   * Adding Build-Dependency on libglade2-dev.
 
- -- Christoph Berg <myon@debian.org>  Sat, 20 Sep 2008 01:37:47 +0200
+ -- Christoph Berg <myon@debian.org>  Sat, 24 Jan 2009 20:52:09 +0100
 
 tenace (0.7-1) unstable; urgency=low
 

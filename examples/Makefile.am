@@ -1,5 +1,12 @@
-EXTRA_DIST = README.examples *.lin
+examplesdir = $(docdir)/examples
 
-install-data-local:
-	install -d $(DESTDIR)$(prefix)/share/doc/$(PACKAGE)/examples
-	install -m644 $(EXTRA_DIST) $(DESTDIR)$(prefix)/share/doc/$(PACKAGE)/examples
+examples_DATA = README.examples \
+	01-26-08-3.lin \
+	2007_Spingold_Final.First_Quarter.lin \
+	everybody-makes-3nt.lin \
+	everybody-makes-3s.lin \
+	everybody-makes-7nt.lin \
+	squeeze.lin \
+	triple-coup.lin
+
+EXTRA_DIST = $(examples_DATA)

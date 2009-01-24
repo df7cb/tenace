@@ -1,3 +1,12 @@
+EXTRA_DIST = \
+	DDS_alg_descr-revE3.rtf \
+	GPL.txt \
+	dds.cpp \
+	dll.h \
+	mode2.txt \
+	readme.txt \
+	release_notes.txt
+
 if HAVE_LIBDDS
 all: noop
 else

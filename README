@@ -3,7 +3,7 @@ tenace
 
 Tenace is a Bridge hand viewer and editor.
 
-http://www.df7cb.de/bridge/tenace/
+* http://www.df7cb.de/bridge/tenace/
 
 Requirements
 ------------
@@ -13,12 +13,18 @@ that features GTK+. Recommended minimum version is 2.12 due to the usage of
 GtkTooltip. Tenace will still compile with older versions, but some features
 will be disabled, notably the recently-used boards menu and tooltip popups for
 alert explanations. To render images of cards, librsvg is used (other image
-formats to display cards work as well).
+formats to display cards work as well). The GUI is rendered using libglade.
+
+* http://www.gtk.org/
+* http://library.gnome.org/devel/rsvg/
+  http://ftp.gnome.org/pub/GNOME/sources/librsvg/
+* http://www.jamesh.id.au/software/libglade/
+  http://ftp.gnome.org/pub/GNOME/sources/libglade/
 
 Tenace uses Bo Haglund's excellent DDS double dummy solver library for
 discovering optimal leads and computing parscores.
 
-http://web.telia.com/~u07502278/
+* http://web.telia.com/~u07502278/
 
 Installation
 ------------
@@ -58,4 +64,4 @@ Credits
 
 Mark Voorhies spotted a problem with greying out already-played cards.
 
- -- Christoph Berg <cb@df7cb.de>  Mon, 24 Mar 2008 23:28:06 +0100
+ -- Christoph Berg <cb@df7cb.de>  Sat, 24 Jan 2009 20:50:42 +0100
