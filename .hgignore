@@ -11,6 +11,7 @@ Makefile\.in$
 ^po/(POTFILES|tenace.pot|stamp-it)$
 ^src/\.deps/.*\.Po$
 ^stamp-h1$
+^intltool-.*$
 
 syntax: glob
 stamp-h.in

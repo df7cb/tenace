@@ -4,7 +4,12 @@ SUBDIRS = contrib dds doc examples handdisplay src po
 
 dist_pkgdata_DATA = tenace.glade
 
-EXTRA_DIST = autogen.sh
+INTLTOOL_FILES = \
+	intltool-extract \
+	intltool-merge \
+	intltool-update
+
+EXTRA_DIST = autogen.sh $(INTLTOOL_FILES)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
