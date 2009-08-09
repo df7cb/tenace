@@ -92,7 +92,7 @@ window_play_delete (void)
 	window_play = 0;
 }
 
-gboolean
+G_MODULE_EXPORT gboolean
 on_window_play_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -103,7 +103,7 @@ on_window_play_delete_event            (GtkWidget       *widget,
 	return FALSE;
 }
 
-void
+G_MODULE_EXPORT void
 on_play1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

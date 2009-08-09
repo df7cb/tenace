@@ -104,7 +104,7 @@ window_bids_delete (void)
 	window_bids = 0;
 }
 
-void
+G_MODULE_EXPORT void
 on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -113,7 +113,7 @@ on_bid_clear_clicked                   (GtkToolButton   *toolbutton,
 	show_board(b, REDRAW_BIDDING);
 }
 
-void
+G_MODULE_EXPORT void
 on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -126,7 +126,7 @@ on_bid_undo_clicked                    (GtkToolButton   *toolbutton,
 
 #define TRY(x) { if (!(x)) goto end; }
 
-void
+G_MODULE_EXPORT void
 on_bid_set_contract_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -157,7 +157,7 @@ end:
 	show_board(b, REDRAW_BIDDING | REDRAW_BIDDING_SCROLL);
 }
 
-gboolean
+G_MODULE_EXPORT gboolean
 on_window_bids_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -170,7 +170,7 @@ on_window_bids_delete_event            (GtkWidget       *widget,
 	return FALSE;
 }
 
-void
+G_MODULE_EXPORT void
 on_bids1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

@@ -28,7 +28,7 @@
 
 /* menu */
 
-void
+G_MODULE_EXPORT void
 on_neu1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -43,14 +43,14 @@ on_neu1_activate                       (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board_load_dialog (win, 0);
 }
 
-void
+G_MODULE_EXPORT void
 on_append1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -58,7 +58,7 @@ on_append1_activate                    (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_speichern1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -66,7 +66,7 @@ on_speichern1_activate                 (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_speichern_unter1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -74,7 +74,7 @@ on_speichern_unter1_activate           (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_beenden1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -83,7 +83,7 @@ on_beenden1_activate                   (GtkMenuItem     *menuitem,
 
 
 
-void
+G_MODULE_EXPORT void
 on_button_hand_open_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -91,7 +91,7 @@ on_button_hand_open_clicked            (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -99,7 +99,7 @@ on_button_hand_save_clicked            (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_declarer_west1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -107,7 +107,7 @@ on_declarer_west1_activate             (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_declarer_north1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -115,7 +115,7 @@ on_declarer_north1_activate            (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_declarer_east1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -123,7 +123,7 @@ on_declarer_east1_activate             (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_declarer_south1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -131,7 +131,7 @@ on_declarer_south1_activate            (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_contract_no_trump1_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -139,7 +139,7 @@ on_contract_no_trump1_activate         (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_contract_spades1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -147,7 +147,7 @@ on_contract_spades1_activate           (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_contract_hearts1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -155,7 +155,7 @@ on_contract_hearts1_activate           (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_contract_diamonds1_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -163,7 +163,7 @@ on_contract_diamonds1_activate         (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_contract_clubs1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -171,7 +171,7 @@ on_contract_clubs1_activate            (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -179,7 +179,7 @@ on_level1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level2_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -187,7 +187,7 @@ on_level2_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level3_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -195,7 +195,7 @@ on_level3_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level4_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -203,7 +203,7 @@ on_level4_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level5_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -211,7 +211,7 @@ on_level5_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level6_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -219,21 +219,21 @@ on_level6_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level7_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board_set_level (7);
 }
 
-void
+G_MODULE_EXPORT void
 on_level_doubled0_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	board_set_doubled (0);
 }
 
-void
+G_MODULE_EXPORT void
 on_level_doubled1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -241,7 +241,7 @@ on_level_doubled1_activate             (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -249,7 +249,7 @@ on_level_redoubled1_activate           (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_double_dummy1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -259,7 +259,7 @@ on_double_dummy1_activate              (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_dd_always1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -270,7 +270,7 @@ on_dd_always1_activate                 (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_parscore1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -280,7 +280,7 @@ on_parscore1_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -290,7 +290,7 @@ on_handbutton_par_clicked              (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_vuln_none_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -298,7 +298,7 @@ on_vuln_none_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_vuln_ns_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -306,7 +306,7 @@ on_vuln_ns_activate                    (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_vuln_ew_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -314,7 +314,7 @@ on_vuln_ew_activate                    (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_vuln_all_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -322,7 +322,7 @@ on_vuln_all_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_set_par1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -340,7 +340,7 @@ on_set_par1_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_rewind_play1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -353,7 +353,7 @@ on_rewind_play1_activate               (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_complete_play1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -366,7 +366,7 @@ on_complete_play1_activate             (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_deal_clear_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -377,7 +377,7 @@ on_deal_clear_activate                 (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_deal_random_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -391,7 +391,7 @@ on_deal_random_activate                (GtkMenuItem     *menuitem,
 
 
 
-void
+G_MODULE_EXPORT void
 on_dealer_west1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -399,7 +399,7 @@ on_dealer_west1_activate               (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_dealer_north1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -407,7 +407,7 @@ on_dealer_north1_activate              (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_dealer_east1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -415,7 +415,7 @@ on_dealer_east1_activate               (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_dealer_south1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -423,7 +423,7 @@ on_dealer_south1_activate              (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_played_cards1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -432,7 +432,7 @@ on_played_cards1_activate              (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_deal_new_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -442,7 +442,7 @@ on_deal_new_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_deal_cut_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -468,7 +468,7 @@ on_deal_cut_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_deal_copy_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -484,7 +484,7 @@ on_deal_copy_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_deal_paste_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -500,7 +500,7 @@ on_deal_paste_activate                 (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_ew1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -511,7 +511,7 @@ on_ew1_activate                        (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_ns1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -522,7 +522,7 @@ on_ns1_activate                        (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_nw1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -533,7 +533,7 @@ on_nw1_activate                        (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_ne1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -544,7 +544,7 @@ on_ne1_activate                        (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_sw1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -555,7 +555,7 @@ on_sw1_activate                        (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_se1_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -569,7 +569,7 @@ on_se1_activate                        (GtkMenuItem     *menuitem,
 
 /* toolbar */
 
-void
+G_MODULE_EXPORT void
 on_rewind_button_clicked               (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -583,7 +583,7 @@ on_rewind_button_clicked               (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_back_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -595,7 +595,7 @@ on_button_back_clicked                 (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_next_clicked                 (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -607,7 +607,7 @@ on_button_next_clicked                 (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -623,7 +623,7 @@ on_button_fast_forward_clicked         (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_dd_clicked                   (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -633,7 +633,7 @@ on_button_dd_clicked                   (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_prev_board_clicked           (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -649,7 +649,7 @@ on_button_prev_board_clicked           (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_button_next_board_clicked           (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {

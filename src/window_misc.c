@@ -24,7 +24,7 @@
 
 static GtkWidget *window_imps = NULL;
 
-void
+G_MODULE_EXPORT void
 on_imp_table1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -33,7 +33,7 @@ on_imp_table1_activate                 (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_imps_ok_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -45,7 +45,7 @@ on_imps_ok_clicked                     (GtkButton       *button,
 
 static GtkWidget *window_info = NULL;
 
-void
+G_MODULE_EXPORT void
 on_info1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -54,7 +54,7 @@ on_info1_activate                      (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_aboutdialog1_close                  (GtkDialog       *dialog,
                                         gpointer         user_data)
 {
@@ -62,7 +62,7 @@ on_aboutdialog1_close                  (GtkDialog       *dialog,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_aboutdialog1_response               (GtkDialog       *dialog,
                                         gint             response_id,
                                         gpointer         user_data)

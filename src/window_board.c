@@ -682,7 +682,7 @@ board_window_init (window_board_t *win)
 	gtk_widget_show (win->window);
 }
 
-gboolean
+G_MODULE_EXPORT gboolean
 on_window_hand_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)

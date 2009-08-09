@@ -22,7 +22,10 @@
 #include <assert.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "bridge.h"
 #include "file.h"
@@ -32,6 +35,13 @@
 #include "window_board.h"
 #include "window_card.h"
 #include "window_play.h"
+
+static char *xml_files[] = {
+	PACKAGE ".glade",
+#ifndef _WIN32
+	PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".glade",
+#endif
+};
 
 int
 main (int argc, char *argv[])
@@ -49,7 +59,22 @@ main (int argc, char *argv[])
   srand(time(NULL));
 
   win = malloc(sizeof(window_board_t));
-  win->xml = glade_xml_new (PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".glade", NULL, NULL);
+
+  int i;
+  for (i = 0; i < sizeof (xml_files); i++) {
+	  struct stat buf;
+	  if (stat (xml_files[i], &buf) != -1) {
+		  win->xml_file = strdup (xml_files[i]);
+		  break;
+	  }
+  }
+  if (! win->xml_file) {
+	  fprintf (stderr, "Could not find interface definition file " PACKAGE
+			  ".glade\n");
+	  exit (1);
+  }
+
+  win->xml = glade_xml_new (win->xml_file, NULL, NULL);
   glade_xml_signal_autoconnect (win->xml);
 
   board_window_init (win);
