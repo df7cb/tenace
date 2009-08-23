@@ -1,7 +1,7 @@
 /* portability-macros header prefix */
 
 #if !defined(_MSC_VER)
-#define LONGLONG long long
+#define DDS_LONGLONG long long
 #endif
 
 /* Windows requires a __declspec(dllexport) tag, etc */
@@ -168,7 +168,7 @@ struct pos {
 
 struct posSearchType {
   struct winCardType * posSearchPoint; 
-  LONGLONG suitLengths;
+  DDS_LONGLONG suitLengths;
   struct posSearchType * left;
   struct posSearchType * right;
 };
@@ -326,7 +326,7 @@ struct nodeCardsType * BuildPath(struct pos * posPoint,
 void BuildSOP(struct pos * posPoint, int tricks, int firstHand, int target,
   int depth, int scoreFlag, int score);
 struct posSearchType * SearchLenAndInsert(struct posSearchType
-	* rootp, LONGLONG key, int insertNode, int *result);  
+	* rootp, DDS_LONGLONG key, int insertNode, int *result);  
 void Undo(struct pos * posPoint, int depth);
 int CheckDeal(struct moveType * cardp);
 int InvBitMapRank(unsigned short bitMap);

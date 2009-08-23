@@ -9,3 +9,6 @@ GString *board_format_line(board *b, char handsep, char suitsep);
 int board_save (window_board_t *win, char *filename);
 int board_save_dialog (window_board_t *win, int save_as);
 
+#ifndef EMEDIUMTYPE
+#define EMEDIUMTYPE 124
+#endif

@@ -14,7 +14,7 @@
  */
 
 #include <assert.h>
-#include <cairo/cairo-pdf.h>
+#include <cairo-pdf.h>
 #include <math.h>
 
 #include "functions.h"
@@ -110,7 +110,7 @@ begin_print (GtkPrintOperation *operation,
 	gtk_print_operation_set_n_pages (operation, 1);
 }
 
-void
+G_MODULE_EXPORT void
 on_menu_print_activate (void)
 {
 	GtkPrintOperation *print;
@@ -385,7 +385,8 @@ static GObject *
 magic_custom_create (GtkPrintOperation *operation,
 	     gpointer           user_data)
 {
-	GladeXML *xml = glade_xml_new(PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".glade", "magic_options_table", NULL);
+	GladeXML *xml = glade_xml_new (win->xml_file, "magic_options_table",
+			NULL);
 	GtkWidget *table = glade_xml_get_widget (xml, "magic_options_table");
 	assert (table);
 	mc.magic_rows = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_rows"));
@@ -465,7 +466,7 @@ magic_begin_print (GtkPrintOperation *operation,
 	} while (mc.arrow_columns <= n_boards);
 }
 
-void
+G_MODULE_EXPORT void
 on_menu_file_magic_activate (void)
 {
 	GtkPrintOperation *print;

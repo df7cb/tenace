@@ -28,6 +28,8 @@
 
 /* default paths */
 static char *svg_files[] = {
+	"bonded.svg",
+	"paris.svg",
 	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
 	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
@@ -308,7 +310,11 @@ write_config (window_board_t *win)
 
 	struct stat buf;
 	if (stat (g_get_user_config_dir (), &buf) == -1)
-		mkdir (g_get_user_config_dir (), 0777);
+		mkdir (g_get_user_config_dir ()
+#ifndef _WIN32
+				, 0777
+#endif
+				);
 
 	char rcfile[1024];
 	snprintf (rcfile, sizeof (rcfile), "%s/%s",
@@ -329,7 +335,7 @@ write_config (window_board_t *win)
 /* callbacks */
 
 /* create options window and fill it */
-void
+G_MODULE_EXPORT void
 on_options1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -414,7 +420,7 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-gboolean
+G_MODULE_EXPORT gboolean
 on_window_options_delete_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -424,7 +430,7 @@ on_window_options_delete_event         (GtkWidget       *widget,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_options_cancel_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -433,10 +439,11 @@ on_options_cancel_clicked              (GtkButton       *button,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_options_generate_go_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
+#ifndef _WIN32
 	GtkWidget *number = glade_xml_get_widget (win->xml, "options_generate_number");
 	int n = gtk_spin_button_get_value (GTK_SPIN_BUTTON (number));
 	GtkWidget *view = glade_xml_get_widget (win->xml, "options_generate_entry");
@@ -488,10 +495,11 @@ on_options_generate_go_clicked         (GtkButton       *button,
 	close (rfd[0]);
 
 	g_free (text);
+#endif
 }
 
 
-void
+G_MODULE_EXPORT void
 on_options_apply_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -499,7 +507,7 @@ on_options_apply_clicked               (GtkButton       *button,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_options_ok_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {

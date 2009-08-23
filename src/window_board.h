@@ -20,6 +20,7 @@
 
 typedef struct _window_board_t {
 	/* GTK */
+	char *xml_file;
 	GladeXML *xml;
 	GtkWidget *window;
 	GtkStatusbar *statusbar;

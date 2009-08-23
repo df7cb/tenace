@@ -55,7 +55,7 @@ int MaxlenSetSize=0;
 int nodeSetSizeLimit=0;
 int winSetSizeLimit=0;
 int lenSetSizeLimit=0;
-LONGLONG maxmem, allocmem, summem;
+DDS_LONGLONG maxmem, allocmem, summem;
 int wmem, nmem, lmem;
 int maxIndex;
 int wcount, ncount, lcount;
@@ -66,7 +66,7 @@ int * highestRank;
 int * counttable;
 struct adaptWinRanksType * adaptWins;
 unsigned char cardRank[15], cardSuit[5], cardHand[4];
-LONGLONG suitLengths=0;
+DDS_LONGLONG suitLengths=0;
 struct posSearchType *rootnp[14][4];
 struct winCardType **pw;
 struct nodeCardsType **pn;
@@ -83,7 +83,7 @@ int threshold=CANCELCHECK;
 #pragma managed(push, off)
 #endif
 
-#if defined(_WIN32)
+#if 0 && defined(_WIN32)
 extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
 				DWORD ul_reason_for_call,
 				LPVOID lpReserved) {
@@ -846,7 +846,7 @@ void InitStart(void) {
 
 #ifdef _WIN32
 
-  maxmem = (LONGLONG)(pcmem-32678) * 700;  /* Linear calculation of maximum
+  maxmem = (DDS_LONGLONG)(pcmem-32678) * 700;  /* Linear calculation of maximum
 					    memory, formula by 
 					    Michiel de Bondt */
 
@@ -4341,7 +4341,7 @@ struct nodeCardsType * BuildPath(struct pos * posPoint,
 
 
 struct posSearchType * SearchLenAndInsert(struct posSearchType
-	* rootp, LONGLONG key, int insertNode, int *result) {
+	* rootp, DDS_LONGLONG key, int insertNode, int *result) {
 /* Search for node which matches with the suit length combination 
    given by parameter key. If no such node is found, NULL is 
   returned if parameter insertNode is FALSE, otherwise a new 

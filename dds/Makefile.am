@@ -23,8 +23,8 @@ dds.o: dds.c dds.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 libdds.a: dds.o
-	ar rc $@ $^
-	ranlib $@
+	$(AR) rc $@ $^
+	$(RANLIB) $@
 
 clean-local:
 	rm -f dds.o libdds.a dds.c dds.h

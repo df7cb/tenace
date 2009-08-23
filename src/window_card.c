@@ -181,7 +181,7 @@ window_card_init (int style)
 	window_card_set_style (style);
 }
 
-gboolean
+G_MODULE_EXPORT gboolean
 on_window_card_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -196,7 +196,7 @@ on_window_card_delete_event            (GtkWidget       *widget,
 	return FALSE;
 }
 
-void
+G_MODULE_EXPORT void
 on_cards1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -208,7 +208,7 @@ on_cards1_activate                     (GtkMenuItem     *menuitem,
 	PROTECT_END;
 }
 
-void
+G_MODULE_EXPORT void
 on_radiotoolbutton_west_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -216,7 +216,7 @@ on_radiotoolbutton_west_clicked        (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_radiotoolbutton_north_clicked       (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -224,7 +224,7 @@ on_radiotoolbutton_north_clicked       (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -232,7 +232,7 @@ on_radiotoolbutton_east_clicked        (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -240,7 +240,7 @@ on_radiotoolbutton_south_clicked       (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {
@@ -251,7 +251,7 @@ on_toolbutton_card_wipe_clicked        (GtkToolButton   *toolbutton,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_toolbutton_card_random_clicked      (GtkToolButton   *toolbutton,
                                         gpointer         user_data)
 {

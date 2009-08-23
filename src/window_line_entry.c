@@ -67,7 +67,7 @@ window_line_entry_delete ()
 	}
 }
 
-void
+G_MODULE_EXPORT void
 on_deal_line_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -81,7 +81,7 @@ on_deal_line_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_line_entry_activate                 (GtkEntry        *entry,
                                         gpointer         user_data)
 {
@@ -90,7 +90,7 @@ on_line_entry_activate                 (GtkEntry        *entry,
 }
 
 
-void
+G_MODULE_EXPORT void
 on_line_entry_ok_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -99,7 +99,7 @@ on_line_entry_ok_clicked               (GtkButton       *button,
 }
 
 
-gboolean
+G_MODULE_EXPORT gboolean
 on_window_line_entry_delete_event      (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
