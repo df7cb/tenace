@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,8 +57,8 @@ void window_play_init (window_board_t *win, board *b)
 	if (window_play)
 		return;
 
-	window_play = glade_xml_get_widget (win->xml, "window_play");
-	play_table = GTK_TABLE(glade_xml_get_widget (win->xml, "play_table"));
+	window_play = get_widget ("window_play");
+	play_table = GTK_TABLE(get_widget ("play_table"));
 	assert (play_table);
 	int cr, cc;
 	char str[20];
@@ -97,7 +97,7 @@ on_window_play_delete_event            (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "play1"));
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (get_widget ("play1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_play_delete ();
 	return FALSE;

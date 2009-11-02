@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -171,8 +171,8 @@ window_card_init (int style)
 			"card-drag-drop", G_CALLBACK (window_card_drag_drop), &seat_null);
 	hand_display_set_drag (hand_display, 1);
 
-	window_card = glade_xml_get_widget (win->xml, "window_card");
-	GtkWidget *vbox = glade_xml_get_widget (win->xml, "vbox2");
+	window_card = get_widget ("window_card");
+	GtkWidget *vbox = get_widget ("vbox2");
 	gtk_widget_show (w);
 	gtk_box_pack_start_defaults (GTK_BOX (vbox), w);
 	gtk_widget_show (window_card);
@@ -189,7 +189,7 @@ on_window_card_delete_event            (GtkWidget       *widget,
 	printf ("delete... \n");
 	PROTECT_BEGIN_BOOL;
 	printf ("... delete\n");
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "cards1"));
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (get_widget ("cards1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	gtk_widget_hide (window_card);
 	PROTECT_END;

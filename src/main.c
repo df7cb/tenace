@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,9 +37,9 @@
 #include "window_play.h"
 
 static char *xml_files[] = {
-	PACKAGE ".glade",
+	PACKAGE ".ui",
 #ifndef _WIN32
-	PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".glade",
+	PACKAGE_DATA_DIR "/" PACKAGE "/" PACKAGE ".ui",
 #endif
 };
 
@@ -59,23 +59,30 @@ main (int argc, char *argv[])
   srand(time(NULL));
 
   win = malloc(sizeof(window_board_t));
+  char *xml_file = NULL;
 
   int i;
   for (i = 0; i < sizeof (xml_files); i++) {
 	  struct stat buf;
 	  if (stat (xml_files[i], &buf) != -1) {
-		  win->xml_file = strdup (xml_files[i]);
+		  xml_file = xml_files[i];
 		  break;
 	  }
   }
-  if (! win->xml_file) {
-	  fprintf (stderr, "Could not find interface definition file " PACKAGE
-			  ".glade\n");
+  if (! xml_file) {
+	  fprintf (stderr, _("Could not find interface definition file: %s"), "tenace.ui");
 	  exit (1);
   }
 
-  win->xml = glade_xml_new (win->xml_file, NULL, NULL);
-  glade_xml_signal_autoconnect (win->xml);
+  GError *error = NULL;
+  win->builder = gtk_builder_new ();
+  if (! gtk_builder_add_from_file (win->builder, xml_file, &error)) {
+	  g_warning (_("Could not load builder file: %s"), error->message);
+	  g_error_free (error);
+	  exit (1);
+  }
+
+  gtk_builder_connect_signals (win->builder, NULL);
 
   board_window_init (win);
   read_config (win);

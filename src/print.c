@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,10 @@
 #include <assert.h>
 #include <cairo-pdf.h>
 #include <math.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "functions.h"
 #include "window_board.h"
@@ -222,8 +226,9 @@ cairo_clip_rectangle (cairo_t *cr, double x0, double y0, double x1, double y1)
 
 #define TEXTSEP 20.0
 
-struct magic_config_t {
+static struct magic_config_t {
 	/* custom print settings */
+	/* widgets */
 	GtkSpinButton* magic_columns, * magic_rows;
 	GtkToggleButton* magic_no_header, * magic_page_header, * magic_suit_header;
 	GtkToggleButton* magic_mark_cards;
@@ -231,6 +236,7 @@ struct magic_config_t {
 	GtkSpinButton* magic_border;
 	GtkSpinButton* magic_horiz_margin, * magic_vert_margin;
 	GtkSpinButton* magic_horiz_sep, * magic_vert_sep;
+	/* data */
 	int columns, rows;
 	int header;
 	int mark_cards;
@@ -242,8 +248,7 @@ struct magic_config_t {
 	double col_width, row_height;
 	int arrow_columns;
 	double arrow_size;
-};
-static struct magic_config_t mc;
+} mc;
 
 static void
 magic_card_half (cairo_t *cr, window_board_t *win, card c)
@@ -381,31 +386,65 @@ magic_draw_page (GtkPrintOperation *operation,
 	}
 }
 
+static char *magic_xml_files[] = {
+	"magic.ui",
+#ifndef _WIN32
+	PACKAGE_DATA_DIR "/" PACKAGE "/magic.ui",
+#endif
+};
+
+#define get_magic_widget(x) (GTK_WIDGET (gtk_builder_get_object (builder, (x))))
+
 static GObject *
 magic_custom_create (GtkPrintOperation *operation,
 	     gpointer           user_data)
 {
-	GladeXML *xml = glade_xml_new (win->xml_file, "magic_options_table",
-			NULL);
-	GtkWidget *table = glade_xml_get_widget (xml, "magic_options_table");
+	char *xml_file = NULL;
+	int i;
+	for (i = 0; i < sizeof (magic_xml_files); i++) {
+		struct stat buf;
+		if (stat (magic_xml_files[i], &buf) != -1) {
+			xml_file = magic_xml_files[i];
+			break;
+		}
+	}
+	if (! xml_file) {
+		fprintf (stderr, _("Could not find interface definition file: %s"), "magic.ui");
+		exit (1);
+	}
+
+	GtkBuilder *builder;
+	GError *error = NULL;
+	builder = gtk_builder_new ();
+	if (! gtk_builder_add_from_file (builder, xml_file, &error)) {
+		g_warning (_("Could not load builder file: %s"), error->message);
+		g_error_free (error);
+		exit (1);
+	}
+
+	gtk_builder_connect_signals (builder, NULL);
+
+	GtkWidget *table = get_magic_widget ("magic_options_table");
 	assert (table);
-	mc.magic_rows = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_rows"));
-	mc.magic_columns = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_columns"));
-	mc.magic_no_header = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_no_header"));
-	mc.magic_page_header = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_page_header"));
-	mc.magic_suit_header = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_suit_header"));
-	mc.magic_mark_cards = GTK_TOGGLE_BUTTON (glade_xml_get_widget (xml, "magic_mark_cards"));
-	mc.magic_from = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_from"));
+	mc.magic_rows = GTK_SPIN_BUTTON (get_magic_widget ("magic_rows"));
+	mc.magic_columns = GTK_SPIN_BUTTON (get_magic_widget ("magic_columns"));
+	mc.magic_no_header = GTK_TOGGLE_BUTTON (get_magic_widget ("magic_no_header"));
+	mc.magic_page_header = GTK_TOGGLE_BUTTON (get_magic_widget ("magic_page_header"));
+	mc.magic_suit_header = GTK_TOGGLE_BUTTON (get_magic_widget ("magic_suit_header"));
+	mc.magic_mark_cards = GTK_TOGGLE_BUTTON (get_magic_widget ("magic_mark_cards"));
+	mc.magic_from = GTK_SPIN_BUTTON (get_magic_widget ("magic_from"));
 	gtk_spin_button_set_range (mc.magic_from, 1, win->n_boards);
-	mc.magic_to = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_to"));
+	mc.magic_to = GTK_SPIN_BUTTON (get_magic_widget ("magic_to"));
 	gtk_spin_button_set_range (mc.magic_to, 1, win->n_boards);
 	gtk_spin_button_set_value (mc.magic_to, win->n_boards);
-	mc.magic_border = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_border"));
-	mc.magic_horiz_margin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_horiz_margin"));
-	mc.magic_vert_margin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_vert_margin"));
-	mc.magic_horiz_sep = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_horiz_sep"));
-	mc.magic_vert_sep = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "magic_vert_sep"));
-	g_object_unref (xml);
+	mc.magic_border = GTK_SPIN_BUTTON (get_magic_widget ("magic_border"));
+	mc.magic_horiz_margin = GTK_SPIN_BUTTON (get_magic_widget ("magic_horiz_margin"));
+	mc.magic_vert_margin = GTK_SPIN_BUTTON (get_magic_widget ("magic_vert_margin"));
+	mc.magic_horiz_sep = GTK_SPIN_BUTTON (get_magic_widget ("magic_horiz_sep"));
+	mc.magic_vert_sep = GTK_SPIN_BUTTON (get_magic_widget ("magic_vert_sep"));
+
+	g_object_ref (table);
+	g_object_unref (builder);
 	return (GObject *) table;
 }
 

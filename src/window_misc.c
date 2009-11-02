@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2008 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ G_MODULE_EXPORT void
 on_imp_table1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	window_imps = glade_xml_get_widget (win->xml, "window_imps");
+	window_imps = get_widget ("window_imps");
 	gtk_widget_show (window_imps);
 }
 
@@ -49,7 +49,7 @@ G_MODULE_EXPORT void
 on_info1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	window_info = glade_xml_get_widget (win->xml, "aboutdialog1");
+	window_info = get_widget ("aboutdialog1");
 	gtk_widget_show (window_info);
 }
 

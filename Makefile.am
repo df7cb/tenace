@@ -2,7 +2,7 @@
 
 SUBDIRS = contrib dds doc examples handdisplay src po
 
-dist_pkgdata_DATA = tenace.glade
+dist_pkgdata_DATA = tenace.ui magic.ui
 
 INTLTOOL_FILES = \
 	intltool-extract \

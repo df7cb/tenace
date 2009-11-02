@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(tenace, 0.9, [cb@df7cb.de])
+AC_INIT(tenace, 0.10, [cb@df7cb.de])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AM_CONFIG_HEADER(config.h)
@@ -18,7 +18,7 @@ AC_CHECK_LIB([dds], [SolveBoard], [havelibdds=yes],
 	      LDFLAGS="$LDFLAGS -L../dds"], [])
 AM_CONDITIONAL(HAVE_LIBDDS, [test x$havelibdds = xyes])
 
-pkg_modules="gtk+-2.0 >= 2.0.0 libglade-2.0"
+pkg_modules="gtk+-2.0 >= 2.0.0"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)

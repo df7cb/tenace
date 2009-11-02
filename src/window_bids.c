@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ bid_clicked (GtkWidget *lab, int *bid)
 {
 	static GtkWidget *alert_entry = NULL;
 	if (! alert_entry)
-		alert_entry = glade_xml_get_widget (win->xml, "alert_entry");
+		alert_entry = get_widget ("alert_entry");
 
 	board *b = CUR_BOARD;
 	int ret = board_append_bid (b, *bid, 1);
@@ -63,9 +63,9 @@ window_bids_init ()
 	static int pass = bid_pass, x = bid_x, xx = bid_xx;
 	static int bid[35];
 
-	window_bids = glade_xml_get_widget (win->xml, "window_bids");
+	window_bids = get_widget ("window_bids");
 	gtk_widget_show (window_bids);
-	GtkTable *bids_table = GTK_TABLE(glade_xml_get_widget (win->xml, "bids_table"));
+	GtkTable *bids_table = GTK_TABLE(get_widget ("bids_table"));
 	assert (bids_table);
 	GtkWidget *lab;
 
@@ -163,7 +163,7 @@ on_window_bids_delete_event            (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	PROTECT_BEGIN_BOOL;
-	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (glade_xml_get_widget (win->xml, "bids1"));
+	GtkCheckMenuItem *menuitem = GTK_CHECK_MENU_ITEM (get_widget ("bids1"));
 	gtk_check_menu_item_set_active (menuitem, FALSE);
 	window_bids_delete ();
 	PROTECT_END;

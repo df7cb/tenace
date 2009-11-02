@@ -1,3 +1,9 @@
+tenace (0.10-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 02 Nov 2009 20:28:23 +0100
+
 tenace (0.9-1) unstable; urgency=low
 
   * New upstream version.

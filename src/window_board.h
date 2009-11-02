@@ -1,8 +1,6 @@
 #ifndef WINDOW_CARD_H
 #define WINDOW_CARD_H
 
-#include <glade/glade.h>
-
 #include "../handdisplay/hand_display.h"
 #include "bridge.h"
 
@@ -16,12 +14,14 @@
 #define PROTECT_END do { protect = 0; } while (0)
 #define PROTECT_RETURN do { protect = 0; return; } while (0)
 
+/* convenience macros */
+#define get_widget(x) (GTK_WIDGET (gtk_builder_get_object (win->builder, (x))))
+
 /* types */
 
 typedef struct _window_board_t {
 	/* GTK */
-	char *xml_file;
-	GladeXML *xml;
+	GtkBuilder *builder;
 	GtkWidget *window;
 	GtkStatusbar *statusbar;
 	GtkWidget *board_menu;

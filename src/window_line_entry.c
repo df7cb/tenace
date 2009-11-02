@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,8 +49,8 @@ void line_entry_set_from_board(board *b)
 void window_line_entry_init(board *b)
 {
 	if (!window_line_entry) {
-		window_line_entry = glade_xml_get_widget (win->xml, "window_line_entry");
-		line_entry = GTK_ENTRY(glade_xml_get_widget (win->xml, "line_entry"));
+		window_line_entry = get_widget ("window_line_entry");
+		line_entry = GTK_ENTRY(get_widget ("line_entry"));
 		gtk_widget_show (window_line_entry);
 	}
 	if (b)
@@ -105,7 +105,7 @@ on_window_line_entry_delete_event      (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	PROTECT_BEGIN_BOOL;
-	GtkWidget *menuitem = glade_xml_get_widget (win->xml, "deal_line");
+	GtkWidget *menuitem = get_widget ("deal_line");
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), FALSE);
 	window_line_entry_delete ();
 	PROTECT_END;
