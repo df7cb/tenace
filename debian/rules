@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-#export DH_VERBOSE=1
 
 D=$(CURDIR)/debian/tenace
 
@@ -15,33 +14,16 @@ build-stamp: configure-stamp
 	touch $@
 
 install: build-stamp
-	dh_testroot
-	dh_clean -k
+	dh_prep
 	$(MAKE) install DESTDIR=$D
 	install -m644 -D contrib/mailcap $D/usr/lib/mime/packages/tenace
 
 binary-indep:
-
-binary-arch: install
-	dh_installchangelogs -a ChangeLog
-	dh_installdocs -a
-	dh_installman -a doc/tenace.6
-	dh_installmime -a
-	dh_strip -a
-	dh_compress -a
-	dh_fixperms -a
-	dh_shlibdeps -a
-	dh_installdeb -a
-	dh_gencontrol -a
-	dh_md5sums -a
-	dh_builddeb -a
-
-binary: binary-indep binary-arch
+binary binary-arch: install
+	dh $@
 
 clean:
-	dh_testdir
-	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_auto_clean
 	dh_clean build-stamp configure-stamp
 
-.PHONY: build build-indep build-arch clean binary binary-indep binary-arch install configure patch unpatch
-
+.PHONY: build build-indep build-arch clean binary binary-indep binary-arch install configure
