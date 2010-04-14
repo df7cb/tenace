@@ -1,5 +1,10 @@
 #include "window_board.h"
 
+/* kfreebsd tweak */
+#ifndef EMEDIUMTYPE
+#define EMEDIUMTYPE EINVAL
+#endif
+
 int board_parse_line(const char *line, board *b, char handsep, char suitsep);
 int board_load (window_board_t *win1, char *fname);
 int board_load_popup (window_board_t *win, int append, char *filename);

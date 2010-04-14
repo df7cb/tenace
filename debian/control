@@ -3,7 +3,7 @@ Section: games
 Priority: extra
 Maintainer: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>> 7), libgtk2.0-dev, libdds-dev (>> 1.0.4), intltool
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 XS-Vcs-Browser: http://hg.df7cb.de/hg/tenace
 XS-Vcs-Hg: http://hg.df7cb.de/hg/tenace
 Homepage: http://www.df7cb.de/bridge/tenace/
