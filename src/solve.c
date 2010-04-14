@@ -160,7 +160,7 @@ compute_dd_scores0 (board *b, dd_t *dd, card next)
 	solve_statusbar(_("Thinking..."));
 	while (gtk_events_pending ())
 		gtk_main_iteration();
-	i = SolveBoard(d, -1, 3, 1, &fut);
+	i = SolveBoard(d, -1, 3, 1, &fut, 0);
 	solve_statusbar(NULL);
 	if (i <= 0) {
 		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
@@ -278,7 +278,7 @@ compute_par_arr(board *b)
 			d.trump = dds_suit_conv(t);
 			d.first = h;
 			i = SolveBoard(d, -1 /* target */, 1 /* solutions */,
-					h == 0 ? 1 : 2 /* mode */, &fut);
+					h == 0 ? 1 : 2 /* mode */, &fut, 0);
 			if (i <= 0) {
 				g_string_printf(str, "DD Error: %s", dds_error[-i]);
 				solve_statusbar(NULL);

@@ -1,3 +1,10 @@
+tenace (0.10-1) unstable; urgency=low
+
+  * New upstream version.
+  * Upgrade to DH 7.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 14 Apr 2010 22:35:28 +0200
+
 tenace (0.8-3) unstable; urgency=low
 
   * Move EINVAL tweak into file.h so main.c sees it.

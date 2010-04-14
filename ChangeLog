@@ -1,8 +1,9 @@
 tenace (0.10) upstream; urgency=low
 
   * Yet another GUI change, now using GtkBuilder.
+  * Port to dds 1.2.0.
 
- -- Christoph Berg <myon@debian.org>  Mon, 02 Nov 2009 20:27:51 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 14 Apr 2010 22:37:21 +0200
 
 tenace (0.9) upstream; urgency=low
 
