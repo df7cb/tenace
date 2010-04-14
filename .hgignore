@@ -3,8 +3,9 @@
 ^autom4te\.cache/
 ^config/
 ^configure$
-^config\.(guess|h|h\.in|log|status|sub)$
+^config\.(guess|h|h\.in|log|status|sub)
 ^libtool$
+^m4/
 Makefile\.in$
 ^(|cards/|contrib/|dds/|doc/|examples/|handdisplay/|po/|src/)Makefile$
 ^po/.*\.gmo$
