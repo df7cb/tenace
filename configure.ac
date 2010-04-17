@@ -10,6 +10,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_ISC_POSIX
 AC_PROG_CC
+gl_EARLY
 AC_PROG_INTLTOOL
 AM_PROG_LIBTOOL
 AM_PROG_CC_STDC
@@ -35,15 +36,18 @@ AM_GLIB_GNU_GETTEXT
 dnl Source is in utf-8
 XGETTEXT="xgettext --from-code=utf-8"
 
-AC_OUTPUT([
+dnl IT_PROG_INTLTOOL
+gl_INIT
+
+AC_CONFIG_FILES([
 Makefile
 contrib/Makefile
 dds/Makefile
 doc/Makefile
 examples/Makefile
 handdisplay/Makefile
+lib/Makefile
 src/Makefile
 po/Makefile.in
 ])
-
-IT_PROG_INTLTOOL
+AC_OUTPUT

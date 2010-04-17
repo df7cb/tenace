@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = contrib dds doc examples handdisplay src po
+ACLOCAL_AMFLAGS = -I m4
+SUBDIRS = contrib dds doc examples handdisplay lib src po
 
 dist_pkgdata_DATA = tenace.ui magic.ui
 
@@ -9,7 +10,7 @@ INTLTOOL_FILES = \
 	intltool-merge \
 	intltool-update
 
-EXTRA_DIST = autogen.sh $(INTLTOOL_FILES)
+EXTRA_DIST = autogen.sh m4/gnulib-cache.m4 $(INTLTOOL_FILES)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
