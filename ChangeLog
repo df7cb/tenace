@@ -5,7 +5,7 @@ tenace (0.10) upstream; urgency=low
     + Use gnulib to import "nproc".
     + Use threads to parallelize parscore computation.
 
- -- Christoph Berg <myon@debian.org>  Sat, 17 Apr 2010 17:02:21 +0200
+ -- Christoph Berg <myon@debian.org>  Sun, 25 Apr 2010 01:04:24 +0200
 
 tenace (0.9) upstream; urgency=low
 

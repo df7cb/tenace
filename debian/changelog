@@ -1,9 +1,9 @@
 tenace (0.10-1) unstable; urgency=low
 
-  * New upstream version.
+  * New upstream version, needs libdds-dev >= 2.0.0.
   * Upgrade to DH 7.
 
- -- Christoph Berg <myon@debian.org>  Wed, 14 Apr 2010 22:35:28 +0200
+ -- Christoph Berg <myon@debian.org>  Sun, 25 Apr 2010 01:03:55 +0200
 
 tenace (0.8-3) unstable; urgency=low
 
