@@ -23,7 +23,7 @@ tenace_SOURCES = \
 	window_misc.c window_misc.h \
 	window_play.c window_play.h
 
-tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds ../handdisplay/hand_display.o
+tenace_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -ldds ../handdisplay/hand_display.o ../lib/libgnu.la
 tenace_LDFLAGS = -export-dynamic
 
 EXTRA_DIST = unused.c

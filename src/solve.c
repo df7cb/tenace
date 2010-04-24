@@ -17,6 +17,9 @@
 #include <ctype.h>
 #include <dds.h>
 #include <stdlib.h> /* system */
+#include <sys/time.h> /* gettimeofday */
+
+#include "../lib/nproc.h" /* gnulib's nproc */
 
 #include "bridge.h"
 #include "file.h" /* board_format_line */
@@ -244,8 +247,15 @@ void compute_next_dd_scores(board *b, card c)
  * Parscore computation
  */
 
+struct par_arr_chunk_t {
+	int thread;
+	board *b;
+	int start;
+	int end;
+};
+
 static int
-compute_par_arr(board *b)
+compute_par_arr_chunk (struct par_arr_chunk_t *chunk)
 {
 	int i, j, c;
 	struct deal d;
@@ -259,42 +269,92 @@ compute_par_arr(board *b)
 	}
 
 	for (c = 0; c < 52; c++) {
-		if (b->dealt_cards[c]) {
-			d.remainCards[(b->dealt_cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
+		if (chunk->b->dealt_cards[c]) {
+			d.remainCards[(chunk->b->dealt_cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
 		}
 	}
 
-	GString *str = g_string_new(_("Thinking..."));
-	int h, t;
-	for (t = 4; t >= 0; t--) {
-		g_string_append_printf(str, " %s ", _(trump_str[t]));
+	for (i = chunk->start; i < chunk->end; i++) {
+		int t = 4 - (i / 4); /* NT .. Clubs */
+		int h = i % 4;
+		//printf("thread %d: t %d; h %d ...\n", chunk->thread, t, h);
+		//g_string_append_printf(str, " %s ", _(trump_str[t]));
 
-		for (h = 0; h < 4; h++) {
-			g_string_append_printf(str, "%s", _(seat_str[h + 1]));
-			solve_statusbar(str->str);
-			while (gtk_events_pending ())
-				gtk_main_iteration();
+//		for (h = 0; h < 4; h++) {
+			//g_string_append_printf(str, "%s", _(seat_str[h + 1]));
+			//solve_statusbar(str->str);
+			//while (gtk_events_pending ())
+				//gtk_main_iteration();
 
 			d.trump = dds_suit_conv(t);
 			d.first = h;
-			i = SolveBoard(d, -1 /* target */, 1 /* solutions */,
-					h == 0 ? 1 : 2 /* mode */, &fut, 0);
-			if (i <= 0) {
-				g_string_printf(str, "DD Error: %s", dds_error[-i]);
-				solve_statusbar(NULL);
-				board_statusbar(str->str);
-				g_string_free(str, TRUE);
+			j = SolveBoard(d, -1 /* target */, 1 /* solutions */,
+					1 /* legacy: h == 0 ? 1 : 2 */ /* mode */, &fut, chunk->thread);
+			if (j <= 0) {
+				//g_string_printf(str, "DD Error: %s", dds_error[-j]);
+				//solve_statusbar(NULL);
+				//board_statusbar(str->str);
+				//g_string_free(str, TRUE);
 				return 0;
 			}
-			b->par_arr[h][t] = 13 - fut.score[0];
+			chunk->b->par_arr[h][t] = 13 - fut.score[0];
 			/* we could store (one) optimum lead here */
-			//printf("t %d; h %d = %d\n", t, h, 13 - fut.score[0]);
+			//printf("thread %d: t %d; h %d = %d\n", chunk->thread, t, h, 13 - fut.score[0]);
+//		}
+	}
+}
+
+static int
+compute_par_arr(board *b)
+{
+	//int i, j, c;
+	struct timeval tv1, tv2;
+
+	GString *str = g_string_new(_("Thinking..."));
+	board_statusbar(str->str);
+	while (gtk_events_pending ())
+		gtk_main_iteration();
+
+	int nproc = num_processors (NPROC_CURRENT_OVERRIDABLE);
+	//printf ("nproc: %d\n", nproc);
+	gettimeofday (&tv1, NULL);
+	struct par_arr_chunk_t *chunk = malloc (sizeof (struct par_arr_chunk_t) * nproc);
+	pthread_t *thread = malloc (sizeof (pthread_t) * nproc);
+
+	int i;
+	for (i = 0; i < nproc; i++) {
+		chunk[i].thread = i;
+		chunk[i].b = b;
+		chunk[i].start = i * 20 / nproc;
+		chunk[i].end = (i + 1) * (20 / nproc);
+		//printf ("chunk %d: %d..%d\n", i, chunk[i].start, chunk[i].end);
+		//compute_par_arr_chunk (&chunk[i]);
+		int rc = pthread_create(&thread[i], NULL, compute_par_arr_chunk, (void *)&chunk[i]);
+		if (rc) {
+			printf ("ERROR; return code from pthread_create() is %d\n", rc);
+			exit (-1);
 		}
 	}
 
+	for (i = 0; i < nproc; i++) {
+		//printf ("joining thread %d\n", i);
+		int rc = pthread_join (thread[i], NULL);
+		if (rc) {
+			printf("ERROR; return code from pthread_join() is %d\n", rc);
+			exit(-1);
+		}
+	}
+
+	free (chunk);
+	free (thread);
+
 	solve_statusbar(NULL);
 	g_string_free(str, TRUE);
-	//system("dds -tricks dd&");
+
+	gettimeofday (&tv2, NULL);
+	/*printf ("compute_par_arr: %dms\n",
+		1000 * (tv2.tv_sec - tv1.tv_sec) + (tv2.tv_usec - tv1.tv_usec) / 1000);*/
+
 	return 1;
 }
 
