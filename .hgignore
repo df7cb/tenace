@@ -25,6 +25,8 @@ NEWS
 handdisplay/int_int_marshal.h
 src/tenace
 
+dds/dds.[ch]
+
 # debian
 build-stamp
 configure-stamp

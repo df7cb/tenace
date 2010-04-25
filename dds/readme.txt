@@ -1,10 +1,16 @@
-DDS 1.1.9,  Bo Haglund 2008-09-07
+DDS 2.0.0,  Bo Haglund 2010-04-24
 
 For Win32, DDS compiles with Visual C++ 2005 Express edition 
-and the Mingw port of gcc 3.4.2.
+and the Mingw port of gcc.
 
 When using Visual C++, the statement
-#include "stdafx.h" at the beginning of dds.cpp must be uncommented.  
+#include "stdafx.h" at the beginning of dds.cpp must be uncommented.
+
+When not using Visual C++, the compilation of DDS excludes function CalcDDtable
+and the multi-thread functions that CalcDDtable uses.
+This is done because the multi-thread primitives used are neither standardized
+in C++ nor between operating systems.
+   
 
 Linking with an application using DDS
 -------------------------------------

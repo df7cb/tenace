@@ -232,6 +232,25 @@ and QuickTricks slightly faster.
 
 
 
+Release Notes DDS 2.0.0
+-----------------------
+A bug was fixed.
+SolveBoard is now thread-safe.
+The SolveBoard parameter "mode" no longer needs to be set to 2.
+DDS automatically detect situations when the transposition
+table contents can be reused.
+Used with a single thread, DDS 2.0.0 has about the same speed as DDS 1.1.9.
+Used with 2 parallel threads, DDS 2.0.0 is twice as fast as the single
+thread case. 
+
+A new function, CalcDDtable, has been added.
+CalcDDtable calls SolveBoard using parallel threads. The number of
+parallel threads is the same as the number of processor cores.
+CalcDDtable calculates the double dummy values of the initial 52 cards
+for all the 20 trump suit/leading hand combinations.   
+
+
+
 
 
 
