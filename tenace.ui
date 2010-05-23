@@ -2582,7 +2582,6 @@ EW: %d</property>
                   <object class="GtkSpinButton" id="spinbutton_card_width">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment"></property>
                     <property name="climb_rate">1</property>
                     <property name="numeric">True</property>
                   </object>
@@ -3098,7 +3097,6 @@ EW: %d</property>
                       <object class="GtkSpinButton" id="options_generate_number">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment"></property>
                         <property name="numeric">True</property>
                       </object>
                       <packing>
@@ -3225,24 +3223,22 @@ EW: %d</property>
   <object class="GtkAboutDialog" id="aboutdialog1">
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
-    <property name="copyright" translatable="yes">(C) 2005-2008 Christoph Berg</property>
+    <property name="copyright" translatable="yes">(C) 2005-2010 Christoph Berg</property>
     <property name="comments" translatable="yes">Bridge Hand Viewer and Editor</property>
     <property name="website">http://www.df7cb.de/bridge/tenace/</property>
     <property name="website_label" translatable="yes">Homepage</property>
-    <property name="license" translatable="yes">/*
- *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2008 Christoph Berg &lt;cb@df7cb.de&gt;
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- */</property>
+    <property name="license" translatable="yes">tenace - bridge hand viewer and editor
+Copyright (C) Christoph Berg &lt;cb@df7cb.de&gt;
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</property>
     <property name="authors">Christoph Berg &lt;cb@df7cb.de&gt;</property>
     <property name="documenters"></property>
     <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">de: Christoph Berg &lt;cb@df7cb.de&gt;</property>

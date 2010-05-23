@@ -15,8 +15,10 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
+#include <dds.h>
 
 #include "config.h"
+#include "functions.h"
 #include "window_board.h"
 
 
@@ -50,6 +52,13 @@ on_info1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	window_info = get_widget ("aboutdialog1");
+#ifdef DDS_VERSION
+	GString *comment = g_string_new (gtk_about_dialog_get_comments (GTK_ABOUT_DIALOG (window_info)));
+	g_string_append_printf (comment, _("\nDDS version: %d.%d.%d"),
+			DDS_VERSION / 10000, (DDS_VERSION / 100) % 100, DDS_VERSION % 100);
+	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (window_info), comment->str);
+	g_string_free (comment, TRUE);
+#endif
 	gtk_widget_show (window_info);
 }
 

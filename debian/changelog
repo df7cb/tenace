@@ -1,3 +1,9 @@
+tenace (0.11-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 23 May 2010 12:47:19 +0200
+
 tenace (0.10-1) unstable; urgency=low
 
   * New upstream version, needs libdds-dev >= 2.0.0.
