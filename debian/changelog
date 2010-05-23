@@ -1,6 +1,8 @@
 tenace (0.11-1) unstable; urgency=low
 
   * New upstream version.
+    + "Open in web" shows the current deal on
+      http://www.bridgebase.com/tools/handviewer.html. Closes: #522047.
 
  -- Christoph Berg <myon@debian.org>  Sun, 23 May 2010 12:47:19 +0200
 

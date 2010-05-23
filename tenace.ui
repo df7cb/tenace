@@ -88,8 +88,19 @@
                         <property name="label">_Magic cards</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="image">image1</property>
+                        <property name="use_stock">False</property>
                         <signal name="activate" handler="on_menu_file_magic_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menu_file_web">
+                        <property name="label">Open in _web</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="image">image2</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_file_web_activate"/>
                       </object>
                     </child>
                     <child>
@@ -130,6 +141,7 @@
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="on_beenden1_activate"/>
                       </object>
                     </child>
@@ -3297,5 +3309,13 @@ GNU General Public License for more details.</property>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="stock">gtk-print</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="stock">gtk-jump-to</property>
   </object>
 </interface>

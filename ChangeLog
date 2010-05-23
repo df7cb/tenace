@@ -1,5 +1,8 @@
 tenace (0.11) upstream; urgency=low
 
+  * "Open in web" shows the current deal on
+    http://www.bridgebase.com/tools/handviewer.html. Suggested by Christos
+    Trochalakis.
   * Import dds 2.0.1.
   * Show dds version number in about dialog.
 

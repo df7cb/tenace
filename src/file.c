@@ -766,3 +766,62 @@ retry_save:
 	gtk_widget_destroy (dialog);
 	return 1;
 }
+
+/* open on bridgebase.com */
+
+static seat_lc[] = { 0, 'w', 'n', 'e', 's' };
+static vuln_lc[] = { 'o', 'n', 'e', 'b' };
+
+void
+on_menu_file_web_activate ()
+{
+	board *b = CUR_BOARD;
+	GString *url = g_string_new ("http://www.bridgebase.com/tools/handviewer.html?");
+	int h;
+
+	g_string_append_printf (url, "d=%c", seat_lc[b->dealer]);
+	g_string_append_printf (url, "&v=%c", vuln_lc[b->vuln[0] + 2 * b->vuln[1]]);
+	g_string_append_printf (url, "&n=%d", b->n + 1); // TODO: real board number
+
+	for (h = west; h <= south; h++) {
+		if (*b->hand_name[h - 1]->str)
+			g_string_append_printf (url, "&%cn=%s", seat_lc[h], b->hand_name[h - 1]->str);
+
+		g_string_append_printf (url, "&%c=", seat_lc[h]);
+		int s;
+		for (s = club; s <= spade; s++) {
+			g_string_append_printf (url, "%s", trump_str_char[s]);
+			int c;
+			for (c = s * 13 + 12; c >= (int)s * 13; c--)
+				if (b->dealt_cards[c] == h)
+					g_string_append_printf(url, "%c", rank_char(RANK(c)));
+		}
+	}
+
+	if (b->n_bids) {
+		g_string_append_printf (url, "&a=");
+		int i;
+		for (i = 0; i < b->n_bids; i++)
+			g_string_append_printf (url, "%s", lin_bid (b->bidding[i]));
+	}
+
+	if (b->n_played_cards) {
+		g_string_append_printf (url, "&p=");
+		int i;
+		for (i = 0; i < b->n_played_cards; i++)
+			g_string_append_printf (url, "%s%c",
+					trump_str_char[SUIT(b->played_cards[i])], rank_char(RANK(b->played_cards[i])));
+		if (b->played_cards[b->n_played_cards] = claim_rest)
+			g_string_append_printf (url, "&c=%d", b->declarer_tricks);
+	}
+
+	printf ("%s\n", url->str);
+	g_string_free (url, TRUE);
+
+	GError *error = NULL;
+	gtk_show_uri (gdk_screen_get_default (), url->str, GDK_CURRENT_TIME, &error);
+	if (error) {
+		printf ("%s\n", error->message);
+		g_error_free (error);
+	}
+}
