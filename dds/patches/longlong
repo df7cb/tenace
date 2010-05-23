@@ -1,6 +1,6 @@
 --- a/dds.cpp
 +++ b/dds.cpp
-@@ -880,7 +880,7 @@ void InitStart(void) {
+@@ -913,7 +913,7 @@ void InitStart(void) {
  
  #ifdef _WIN32
  
@@ -9,7 +9,7 @@
  	/* Linear calculation of maximum memory, formula by Michiel de Bondt */
  
      if (localVar[k].maxmem < 10485760) exit (1);
-@@ -4396,7 +4396,7 @@ struct nodeCardsType * BuildPath(struct
+@@ -4429,7 +4429,7 @@ struct nodeCardsType * BuildPath(struct
  
  
  struct posSearchType * SearchLenAndInsert(struct posSearchType
@@ -29,7 +29,7 @@
  #endif
  
  /* Windows requires a __declspec(dllexport) tag, etc */
-@@ -174,7 +174,7 @@ struct pos {
+@@ -182,7 +182,7 @@ struct pos {
  
  struct posSearchType {
    struct winCardType * posSearchPoint; 
@@ -38,7 +38,7 @@
    struct posSearchType * left;
    struct posSearchType * right;
  };
-@@ -304,9 +304,9 @@ struct localVarType {
+@@ -314,9 +314,9 @@ struct localVarType {
    int nodeSetSizeLimit;
    int winSetSizeLimit;
    int lenSetSizeLimit;
@@ -51,7 +51,7 @@
    int wmem;
    int nmem; 
    int lmem;
-@@ -320,7 +320,7 @@ struct localVarType {
+@@ -330,7 +330,7 @@ struct localVarType {
    int suppressTTlog;*/
    struct relRanksType * rel;
    struct adaptWinRanksType * adaptWins;
@@ -60,7 +60,7 @@
    struct posSearchType *rootnp[14][4];
    struct winCardType **pw;
    struct nodeCardsType **pn;
-@@ -457,7 +457,7 @@ struct nodeCardsType * BuildPath(struct
+@@ -467,7 +467,7 @@ struct nodeCardsType * BuildPath(struct
  void BuildSOP(struct pos * posPoint, int tricks, int firstHand, int target,
    int depth, int scoreFlag, int score, int thrId);
  struct posSearchType * SearchLenAndInsert(struct posSearchType

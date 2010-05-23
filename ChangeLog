@@ -1,8 +1,9 @@
 tenace (0.11) upstream; urgency=low
 
-  * Show DDS version number in about dialog.
+  * Import dds 2.0.1.
+  * Show dds version number in about dialog.
 
- -- Christoph Berg <myon@debian.org>  Sun, 23 May 2010 13:11:54 +0200
+ -- Christoph Berg <myon@debian.org>  Sun, 23 May 2010 13:19:25 +0200
 
 tenace (0.10) upstream; urgency=low
 

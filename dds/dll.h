@@ -31,6 +31,12 @@
 
 /* end of portability-macros section */
 
+#define DDS_VERSION		20001	/* Version 2.0.1. Allowing for 2 digit
+					minor versions */
+/*#define SIMILARITYTEST*/		/* Uncomment the SIMILARITYTEST definition to
+					reuse the transposition table contents when the
+					deal in the preceding SolveBoard call is similar to 
+					the current deal. */
 /*#define BENCH*/
 
 #include <stdio.h>
@@ -75,7 +81,9 @@
 #define WINIT	700000/*1000000*/
 #define LINIT	50000
 
+#ifdef SIMILARITYTEST
 #define SIMILARDEALLIMIT	5
+#endif
 
 #define MAXNOOFBOARDS		20
 
@@ -283,10 +291,12 @@ struct localVarType {
   int tricksTarget;
   struct gameInfo game;
   int newDeal;
-  int similarDeal;
   int newTrump;
+  #ifdef SIMILARITYTEST
+  int similarDeal;
   unsigned short int diffDeal;
   unsigned short int aggDeal;
+  #endif
   int estTricks[4];
   FILE *fp2;
   FILE *fp7;
