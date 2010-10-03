@@ -18,7 +18,7 @@ AC_HEADER_STDC
 AC_CHECK_LIB([dds], [SolveBoard], [havelibdds=yes],
 	     [echo Using internal dds library
 	      CFLAGS="$CFLAGS -I../dds"
-	      LDFLAGS="$LDFLAGS -L../dds"], [])
+	      LDFLAGS="$LDFLAGS -L../dds"], [-lgomp])
 AM_CONDITIONAL(HAVE_LIBDDS, [test x$havelibdds = xyes])
 
 pkg_modules="gtk+-2.0 >= 2.0.0"

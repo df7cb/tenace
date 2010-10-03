@@ -5,6 +5,7 @@ tenace (0.11) upstream; urgency=low
     Trochalakis.
   * Import dds 2.0.1.
   * Show dds version number in about dialog.
+  * Port to CalcDDtable (using openmp in libdds).
 
  -- Christoph Berg <myon@debian.org>  Sun, 23 May 2010 13:19:25 +0200
 

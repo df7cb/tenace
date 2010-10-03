@@ -19,7 +19,9 @@
 #include <stdlib.h> /* system */
 #include <sys/time.h> /* gettimeofday */
 
-#include "../lib/nproc.h" /* gnulib's nproc */
+/* gnulib */
+#include "../lib/nproc.h"
+#include "../lib/physmem.h"
 
 #include "bridge.h"
 #include "file.h" /* board_format_line */
@@ -28,7 +30,14 @@
 
 void init_solve()
 {
-	InitStart();
+	/* get RAM size in GB */
+	int physmem = round (physmem_total () / 1000000000.0);
+	if (!physmem)
+		physmem = 1;
+	/* cores to use */
+	int nproc = num_processors (NPROC_CURRENT_OVERRIDABLE);
+	printf ("Using %d GB RAM, %d cores\n", physmem, nproc);
+	InitStart(physmem, nproc);
 }
 
 static const char *dds_error[] = {
@@ -243,10 +252,12 @@ void compute_next_dd_scores(board *b, card c)
 }
 */
 
-/*
- * Parscore computation
- */
+/****************************************************************************************
+ * Parscore computation                                                                 *
+ ****************************************************************************************/
 
+#if 0
+// pthreads version
 struct par_arr_chunk_t {
 	int thread;
 	board *b;
@@ -303,18 +314,18 @@ compute_par_arr_chunk (struct par_arr_chunk_t *chunk)
 //		}
 	}
 }
+#endif
 
 static int
 compute_par_arr(board *b)
 {
-	//int i, j, c;
-	struct timeval tv1, tv2;
+	//struct timeval tv1, tv2;
 
-	GString *str = g_string_new(_("Thinking..."));
-	board_statusbar(str->str);
+	board_statusbar (_("Thinking..."));
 	while (gtk_events_pending ())
-		gtk_main_iteration();
+		gtk_main_iteration ();
 
+	/* pthreads version
 	int nproc = num_processors (NPROC_CURRENT_OVERRIDABLE);
 	//printf ("nproc: %d\n", nproc);
 	gettimeofday (&tv1, NULL);
@@ -347,12 +358,44 @@ compute_par_arr(board *b)
 
 	free (chunk);
 	free (thread);
+	*/
+
+	int i, j, c;
+	struct ddTableDeal d;
+	struct ddTableResults ddresults;
+
+	for (i = 0; i < 4; i++) {
+		for (j = 0; j < 4; j++)
+			d.cards[i][j] = 0;
+	}
+
+	for (c = 0; c < 52; c++) {
+		if (b->dealt_cards[c]) {
+			d.cards[(b->dealt_cards[c] + 2) % 4][3 - SUIT(c)] |= card_bits[RANK(c)];
+		}
+	}
+
+	int result = CalcDDtable (d, &ddresults);
+	if (result != 1) {
+		char str[100];
+		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
+		solve_statusbar(str);
+		return 0;
+	}
+
+	int h, t;
+	for (h = 0; h < 4; h++) {
+		for (t = club; t <= NT; t++) {
+			b->par_arr[(h+1) % 4][dds_suit_conv(t)] = ddresults.resTable[t][h];
+		}
+	}
 
 	solve_statusbar(NULL);
-	g_string_free(str, TRUE);
+	while (gtk_events_pending ())
+		gtk_main_iteration();
 
-	gettimeofday (&tv2, NULL);
-	/*printf ("compute_par_arr: %dms\n",
+	/*gettimeofday (&tv2, NULL);
+	printf ("compute_par_arr: %dms\n",
 		1000 * (tv2.tv_sec - tv1.tv_sec) + (tv2.tv_usec - tv1.tv_usec) / 1000);*/
 
 	return 1;
