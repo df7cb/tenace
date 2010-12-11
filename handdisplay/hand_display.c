@@ -86,6 +86,8 @@ render_card_init (char *card_fname)
 	}
 
 	GError *error = NULL;
+	/* aspect ratio is maintained - assume card height < 2 * card_width */
+	/* actual card height is computed from actual size */
 	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname,
 			card_width * 13, card_width * 2 * 5, &error);
 	if (!pb) {
@@ -931,6 +933,7 @@ void
 hand_display_set_svg (char *fname, int width)
 {
 	assert (fname);
+	assert (width > 0);
 	if (svg_filename && ! strcmp (fname, svg_filename) && width == card_width)
 		return; /* no change */
 
