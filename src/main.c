@@ -43,6 +43,8 @@ static char *xml_files[] = {
 #endif
 };
 
+int debug = 0;
+
 int
 main (int argc, char *argv[])
 {
@@ -66,6 +68,7 @@ main (int argc, char *argv[])
 	  struct stat buf;
 	  if (stat (xml_files[i], &buf) != -1) {
 		  xml_file = xml_files[i];
+		  if (debug) printf ("Using interface file %s\n", xml_file);
 		  break;
 	  }
   }
