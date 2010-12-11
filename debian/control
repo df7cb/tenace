@@ -3,9 +3,9 @@ Section: games
 Priority: extra
 Maintainer: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>> 7), libgtk2.0-dev, libdds-dev (>= 2.0.0), intltool
-Standards-Version: 3.8.4
-XS-Vcs-Browser: http://hg.df7cb.de/hg/tenace
-XS-Vcs-Hg: http://hg.df7cb.de/hg/tenace
+Standards-Version: 3.9.1
+XS-Vcs-Browser: http://git.debian.org/?p=collab-maint/tenace.git
+XS-Vcs-Git: git://git.debian.org/collab-maint/tenace.git
 Homepage: http://www.df7cb.de/bridge/tenace/
 
 Package: tenace
