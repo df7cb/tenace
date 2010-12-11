@@ -1,0 +1,42 @@
+# autotools
+aclocal.m4
+autom4te.cache/
+config/
+configure
+config.*
+lib/
+libtool
+m4/
+Makefile.in
+Makefile
+po/POTFILES
+po/*.gmo
+po/stamp-it
+src/.deps
+stamp-h1
+intltool-*
+
+stamp-h.in
+
+NEWS
+
+# built
+*.o
+handdisplay/int_int_marshal.h
+src/tenace
+
+dds/dds.[ch]
+
+# debian
+build-stamp
+configure-stamp
+debian/files
+debian/tenace
+debian/tenace.substvars
+debian/*.debhelper
+debian/tenace.debhelper.log
+
+# stuff
+*.bak
+*.swp
+src/tags
