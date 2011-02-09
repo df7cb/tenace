@@ -18,13 +18,11 @@ formats to display cards work as well). The GUI is rendered using libglade.
 * http://www.gtk.org/
 * http://library.gnome.org/devel/rsvg/
   http://ftp.gnome.org/pub/GNOME/sources/librsvg/
-* http://www.jamesh.id.au/software/libglade/
-  http://ftp.gnome.org/pub/GNOME/sources/libglade/
 
 Tenace uses Bo Haglund's excellent DDS double dummy solver library for
 discovering optimal leads and computing parscores.
 
-* http://web.telia.com/~u07502278/
+* http://www.bahnhof.se/wb758135/
 
 Installation
 ------------
@@ -35,8 +33,7 @@ $ ./configure
 $ make
 # make install
 
-If you are running Debian, get packages from the next Debian mirror. Users of
-Debian Etch (4.0) are referred to http://backports.org/.
+If you are running Debian, get packages from the next Debian mirror.
 
 The contrib sub-directory contains some useful supplementary files:
 
@@ -53,6 +50,14 @@ Currently, there's only a German translation, feel free to submit more. (For
 technical reason, there's also an English translation that only contains four
 strings, though real en_US/en_GB translations would be welcome as well.)
 
+Development
+-----------
+
+The Tenace source code is using a Git repository.
+
+* http://git.debian.org/?p=collab-maint/tenace.git
+  git://git.debian.org/collab-maint/tenace.git
+
 Feedback and Bugs
 -----------------
 
@@ -62,6 +67,9 @@ tracking system. I'm Myon on BBO, feel free to say hello there.
 Credits
 -------
 
-Mark Voorhies spotted a problem with greying out already-played cards.
+* Mark Voorhies spotted a problem with greying out already-played cards.
+* Christos Trochalakis suggested the "Open in web" feature.
 
- -- Christoph Berg <cb@df7cb.de>  Sat, 24 Jan 2009 20:50:42 +0100
+I probably forgot to list others here. Please tell me when this is the case.
+
+ -- Christoph Berg <cb@df7cb.de>   Thu, 10 Feb 2011 00:21:34 +0100

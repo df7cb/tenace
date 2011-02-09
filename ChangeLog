@@ -7,7 +7,7 @@ tenace (0.11) upstream; urgency=low
   * Show dds version number in about dialog.
   * Port to CalcDDtable (using openmp in libdds).
 
- -- Christoph Berg <myon@debian.org>  Sun, 23 May 2010 13:19:25 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 10 Feb 2011 00:24:10 +0100
 
 tenace (0.10) upstream; urgency=low
 
