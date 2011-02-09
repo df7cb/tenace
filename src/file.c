@@ -651,22 +651,22 @@ board_save_lin(window_board_t *win, char *filename)
 		fprintf (f, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
 						: (b->vuln[1] ? 'e' : 'o'));
 		for (i = 0; i < b->n_bids; i++) {
-			fprintf(f, "mb|%s|", lin_bid(b->bidding[i]));
+			fprintf (f, "mb|%s|", lin_bid(b->bidding[i]));
 			if (b->alerts[i])
 				fprintf (f, "an|%s|", *b->alerts[i] ? b->alerts[i] : "!");
 		}
 		for (i = 0; i < 52; i++) {
 			if (i % 4 == 0)
-				fprintf(f, "pg||");
+				fprintf (f, "pg||");
 			card c = b->played_cards[i];
 			if (c < 0)
 				break;
 			if (c == claim_rest) {
-				fprintf(f, "mc|%d|",
+				fprintf (f, "mc|%d|",
 					b->declarer_tricks >= 0 ? b->declarer_tricks : 0);
 				break;
 			}
-			fprintf(f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
+			fprintf (f, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
 		}
 		fprintf (f, "pg||\n");
 	}
@@ -777,6 +777,8 @@ on_menu_file_web_activate ()
 {
 	board *b = CUR_BOARD;
 	GString *url = g_string_new ("http://www.bridgebase.com/tools/handviewer.html?");
+
+	/* non-lin interface
 	int h;
 
 	g_string_append_printf (url, "d=%c", seat_lc[b->dealer]);
@@ -814,6 +816,39 @@ on_menu_file_web_activate ()
 		if (b->played_cards[b->n_played_cards] = claim_rest)
 			g_string_append_printf (url, "&c=%d", b->declarer_tricks);
 	}
+	*/
+
+	int i;
+
+	// TODO: merge with code from board_save_lin
+	g_string_append_printf (url, "lin=pn|%s,%s,%s,%s|",
+			b->hand_name[south-1]->str, b->hand_name[west-1]->str,
+			b->hand_name[north-1]->str, b->hand_name[east-1]->str);
+	g_string_append_printf (url, "st||");
+	g_string_append_printf (url, "md|%d%s|", seat_mod(b->dealer + 1), lin_card_string(b)); // TODO: end positions
+	g_string_append_printf (url, "rh||");
+	g_string_append_printf (url, "ah|%s|", b->name->str);
+	g_string_append_printf (url, "sv|%c|", b->vuln[0] ? (b->vuln[1] ? 'b' : 'n')
+			: (b->vuln[1] ? 'e' : 'o'));
+	for (i = 0; i < b->n_bids; i++) {
+		g_string_append_printf (url, "mb|%s|", lin_bid(b->bidding[i]));
+		if (b->alerts[i])
+			g_string_append_printf (url, "an|%s|", *b->alerts[i] ? b->alerts[i] : "!");
+	}
+	for (i = 0; i < 52; i++) {
+		if (i % 4 == 0)
+			g_string_append_printf (url, "pg||");
+		card c = b->played_cards[i];
+		if (c < 0)
+			break;
+		if (c == claim_rest) {
+			g_string_append_printf (url, "mc|%d|",
+					b->declarer_tricks >= 0 ? b->declarer_tricks : 0);
+			break;
+		}
+		g_string_append_printf (url, "pc|%c%c|", "CDHS"[SUIT(c)], rank_char(RANK(c)));
+	}
+	g_string_append_printf (url, "pg||\n");
 
 	printf ("%s\n", url->str);
 
