@@ -26,6 +26,7 @@ handdisplay/int_int_marshal.h
 src/tenace
 
 dds/dds.[ch]
+dds/libdds.a
 
 # debian
 build-stamp

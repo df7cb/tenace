@@ -30,6 +30,9 @@
 
 void init_solve()
 {
+#if DDS_VERSION < 20101
+#error "DDS minimum version required is 2.1.1"
+#endif
 	/* get RAM size in GB */
 	int physmem = round (physmem_total () / 1000000000.0);
 	if (!physmem)
