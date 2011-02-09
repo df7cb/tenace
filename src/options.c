@@ -106,7 +106,7 @@ apply_options (GtkWidget *window_options)
 	w = get_widget ("svg_file");
 	gchar *fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (w));
 	w = get_widget ("spinbutton_card_width");
-	win->card_width = gtk_spin_button_get_value (GTK_SPIN_BUTTON (w));
+	win->card_width = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (w));
 
 	if (fname) {
 		if (win->svg)
@@ -358,7 +358,9 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (w), win->svg);
 
 	w = get_widget ("spinbutton_card_width");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), win->card_width);
+	GtkAdjustment *adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (w));
+	gtk_adjustment_configure (adj, win->card_width,
+			10, 10000, 10, 100, 0);
 
 	/* Tab 2: Hands */
 	switch (win->show_hands) {
@@ -414,6 +416,11 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 	column = gtk_tree_view_column_new_with_attributes (
 			_("Title"), renderer, "markup", 1, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (w), column);
+
+	/* Tab 5: Generate */
+	w = get_widget ("options_generate_number");
+	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (w));
+	gtk_adjustment_configure (adj, 1, 1, 10000, 1, 10, 0);
 
 	window_options_board_list_populate ();
 }
