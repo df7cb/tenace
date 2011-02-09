@@ -1,14 +1,9 @@
 /* portability-macros header prefix */
 
-#if !defined(_MSC_VER)
-#define DDS_LONGLONG long long
-#endif
-
 /* Windows requires a __declspec(dllexport) tag, etc */
 #if defined(_WIN32)
 #    define DLLEXPORT __declspec(dllexport)
 #    define STDCALL __stdcall
-/*#    define INT8 __int8*/
 #else
 #    define DLLEXPORT
 #    define STDCALL
@@ -26,25 +21,27 @@
 #    include <process.h>
 #endif
 #if defined(_MSC_VER)
-#	 include <intrin.h>
+#    include <intrin.h>
+#else
+#    include <omp.h>
 #endif
 
 /* end of portability-macros section */
 
-#define DDS_VERSION		20001	/* Version 2.0.1. Allowing for 2 digit
+#define DDS_VERSION		20101	/* Version 2.1.1. Allowing for 2 digit
 					minor versions */
-/*#define SIMILARITYTEST*/		/* Uncomment the SIMILARITYTEST definition to
-					reuse the transposition table contents when the
-					deal in the preceding SolveBoard call is similar to 
-					the current deal. */
 /*#define BENCH*/
 
 #include <stdio.h>
+/*#define _CRTDBG_MAP_ALLOC */ /* MEMORY LEAK? */
 #include <stdlib.h>
+/*#include <crtdbg.h> */  /* MEMORY LEAK? */
 #include <string.h>
 #include <time.h>
 #include <assert.h>
 #include <math.h>
+
+typedef long long __int64;
 
 /*#define STAT*/	/* Define STAT to generate a statistics log, stat.txt */
 /*#define TTDEBUG*/     /* Define TTDEBUG to generate transposition table debug information.
@@ -81,9 +78,8 @@
 #define WINIT	700000/*1000000*/
 #define LINIT	50000
 
-#ifdef SIMILARITYTEST
 #define SIMILARDEALLIMIT	5
-#endif
+#define SIMILARMAXWINNODES  700000
 
 #define MAXNOOFBOARDS		20
 
@@ -182,7 +178,7 @@ struct pos {
 
 struct posSearchType {
   struct winCardType * posSearchPoint; 
-  DDS_LONGLONG suitLengths;
+  __int64 suitLengths;
   struct posSearchType * left;
   struct posSearchType * right;
 };
@@ -256,6 +252,7 @@ struct paramType {
   struct boards *bop;
   struct solvedBoards *solvedp;
   int tstart;
+  int timeSupervision;
   int remainTime;
 };
 
@@ -269,7 +266,6 @@ struct ddTableResults {
 
 struct localVarType {
   int nodeTypeStore[4];
-  /*int trumpContract;*/
   int trump;
   unsigned short int lowestWin[50][4];
   int nodes;
@@ -280,23 +276,19 @@ struct localVarType {
   int payOff;
   int val;
   struct pos iniPosition;
-  /*struct pos position;*/
   struct pos lookAheadPos; /* Is initialized for starting
 							alpha-beta search */
   struct moveType forbiddenMoves[14];
   struct moveType initialMoves[4];
   struct moveType cd;
   struct movePlyType movePly[50];
-  /*struct movePlyType * movePly;*/
   int tricksTarget;
   struct gameInfo game;
   int newDeal;
   int newTrump;
-  #ifdef SIMILARITYTEST
   int similarDeal;
   unsigned short int diffDeal;
   unsigned short int aggDeal;
-  #endif
   int estTricks[4];
   FILE *fp2;
   FILE *fp7;
@@ -314,9 +306,9 @@ struct localVarType {
   int nodeSetSizeLimit;
   int winSetSizeLimit;
   int lenSetSizeLimit;
-  DDS_LONGLONG maxmem;
-  DDS_LONGLONG allocmem;
-  DDS_LONGLONG summem;
+  __int64 maxmem;		/* bytes */
+  __int64 allocmem;
+  __int64 summem;
   int wmem;
   int nmem; 
   int lmem;
@@ -330,7 +322,7 @@ struct localVarType {
   int suppressTTlog;*/
   struct relRanksType * rel;
   struct adaptWinRanksType * adaptWins;
-  DDS_LONGLONG suitLengths;
+  __int64 suitLengths;
   struct posSearchType *rootnp[14][4];
   struct winCardType **pw;
   struct nodeCardsType **pn;
@@ -345,13 +337,14 @@ struct localVarType {
   int nodeSetSize; /* Index with range 0 to nodeSetSizeLimit */
   int winSetSize;  /* Index with range 0 to winSetSizeLimit */
   int lenSetSize;  /* Index with range 0 to lenSetSizeLimit */
-
 };
 
 #if defined(_WIN32)
 extern CRITICAL_SECTION solv_crit;
 #endif
 
+extern int noOfThreads;
+extern int noOfCores;
 extern struct localVarType localVar[MAXNOOFTHREADS];
 extern struct gameInfo game;
 extern int newDeal;
@@ -433,12 +426,10 @@ extern int suppressTTlog;
 EXTERN_C DLLEXPORT int STDCALL SolveBoard(struct deal dl, 
   int target, int solutions, int mode, struct futureTricks *futp, int threadIndex);
 
-#if defined(_WIN32)
 EXTERN_C DLLEXPORT int STDCALL CalcDDtable(struct ddTableDeal tableDeal, 
   struct ddTableResults * tablep);
-#endif
 
-void InitStart(void);
+EXTERN_C void InitStart(int gb_ram, int ncores);
 void InitGame(int gameNo, int moveTreeFlag, int first, int handRelFirst, int thrId);
 void InitSearch(struct pos * posPoint, int depth,
   struct moveType startMoves[], int first, int mtd, int thrId);
@@ -467,7 +458,7 @@ struct nodeCardsType * BuildPath(struct pos * posPoint,
 void BuildSOP(struct pos * posPoint, int tricks, int firstHand, int target,
   int depth, int scoreFlag, int score, int thrId);
 struct posSearchType * SearchLenAndInsert(struct posSearchType
-	* rootp, DDS_LONGLONG key, int insertNode, int *result, int thrId);  
+	* rootp, __int64 key, int insertNode, int *result, int thrId);  
 void Undo(struct pos * posPoint, int depth, int thrId);
 int CheckDeal(struct moveType * cardp, int thrId);
 int InvBitMapRank(unsigned short bitMap);
@@ -483,9 +474,9 @@ void AddWinSet(int thrId);
 
 void PrintDeal(FILE *fp, unsigned short ranks[4][4]);
 
-#if defined(_MSC_VER)
-int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp, int remainTime);
-#endif
+int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp, 
+  int timeSupervision, int remainTime);
+
 
 
 

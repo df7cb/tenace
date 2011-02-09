@@ -1,4 +1,4 @@
-DDS 2.0.1,  Bo Haglund 2010-05-15
+DDS 2.1.1,  Bo Haglund 2010-08-02
 
 For Win32, DDS compiles with Visual C++ 2005 Express edition 
 and the Mingw port of gcc.
@@ -6,10 +6,10 @@ and the Mingw port of gcc.
 When using Visual C++, the statement
 #include "stdafx.h" at the beginning of dds.cpp must be uncommented.
 
-When not using Visual C++, the compilation of DDS excludes function CalcDDtable
-and the multi-thread functions that CalcDDtable uses.
-This is done because the multi-thread primitives used are neither standardized
-in C++ nor between operating systems.
+When not using Visual C++, the compilation of DDS includes function CalcDDtable
+implemented using GCC/MingW OpenMP. When OpenMP is compiled with MingW and Windows,
+then for the program using dds.dll, the file phreadGC2.dll must be placed in 
+the same folder as dds.dll.
    
 
 Linking with an application using DDS
@@ -20,21 +20,27 @@ without the overhead of InitStart() at each call.
 For this purpose, the application code must have an include
 statement for the dll.h file in DDS.
 
-Setting up the maximum size of the transposition table
-------------------------------------------------------
-When compiling for Win32, the maximum size of the transposition table is automatically set depending on the physical memory size of
-the PC.
 
-When compiling with Linux, the maximum transposition table size
-(maxmem) is set as follows in dds.cpp (search for maxmem)in InitStart:
-
-maxmem=5000000*sizeof(struct nodeCardsType)+
-		   15000000*sizeof(struct winCardType)+
-		   200000*sizeof(struct posSearchType);
-
-If needed change the values, see examples later in the code for Win32 with different PC memory sizes.
+Maximum number of threads
+------------------------- 
+The maximum number of simultaneous threads depends on the PC physical memory size:
+1 GB or less, max 4 threads.
+2, 3 or 4 GB, max 8 threads.
+More than 4 GB, max 16 threads.
  
+For Windows, allocating memory for the maximum number of simultaneous threads can 
+be done by reading out the physical memory size from Windows. This is done in the DDS.DLL.
+Another alternative is to provide the physical memory size as a parameter (gb_ram) in the
+InitStart call. This alternative needs to be used when the operating system is not Windows.
 
+
+Setting the number of simultaneous threads when calling CalcDDtable.
+--------------------------------------------------------------------
+For Windows, this can be done either by reading out the number of processor cores from
+Windows and using this for setting the number of threads, or by supplying the number of
+threads (ncores) in InitStart. This latter alternative needs to be used when the operating 
+system is not Windows. 
+ 
 
 Options at DDS compilation
 --------------------------

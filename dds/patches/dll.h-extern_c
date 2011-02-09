@@ -1,0 +1,11 @@
+--- a/dll.h
++++ b/dll.h
+@@ -427,7 +427,7 @@ EXTERN_C DLLEXPORT int STDCALL SolveBoar
+ EXTERN_C DLLEXPORT int STDCALL CalcDDtable(struct ddTableDeal tableDeal, 
+   struct ddTableResults * tablep);
+ 
+-void InitStart(int gb_ram, int ncores);
++EXTERN_C void InitStart(int gb_ram, int ncores);
+ void InitGame(int gameNo, int moveTreeFlag, int first, int handRelFirst, int thrId);
+ void InitSearch(struct pos * posPoint, int depth,
+   struct moveType startMoves[], int first, int mtd, int thrId);

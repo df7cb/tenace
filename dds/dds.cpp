@@ -1,5 +1,5 @@
 
-/* DDS 2.0.1   A bridge double dummy solver.				      */
+/* DDS 2.1.1   A bridge double dummy solver.				      */
 /* Copyright (C) 2006-2010 by Bo Haglund                                      */
 /* Cleanups and porting to Linux and MacOSX (C) 2006 by Alex Martelli         */
 /*								              */
@@ -38,9 +38,9 @@ int lastTTstore;
 int ttCollect;
 int suppressTTlog;
 
-#if defined(_WIN32)
-int noOfThreads;
-#endif
+int noOfThreads=MAXNOOFTHREADS;  /* The number of entries to the transposition tables. There is
+								 one entry per thread. */
+int noOfCores;					 /* The number of processor cores, however cannot be higher than noOfThreads. */
 
 #if defined(_MSC_VER)
 CRITICAL_SECTION solv_crit;
@@ -57,7 +57,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
   int k;
 
   if (ul_reason_for_call==DLL_PROCESS_ATTACH) {
-    InitStart();
+    InitStart(0, 0); 
 #if defined(_MSC_VER)
 	InitializeCriticalSection(&solv_crit);
 #endif
@@ -66,7 +66,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
 #if defined(_MSC_VER)
     DeleteCriticalSection(&solv_crit);
 #endif
-    for (k=0; k<MAXNOOFTHREADS; k++) {	
+    for (k=0; k<noOfThreads; k++) {	
       Wipe(k); 
       if (localVar[k].pw[0])
         free(localVar[k].pw[0]);
@@ -77,19 +77,32 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
       if (localVar[k].pl[0])
         free(localVar[k].pl[0]);
       localVar[k].pl[0]=NULL;
-      if (ttStore)
-        free(ttStore);
-      ttStore=NULL;
+      if (localVar[k].pw)
+	free(localVar[k].pw);
+      localVar[k].pw=NULL;
+      if (localVar[k].pn)
+	free(localVar[k].pn);
+      localVar[k].pn=NULL;
+      if (localVar[k].pl)
+	free(localVar[k].pl);
+      localVar[k].pl=NULL;
       if (localVar[k].rel)
         free(localVar[k].rel);
       localVar[k].rel=NULL;
+	  if (localVar[k].adaptWins)
+	    free(localVar[k].adaptWins);
+	  localVar[k].adaptWins=NULL;
     }
+    if (ttStore)
+      free(ttStore);
+    ttStore=NULL;
     if (highestRank)
       free(highestRank);
     highestRank=NULL;
     if (counttable)
       free(counttable);
     counttable=NULL;
+	/*_CrtDumpMemoryLeaks();*/	/* MEMORY LEAK? */
   }
   return 1;
 }
@@ -103,7 +116,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     int solutions, int mode, struct futureTricks *futp, int thrId) {
 
   int k, n, cardCount, found, totalTricks, tricks, last, checkRes;
-  int g, upperbound, lowerbound, first, i, j, forb, ind, flag, noMoves;
+  int g, upperbound, lowerbound, first, i, j, h, forb, ind, flag, noMoves;
   int mcurr;
   int noStartMoves;
   int handRelFirst;
@@ -111,16 +124,12 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
   int latestTrickSuit[4];
   int latestTrickRank[4];
   int maxHand=0, maxSuit=0, maxRank;
-  #ifdef SIMILARITYTEST
-  int playedHistory;
-  unsigned short int prevAggrRemain[4];
-  #endif
-  unsigned short int aggrRemain[4]; 
+  unsigned short int aggrRemain; 
   struct movePlyType temp;
   struct moveType mv;
   
   
-  /*InitStart();*/   /* Include InitStart() if inside SolveBoard,
+  /*InitStart(0,0);*/   /* Include InitStart() if inside SolveBoard,
 			   but preferable InitStart should be called outside
 					 SolveBoard like in DllMain for Windows. */
 
@@ -129,7 +138,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     localVar[thrId].forbiddenMoves[k].suit=0;
   }
 
-  if ((thrId<0)||(thrId>=MAXNOOFTHREADS)) {
+  if ((thrId<0)||(thrId>=noOfThreads)) {
     DumpInput(-15, dl, target, solutions, mode);
 	return -15;
   }
@@ -154,31 +163,14 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
   for (k=0; k<=3; k++)
     noOfCardsPerHand[handId(dl.first, k)]=0;
 
-  #ifdef SIMILARITYTEST
-  playedHistory=TRUE;
-  #endif
-  for (j=0; j<=3; j++) {
-    aggrRemain[j]=0;
-    for (i=0; i<=3; i++) 
-      aggrRemain[j]|=(dl.remainCards[i][j]>>2);
-  }
-  #ifdef SIMILARITYTEST
-  for (j=0; j<=3; j++) {
-    prevAggrRemain[j]=0;
-    for (i=0; i<=3; i++) 
-      prevAggrRemain[j]|=localVar[thrId].game.suit[i][j];
-
-    if (aggrRemain[j]!=prevAggrRemain[j]) {
-      playedHistory=FALSE;
-      break;
-    }
-  }
-  #endif
   
   for (k=0; k<=2; k++) {
     if (dl.currentTrickRank[k]!=0) {
       noOfCardsPerHand[handId(dl.first, k)]=1;
-      if ((aggrRemain[dl.currentTrickSuit[k]] & bitMapRank[dl.currentTrickRank[k]])!=0) {
+      aggrRemain=0;
+      for (h=0; h<=3; h++)
+        aggrRemain|=(dl.remainCards[h][dl.currentTrickSuit[k]]>>2);
+      if ((aggrRemain & bitMapRank[dl.currentTrickRank[k]])!=0) {
 	DumpInput(-13, dl, target, solutions, mode);
 	return -13;
       }
@@ -191,18 +183,14 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     localVar[thrId].tricksTarget=target;
 
   localVar[thrId].newDeal=FALSE; localVar[thrId].newTrump=FALSE;
-  #ifdef SIMILARITYTEST
   localVar[thrId].diffDeal=0; localVar[thrId].aggDeal=0;
-  #endif
   cardCount=0; 
   for (i=0; i<=3; i++) {
     for (j=0; j<=3; j++) {
       cardCount+=counttable[dl.remainCards[i][j]>>2];
-      #ifdef SIMILARITYTEST
       localVar[thrId].diffDeal+=((dl.remainCards[i][j]>>2)^
-	    (localVar[thrId].game.suit[i][j]));
+	      (localVar[thrId].game.suit[i][j]));
       localVar[thrId].aggDeal+=(dl.remainCards[i][j]>>2);
-      #endif
       if (localVar[thrId].game.suit[i][j]!=dl.remainCards[i][j]>>2) {
         localVar[thrId].game.suit[i][j]=dl.remainCards[i][j]>>2;
 	    localVar[thrId].newDeal=TRUE;
@@ -210,19 +198,17 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     }
   }
 
-  #ifdef SIMILARITYTEST
   if (localVar[thrId].newDeal) {
-    if (!playedHistory)
-      localVar[thrId].similarDeal=FALSE;
-    else if (localVar[thrId].diffDeal==0)
+    if (localVar[thrId].diffDeal==0)
       localVar[thrId].similarDeal=TRUE;
     else if ((localVar[thrId].aggDeal/localVar[thrId].diffDeal)
-       >SIMILARDEALLIMIT)
+       > SIMILARDEALLIMIT)
       localVar[thrId].similarDeal=TRUE;
     else
       localVar[thrId].similarDeal=FALSE;
   }
-  #endif
+  else
+    localVar[thrId].similarDeal=FALSE;
 
   if (dl.trump!=localVar[thrId].trump)
     localVar[thrId].newTrump=TRUE;
@@ -468,18 +454,15 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     else
       futp->score[0]=0;
 	
+	/*_CrtDumpMemoryLeaks();*/  /* MEMORY LEAK? */
     return 1;
   }
   
-  #ifdef SIMILARITYTEST
   if ((mode!=2)&&
     (((localVar[thrId].newDeal)&&(!localVar[thrId].similarDeal)) 
-      || localVar[thrId].newTrump)) {
-  #else
-    if ((mode!=2)&&
-      ((localVar[thrId].newDeal) 
-      || localVar[thrId].newTrump)) {
-  #endif
+      || localVar[thrId].newTrump  || 
+	  (localVar[thrId].winSetSize > SIMILARMAXWINNODES))) {
+  
     Wipe(thrId);
 	localVar[thrId].winSetSizeLimit=WINIT;
     localVar[thrId].nodeSetSizeLimit=NINIT;
@@ -522,6 +505,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
 	  localVar[thrId].movePly[localVar[thrId].iniDepth].move[0].sequence<<2;
 	futp->score[0]=-2;
 	
+	/*_CrtDumpMemoryLeaks();*/  /* MEMORY LEAK? */
 	return 1;
     }
   }
@@ -543,6 +527,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     else
 	futp->cards=localVar[thrId].movePly[localVar[thrId].iniDepth].last+1;
 	
+	/*_CrtDumpMemoryLeaks(); */ /* MEMORY LEAK? */
     return 1;
   }
 
@@ -676,7 +661,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
           forb++;
         }
       }
-      if (1/*(winSetSize<winSetFill)&&(nodeSetSize<nodeSetFill)*/)
+      if (1/*(localVar[thrId].winSetSize<SIMILARMAXWINNODES)*/)
         InitSearch(&localVar[thrId].iniPosition, localVar[thrId].game.noOfCards-4,
           localVar[thrId].initialMoves, first, TRUE, thrId);
       else
@@ -739,7 +724,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
       g=localVar[thrId].payOff;
       upperbound=localVar[thrId].payOff;
       lowerbound=0;
-      if (0/*(winSetSize>=winSetFill)||(nodeSetSize>=nodeSetFill)*/)
+      if (0/*(localVar[thrId].winSetSize>SIMILARMAXWINNODES)*/)
         InitSearch(&localVar[thrId].iniPosition, localVar[thrId].game.noOfCards-4,
           localVar[thrId].initialMoves, first, FALSE, thrId);
 	else 
@@ -774,7 +759,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
 	    lowerbound=tricks;
 	    g=lowerbound;
 	  }
-        if (0/*(winSetSize>=winSetFill)||(nodeSetSize>=nodeSetFill)*/)
+        if (0/*(localVar[thrId].winSetSize>SIMILARMAXWINNODES)*/)
           InitSearch(&localVar[thrId].iniPosition, localVar[thrId].game.noOfCards-4,
             localVar[thrId].initialMoves, first, FALSE, thrId);
         else
@@ -845,16 +830,17 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule,
     fclose(localVar[thrId].fp2);
   }*/
 
-
+  /*_CrtDumpMemoryLeaks();*/  /* MEMORY LEAK? */
   return 1;
 }
 
 
 int _initialized=0;
 
-void InitStart(void) {
+void InitStart(int gb_ram, int ncores) {
   int k, r, i, j, m;
   unsigned short int res;
+  long double pcmem;	/* kbytes */
 
   if (_initialized)
       return;
@@ -867,24 +853,47 @@ void InitStart(void) {
   if (ttStore==NULL)
     exit(1);
 
-#ifdef _WIN32
+  if ((gb_ram==0)||(ncores==0)) {		/* Autoconfig */
+#if defined(_WIN32)
+    SYSTEM_INFO temp; 
 
-  SYSTEM_INFO temp;
+    MEMORYSTATUS stat;
 
-  GetSystemInfo(&temp);
-  noOfThreads=Min(MAXNOOFTHREADS, temp.dwNumberOfProcessors);
+    GlobalMemoryStatus (&stat);
 
-  long double pcmem;
-  /*FILE *fp;*/
+    pcmem=stat.dwTotalPhys/1024;
 
-  MEMORYSTATUS stat;
+    if (pcmem < 1500000.0)
+      noOfThreads=Min(MAXNOOFTHREADS, 4);
+    else if (pcmem < 4500000.0)
+      noOfThreads=Min(MAXNOOFTHREADS, 8); 
+    else
+      noOfThreads=Min(MAXNOOFTHREADS, 16); 
 
-  GlobalMemoryStatus (&stat);
-
-  pcmem=stat.dwTotalPhys/1024;
+    GetSystemInfo(&temp);
+    noOfCores=Min(noOfThreads, (int)temp.dwNumberOfProcessors);
+#else
+    fprintf (stderr, "libdds autoconfig not supported.\n");
+    exit (1);
 #endif
+	
+  }
+  else {
+    if (gb_ram < 2)
+      noOfThreads=Min(MAXNOOFTHREADS, 4);
+    else if (gb_ram < 5)
+      noOfThreads=Min(MAXNOOFTHREADS, 8);
+    else
+      noOfThreads=Min(MAXNOOFTHREADS, 16);
 
-  for (k=0; k<MAXNOOFTHREADS; k++) {
+    noOfCores=Min(noOfThreads, ncores);
+
+    pcmem=(long double)(1000000 * gb_ram);
+  }
+
+  /*printf("noOfThreads: %d   noOfCores: %d\n", noOfThreads, noOfCores);*/
+ 
+  for (k=0; k<noOfThreads; k++) {
     localVar[k].trump=-1;
     localVar[k].hiwinSetSize=0; 
     localVar[k].hinodeSetSize=0;
@@ -907,63 +916,18 @@ void InitStart(void) {
     localVar[k].winSetSizeLimit=WINIT;
     localVar[k].lenSetSizeLimit=LINIT;
 
-    localVar[k].maxmem=5000001*sizeof(struct nodeCardsType)+
-		   15000001*sizeof(struct winCardType)+
-		   200001*sizeof(struct posSearchType);
+    if ((gb_ram!=0)&&(ncores!=0)) 
+      localVar[k].maxmem=gb_ram * ((8000001*sizeof(struct nodeCardsType)+
+		   25000001*sizeof(struct winCardType)+
+		   400001*sizeof(struct posSearchType))/noOfThreads);
+    else {
+      localVar[k].maxmem = (__int64)(pcmem-32678) * (700/noOfThreads);  
+	  /* Linear calculation of maximum memory, formula by Michiel de Bondt */
 
-#ifdef _WIN32
+      if (localVar[k].maxmem < 10485760) exit (1);
+    }
 
-    localVar[k].maxmem = (DDS_LONGLONG)(pcmem-32678) * (700/MAXNOOFTHREADS);  
-	/* Linear calculation of maximum memory, formula by Michiel de Bondt */
-
-    if (localVar[k].maxmem < 10485760) exit (1);
-  
-  /*if (pcmem > 450000) {
-	maxmem=5000000*sizeof(struct nodeCardsType)+
-		   15000000*sizeof(struct winCardType)+
-		   200000*sizeof(struct posSearchType);
-  }
-  else if (pcmem > 240000) {
-	maxmem=3200000*sizeof(struct nodeCardsType)+
-		   6400000*sizeof(struct winCardType)+
-		   200000*sizeof(struct posSearchType);
-  }
-  else if (pcmem > 100000) {
-	maxmem=800000*sizeof(struct nodeCardsType)+
-		   2000000*sizeof(struct winCardType)+
-		   100000*sizeof(struct posSearchType);
-  }
-  else {
-	maxmem=400000*sizeof(struct nodeCardsType)+
-		   1000000*sizeof(struct winCardType)+
-		   50000*sizeof(struct posSearchType);
-  }*/
-
-  /*fp=fopen("mem.txt", "w");
-
-  fprintf (fp, "The MEMORYSTATUS structure is %ld bytes long; it should be %d.\n\n", 
-	    stat.dwLength, sizeof (stat));
-  fprintf (fp, "There is  %ld percent of memory in use.\n",
-          stat.dwMemoryLoad);
-  fprintf (fp, "There are %*ld total Kbytes of physical memory.\n",
-          7, stat.dwTotalPhys/1024);
-  fprintf (fp, "There are %*ld free Kbytes of physical memory.\n",
-          7, stat.dwAvailPhys/1024);
-  fprintf (fp, "There are %*ld total Kbytes of paging file.\n",
-          7, stat.dwTotalPageFile/1024);
-  fprintf (fp, "There are %*ld free Kbytes of paging file.\n",
-          7, stat.dwAvailPageFile/1024);
-  fprintf (fp, "There are %*ld total Kbytes of virtual memory.\n",
-          7, stat.dwTotalVirtual/1024);
-  fprintf (fp, "There are %*ld free Kbytes of virtual memory.\n",
-          7, stat.dwAvailVirtual/1024);
-  fprintf(fp, "\n");
-  fprintf(fp, "nsize=%d wsize=%d lsize=%d\n", nodeSetSizeLimit, winSetSizeLimit,
-    lenSetSizeLimit);
-
-  fclose(fp);*/
-
-  #endif
+    /*printf("thread no: %d  maxmem: %ld\n", k, localVar[k].maxmem);*/ 
   }
 
   bitMapRank[15]=0x2000;
@@ -997,7 +961,7 @@ void InitStart(void) {
 
   cardHand[0]='N'; cardHand[1]='E'; cardHand[2]='S'; cardHand[3]='W';
 
-  for (k=0; k<MAXNOOFTHREADS; k++) {
+  for (k=0; k<noOfThreads; k++) {
     localVar[k].summem=(WINIT+1)*sizeof(struct winCardType)+
 	     (NINIT+1)*sizeof(struct nodeCardsType)+
 		 (LINIT+1)*sizeof(struct posSearchType);
@@ -1093,7 +1057,7 @@ void InitStart(void) {
     for (j=0; j<14; j++) {
       res=0;
       if (j==0) {
-	for (m=0; m<MAXNOOFTHREADS; m++)
+	for (m=0; m<noOfThreads; m++)
 	  localVar[m].adaptWins[i].winRanks[j]=0;
       }
       else {
@@ -1108,7 +1072,7 @@ void InitStart(void) {
 	      break;
 	  }
 	}
-	for (m=0; m<MAXNOOFTHREADS; m++)
+	for (m=0; m<noOfThreads; m++)
 	  localVar[m].adaptWins[i].winRanks[j]=res;
       }
     }
@@ -1860,6 +1824,7 @@ int ABsearch(struct pos * posPoint, int target, int depth, int thrId) {
 	k=target;
       else
 	k=target-1;
+    if (depth!=localVar[thrId].iniDepth)
       BuildSOP(posPoint, tricks, hand, target, depth,
         value, k, thrId);
       if (localVar[thrId].clearTTflag) {
@@ -4429,7 +4394,7 @@ struct nodeCardsType * BuildPath(struct pos * posPoint,
 
 
 struct posSearchType * SearchLenAndInsert(struct posSearchType
-	* rootp, DDS_LONGLONG key, int insertNode, int *result, int thrId) {
+	* rootp, __int64 key, int insertNode, int *result, int thrId) {
 /* Search for node which matches with the suit length combination 
    given by parameter key. If no such node is found, NULL is 
   returned if parameter insertNode is FALSE, otherwise a new 
@@ -5023,7 +4988,7 @@ DWORD CALLBACK SolveChunkDDtable (void *) {
   while ((j=_InterlockedExchangeAdd(&current, chunk))<param.noOfBoards) {
 
     for (int k=0; k<chunk && j+k<param.noOfBoards; k++) {
-      if ((param.remainTime!=-1)&&(param.solvedp->noOfBoards!=0)) {
+      if ((param.timeSupervision)&&(param.solvedp->noOfBoards!=0)) {
         tstop=clock();
         if (((int)tstop - param.tstart) > param.remainTime) {
 	  timeOut=TRUE;
@@ -5053,7 +5018,7 @@ DWORD CALLBACK SolveChunkDDtable (void *) {
 }
 
 int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp,
-  int remainTime) {
+  int timeSupervision, int remainTime) {
   int k, errCode;
   DWORD res;
   DWORD solveAllWaitResult;
@@ -5067,8 +5032,12 @@ int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp,
   if (bop->noOfBoards > MAXNOOFBOARDS)
     return -4;
   
-  (int)param.tstart=clock(); param.remainTime=remainTime;
-  for (k=0; k<noOfThreads; k++) {
+  param.timeSupervision=timeSupervision;
+  if (timeSupervision) {
+    (int)param.tstart=clock(); param.remainTime=remainTime;
+  }
+
+  for (k=0; k<noOfCores; k++) {
     solveAllEvents[k]=CreateEvent(NULL, FALSE, FALSE, 0);
     if (solveAllEvents[k]==0) {
       errCode=GetLastError();
@@ -5081,7 +5050,7 @@ int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp,
   for (k=0; k<MAXNOOFBOARDS; k++)
     solvedp->solvedBoard[k].cards=0;
 
-  for (k=0; k<noOfThreads; k++) {
+  for (k=0; k<noOfCores; k++) {
     res=QueueUserWorkItem(SolveChunkDDtable, NULL, WT_EXECUTELONGFUNCTION);
     if (res==0) { 
       errCode=GetLastError();
@@ -5089,14 +5058,14 @@ int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp,
     }
   }
 
-  solveAllWaitResult = WaitForMultipleObjects(noOfThreads, 
+  solveAllWaitResult = WaitForMultipleObjects(noOfCores, 
 	  solveAllEvents, TRUE, INFINITE);
   if (solveAllWaitResult!=WAIT_OBJECT_0) {
     errCode=GetLastError();
     return -3;
   }
 
-  for (k=0; k<noOfThreads; k++) {
+  for (k=0; k<noOfCores; k++) {
     CloseHandle(solveAllEvents[k]);
   }
 
@@ -5115,6 +5084,52 @@ int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp,
     
   return 1;
 }
+#else 
+int SolveAllBoards4(struct boards *bop, struct solvedBoards *solvedp,
+  int timeSupervision, int remainTime) {
+  int k, i, res, chunk, fail;
+  struct futureTricks fut[MAXNOOFBOARDS];
+
+  chunk=4; fail=FALSE;
+
+  for (i=0; i<MAXNOOFBOARDS; i++)
+      solvedp->solvedBoard[i].cards=0;
+
+  #pragma omp parallel shared(bop, solvedp, chunk, fail) private(k)
+  {
+
+    #pragma omp for schedule(dynamic, chunk)
+
+    for (k=0; k<bop->noOfBoards; k++) {
+      res=SolveBoard(bop->deals[k], bop->target[k], bop->solutions[k],
+        bop->mode[k], &fut[k],
+#ifdef _OPENMP
+        omp_get_thread_num()
+#else
+        0
+#endif
+        );
+      if (res==1) {
+        solvedp->solvedBoard[k]=fut[k];
+      }
+      else
+        fail=TRUE;
+    }
+  }
+
+  if (fail)
+    return 0;
+
+  solvedp->noOfBoards=0;
+  for (i=0; i<MAXNOOFBOARDS; i++) {
+    if (solvedp->solvedBoard[i].cards!=0)
+      solvedp->noOfBoards++;
+  }
+
+  return 1;
+}
+#endif
+
 
 int STDCALL CalcDDtable(struct ddTableDeal tableDeal, struct ddTableResults * tablep) {
 
@@ -5145,7 +5160,7 @@ int STDCALL CalcDDtable(struct ddTableDeal tableDeal, struct ddTableResults * ta
       ind++;
     }
 
-  res=SolveAllBoards4(&bo, &solved, -1);
+  res=SolveAllBoards4(&bo, &solved, FALSE, -1);
   if (res==1) {
     for (ind=0; ind<20; ind++) {
       tablep->resTable[bo.deals[ind].trump][rho[bo.deals[ind].first]]=
@@ -5156,7 +5171,8 @@ int STDCALL CalcDDtable(struct ddTableDeal tableDeal, struct ddTableResults * ta
 
   return res;
 }
-#endif
+/*#endif*/
+
 
 
 
