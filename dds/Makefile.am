@@ -1,6 +1,6 @@
 EXTRA_DIST = \
-	DDS_alg_descr-revE4.rtf \
-	DLL-dds_20_i.rtf \
+	DDS_alg_descr-*.rtf \
+	DLL-dds_*.rtf \
 	GPL.txt \
 	dds.cpp \
 	dll.h \
