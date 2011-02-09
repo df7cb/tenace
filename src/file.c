@@ -816,7 +816,6 @@ on_menu_file_web_activate ()
 	}
 
 	printf ("%s\n", url->str);
-	g_string_free (url, TRUE);
 
 	GError *error = NULL;
 	gtk_show_uri (gdk_screen_get_default (), url->str, GDK_CURRENT_TIME, &error);
@@ -824,4 +823,5 @@ on_menu_file_web_activate ()
 		printf ("%s\n", error->message);
 		g_error_free (error);
 	}
+	g_string_free (url, TRUE);
 }
