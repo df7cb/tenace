@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2011 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "../handdisplay/hand_display.h"
 
@@ -32,6 +33,17 @@
 #include "window_card.h"
 #include "window_line_entry.h"
 #include "window_play.h"
+
+/* default paths */
+static char *svg_files[] = {
+	"bonded.svg",
+	"paris.svg",
+	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
+	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
+	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
+	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
+	"/usr/share/gnome-games-common/cards/gnomangelo_bitmap.svg", /* only file in gnome-cards-data in squeeze */
+};
 
 window_board_t *win; // FIXME static?
 int protect = 0;
@@ -602,13 +614,46 @@ create_bidding_widget (window_board_t *win)
 void board_window_set_style (window_board_t *win, int style)
 {
 	win->hand_display_style = style;
+}
+
+void
+board_window_apply_svg_file (window_board_t *win)
+{
+	/* check if the svg file is there */
+	if (win->svg) {
+		struct stat buf;
+		if (stat (win->svg, &buf) == -1) {
+			g_free (win->svg);
+			win->svg = NULL;
+		}
+	}
+
+	/* otherwise set a default */
+	if (! win->svg) {
+		int i;
+		for (i = 0; i < sizeof (svg_files); i++) {
+			if (stat (svg_files[i], &buf) != -1) {
+				win->svg = strdup (svg_files[i]);
+				break;
+			}
+		}
+	}
+
+	if (! win->svg && win->hand_display_style == HAND_DISPLAY_STYLE_CARDS) /* still nothing... */
+		win->hand_display_style == HAND_DISPLAY_STYLE_TEXT;
+
 	int h;
 	for (h = 0; h < 4; h++) {
-		hand_display_set_style(win->handdisp[h], style);
+		hand_display_set_style(win->handdisp[h], win->hand_display_style);
 	}
 	hand_display_set_style(win->table, style);
 	if (win->n_boards)
 		show_board(CUR_BOARD, REDRAW_HANDS);
+
+	window_card_set_style (win->hand_display_style);
+	if (win->hand_display_style == HAND_DISPLAY_STYLE_CARDS && win->svg) {
+		hand_display_set_svg (win->svg, win->card_width);
+	}
 }
 
 int

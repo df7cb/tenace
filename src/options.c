@@ -26,16 +26,6 @@
 #include "window_board.h"
 #include "window_card.h"
 
-/* default paths */
-static char *svg_files[] = {
-	"bonded.svg",
-	"paris.svg",
-	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
-	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
-	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
-	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
-	"/usr/share/gnome-games-common/cards/gnomangelo_bitmap.svg", /* only file in gnome-cards-data in squeeze */
-};
 static char *entry_name[] = { "entry_west", "entry_north", "entry_east", "entry_south" };
 
 static GtkWidget *window_options = NULL;
@@ -103,13 +93,15 @@ apply_options (GtkWidget *window_options)
 		HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
 	board_window_set_style (win, style);
 	window_card_set_style (style);
+	win->hand_display_style = style;
+	board_window_apply_svg_file (win);
 
 	w = get_widget ("svg_file");
 	gchar *fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (w));
 	w = get_widget ("spinbutton_card_width");
 	win->card_width = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (w));
 
-	if (fname) {
+	if (fname && strcmp (win->svg, fname)) { /* svg file changed */
 		if (win->svg)
 			g_free (win->svg);
 		win->svg = fname;
@@ -185,7 +177,7 @@ read_config (window_board_t *win)
 {
 	char rcfile[1024];
 	snprintf (rcfile, sizeof (rcfile), "%s/%s",
-		g_get_user_config_dir (), "/tenacerc");
+		g_get_user_config_dir (), "tenacerc");
 
 	if (! g_key_file_load_from_file (win->keyfile, rcfile,
 		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, NULL) &&
@@ -219,23 +211,6 @@ read_config (window_board_t *win)
 		win->show_played_cards = i;
 	}
 
-	/* check if the file is there */
-	struct stat buf;
-	if (win->svg) {
-		if (stat (win->svg, &buf) == -1) {
-			g_free (win->svg);
-			win->svg = NULL;
-		}
-	}
-	/* set a default */
-	if (! win->svg)
-		for (i = 0; i < sizeof (svg_files); i++) {
-			if (stat (svg_files[i], &buf) != -1) {
-				win->svg = strdup (svg_files[i]);
-				break;
-			}
-		}
-
 	/* Hands */
 
 	if ((p = g_key_file_get_string (win->keyfile, "tenace", "show_hands", NULL))) {
@@ -257,12 +232,6 @@ read_config (window_board_t *win)
 			win->show_dd_scores = east_west;
 		else
 			win->show_dd_scores = seat_all;
-	}
-
-	board_window_set_style (win, win->hand_display_style);
-	window_card_set_style (win->hand_display_style);
-	if (win->hand_display_style == HAND_DISPLAY_STYLE_CARDS && win->svg) {
-		hand_display_set_svg (win->svg, win->card_width);
 	}
 
 	return 1;
