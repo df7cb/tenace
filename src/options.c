@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2011 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ static char *svg_files[] = {
 	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
 	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
+	"/usr/share/gnome-games-common/cards/gnomangelo_bitmap.svg", /* only file in gnome-cards-data in squeeze */
 };
 static char *entry_name[] = { "entry_west", "entry_north", "entry_east", "entry_south" };
 

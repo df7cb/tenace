@@ -1,3 +1,10 @@
+tenace (0.12-1) unstable; urgency=low
+
+  * New upstream version.
+    + Fixes building with --as-needed. Closes: #632104.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 06 Jul 2011 16:42:37 +0200
+
 tenace (0.11-1) unstable; urgency=low
 
   * New upstream version.

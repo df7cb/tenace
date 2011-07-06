@@ -1,3 +1,11 @@
+tenace (0.12) upstream; urgency=low
+
+  * Build system updates; fix building with --as-needed.
+  * Add /usr/share/gnome-games-common/cards/gnomangelo_bitmap.svg to list of
+    default svg files.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 06 Jul 2011 16:41:11 +0200
+
 tenace (0.11) upstream; urgency=low
 
   * "Open in web" shows the current deal on

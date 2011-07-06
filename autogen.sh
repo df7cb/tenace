@@ -8,6 +8,8 @@ test -d lib || mkdir lib
 gnulib-tool --update
 intltoolize --copy --force --automake
 libtoolize --force --copy
-automake --add-missing
+aclocal -I m4
+autoheader
+automake --add-missing --copy --foreign
 autoreconf
 ./configure "$@"
