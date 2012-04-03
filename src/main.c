@@ -89,7 +89,7 @@ main (int argc, char *argv[])
 
   board_window_init (win);
   read_config (win);
-  board_window_apply_svg_file (win);
+  board_window_apply_style (win);
 
   if (argc > 1) {
 	char *fname = argv[1];

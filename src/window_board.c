@@ -43,6 +43,7 @@ static char *svg_files[] = {
 	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
 	"/usr/share/gnome-games-common/cards/gnomangelo_bitmap.svg", /* only file in gnome-cards-data in squeeze */
+	NULL
 };
 
 window_board_t *win; // FIXME static?
@@ -611,13 +612,14 @@ create_bidding_widget (window_board_t *win)
 	gdk_colormap_alloc_color (cmap, &bidding_vuln, FALSE, TRUE);
 }
 
-void board_window_set_style (window_board_t *win, int style)
+void board_window_set_style (window_board_t *win, int style, int card_width)
 {
 	win->hand_display_style = style;
+	win->card_width = card_width;
 }
 
 void
-board_window_apply_svg_file (window_board_t *win)
+board_window_apply_style (window_board_t *win)
 {
 	/* check if the svg file is there */
 	if (win->svg) {
@@ -631,7 +633,8 @@ board_window_apply_svg_file (window_board_t *win)
 	/* otherwise set a default */
 	if (! win->svg) {
 		int i;
-		for (i = 0; i < sizeof (svg_files); i++) {
+		for (i = 0; svg_files[i] != NULL; i++) {
+			struct stat buf;
 			if (stat (svg_files[i], &buf) != -1) {
 				win->svg = strdup (svg_files[i]);
 				break;
@@ -640,20 +643,21 @@ board_window_apply_svg_file (window_board_t *win)
 	}
 
 	if (! win->svg && win->hand_display_style == HAND_DISPLAY_STYLE_CARDS) /* still nothing... */
-		win->hand_display_style == HAND_DISPLAY_STYLE_TEXT;
+		win->hand_display_style = HAND_DISPLAY_STYLE_TEXT;
 
 	int h;
 	for (h = 0; h < 4; h++) {
 		hand_display_set_style(win->handdisp[h], win->hand_display_style);
 	}
-	hand_display_set_style(win->table, style);
-	if (win->n_boards)
-		show_board(CUR_BOARD, REDRAW_HANDS);
+	hand_display_set_style(win->table, win->hand_display_style);
 
 	window_card_set_style (win->hand_display_style);
 	if (win->hand_display_style == HAND_DISPLAY_STYLE_CARDS && win->svg) {
 		hand_display_set_svg (win->svg, win->card_width);
 	}
+
+	if (win->n_boards)
+		show_board(CUR_BOARD, REDRAW_HANDS);
 }
 
 int
@@ -708,6 +712,7 @@ board_window_init (window_board_t *win)
 	win->show_played_cards = 0;
 	win->show_hands = seat_all;
 	win->show_dd_scores = seat_all;
+	win->svg = NULL;
 	win->card_width = 70;
 
 	win->filename = NULL;

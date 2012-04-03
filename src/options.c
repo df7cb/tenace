@@ -91,22 +91,18 @@ apply_options (GtkWidget *window_options)
 	w = get_widget ("show_as_cards");
 	int style = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ?
 		HAND_DISPLAY_STYLE_CARDS : HAND_DISPLAY_STYLE_TEXT;
-	board_window_set_style (win, style);
 	window_card_set_style (style);
-	win->hand_display_style = style;
-	board_window_apply_svg_file (win);
-
 	w = get_widget ("svg_file");
 	gchar *fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (w));
-	w = get_widget ("spinbutton_card_width");
-	win->card_width = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (w));
-
 	if (fname && strcmp (win->svg, fname)) { /* svg file changed */
 		if (win->svg)
 			g_free (win->svg);
 		win->svg = fname;
-		hand_display_set_svg (win->svg, win->card_width);
 	}
+	w = get_widget ("spinbutton_card_width");
+	int card_width = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (w));
+	board_window_set_style (win, style, card_width);
+	board_window_apply_style (win);
 
 	/* Hands */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON

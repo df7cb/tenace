@@ -83,8 +83,8 @@ void recently_used_add (char *filename);
 
 int board_window_append_board (window_board_t *win, board *b); /* returns number of appended board */
 void board_window_init ();
-void board_window_set_style (window_board_t *win, int style);
-void board_window_apply_svg_file (window_board_t *win);
+void board_window_set_style (window_board_t *win, int style, int card_width);
+void board_window_apply_style (window_board_t *win);
 
 void board_statusbar(char *text);
 
