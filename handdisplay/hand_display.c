@@ -1,6 +1,6 @@
 /*
  *  hand display - bridge hand widget for GTK+
- *  Copyright (C) 2007, 2008 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2007-2012 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  */
 
 #include <assert.h>
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <math.h>
 #include <string.h>

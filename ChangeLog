@@ -5,6 +5,7 @@ tenace (0.12) upstream; urgency=low
     /usr/share/gnome-games-common/cards/gnomangelo_bitmap.svg to list of
     default svg files.
   * Initialize win->svg correctly.
+  * handdisplay: include glib.h directly.
 
  -- Christoph Berg <myon@debian.org>  Tue, 03 Apr 2012 22:34:27 +0200
 
