@@ -2,6 +2,7 @@ tenace (0.12-1) unstable; urgency=low
 
   * New upstream version.
     + Fixes building with --as-needed. Closes: #632104.
+    + Updates for two yet another new locations of gnome-card-data svg files.
 
  -- Christoph Berg <myon@debian.org>  Wed, 06 Jul 2011 16:42:37 +0200
 
