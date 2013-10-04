@@ -1,6 +1,6 @@
 /*
  *  hand display - bridge hand widget for GTK+
- *  Copyright (C) 2007 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2007-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,8 +66,6 @@ extern "C" {
 #define HAND_DISPLAY_HEARTS_FONT   0.9, 0.0, 0.0
 #define HAND_DISPLAY_DIAMONDS_FONT 1.0, 0.5, 0.0
 #define HAND_DISPLAY_CLUBS_FONT    0.0, 0.4, 0.0
-
-#define HAND_DISPLAY_GREY_FILE     "/usr/share/tenace/grey.svg"
 
 typedef struct _HandDisplay            HandDisplay;
 typedef struct _HandDisplayClass       HandDisplayClass;
