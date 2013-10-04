@@ -2,6 +2,8 @@ tenace (0.13-1) unstable; urgency=low
 
   * New upstream version.
     + Links with -lm. Closes: #704794.
+  * Drop Suggests: gnome-games-extra-data, doesn't exist anymore. Thanks to
+    Jeremy Bicha for spotting.
 
  -- Christoph Berg <myon@debian.org>  Fri, 04 Oct 2013 22:01:11 +0200
 
