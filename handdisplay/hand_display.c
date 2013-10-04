@@ -1,6 +1,6 @@
 /*
  *  hand display - bridge hand widget for GTK+
- *  Copyright (C) 2007-2012 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2007-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -87,7 +87,8 @@ render_card_init (char *card_fname)
 
 	GError *error = NULL;
 	/* aspect ratio is maintained - assume card height < 2 * card_width */
-	/* actual card height is computed from actual size */
+	/* file contains cards in 13 columns (A/2..10/J/Q/K) and 5 rows (C/D/H/S/Jokers) */
+	/* actual card height is computed from resulting actual size */
 	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname,
 			card_width * 13, card_width * 2 * 5, &error);
 	if (!pb) {
