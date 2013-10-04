@@ -1,3 +1,9 @@
+tenace (0.13) upstream; urgency=low
+
+  * Explicitely link with -lm.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 04 Oct 2013 22:02:06 +0200
+
 tenace (0.12) upstream; urgency=low
 
   * Build system updates; fix building with --as-needed.
