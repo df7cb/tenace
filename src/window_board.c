@@ -38,6 +38,7 @@
 static char *svg_files[] = {
 	"bonded.svg",
 	"paris.svg",
+	"/usr/share/aisleriot/cards/paris.svgz", /* jessie: gnome-cards-data package */
 	"/usr/share/aisleriot/cards/bonded.svg", /* wheezy: aislerot package */
 	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
