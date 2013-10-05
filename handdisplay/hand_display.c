@@ -85,12 +85,52 @@ render_card_init (char *card_fname)
 		render_init = 0;
 	}
 
+	/* gdk_pixbuf_new_from_file doesn't seem to support .svgz (while
+	 * librsvg does), so decompress it here. Code from aisleriot
+	 * src/lib/ar-svg.c */
+	GFile *cf = g_file_new_for_path (card_fname);
+	GFileInfo *info;
 	GError *error = NULL;
-	/* aspect ratio is maintained - assume card height < 2 * card_width */
+	if (!(info = g_file_query_info (cf,
+					G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE,
+					G_FILE_QUERY_INFO_NONE,
+					NULL,
+					&error))) {
+		printf ("%s: %s\n", card_fname, error->message);
+		g_object_unref (cf);
+		return;
+	}
+
+	const char *type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
+	char *gz_type = g_content_type_from_mime_type ("application/x-gzip");
+	gboolean is_gzip = (type != NULL && g_content_type_is_a (type, gz_type));
+	g_free (gz_type);
+	g_object_unref (info);
+
+	GInputStream *stream;
+	if (!(stream = G_INPUT_STREAM (g_file_read (cf, NULL, &error)))) {
+		printf ("%s: %s\n", card_fname, error->message);
+		g_object_unref (cf);
+		return;
+	}
+	g_object_unref (cf);
+
+	if (is_gzip) {
+		GZlibDecompressor *decompressor;
+		GInputStream *converter_stream;
+
+		decompressor = g_zlib_decompressor_new (G_ZLIB_COMPRESSOR_FORMAT_GZIP);
+		converter_stream = g_converter_input_stream_new (stream,
+				G_CONVERTER (decompressor));
+		g_object_unref (stream);
+		stream = converter_stream;
+	}
+
 	/* file contains cards in 13 columns (A/2..10/J/Q/K) and 5 rows (C/D/H/S/Jokers) */
 	/* actual card height is computed from resulting actual size */
-	GdkPixbuf *pb = gdk_pixbuf_new_from_file_at_size (card_fname,
-			card_width * 13, card_width * 2 * 5, &error);
+	GdkPixbuf *pb = gdk_pixbuf_new_from_stream_at_scale (stream,
+			card_width * 13, -1, TRUE, NULL, &error);
+	g_object_unref (stream);
 	if (!pb) {
 		printf ("%s: %s.\n", card_fname, error->message);
 		return;
