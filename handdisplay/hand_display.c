@@ -98,6 +98,7 @@ render_card_init (char *card_fname)
 					&error))) {
 		printf ("%s: %s\n", card_fname, error->message);
 		g_object_unref (cf);
+		g_error_free (error);
 		return;
 	}
 
@@ -111,6 +112,7 @@ render_card_init (char *card_fname)
 	if (!(stream = G_INPUT_STREAM (g_file_read (cf, NULL, &error)))) {
 		printf ("%s: %s\n", card_fname, error->message);
 		g_object_unref (cf);
+		g_error_free (error);
 		return;
 	}
 	g_object_unref (cf);
@@ -133,6 +135,7 @@ render_card_init (char *card_fname)
 	g_object_unref (stream);
 	if (!pb) {
 		printf ("%s: %s.\n", card_fname, error->message);
+		g_error_free (error);
 		return;
 	}
 	int buf_width = gdk_pixbuf_get_width (pb);
