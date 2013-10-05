@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2012 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,10 +38,11 @@
 static char *svg_files[] = {
 	"bonded.svg",
 	"paris.svg",
-	"/usr/share/aisleriot/cards/paris.svgz", /* jessie: gnome-cards-data package */
+	"/usr/share/aisleriot/cards/bonded.svgz", /* jessie: aisleriot package */
 	"/usr/share/aisleriot/cards/bonded.svg", /* wheezy: aislerot package */
 	"/usr/share/gnome-games-common/cards/bonded.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/bonded.svg", /* etch */
+	"/usr/share/aisleriot/cards/paris.svgz", /* jessie: gnome-cards-data package */
 	"/usr/share/aisleriot/cards/paris.svg", /* wheezy: gnome-cards-data package */
 	"/usr/share/gnome-games-common/cards/paris.svg", /* lenny */
 	"/usr/share/pixmaps/gnome-games-common/cards/paris.svg", /* etch */
