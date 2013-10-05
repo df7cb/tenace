@@ -111,6 +111,7 @@ main (int argc, char *argv[])
 		g_free (fname);
   } else {
 	board_window_append_board (win, NULL);
+	deal_random (win->boards[0]); /* show a random deal on startup */
   }
 
   show_board(win->boards[0], REDRAW_FULL);
