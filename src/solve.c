@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ void init_solve()
 		physmem = 1;
 	/* cores to use */
 	int nproc = num_processors (NPROC_CURRENT_OVERRIDABLE);
-	printf ("Using %d GB RAM, %d cores\n", physmem, nproc);
+	g_debug ("Using %d GB RAM, %d cores\n", physmem, nproc);
 	InitStart(physmem, nproc);
 }
 

@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2012 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,8 +43,6 @@ static char *xml_files[] = {
 #endif
 };
 
-int debug = 0;
-
 int
 main (int argc, char *argv[])
 {
@@ -68,7 +66,7 @@ main (int argc, char *argv[])
 	  struct stat buf;
 	  if (stat (xml_files[i], &buf) != -1) {
 		  xml_file = xml_files[i];
-		  if (debug) printf ("Using interface file %s\n", xml_file);
+		  g_debug ("Using interface file %s\n", xml_file);
 		  break;
 	  }
   }
