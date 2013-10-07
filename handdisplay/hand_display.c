@@ -193,6 +193,8 @@ draw (GtkWidget *hand, cairo_t *cr)
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
 	cairo_text_extents_t extents;
 	cairo_font_extents_t fextents;
+	GtkAllocation allocation;
+	gtk_widget_get_allocation (hand, &allocation);
 
 	FONT_SANS;
 
@@ -258,7 +260,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	}
 
 	cairo_set_source_rgb (cr, HAND_DISPLAY_TABLE_BG);
-	cairo_rectangle (cr, 0, 0, hand->allocation.width, hand->allocation.height);
+	cairo_rectangle (cr, 0, 0, allocation.width, allocation.height);
 	cairo_fill (cr);
 
 	/* "table" mode for displaying the already played cards in the middle of the screen */
@@ -268,17 +270,17 @@ draw (GtkWidget *hand, cairo_t *cr)
 		int i;
 		for (i = 0; i < 4; i++) {
 			switch (handdisp->table_seat[i]) {
-				case 1: x = hand->allocation.width / 2 - card_width + 5;
-				/*W*/	y = (hand->allocation.height - card_height) / 2 + 5;
+				case 1: x = allocation.width / 2 - card_width + 5;
+				/*W*/	y = (allocation.height - card_height) / 2 + 5;
 					break;
-				case 2: x = (hand->allocation.width - card_width) / 2 - 2;
-				/*N*/	y = MAX (hand->allocation.height / 2 - card_height + 10, 0);
+				case 2: x = (allocation.width - card_width) / 2 - 2;
+				/*N*/	y = MAX (allocation.height / 2 - card_height + 10, 0);
 					break;
-				case 3: x = hand->allocation.width / 2 - 5;
-				/*E*/	y = (hand->allocation.height - card_height) / 2 - 5;
+				case 3: x = allocation.width / 2 - 5;
+				/*E*/	y = (allocation.height - card_height) / 2 - 5;
 					break;
-				case 4: x = (hand->allocation.width - card_width) / 2 + 2;
-				/*S*/	y = MIN (hand->allocation.height / 2 - 10, hand->allocation.height - card_height);
+				case 4: x = (allocation.width - card_width) / 2 + 2;
+				/*S*/	y = MIN (allocation.height / 2 - 10, allocation.height - card_height);
 					break;
 				default:
 					return; /* stop here */
@@ -310,17 +312,17 @@ draw (GtkWidget *hand, cairo_t *cr)
 #define HEIGHT 28
 #define RAD 5
 			switch (handdisp->table_seat[i]) { /* middle point */
-				case 1: x = hand->allocation.width / 2 - XOFF;
-				/*W*/	y = hand->allocation.height / 2;
+				case 1: x = allocation.width / 2 - XOFF;
+				/*W*/	y = allocation.height / 2;
 					break;
-				case 2: x = hand->allocation.width / 2;
-				/*N*/	y = hand->allocation.height / 2 - YOFF;
+				case 2: x = allocation.width / 2;
+				/*N*/	y = allocation.height / 2 - YOFF;
 					break;
-				case 3: x = hand->allocation.width / 2 + XOFF;
-				/*E*/	y = hand->allocation.height / 2;
+				case 3: x = allocation.width / 2 + XOFF;
+				/*E*/	y = allocation.height / 2;
 					break;
-				case 4: x = hand->allocation.width / 2;
-				/*S*/	y = hand->allocation.height / 2 + YOFF;
+				case 4: x = allocation.width / 2;
+				/*S*/	y = allocation.height / 2 + YOFF;
 					break;
 				default:
 					return; /* stop here */
@@ -369,14 +371,14 @@ draw (GtkWidget *hand, cairo_t *cr)
 	if (handdisp->style == HAND_DISPLAY_STYLE_CARDS && handdisp->mode != HAND_DISPLAY_MODE_HAND_X) {
 		/* we do not support MODE_X here, yet we still allow setting
 		 * STYLE_CARDS there to have the right drag icon */
-		y = MAX (hand->allocation.height - card_height - 5, 15);
+		y = MAX (allocation.height - card_height - 5, 15);
 		int n = 0;
 		int suit;
 		for (suit = 0; suit < 4; suit++) {
 			int c;
 			for (c = 13 * (handdisp->suits[suit] + 1) - 1; c >= 13 * handdisp->suits[suit]; c--) {
 				if (handdisp->cards[c]) {
-					x = floor (n++ * (hand->allocation.width - card_width) / 12.0);
+					x = floor (n++ * (allocation.width - card_width) / 12.0);
 
 					int sc = handdisp->card_score[c];
 					int yy = c == handdisp->cur_focus ? y - 15 :
@@ -395,7 +397,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 					if (handdisp->cards[c] == HAND_DISPLAY_HILIGHT_CARD) { /* draw triangular arrow */
 						cairo_set_source_rgb (cr, HAND_DISPLAY_HILIGHT_FONT);
-						cairo_move_to (cr, x + 3 + (hand->allocation.width - card_width - 10) / 24.0, yy);
+						cairo_move_to (cr, x + 3 + (allocation.width - card_width - 10) / 24.0, yy);
 						cairo_rel_line_to (cr, -5, -5);
 						cairo_rel_line_to (cr, 10, 0);
 						cairo_fill (cr);
@@ -434,7 +436,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	int suit;
 	for (suit = 0; suit < 4; suit++) {
 		x = 0;
-		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
+		y = floor ((double) allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 		cairo_text_extents (cr, suit_str[suit], &extents);
 		if (extents.x_advance > suit_width)
@@ -447,7 +449,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	FONT_SANS;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4 + suit_width;
-		y = floor ((double) hand->allocation.height * (3.8 - suit) / 4.0);
+		y = floor ((double) allocation.height * (3.8 - suit) / 4.0);
 		cairo_move_to (cr, x, y);
 
 		int c;
@@ -547,7 +549,7 @@ redraw_card (GtkWidget *hand, int card)
 	rect.y = handdisp->t[card] - 7;
 	rect.width = handdisp->r[card] - handdisp->l[card] + 4;
 	rect.height = handdisp->b[card] - handdisp->t[card] + 8;
-	gdk_window_invalidate_rect (hand->window, &rect, FALSE);
+	gdk_window_invalidate_rect (gtk_widget_get_window (hand), &rect, FALSE);
 }
 
 /* private callbacks */
@@ -576,7 +578,7 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 			g_signal_emit_by_name (handdisp, "card-enter", card);
 		}
 	}
-	gdk_window_get_pointer(hand->window, NULL, NULL, NULL); /* request more pointer hints */
+	gdk_window_get_pointer(gtk_widget_get_window (hand), NULL, NULL, NULL); /* request more pointer hints */
 	return FALSE;
 }
 
@@ -628,12 +630,14 @@ hand_display_realize (GtkWidget *widget)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (IS_HAND_DISPLAY (widget));
 
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+	gtk_widget_set_realized (widget, TRUE);
 
-	attributes.x = widget->allocation.x;
-	attributes.y = widget->allocation.y;
-	attributes.width = widget->allocation.width;
-	attributes.height = widget->allocation.height;
+	GtkAllocation allocation;
+	gtk_widget_get_allocation (widget, &allocation);
+	attributes.x = allocation.x;
+	attributes.y = allocation.y;
+	attributes.width = allocation.width;
+	attributes.height = allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.event_mask = gtk_widget_get_events (widget) |
@@ -644,13 +648,14 @@ hand_display_realize (GtkWidget *widget)
 	attributes.colormap = gtk_widget_get_colormap (widget);
 
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-	widget->window = gdk_window_new (widget->parent->window, &attributes, attributes_mask);
+	GdkWindow *window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
+	gtk_widget_set_window (widget, window);
 
-	widget->style = gtk_style_attach (widget->style, widget->window);
+	/*widget->style =*/ gtk_style_attach (gtk_widget_get_style (widget), window);
 
-	gdk_window_set_user_data (widget->window, widget);
+	gdk_window_set_user_data (window, widget);
 
-	gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
+	gtk_style_set_background (gtk_widget_get_style (widget), window, GTK_STATE_ACTIVE);
 }
 
 static gboolean
@@ -659,7 +664,7 @@ hand_display_expose (GtkWidget *hand, GdkEventExpose *event)
 	cairo_t *cr;
 
 	/* get a cairo_t */
-	cr = gdk_cairo_create (hand->window);
+	cr = gdk_cairo_create (gtk_widget_get_window (hand));
 
 	/* set a clip region for the expose event */
 	cairo_rectangle (cr, event->area.x, event->area.y,
@@ -686,9 +691,9 @@ hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
 	g_return_if_fail (IS_HAND_DISPLAY (hand));
 	g_return_if_fail (allocation != NULL);
 
-	hand->allocation = *allocation;
-	if (GTK_WIDGET_REALIZED (hand)) {
-		gdk_window_move_resize (hand->window,
+	gtk_widget_set_allocation (hand, allocation);
+	if (gtk_widget_get_realized (hand)) {
+		gdk_window_move_resize (gtk_widget_get_window (hand),
 				allocation->x, allocation->y,
 				allocation->width, allocation->height);
 	}
@@ -766,7 +771,7 @@ hand_display_drag_data_get (GtkWidget *hand, GdkDragContext *dc,
 	if (handdisp->cur_drag < 0)
 		return;
 	assert (targettype == 0);
-	gtk_selection_data_set (selection_data, selection_data->target,
+	gtk_selection_data_set (selection_data, gtk_selection_data_get_target (selection_data),
 			32, (guchar *) &(handdisp->cur_drag), sizeof (int));
 }
 
@@ -776,7 +781,7 @@ hand_display_drag_data_received (GtkWidget *hand, GdkDragContext *dc,
         guint targettype, guint t, gpointer data)
 {
 	HandDisplay *handdisp = HAND_DISPLAY (hand);
-	int *card = (int *) selection_data->data;
+	int *card = (int *) gtk_selection_data_get_data (selection_data);
 	int on_card = which_card(handdisp, x, y);
 	/*
 	if (*card == on_card) {
@@ -964,7 +969,9 @@ hand_display_new (int mode)
 void
 hand_display_draw (GtkWidget *hand)
 {
-	gtk_widget_queue_draw_area (hand, 0, 0, hand->allocation.width, hand->allocation.height);
+	GtkAllocation allocation;
+	gtk_widget_get_allocation (hand, &allocation);
+	gtk_widget_queue_draw_area (hand, 0, 0, allocation.width, allocation.height);
 }
 
 void
