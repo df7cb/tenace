@@ -217,15 +217,19 @@ char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 
 char *vuln_string (board *b)
 {
-	if (b->vuln[0] == 0) { /* NS */
-		if (b->vuln[1] == 0) /* EW */
+	if (b->vuln[0] == 0) {
+		if (b->vuln[1] == 0)
+			/* none vulnerable */
 			return _("none");
 		else
+			/* EW vulnerable */
 			return _("EW");
 	} else {
 		if (b->vuln[1] == 0) /* EW */
+			/* NS vulnerable */
 			return _("NS");
 		else
+			/* all vulnerable */
 			return _("all");
 	}
 }

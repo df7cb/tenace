@@ -458,6 +458,7 @@ void parscore(board *b)
 char *
 par_label (board *b)
 {
+	/* parscore is pass */
 	GString *par = g_string_new(_("Par: PASS (0)\n"));
 	if (b->par_score != 0)
 		g_string_printf(par, _("Par: %s %s (%+d)\n"),
@@ -470,13 +471,17 @@ par_label (board *b)
 	for (t = 4; t >= 0; t--) {
 		g_string_append_printf(par, "%s: ", _(trump_str[t]));
 		if (b->par_arr[1][t] == b->par_arr[3][t])
+			/* parscore for NS */
 			g_string_append_printf(par, "%s<b>%d</b> ", _("NS"), b->par_arr[1][t]);
 		else
+			/* separate parscore for N and S */
 			g_string_append_printf(par, "%s<b>%d</b>%s<b>%d</b> ",
 					_("N"), b->par_arr[1][t], _("S"), b->par_arr[3][t]);
 		if (b->par_arr[0][t] == b->par_arr[2][t])
+			/* parscore for EW */
 			g_string_append_printf(par, "%s<b>%d</b>", _("EW"), b->par_arr[2][t]);
 		else
+			/* separate parscore for E and W */
 			g_string_append_printf(par, "%s<b>%d</b>%s<b>%d</b>",
 					_("E"), b->par_arr[2][t], _("W"), b->par_arr[0][t]);
 		if (t > 0)

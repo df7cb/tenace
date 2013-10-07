@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-07 13:19+0200\n"
+"POT-Creation-Date: 2013-10-07 20:11+0200\n"
 "PO-Revision-Date: 2013-10-07 13:19+0200\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -579,22 +579,26 @@ msgstr ""
 msgid "PASS"
 msgstr ""
 
-#. NS
-#. EW
-#: ../src/functions.c:222
+#. none vulnerable
+#: ../src/functions.c:223
 msgid "none"
 msgstr ""
 
-#: ../src/functions.c:224 ../src/solve.c:478
+#. EW vulnerable
+#. parscore for EW
+#: ../src/functions.c:226 ../src/solve.c:482
 msgid "EW"
 msgstr ""
 
 #. EW
-#: ../src/functions.c:227 ../src/solve.c:473
+#. NS vulnerable
+#. parscore for NS
+#: ../src/functions.c:230 ../src/solve.c:475
 msgid "NS"
 msgstr ""
 
-#: ../src/functions.c:229
+#. all vulnerable
+#: ../src/functions.c:233
 msgid "all"
 msgstr ""
 
@@ -638,32 +642,33 @@ msgstr ""
 msgid "Error: board must be fully dealt"
 msgstr ""
 
-#: ../src/solve.c:461
+#. parscore is pass
+#: ../src/solve.c:462
 msgid "Par: PASS (0)\n"
 msgstr ""
 
-#: ../src/solve.c:463
+#: ../src/solve.c:464
 #, c-format
 msgid "Par: %s %s (%+d)\n"
 msgstr ""
 
 #. North; translation should be a single letter
-#: ../src/solve.c:476 ../src/unused.c:8
+#: ../src/solve.c:479 ../src/unused.c:8
 msgid "N"
 msgstr ""
 
 #. South; translation should be a single letter
-#: ../src/solve.c:476 ../src/unused.c:12
+#: ../src/solve.c:479 ../src/unused.c:12
 msgid "S"
 msgstr ""
 
 #. East; translation should be a single letter
-#: ../src/solve.c:481 ../src/unused.c:10
+#: ../src/solve.c:486 ../src/unused.c:10
 msgid "E"
 msgstr ""
 
 #. West; translation should be a single letter
-#: ../src/solve.c:481 ../src/unused.c:6
+#: ../src/solve.c:486 ../src/unused.c:6
 msgid "W"
 msgstr ""
 
