@@ -1,17 +1,16 @@
 # tenace
-# Copyright (C) 2007, 2008 Christoph Berg <cb@df7cb.de>
+# Copyright (C) Christoph Berg <cb@df7cb.de>
 # This file is distributed under the same license as the tenace package.
-# Christoph Berg <cb@df7cb.de>, 2007, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-07 13:01+0200\n"
-"PO-Revision-Date: 2009-01-24 22:52+0100\n"
+"POT-Creation-Date: 2013-10-07 13:19+0200\n"
+"PO-Revision-Date: 2013-10-07 13:21+0200\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
-"Language: \n"
+"Language: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,23 +40,20 @@ msgid "E-W"
 msgstr "O-W"
 
 #: ../tenace.glade.h:7
-#, fuzzy
 msgid "N-S"
-msgstr "N-O"
+msgstr ""
 
 #: ../tenace.glade.h:8
-#, fuzzy
 msgid "N-W"
-msgstr "O-W"
+msgstr ""
 
 #: ../tenace.glade.h:9
 msgid "N-E"
 msgstr "N-O"
 
 #: ../tenace.glade.h:10
-#, fuzzy
 msgid "S-W"
-msgstr "O-W"
+msgstr ""
 
 #: ../tenace.glade.h:11
 msgid "S-E"
@@ -153,20 +149,19 @@ msgstr "_Sans Atout"
 
 #: ../tenace.glade.h:34
 msgid "&#x2660; S_pades"
-msgstr ""
+msgstr "&#x2660; _Pik"
 
 #: ../tenace.glade.h:35
 msgid "&#x2665; _Hearts"
-msgstr ""
+msgstr "&#x2665; _Coeur"
 
 #: ../tenace.glade.h:36
-#, fuzzy
 msgid "&#x2666; _Diamonds"
-msgstr "♦ _Karo"
+msgstr "&#x2666; _Karo"
 
 #: ../tenace.glade.h:37
 msgid "&#x2663; _Clubs"
-msgstr ""
+msgstr "&#x2663; _Treff"
 
 #: ../tenace.glade.h:38
 msgid "_No double"
@@ -202,7 +197,7 @@ msgstr "Immer DD"
 
 #: ../tenace.glade.h:46
 msgid "Compute par score and contract"
-msgstr "Berechne Parscore und -Kontrakt"
+msgstr "Berechne Parscore und -kontrakt"
 
 #: ../tenace.glade.h:47
 msgid "Set contract to computed par contract"
@@ -245,7 +240,7 @@ msgid "Par score"
 msgstr "Parscore"
 
 #: ../tenace.glade.h:58 ../src/window_board.c:268
-#, no-c-format
+#, c-format
 msgid ""
 "NS: %d\n"
 "EW: %d"
@@ -350,9 +345,8 @@ msgid "Card display"
 msgstr "Kartenanzeige"
 
 #: ../tenace.glade.h:84
-#, fuzzy
 msgid "All"
-msgstr "_Alle"
+msgstr "Alle"
 
 #: ../tenace.glade.h:85
 msgid "North-South"
@@ -411,9 +405,8 @@ msgid "Bridge Hand Viewer and Editor"
 msgstr "Bridgehand-Betrachter und -Editor"
 
 #: ../tenace.glade.h:99
-#, fuzzy
 msgid "Homepage"
-msgstr "pro Seite"
+msgstr ""
 
 #: ../tenace.glade.h:100
 msgid ""
@@ -604,19 +597,18 @@ msgid "NS"
 msgstr ""
 
 #: ../src/functions.c:229
-#, fuzzy
 msgid "all"
 msgstr "Alle"
 
 #: ../src/main.c:74 ../src/print.c:412
 #, c-format
 msgid "Could not find interface definition file: %s"
-msgstr ""
+msgstr "Konnte Interface-Definitionsdatei nicht finden: %s"
 
 #: ../src/main.c:81 ../src/print.c:420
 #, c-format
 msgid "Could not load builder file: %s"
-msgstr ""
+msgstr "Konnte Builder-Datei nicht finden: %s"
 
 #: ../src/main.c:102
 msgid "Hint: tenace can only read files in .lin format"
@@ -657,19 +649,23 @@ msgstr ""
 msgid "Par: %s %s (%+d)\n"
 msgstr ""
 
-#: ../src/solve.c:476 ../src/unused.c:6
+#. North; translation should be a single letter
+#: ../src/solve.c:476 ../src/unused.c:8
 msgid "N"
 msgstr ""
 
-#: ../src/solve.c:476 ../src/unused.c:8
+#. South; translation should be a single letter
+#: ../src/solve.c:476 ../src/unused.c:12
 msgid "S"
 msgstr ""
 
-#: ../src/solve.c:481 ../src/unused.c:7
+#. East; translation should be a single letter
+#: ../src/solve.c:481 ../src/unused.c:10
 msgid "E"
 msgstr "O"
 
-#: ../src/solve.c:481 ../src/unused.c:5
+#. West; translation should be a single letter
+#: ../src/solve.c:481 ../src/unused.c:6
 msgid "W"
 msgstr ""
 
@@ -700,9 +696,8 @@ msgid " - %s vs. %s"
 msgstr " - %s gegen %s"
 
 #: ../src/window_board.c:211
-#, fuzzy
 msgid "Vulnerable"
-msgstr "_Gefahr"
+msgstr "Gefahr"
 
 #: ../src/window_board.c:431
 msgid "Card is in play and cannot be moved"
@@ -751,23 +746,27 @@ msgstr ""
 msgid "CL"
 msgstr ""
 
-#: ../src/unused.c:10
+#: ../src/unused.c:14
 msgid "NT"
 msgstr "SA"
 
-#: ../src/unused.c:11
+#. Spades; translation should be a single letter
+#: ../src/unused.c:16
 msgid "Sp"
 msgstr "P"
 
-#: ../src/unused.c:12
+#. Hearts; translation should be a single letter
+#: ../src/unused.c:18
 msgid "He"
 msgstr "C"
 
-#: ../src/unused.c:13
+#. Diamonds; translation should be a single letter
+#: ../src/unused.c:20
 msgid "Di"
 msgstr "K"
 
-#: ../src/unused.c:14
+#. Clubs; translation should be a single letter
+#: ../src/unused.c:22
 msgid "Cl"
 msgstr "T"
 
@@ -848,12 +847,3 @@ msgstr "T"
 
 #~ msgid "per suit"
 #~ msgstr "pro Farbe"
-
-#~ msgid "♠ S_pades"
-#~ msgstr "♠ _Pik"
-
-#~ msgid "♣ _Clubs"
-#~ msgstr "♣ _Treff"
-
-#~ msgid "♥ _Hearts"
-#~ msgstr "♥ _Coeur"
