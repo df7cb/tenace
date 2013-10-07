@@ -204,8 +204,11 @@ void show_board (board *b, redraw_t redraw)
 
 	if (redraw & REDRAW_CONTRACT) {
 		w = get_widget ("label_board");
-		g_string_printf(str, "%s\n%s", b->name->str,
-			contract_string(b->level, b->trumps, b->declarer, b->doubled));
+		g_string_printf(str, "%s\n%s\n%s: %s\n%s: %s",
+			b->name->str,
+			contract_string(b->level, b->trumps, b->declarer, b->doubled),
+			_("Dealer"), _(seat_str[b->dealer]),
+			_("Vulnerable"), vuln_string(b));
 		gtk_label_set_text((GtkLabel*) w, str->str);
 
 		char *dealermenu[] = { 0, "dealer_west1", "dealer_north1",
@@ -785,7 +788,7 @@ board_set_dealer (seat dealer)
 	PROTECT_BEGIN;
 	board *b = CUR_BOARD;
 	b->dealer = dealer;
-	show_board(b, REDRAW_HANDS | REDRAW_NAMES | REDRAW_BIDDING);
+	show_board(b, REDRAW_CONTRACT | REDRAW_HANDS | REDRAW_NAMES | REDRAW_BIDDING);
 	PROTECT_END;
 }
 

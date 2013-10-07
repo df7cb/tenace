@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -213,6 +213,21 @@ char *contract_string_asc (int level, suit trumps, seat declarer, int doubled)
 		doubled == 2 ? _("XX") : doubled == 1 ? _("X") : "",
 		_(seat_str[declarer]));
 	return buf;
+}
+
+char *vuln_string (board *b)
+{
+	if (b->vuln[0] == 0) { /* NS */
+		if (b->vuln[1] == 0) /* EW */
+			return _("none");
+		else
+			return _("EW");
+	} else {
+		if (b->vuln[1] == 0) /* EW */
+			return _("NS");
+		else
+			return _("all");
+	}
 }
 
 seat seat_mod(seat s)
