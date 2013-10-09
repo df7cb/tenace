@@ -457,6 +457,7 @@ on_deal_cut_activate                   (GtkMenuItem     *menuitem,
 	int i;
 	for (i = win->cur; i < win->n_boards - 1; i++)
 		win->boards[i] = win->boards[i + 1];
+		/* no need to update win->board_numbers here */
 	win->n_boards--;
 	win->boards[win->n_boards] = NULL;
 	if (! win->n_boards) { /* last board was cut */

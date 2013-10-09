@@ -51,6 +51,7 @@ typedef struct _window_board_t {
 	int n_boards_alloc;
 	int cur;
 	board **boards;
+	int *board_numbers; /* array of indices for board menu callback */
 
 	board *cutbuf;
 

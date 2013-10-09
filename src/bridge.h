@@ -64,8 +64,7 @@ typedef struct _dd_t {
 
 typedef struct board_t {
 	GString *name;
-	/* int number; FIXME: also store "real" board number */
-	int n; /* internal board number, used in board menu callback handler */
+	/* int number; FIXME: store "real" board number here */
 
 	int vuln[2]; /* 0 = NS, 1 = EW */
 	seat dealer;

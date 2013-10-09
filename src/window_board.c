@@ -93,9 +93,8 @@ board_window_rebuild_board_menu (window_board_t *win)
 		group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (menuitem));
 		if (i == win->cur)
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuitem), TRUE);
-		win->boards[i]->n = i;
 		g_signal_connect (G_OBJECT (menuitem), "activate",
-			G_CALLBACK (board_menu_select), &(win->boards[i]->n));
+			G_CALLBACK (board_menu_select), &(win->board_numbers[i])); /* pointer to array index */
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), menuitem);
 		gtk_widget_show (menuitem);
@@ -676,15 +675,20 @@ board_window_append_board (window_board_t *win, board *b)
 	}
 
 	if (! win->n_boards_alloc) {
-		win->n_boards_alloc = 4;
+		win->n_boards_alloc = 4; /* start with 4 entries */
 		win->boards = malloc (win->n_boards_alloc * sizeof (board *));
 		assert(win->boards);
+		win->board_numbers = malloc (win->n_boards_alloc * sizeof (int));
+		assert(win->board_numbers);
 	} else if (win->n_boards >= win->n_boards_alloc) {
 		win->n_boards_alloc <<= 2;
 		win->boards = realloc(win->boards, win->n_boards_alloc * sizeof (board*));
 		assert(win->boards);
+		win->board_numbers = realloc(win->board_numbers, win->n_boards_alloc * sizeof (int));
+		assert(win->board_numbers);
 	}
 	win->boards[win->n_boards] = b;
+	win->board_numbers[win->n_boards] = win->n_boards; /* store array index */
 	return win->n_boards++;
 }
 
@@ -725,6 +729,7 @@ board_window_init (window_board_t *win)
 	win->filename = NULL;
 	win->title = win->subtitle = win->team1 = win->team2 = NULL;
 	win->boards = NULL;
+	win->board_numbers = NULL;
 	win->n_boards_alloc = 0;
 	win->n_boards = 0;
 
