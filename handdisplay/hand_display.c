@@ -932,26 +932,29 @@ hand_display_init (HandDisplay *handdisp)
 
 /* public interface */
 
-GtkType
+GType
 hand_display_get_type ()
 {
-	static GtkType hand_display_type = 0;
+	static GType hand_display_type = 0;
 
 	if (!hand_display_type)
 	{
-		static const GtkTypeInfo hand_display_info =
-		{
-			"HandDisplay",
-			sizeof (HandDisplay),
+		static const GTypeInfo hand_display_info = {
 			sizeof (HandDisplayClass),
-			(GtkClassInitFunc) hand_display_class_init,
-			(GtkObjectInitFunc) hand_display_init,
-			/* reserved_1 */ NULL,
-			/* reserved_1 */ NULL,
-			(GtkClassInitFunc) NULL
+			NULL, /* base_init */
+			NULL, /* base_finalize */
+			(GClassInitFunc) hand_display_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (HandDisplay),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) hand_display_init,
 		};
 
-		hand_display_type = gtk_type_unique (GTK_TYPE_WIDGET, &hand_display_info);
+		hand_display_type = g_type_register_static (GTK_TYPE_WIDGET,
+				"HandDisplay",
+				&hand_display_info,
+				0);
 	}
 
 	return hand_display_type;

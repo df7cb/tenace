@@ -99,7 +99,7 @@ struct _HandDisplayClass
        GtkDrawingAreaClass parent_class;
 };
 
-GtkType hand_display_get_type (void);
+GType hand_display_get_type (void);
 GtkWidget *hand_display_new (int mode);
 void hand_display_draw (GtkWidget *hand);
 void hand_display_set_style (HandDisplay *handdisp, int style);
