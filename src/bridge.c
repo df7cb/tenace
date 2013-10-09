@@ -54,6 +54,42 @@ card_is_good (board *b, card c)
 	/* NOT REACHED */
 }
 
+static int
+ns_is_vulnerable (int board_number)
+{
+	switch (board_number % 16) {
+		case 2:
+		case 4:
+		case 5:
+		case 7:
+		case 10:
+		case 12:
+		case 13:
+		case 15:
+			return 1;
+			break;
+	}
+	return 0;
+}
+
+static int
+ew_is_vulnerable (int board_number)
+{
+	switch (board_number % 16) {
+		case 0: /* actually 16 */
+		case 3:
+		case 4:
+		case 6:
+		case 7:
+		case 9:
+		case 10:
+		case 13:
+			return 1;
+			break;
+	}
+	return 0;
+}
+
 /* dealing with boards */
 
 void board_clear(board *b)
@@ -114,7 +150,8 @@ board *board_new (int board_number) /* user-visible board number 1.. */
 		b->next_dd[i] = NULL;
 	}
 	board_clear(b);
-	b->vuln[0] = b->vuln[1] = 0;
+	b->vuln[0] = ns_is_vulnerable (board_number);
+	b->vuln[1] = ew_is_vulnerable (board_number);
 
 	b->bidding = calloc(4, sizeof(card));
 	assert(b->bidding);
