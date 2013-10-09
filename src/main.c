@@ -71,7 +71,7 @@ main (int argc, char *argv[])
 	  }
   }
   if (! xml_file) {
-	  fprintf (stderr, _("Could not find interface definition file: %s"), "tenace.ui");
+	  fprintf (stderr, _("Could not find interface definition file: %s\n"), "tenace.ui");
 	  exit (1);
   }
 

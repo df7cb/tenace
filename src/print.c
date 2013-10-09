@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -409,7 +409,7 @@ magic_custom_create (GtkPrintOperation *operation,
 		}
 	}
 	if (! xml_file) {
-		fprintf (stderr, _("Could not find interface definition file: %s"), "magic.ui");
+		fprintf (stderr, _("Could not find interface definition file: %s\n"), "magic.ui");
 		exit (1);
 	}
 
