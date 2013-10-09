@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 
 	setlocale (LC_NUMERIC, "C");
 
-	board *b = board_new ();
+	board *b = board_new (win->n_boards + 1);
 	int board_filled = 0;
 	board_window_append_board (win, b);
 
@@ -118,7 +118,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				card_nr = 0;
 				board_filled = 0;
 
-				b = board_new ();
+				b = board_new (win->n_boards + 1);
 				board_window_append_board (win, b);
 				/* initialize player names, required for vugraph files */
 				int i;
@@ -158,7 +158,7 @@ board_parse_lin (window_board_t *win, char *line, FILE *f)
 				card_nr = 0;
 				board_filled = 0;
 
-				b = board_new ();
+				b = board_new (win->n_boards + 1);
 				board_window_append_board (win, b);
 				/* initialize player names, required for vugraph files */
 				int i;
@@ -369,7 +369,7 @@ board_load (window_board_t *win, char *fname)
 	    !strncmp(buf, "st|", 3)) {
 		ret = board_parse_lin (win, buf, f);
 	} else {
-		board *b = board_new ();
+		board *b = board_new (win->n_boards + 1);
 		ret = board_parse_line(buf, b, ' ', '.');
 		if (ret)
 			board_window_append_board (win, b);

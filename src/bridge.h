@@ -15,6 +15,9 @@ typedef enum seat_e {
 	seat_all,
 } seat;
 
+#define DEALER(x) ((x) % 4 + 1) /* who is dealer in board x (starting from 1) */
+#define VULN_N(x) (x)
+
 /* cards: SA = 51, C2 = 0, bids: 1C = 5, 7NT = 39 */
 typedef enum suit_e {
 	NT = 4,
@@ -62,7 +65,7 @@ typedef struct _dd_t {
 typedef struct board_t {
 	GString *name;
 	/* int number; FIXME: also store "real" board number */
-	int n; /* board number for board menu */
+	int n; /* internal board number, used in board menu callback handler */
 
 	int vuln[2]; /* 0 = NS, 1 = EW */
 	seat dealer;
@@ -112,7 +115,7 @@ int card_is_good (board *b, card c);
 
 void board_clear(board *b);
 void board_set_contract(board *b, int level, suit trumps, seat declarer, int doubled);
-board *board_new(void);
+board *board_new (int board_number);
 board *board_dup (board *b0);
 void board_free(board *b);
 

@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -93,21 +93,22 @@ void board_set_contract(board *b, int level, suit trumps, seat declarer, int dou
 	calculate_target(b);
 }
 
-board *board_new(void)
+board *board_new (int board_number) /* user-visible board number 1.. */
 {
 	int i;
 	char *names[] = {"West", "North", "East", "South"};
 	board *b = calloc (1, sizeof(board));
 	assert(b);
 
-	b->name = g_string_new("Board 1");
-	b->n = 0; /* will be set by the board menu hander */
+	b->name = g_string_new(NULL);
+	/* newly created board */
+	g_string_printf (b->name, _("Board %d"), board_number);
 	for (i = 0; i < 4; i++) {
 		b->hand_name[i] = g_string_new (_(names[i]));
 	}
 
-	b->dealer = north;
-	board_set_contract(b, 1, NT, south, 0);
+	b->dealer = DEALER (board_number);
+	board_set_contract(b, 1, NT, south, 0); /* default contract is 1NT by south */
 	b->current_dd = NULL;
 	for (i = 0; i < 52; i++) {
 		b->next_dd[i] = NULL;

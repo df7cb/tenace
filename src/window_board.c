@@ -671,7 +671,7 @@ int
 board_window_append_board (window_board_t *win, board *b)
 {
 	if (!b) {
-		b = board_new ();
+		b = board_new (win->n_boards + 1);
 		g_string_printf (b->name, _("Board %d"), win->n_boards + 1);
 	}
 
