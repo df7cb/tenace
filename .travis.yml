@@ -5,5 +5,8 @@ language: c
 compiler:
   - gcc
   - clang
+script:
+  - ./autogen.sh
+  - make
 
 # vim:sw=2:
