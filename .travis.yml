@@ -1,0 +1,9 @@
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get build-dep tenace
+language: c
+compiler:
+  - gcc
+  - clang
+
+# vim:sw=2:
