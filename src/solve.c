@@ -383,7 +383,7 @@ compute_par_arr(board *b)
 	int result = CalcDDtable (d, &ddresults);
 	if (result != 1) {
 		char str[100];
-		snprintf(str, 99, "DD Error: %s", dds_error[-i]);
+		snprintf(str, 99, "DD Error: %s", dds_error[-result]);
 		solve_statusbar(str);
 		return 0;
 	}
