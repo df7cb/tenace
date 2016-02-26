@@ -641,8 +641,7 @@ hand_display_realize (GtkWidget *widget)
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
 	GdkWindow *window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
 	gtk_widget_set_window (widget, window);
-
-	/*widget->style =*/ gtk_style_attach (gtk_widget_get_style (widget), window);
+	gtk_widget_style_attach (widget);
 
 	gdk_window_set_user_data (window, widget);
 
