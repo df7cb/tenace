@@ -146,7 +146,7 @@ apply_options (GtkWidget *window_options)
 
 	/* Board list */
 	board **new_boards = malloc (win->n_boards_alloc * sizeof (board *));
-	int new_cur = 0;
+	//int new_cur = 0;
 	i = 0;
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (board_store), &iter);
@@ -156,8 +156,8 @@ apply_options (GtkWidget *window_options)
 		int n = g_value_get_int (&val) - 1;
 		assert (0 <= n && n < win->n_boards);
 		new_boards[i] = win->boards[n];
-		if (n == win->cur)
-			new_cur = i;
+		/*if (n == win->cur)
+			new_cur = i;*/
 		i++;
 	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (board_store), &iter));
 	free (win->boards);
@@ -418,14 +418,14 @@ on_options_generate_go_clicked         (GtkButton       *button,
 #ifndef _WIN32
 	GtkWidget *number = get_widget ("options_generate_number");
 	int n = gtk_spin_button_get_value (GTK_SPIN_BUTTON (number));
+	char nn[10];
+	snprintf (nn, sizeof(nn), "%d", n);
 	GtkWidget *view = get_widget ("options_generate_entry");
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
 	GtkTextIter start, end;
 	gtk_text_buffer_get_iter_at_offset (buffer, &start, 0);
 	gtk_text_buffer_get_iter_at_offset (buffer, &end, -1);
 	char *text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
-
-	printf("moo %s\n", text);
 
 	int wfd[2], rfd[2];
 	pid_t cpid;
@@ -446,14 +446,17 @@ on_options_generate_go_clicked         (GtkButton       *button,
 		close (rfd[0]);
 		dup2 (0, wfd[0]);
 		dup2 (1, rfd[1]);
-		execlp ("dealer", "dealer", "-v", NULL);
+		execlp ("dealer", "dealer", "-v", "-p", nn, NULL);
 		perror ("execlp");
 		_exit(EXIT_FAILURE);
 
 	} else {
 		close (wfd[0]);          /* Close unused read end */
 		close (rfd[1]);
-		write (wfd[1], text, strlen (text));
+		if (write (wfd[1], text, strlen (text)) == -1) {
+			perror ("write");
+			return;
+		}
 		close (wfd[1]);          /* Reader will see EOF */
 	}
 

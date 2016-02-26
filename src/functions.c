@@ -184,7 +184,7 @@ hand_suit_string (board *b, seat h, suit s)
 	static GString *str = NULL;
 	if (!str)
 		str = g_string_new(NULL);
-	g_string_printf(str, "");
+	g_string_assign(str, "");
 
 	int c;
 	for (c = s * 13 + 12; c >= (int)s * 13; c--)

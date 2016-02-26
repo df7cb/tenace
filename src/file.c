@@ -769,8 +769,10 @@ retry_save:
 
 /* open on bridgebase.com */
 
+/* non-lin interface
 static char seat_lc[] = { 0, 'w', 'n', 'e', 's' };
 static char vuln_lc[] = { 'o', 'n', 'e', 'b' };
+*/
 
 void
 on_menu_file_web_activate ()
