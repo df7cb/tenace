@@ -48,7 +48,7 @@ draw_page (GtkPrintOperation *operation,
 
 	board *b = CUR_BOARD;
 
-	cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+	cairo_select_font_face (cr, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size (cr, 12);
 	cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 
@@ -187,7 +187,7 @@ arrow (cairo_t *cr, int n, int background, seat dir, double size)
 	char buf[8];
 	cairo_text_extents_t ext;
 	snprintf (buf, sizeof (buf), "%d", n);
-	cairo_select_font_face (cr, "Sans",
+	cairo_select_font_face (cr, "sans-serif",
 		CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size (cr, size / 2.0);
 	cairo_text_extents (cr, buf, &ext);
@@ -270,7 +270,7 @@ magic_card_half (cairo_t *cr, window_board_t *win, card c)
 		cairo_text_extents_t ext;
 		cairo_save (cr);
 
-		cairo_select_font_face (cr, "Sans",
+		cairo_select_font_face (cr, "sans-serif",
 			CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 		cairo_set_font_size (cr, 8.0);
 		cairo_clip_rectangle (cr, mc.border, mc.border,
@@ -321,6 +321,9 @@ magic_draw_page (GtkPrintOperation *operation,
 	if (mc.header == 1) /* new page */
 		print_head = 1;
 
+	cairo_select_font_face (cr, "sans-serif",
+			CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+
 	int r, c;
 	for (c = 0; c < mc.columns; c++) {
 		for (r = 0; r < mc.rows && cc >= 0; r++) {
@@ -335,11 +338,7 @@ magic_draw_page (GtkPrintOperation *operation,
 							continue;
 						cairo_move_to (cr, c1 * (mc.col_width - 2.0*mc.border) / mc.columns + mc.border + mc.horiz_margin,
 								r1 * (mc.row_height - 2.0*mc.border) / mc.rows + mc.border + mc.vert_margin + 10.0);
-						cairo_select_font_face (cr, "Symbol",
-							CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 						cairo_show_text (cr, trump_str[SUIT(cc1)]);
-						cairo_select_font_face (cr, "Sans",
-							CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 						cairo_show_text (cr, rank_string (RANK(cc1)));
 						cc1--;
 					}
@@ -351,8 +350,6 @@ magic_draw_page (GtkPrintOperation *operation,
 				cairo_move_to (cr,
 					(c + 0.5) * mc.col_width + c * mc.horiz_sep + mc.horiz_margin - 15.0,
 					(r + 0.5) * mc.row_height + r * mc.vert_sep + mc.vert_margin + 30.0);
-				cairo_select_font_face (cr, "Symbol",
-					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 				cairo_set_font_size (cr, 40.0);
 				cairo_show_text (cr, trump_str[SUIT(cc)]);
 				print_head = 0;
@@ -369,11 +366,7 @@ magic_draw_page (GtkPrintOperation *operation,
 			if (mc.mark_cards) {
 				cairo_move_to (cr, 6, -2);
 				cairo_set_font_size (cr, 10);
-				cairo_select_font_face (cr, "Symbol",
-					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 				cairo_show_text (cr, trump_str[SUIT(cc)]);
-				cairo_select_font_face (cr, "Sans",
-					CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 				cairo_show_text (cr, _(rank_string (RANK(cc))));
 			}
 

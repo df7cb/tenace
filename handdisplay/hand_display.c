@@ -183,9 +183,6 @@ render_card (cairo_t *cr, int x, int y, int c, int color)
 	return;
 }
 
-#define FONT_SANS cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
-#define FONT_SYMBOL cairo_select_font_face (cr, "Symbol", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
-
 static void
 draw (GtkWidget *hand, cairo_t *cr)
 {
@@ -196,7 +193,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 	GtkAllocation allocation;
 	gtk_widget_get_allocation (hand, &allocation);
 
-	FONT_SANS;
+	cairo_select_font_face (cr, "sans-serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 
 	/* "card" mode for drap&drop icon */
 	if (handdisp->mode == HAND_DISPLAY_MODE_CARD) {
@@ -243,11 +240,9 @@ draw (GtkWidget *hand, cairo_t *cr)
 		cairo_stroke (cr);
 
 		cairo_move_to (cr, XPAD - extents.x_bearing + 1, YPAD - extents.y_bearing + 2);
-		FONT_SYMBOL;
 		cairo_set_source_rgb (cr, suit_color[suit][0],
 			suit_color[suit][1], suit_color[suit][2]);
 		cairo_show_text (cr, suit_str[suit]);
-		FONT_SANS;
 		cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
 		cairo_show_text (cr, rank_str[rank]);
 
@@ -341,11 +336,9 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 			cairo_move_to (cr, x - extents.width / 2 - 3,
 					y + extents.height / 2 - 3);
-			FONT_SYMBOL;
 			cairo_set_source_rgb (cr, suit_color[suit][0],
 				suit_color[suit][1], suit_color[suit][2]);
 			cairo_show_text (cr, suit_str[suit]);
-			FONT_SANS;
 			cairo_set_source_rgb (cr, HAND_DISPLAY_FONT);
 			cairo_show_text (cr, rank_str[rank]);
 		}
@@ -430,7 +423,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 	/* "text" style */
 
 	/* draw suit symbols */
-	FONT_SYMBOL;
 	cairo_set_font_size (cr, 20);
 	int suit_width = 0;
 	int suit;
@@ -446,7 +438,6 @@ draw (GtkWidget *hand, cairo_t *cr)
 	}
 
 	/* draw cards */
-	FONT_SANS;
 	for (suit = 0; suit < 4; suit++) {
 		x = 4 + suit_width;
 		y = floor ((double) allocation.height * (3.8 - suit) / 4.0);

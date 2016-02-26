@@ -3233,7 +3233,7 @@ EW: %d</property>
   <object class="GtkAboutDialog" id="aboutdialog1">
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
-    <property name="copyright" translatable="yes">(C) 2005-2010 Christoph Berg</property>
+    <property name="copyright" translatable="yes">(C) 2005-2016 Christoph Berg</property>
     <property name="comments" translatable="yes">Bridge Hand Viewer and Editor</property>
     <property name="website">http://www.df7cb.de/bridge/tenace/</property>
     <property name="website_label" translatable="yes">Homepage</property>
