@@ -334,7 +334,7 @@ magic_draw_page (GtkPrintOperation *operation,
 				int cc1 = cc;
 				for (c1 = 0; c1 < mc.columns; c1++) {
 					for (r1 = 0; r1 < mc.rows; r1++) {
-						if (c1 == 0 && r1 == 0 || cc1 < 0)
+						if ((c1 == 0 && r1 == 0) || cc1 < 0)
 							continue;
 						cairo_move_to (cr, c1 * (mc.col_width - 2.0*mc.border) / mc.columns + mc.border + mc.horiz_margin,
 								r1 * (mc.row_height - 2.0*mc.border) / mc.rows + mc.border + mc.vert_margin + 10.0);

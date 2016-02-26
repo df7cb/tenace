@@ -148,9 +148,11 @@ compute_dd_scores0 (board *b, dd_t *dd, card next)
 	seat leader = b->n_played_cards % 4 == 0 ? b->current_turn : b->dealt_cards[lead];
 	d.first = (leader + 2) % 4;
 	d.trump = dds_suit_conv(b->trumps);
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 3; i++) {
 		d.currentTrickSuit[i] = 0;
 		d.currentTrickRank[i] = 0;
+	}
+	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++)
 			d.remainCards[i][j] = 0;
 	}

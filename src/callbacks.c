@@ -22,9 +22,11 @@
 #include <gtk/gtk.h>
 
 #include "callbacks.h"
+#include "file.h" /* _() */
 #include "functions.h" /* _() */
 #include "solve.h" /* run_dd */
 #include "window_board.h"
+#include "window_card.h"
 
 /* menu */
 

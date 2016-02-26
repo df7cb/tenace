@@ -291,7 +291,7 @@ write_config (window_board_t *win)
 		return 0;
 	}
 	char *data = g_key_file_to_data (win->keyfile, NULL, NULL);
-	fprintf (f, data);
+	fputs (data, f);
 	fclose (f);
 	g_free (data);
 

@@ -332,7 +332,7 @@ int board_parse_line(const char *line, board *b, char handsep, char suitsep)
 	seat se = west;
 	int su = spade;
 	while (*c && *c != '\n') {
-		rank ra;
+		int ra;
 		if (*c == suitsep) {
 			su--;
 			if (su < 0)
@@ -769,8 +769,8 @@ retry_save:
 
 /* open on bridgebase.com */
 
-static seat_lc[] = { 0, 'w', 'n', 'e', 's' };
-static vuln_lc[] = { 'o', 'n', 'e', 'b' };
+static char seat_lc[] = { 0, 'w', 'n', 'e', 's' };
+static char vuln_lc[] = { 'o', 'n', 'e', 'b' };
 
 void
 on_menu_file_web_activate ()
