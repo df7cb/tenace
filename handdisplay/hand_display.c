@@ -46,12 +46,12 @@ static double suit_color[4][3] = {
 static int
 which_card (HandDisplay *handdisp, int x, int y)
 {
-	/* find rightmost card */
+	/* find rightmost (= topmost) card at cursor position */
 	int c;
 	int max_x = -1;
 	int max = -1;
 	for (c = 0; c < (handdisp->mode == HAND_DISPLAY_MODE_HAND_X ? 56 : 52); c++) {
-		if ((handdisp->cards[c] & ~HAND_DISPLAY_INVISIBLE_CARD) &&
+		if ((c >= 52 /* HAND_X */ || handdisp->cards[c] & ~HAND_DISPLAY_INVISIBLE_CARD /* card visible */) &&
 				x >= handdisp->l[c] && x <= handdisp->r[c] &&
 				y >= handdisp->t[c] && y <= handdisp->b[c]) {
 			if (handdisp->r[c] > max_x) {
