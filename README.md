@@ -3,12 +3,12 @@ tenace
 
 Tenace is a Bridge hand viewer and editor.
 
-* http://www.df7cb.de/bridge/tenace/
+* https://www.df7cb.de/bridge/tenace/
 
 Requirements
 ------------
 
-Tenace was written on Debian GNU/Linux, but should run on any *NIX platform
+Tenace was written on Debian GNU/Linux, but should run on any platform
 that features GTK+. Recommended minimum version is 2.12 due to the usage of
 GtkTooltip. Tenace will still compile with older versions, but some features
 will be disabled, notably the recently-used boards menu and tooltip popups for
@@ -22,16 +22,17 @@ formats to display cards work as well). The GUI is rendered using libglade.
 Tenace uses Bo Haglund's excellent DDS double dummy solver library for
 discovering optimal leads and computing parscores.
 
-* http://www.bahnhof.se/wb758135/
+* http://privat.bahnhof.se/wb758135/bridge/index.html
 
 Installation
 ------------
 
 Get and unpack the tarball.
-$ ./configure --help
-$ ./configure
-$ make
-# make install
+
+    $ ./configure --help
+    $ ./configure
+    $ make
+    # make install
 
 If you are running Debian, get packages from the next Debian mirror.
 
@@ -46,17 +47,19 @@ The contrib sub-directory contains some useful supplementary files:
 Translations
 ------------
 
-Currently, there's only a German translation, feel free to submit more. (For
-technical reason, there's also an English translation that only contains four
-strings, though real en_US/en_GB translations would be welcome as well.)
+* German (de)
+* Norwegian Nynorsk (no) by Yngve Spjeld Landro
+
+More translations welcome! (For technical reason, there's also an English
+translation that only contains four strings, though real `en_US`/`en_GB`
+translations would be welcome as well.)
 
 Development
 -----------
 
-The Tenace source code is using a Git repository.
+The Tenace source code is maintained on GitHub:
 
-* http://git.debian.org/?p=collab-maint/tenace.git
-  git://git.debian.org/collab-maint/tenace.git
+* https://github.com/ChristophBerg/tenace
 
 Feedback and Bugs
 -----------------
