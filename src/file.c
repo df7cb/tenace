@@ -366,7 +366,7 @@ board_load (window_board_t *win, char *fname)
 
 	int ret;
 	if (!strncmp(buf, "pn|", 3) || !strncmp(buf, "vg|", 3) ||
-	    !strncmp(buf, "st|", 3)) {
+	    !strncmp(buf, "st|", 3) || !strncmp(buf, "qx|", 3)) {
 		ret = board_parse_lin (win, buf, f);
 	} else {
 		board *b = board_new (win->n_boards + 1);

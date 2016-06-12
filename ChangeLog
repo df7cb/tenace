@@ -1,5 +1,6 @@
 tenace (0.14) upstream; urgency=medium
 
+  * Correctly read lin files starting with qx||.
   * Various minor build system and gtk compatibility tweaks.
   * Add desktop menu and icon.
 
