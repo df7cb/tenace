@@ -48,7 +48,7 @@ Translations
 ------------
 
 * German (de)
-* Norwegian Nynorsk (no) by Yngve Spjeld Landro
+* Norwegian Nynorsk (nn) by Yngve Spjeld Landro
 
 More translations welcome! (For technical reason, there's also an English
 translation that only contains four strings, though real `en_US`/`en_GB`
