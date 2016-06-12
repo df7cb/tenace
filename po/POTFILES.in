@@ -5,6 +5,9 @@
 # is a symlink and makes things mostly work (though there seems to be a problem
 # with menu items containing _underscores.)
 tenace.glade
+tenace.ui
+magic.ui
+lib/c-ctype.c
 
 src/bridge.c
 src/callbacks.c
