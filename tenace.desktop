@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Tenace
+Comment=Bridge hand viewer and editor
+Comment[de]=Betrachter und Editor für das Kartenspiel Bridge
+Exec=tenace
+Icon=tenace
+Terminal=false
+Categories=Game;CardGame;
+Keywords=bridge;cards;viewer;editor;
