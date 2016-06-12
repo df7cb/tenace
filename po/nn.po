@@ -1,0 +1,794 @@
+# tenace
+# Copyright (C) Christoph Berg <cb@df7cb.de>
+# This file is distributed under the same license as the tenace package.
+#
+# Yngve Spjeld Landro <l10n@landro.net>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: tenace 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-06-12 15:03+0200\n"
+"PO-Revision-Date: 2016-06-02 16:29+0200\n"
+"Last-Translator: Yngve Spjeld Landro <l10n@landro.net>\n"
+"Language-Team: NorwegianNynorsk <i18n-nn@lister.ping.uio.no>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: ../tenace.glade.h:1
+msgid "Tenace"
+msgstr "Tenace"
+
+#: ../tenace.glade.h:2
+msgid "_File"
+msgstr "_Fil"
+
+#: ../tenace.glade.h:3
+msgid "Append file to board list"
+msgstr "Legg fila til i bordlista"
+
+#: ../tenace.glade.h:4
+msgid "_Boards"
+msgstr "_Bord"
+
+#: ../tenace.glade.h:5
+msgid "_Edit"
+msgstr "_Endra"
+
+#: ../tenace.glade.h:6
+msgid "E-W"
+msgstr "A-V"
+
+#: ../tenace.glade.h:7
+msgid "N-S"
+msgstr "N-S"
+
+#: ../tenace.glade.h:8
+msgid "N-W"
+msgstr "N-V"
+
+#: ../tenace.glade.h:9
+msgid "N-E"
+msgstr "N-A"
+
+#: ../tenace.glade.h:10
+msgid "S-W"
+msgstr "S-V"
+
+#: ../tenace.glade.h:11
+msgid "S-E"
+msgstr "S-A"
+
+#: ../tenace.glade.h:12
+msgid "_Board editor..."
+msgstr "_Bordstyrar …"
+
+#: ../tenace.glade.h:13
+msgid "Text _input..."
+msgstr "_Tekstinndata …"
+
+#: ../tenace.glade.h:14
+msgid "Undo all cards"
+msgstr "Gjer om alle korta"
+
+#: ../tenace.glade.h:15
+msgid "Play all cards"
+msgstr "Spel alle korta"
+
+#: ../tenace.glade.h:16
+msgid "Show pla_y..."
+msgstr "Syn _spelet …"
+
+#: ../tenace.glade.h:17
+msgid "_Contract"
+msgstr "_Kontrakt"
+
+#: ../tenace.glade.h:18
+msgid "_West"
+msgstr "_Vest"
+
+#: ../tenace.glade.h:19
+msgid "_North"
+msgstr "_Nord"
+
+#: ../tenace.glade.h:20
+msgid "_East"
+msgstr "_Aust"
+
+#: ../tenace.glade.h:21
+msgid "_South"
+msgstr "_Sør"
+
+#: ../tenace.glade.h:22
+msgid "N_one"
+msgstr "_Ingen"
+
+#: ../tenace.glade.h:23
+msgid "_North-South"
+msgstr "_Nord-Sør"
+
+#: ../tenace.glade.h:24
+msgid "_East-West"
+msgstr "_Aust-Vest"
+
+#: ../tenace.glade.h:25
+msgid "_All"
+msgstr "A_lle"
+
+#: ../tenace.glade.h:26
+msgid "_1"
+msgstr "_1"
+
+#: ../tenace.glade.h:27
+msgid "_2"
+msgstr "_2"
+
+#: ../tenace.glade.h:28
+msgid "_3"
+msgstr "_3"
+
+#: ../tenace.glade.h:29
+msgid "_4"
+msgstr "_4"
+
+#: ../tenace.glade.h:30
+msgid "_5"
+msgstr "_5"
+
+#: ../tenace.glade.h:31
+msgid "_6"
+msgstr "_6"
+
+#: ../tenace.glade.h:32
+msgid "_7"
+msgstr "_7"
+
+#: ../tenace.glade.h:33
+msgid "No _Trump"
+msgstr "_Grand"
+
+#: ../tenace.glade.h:34
+msgid "&#x2660; S_pades"
+msgstr "&#x2660; S_par"
+
+#: ../tenace.glade.h:35
+msgid "&#x2665; _Hearts"
+msgstr "&#x2665; _Hjarter"
+
+#: ../tenace.glade.h:36
+msgid "&#x2666; _Diamonds"
+msgstr "&#x2666; _Ruter"
+
+#: ../tenace.glade.h:37
+msgid "&#x2663; _Clubs"
+msgstr "&#x2663; _Kløver"
+
+#: ../tenace.glade.h:38
+msgid "_No double"
+msgstr "_Inga dobling"
+
+#: ../tenace.glade.h:39
+msgid "X _Doubled"
+msgstr "X _Dobla"
+
+#: ../tenace.glade.h:40
+msgid "XX _Redoubled"
+msgstr "XX _Redobla"
+
+#: ../tenace.glade.h:41
+msgid "_Bidding editor..."
+msgstr "_Meldingsstyrar …"
+
+#: ../tenace.glade.h:42
+msgid "_Analysis"
+msgstr "_Analyse"
+
+#: ../tenace.glade.h:43
+msgid "Double dummy analysis"
+msgstr "Dobbel blindemann-analyse"
+
+#: ../tenace.glade.h:44
+msgid "Automatically run DD analysis"
+msgstr "Køyr automatisk DB-analyse"
+
+#: ../tenace.glade.h:45
+msgid "Always run DD"
+msgstr "Køyr alltid DB"
+
+#: ../tenace.glade.h:46
+msgid "Compute par score and contract"
+msgstr "Rekn ut snittresultat og -kontrakt"
+
+#: ../tenace.glade.h:47
+msgid "Set contract to computed par contract"
+msgstr "Set kontrakten til å vera likt den utrekna"
+
+#: ../tenace.glade.h:48
+msgid "Open board"
+msgstr "Opna bordet"
+
+#: ../tenace.glade.h:49
+msgid "Save board"
+msgstr "Lagra bordet"
+
+#: ../tenace.glade.h:50
+msgid "Previous board"
+msgstr "Førre bordet"
+
+#: ../tenace.glade.h:51
+msgid "Next board"
+msgstr "Neste bordet"
+
+#: ../tenace.glade.h:52
+msgid "Rewind trick"
+msgstr "Eitt stikk attende"
+
+#: ../tenace.glade.h:53
+msgid "Rewind card"
+msgstr "Eitt kort attende"
+
+#: ../tenace.glade.h:54
+msgid "Play next card"
+msgstr "Spel det neste kortet"
+
+#: ../tenace.glade.h:55
+msgid "Play next trick"
+msgstr "Spel det neste stikket"
+
+#: ../tenace.glade.h:56
+msgid "Par score"
+msgstr "Snittresultat"
+
+#: ../tenace.glade.h:58 ../src/window_board.c:267
+#, no-c-format
+msgid ""
+"NS: %d\n"
+"EW: %d"
+msgstr ""
+"NS: %d\n"
+"AV: %d"
+
+#: ../tenace.glade.h:60
+msgid "East"
+msgstr "Aust"
+
+#: ../tenace.glade.h:61
+msgid "North"
+msgstr "Nord"
+
+#: ../tenace.glade.h:62
+msgid "South"
+msgstr "Sør"
+
+#: ../tenace.glade.h:63
+msgid "West"
+msgstr "Vest"
+
+#: ../tenace.glade.h:64
+msgid "Board editor"
+msgstr "Bordstyrar"
+
+#: ../tenace.glade.h:65
+msgid "Clear board"
+msgstr "Tøm bordet"
+
+#: ../tenace.glade.h:66
+msgid "Deal randomly"
+msgstr "Tilfeldig deling"
+
+#: ../tenace.glade.h:67
+msgid "Bidding editor"
+msgstr "Meldingsstyrar"
+
+#: ../tenace.glade.h:68
+msgid "Remove all bids"
+msgstr "Fjerna alle meldingane"
+
+#: ../tenace.glade.h:69
+msgid "Remove last bid"
+msgstr "Fjern den siste meldinga"
+
+#: ../tenace.glade.h:70
+msgid "Make bids for the current contract"
+msgstr "Lag meldingar for den gjeldande kontrakten"
+
+#: ../tenace.glade.h:71
+msgid "Alert"
+msgstr "Varsel"
+
+#: ../tenace.glade.h:72
+msgid "IMP Table"
+msgstr "IMP-tabell"
+
+#: ../tenace.glade.h:73
+msgid "Play"
+msgstr "Spel"
+
+#: ../tenace.glade.h:74
+msgid "Options"
+msgstr "Val"
+
+#: ../tenace.glade.h:75
+msgid "Played cards  "
+msgstr "Spelte kort"
+
+#: ../tenace.glade.h:76
+msgid "Select File"
+msgstr "Vel fil"
+
+#: ../tenace.glade.h:77
+msgid "Show"
+msgstr "Syn"
+
+#: ../tenace.glade.h:78
+msgid "Text"
+msgstr "Tekst"
+
+#: ../tenace.glade.h:79
+msgid "Cards"
+msgstr "Kort"
+
+#: ../tenace.glade.h:80
+msgid "Show as "
+msgstr "Syn som"
+
+#: ../tenace.glade.h:81
+msgid "Filename"
+msgstr "Filnamn"
+
+#: ../tenace.glade.h:82
+msgid "Card width "
+msgstr "Kortbreidde"
+
+#: ../tenace.glade.h:83
+msgid "Card display"
+msgstr "Kortsyning"
+
+#: ../tenace.glade.h:84
+msgid "All"
+msgstr "Alle"
+
+#: ../tenace.glade.h:85
+msgid "North-South"
+msgstr "Nord-Sør"
+
+#: ../tenace.glade.h:86
+msgid "East-West"
+msgstr "Aust-Vest"
+
+#: ../tenace.glade.h:87
+msgid "None"
+msgstr "Ingen"
+
+#: ../tenace.glade.h:88
+msgid "Show DD scores  "
+msgstr "Syn DB-resultata"
+
+#: ../tenace.glade.h:89
+msgid "Show hands  "
+msgstr "Syn hendene"
+
+#: ../tenace.glade.h:90
+msgid "Hands"
+msgstr "Hender"
+
+#: ../tenace.glade.h:91
+msgid "Players  "
+msgstr "Spelarar"
+
+#: ../tenace.glade.h:92
+msgid "Title  "
+msgstr "Tittel"
+
+#: ../tenace.glade.h:93
+msgid "Current board"
+msgstr "Gjeldande bord"
+
+#: ../tenace.glade.h:94
+msgid "Board list"
+msgstr "Bordliste"
+
+#: ../tenace.glade.h:95
+msgid "deals"
+msgstr "spel"
+
+#: ../tenace.glade.h:96
+msgid "Generate"
+msgstr "Lag"
+
+#: ../tenace.glade.h:97
+msgid "(C) 2005-2016 Christoph Berg"
+msgstr "(C) 2005-2016 Christoph Berg"
+
+#: ../tenace.glade.h:98
+msgid "Bridge Hand Viewer and Editor"
+msgstr "Bridgehandsynar og -styrar"
+
+#: ../tenace.glade.h:99
+msgid "Homepage"
+msgstr "Heimesida"
+
+#: ../tenace.glade.h:100
+msgid ""
+"tenace - bridge hand viewer and editor\n"
+"Copyright (C) Christoph Berg <cb@df7cb.de>\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details."
+msgstr ""
+"tenace - bridge hand viewer and editor\n"
+"Copyright (C) Christoph Berg <cb@df7cb.de>\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details."
+
+#. TRANSLATORS: Replace this string with your names, one name per line.
+#: ../tenace.glade.h:113
+msgid "de: Christoph Berg <cb@df7cb.de>"
+msgstr "nn: Yngve Spjeld Landro <l10n@landro.net>"
+
+#: ../tenace.glade.h:114
+msgid "Text input"
+msgstr "Tekstinndata"
+
+#: ../tenace.glade.h:115
+msgid "Hand as string"
+msgstr "Handa som tekst"
+
+#: ../tenace.glade.h:116
+msgid "Set hand"
+msgstr "Lag handa"
+
+#. newly created board
+#: ../src/bridge.c:141 ../src/callbacks.c:501 ../src/window_board.c:674
+#, c-format
+msgid "Board %d"
+msgstr "Bord %d"
+
+#: ../src/bridge.c:341
+msgid "Card is not in your hand"
+msgstr "Kortet er ikkje på handa di"
+
+#: ../src/bridge.c:346
+msgid "Not your turn"
+msgstr "Det er ikkje din tur"
+
+#: ../src/bridge.c:356
+msgid "Please follow suit"
+msgstr "Følg farge"
+
+#: ../src/bridge.c:410
+msgid "Nothing to undo"
+msgstr "Ingenting å gjera om"
+
+#: ../src/bridge.c:456
+msgid "No cards left to play"
+msgstr "Ingen fleire kort å spela"
+
+#: ../src/bridge.c:460
+msgid "Which card should I play?"
+msgstr "Kva kort skal eg spela?"
+
+#: ../src/bridge.c:466
+#, c-format
+msgid "Declarer claims %d tricks"
+msgstr "Speleføraren krev %d stikk"
+
+#: ../src/bridge.c:471
+msgid "Card was already played"
+msgstr "Kortet var alleiereie spelt"
+
+#: ../src/bridge.c:475
+msgid "Card belongs to wrong player"
+msgstr "Kortet tilhøyrer feil spelar"
+
+#: ../src/bridge.c:512
+msgid "Bidding is over"
+msgstr "Meldingane er ferdige"
+
+#: ../src/bridge.c:518
+msgid "Invalid double"
+msgstr "Ugyldig dobling"
+
+#: ../src/bridge.c:524
+msgid "Invalid redouble"
+msgstr "Ugyldig redobling"
+
+#: ../src/bridge.c:529
+msgid "Insufficient bid"
+msgstr "For låg melding"
+
+#: ../src/callbacks.c:452 ../src/callbacks.c:479
+msgid "No board"
+msgstr "Ikkje noko bord"
+
+#: ../src/callbacks.c:495
+msgid "Cut buffer is empty"
+msgstr "Mellomlageret er tomt"
+
+#: ../src/callbacks.c:644
+msgid "No previous board"
+msgstr "Ikkje noko tidlegare bord"
+
+#: ../src/callbacks.c:660
+msgid "No next board"
+msgstr "Ingen fleire bord"
+
+#: ../src/file.c:35
+msgid "Bridge files"
+msgstr "Bridgefiler"
+
+#: ../src/file.c:40
+msgid "LIN files"
+msgstr "LIN-filer"
+
+#: ../src/file.c:44
+msgid "PBN files"
+msgstr "PBN-filer"
+
+#: ../src/file.c:48
+msgid "All files"
+msgstr "Alle filer"
+
+#: ../src/file.c:172
+msgid "Closed"
+msgstr "Lukka"
+
+#: ../src/file.c:173
+msgid "Open"
+msgstr "Open"
+
+#: ../src/file.c:173
+msgid "Board"
+msgstr "Bord"
+
+#: ../src/file.c:436
+#, c-format
+msgid "Error loading file '%s': %s"
+msgstr "Klarte ikkje å lasta fila '%s': %s"
+
+#: ../src/file.c:457
+msgid "Open File"
+msgstr "Opna fil"
+
+#: ../src/file.c:717 ../src/file.c:757
+#, c-format
+msgid "Error saving file '%s': %s"
+msgstr "Klarte ikkje å lagra '%s': %s"
+
+#: ../src/file.c:725
+msgid "Save File"
+msgstr "Lagra fila"
+
+#: ../src/file.c:735
+msgid "hand.lin"
+msgstr "hand.lin"
+
+#: ../src/functions.c:145 ../src/functions.c:202 ../src/functions.c:213
+#: ../src/window_bids.c:75
+#, c-format
+msgid "X"
+msgstr "X"
+
+#: ../src/functions.c:147 ../src/functions.c:202 ../src/functions.c:213
+#: ../src/window_bids.c:78
+#, c-format
+msgid "XX"
+msgstr "XX"
+
+#: ../src/functions.c:199 ../src/functions.c:210 ../src/window_bids.c:72
+msgid "PASS"
+msgstr "PASS"
+
+#. none vulnerable
+#: ../src/functions.c:223
+msgid "none"
+msgstr "ingen"
+
+#. EW vulnerable
+#. parscore for EW
+#: ../src/functions.c:226 ../src/solve.c:484
+msgid "EW"
+msgstr "AV"
+
+#. EW
+#. NS vulnerable
+#. parscore for NS
+#: ../src/functions.c:230 ../src/solve.c:477
+msgid "NS"
+msgstr "NS"
+
+#. all vulnerable
+#: ../src/functions.c:233
+msgid "all"
+msgstr "alle"
+
+#: ../src/main.c:74 ../src/print.c:405
+#, fuzzy, c-format
+msgid "Could not find interface definition file: %s\n"
+msgstr "Fann ikkje grensesnittdefinisjonsfila: %s"
+
+#: ../src/main.c:81 ../src/print.c:413
+#, c-format
+msgid "Could not load builder file: %s"
+msgstr "Klarte ikkje å lasta byggfila: %s"
+
+#: ../src/main.c:102
+msgid "Hint: tenace can only read files in .lin format"
+msgstr "Hint: tenace kan berre lesa filer i .lin-formatet"
+
+#: ../src/options.c:378
+msgid "#"
+msgstr "#"
+
+#: ../src/options.c:383
+msgid "Title"
+msgstr "Tittel"
+
+#: ../src/print.c:512
+msgid "Labels"
+msgstr "Merke"
+
+#. FIXME: do not call this every time
+#: ../src/solve.c:136
+msgid "Error: hands have different numbers of cards"
+msgstr "Feil: hendene har ulike tal kort"
+
+#. struct timeval tv1, tv2;
+#: ../src/solve.c:177 ../src/solve.c:329
+msgid "Thinking..."
+msgstr "Tenkjer …"
+
+#: ../src/solve.c:415
+msgid "Error: board must be fully dealt"
+msgstr "Feil: utdelinga må vera heilt ferdig"
+
+#. parscore is pass
+#: ../src/solve.c:464
+msgid "Par: PASS (0)\n"
+msgstr "Par: PASS (0)\n"
+
+#: ../src/solve.c:466
+#, c-format
+msgid "Par: %s %s (%+d)\n"
+msgstr "Par: %s %s (%+d)\n"
+
+#. North; translation should be a single letter
+#: ../src/solve.c:481 ../src/unused.c:8
+msgid "N"
+msgstr "N"
+
+#. South; translation should be a single letter
+#: ../src/solve.c:481 ../src/unused.c:12
+msgid "S"
+msgstr "S"
+
+#. East; translation should be a single letter
+#: ../src/solve.c:488 ../src/unused.c:10
+msgid "E"
+msgstr "A"
+
+#. West; translation should be a single letter
+#: ../src/solve.c:488 ../src/unused.c:6
+msgid "W"
+msgstr "V"
+
+#: ../src/window_bids.c:50
+#, c-format
+msgid "Contract set to %s"
+msgstr "Kontrakten er %s"
+
+#: ../src/window_bids.c:140
+msgid "Suit was already bid from wrong side"
+msgstr "Fargen er allereie meld frå feil side"
+
+#: ../src/window_board.c:145 ../src/window_board.c:209
+msgid "Dealer"
+msgstr "Gjevar"
+
+#: ../src/window_board.c:156
+msgid "*"
+msgstr "*"
+
+#: ../src/window_board.c:156
+msgid "!"
+msgstr "!"
+
+#: ../src/window_board.c:193
+#, c-format
+msgid " - %s vs. %s"
+msgstr " - %s vs. %s"
+
+#: ../src/window_board.c:210
+msgid "Vulnerable"
+msgstr "I sonen"
+
+#: ../src/window_board.c:430
+msgid "Card is in play and cannot be moved"
+msgstr "Kortet er spelt og kan ikkje flyttast"
+
+#: ../src/window_board.c:437
+msgid "Card is in play and cannot be exchanged"
+msgstr "Kortet er spelt og kan ikkje endrast"
+
+#: ../src/window_board.c:449 ../src/window_card.c:72 ../src/window_card.c:103
+msgid "Hand has already 13 cards"
+msgstr "Handa har allereie 13 kort"
+
+#: ../src/window_board.c:505
+msgid "(no explanation)"
+msgstr "(inga forklaring)"
+
+#: ../src/window_board.c:775
+msgid "Cannot change declarer while cards are in play"
+msgstr "Kan ikkje endra speleføraren når korta vert spelte"
+
+#: ../src/window_board.c:808
+msgid "Cannot change trumps while cards are in play"
+msgstr "Kan ikkje endra trumffargen når korta vert spelte"
+
+#: ../src/window_card.c:90
+msgid "All cards of that suit dealt"
+msgstr "Alle korta i fargen er delte ut"
+
+#: ../src/window_card.c:95 ../src/window_card.c:128
+msgid "Card is in play and cannot be removed"
+msgstr "Kortet er spelt og kan ikkje fjernast"
+
+#: ../src/window_line_entry.c:33
+msgid "Parse error"
+msgstr "Lesefeil"
+
+#: ../src/window_misc.c:57
+#, c-format
+msgid ""
+"\n"
+"DDS version: %d.%d.%d"
+msgstr ""
+"\n"
+"DDS-utgåve: %d.%d.%d"
+
+#: ../src/window_play.c:46
+msgid "CL"
+msgstr "CL"
+
+#: ../src/unused.c:14
+msgid "NT"
+msgstr "NT"
+
+#. Spades; translation should be a single letter
+#: ../src/unused.c:16
+msgid "Sp"
+msgstr "S"
+
+#. Hearts; translation should be a single letter
+#: ../src/unused.c:18
+msgid "He"
+msgstr "H"
+
+#. Diamonds; translation should be a single letter
+#: ../src/unused.c:20
+msgid "Di"
+msgstr "D"
+
+#. Clubs; translation should be a single letter
+#: ../src/unused.c:22
+msgid "Cl"
+msgstr "C"
