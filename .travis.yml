@@ -9,5 +9,6 @@ compiler:
 script:
   - ./autogen.sh
   - make
+  - make distcheck
 
 # vim:sw=2:
