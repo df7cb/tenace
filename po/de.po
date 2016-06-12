@@ -606,7 +606,7 @@ msgid "all"
 msgstr "alle"
 
 #: ../src/main.c:74 ../src/print.c:405
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find interface definition file: %s\n"
 msgstr "Konnte Interface-Definitionsdatei nicht finden: %s"
 
