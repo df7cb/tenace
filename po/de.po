@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tenace 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-07 20:11+0200\n"
+"POT-Creation-Date: 2016-06-12 15:03+0200\n"
 "PO-Revision-Date: 2013-10-07 20:14+0200\n"
 "Last-Translator: Christoph Berg <cb@df7cb.de>\n"
 "Language-Team: Christoph Berg <cb@df7cb.de>\n"
@@ -239,7 +239,7 @@ msgstr "Nächsten Stich spielen"
 msgid "Par score"
 msgstr "Parscore"
 
-#: ../tenace.glade.h:58 ../src/window_board.c:268
+#: ../tenace.glade.h:58 ../src/window_board.c:267
 #, no-c-format
 msgid ""
 "NS: %d\n"
@@ -397,7 +397,7 @@ msgid "Generate"
 msgstr "Erzeugen"
 
 #: ../tenace.glade.h:97
-msgid "(C) 2005-2010 Christoph Berg"
+msgid "(C) 2005-2016 Christoph Berg"
 msgstr ""
 
 #: ../tenace.glade.h:98
@@ -441,77 +441,78 @@ msgstr "Hand als Text"
 msgid "Set hand"
 msgstr "Hand setzen"
 
-#: ../src/bridge.c:303
-msgid "Card is not in your hand"
-msgstr "Karte ist nicht in Ihrer Hand"
-
-#: ../src/bridge.c:308
-msgid "Not your turn"
-msgstr "Nicht Ihr Zug"
-
-#: ../src/bridge.c:318
-msgid "Please follow suit"
-msgstr "Bitte Farbe bekennen"
-
-#: ../src/bridge.c:372
-msgid "Nothing to undo"
-msgstr "Nichts zurück zu nehmen"
-
-#: ../src/bridge.c:418
-msgid "No cards left to play"
-msgstr "Keine weiteren Karten zu spielen"
-
-#: ../src/bridge.c:422
-msgid "Which card should I play?"
-msgstr "Welche Karte soll ich spielen?"
-
-#: ../src/bridge.c:428
-#, c-format
-msgid "Declarer claims %d tricks"
-msgstr "Alleinspieler claimt %d Stiche"
-
-#: ../src/bridge.c:433
-msgid "Card was already played"
-msgstr "Karte wurde schon gespielt"
-
-#: ../src/bridge.c:437
-msgid "Card belongs to wrong player"
-msgstr "Karte gehört falschem Spieler"
-
-#: ../src/bridge.c:474
-msgid "Bidding is over"
-msgstr "Reizung ist zu Ende"
-
-#: ../src/bridge.c:480
-msgid "Invalid double"
-msgstr "Ungültiges Kontra"
-
-#: ../src/bridge.c:486
-msgid "Invalid redouble"
-msgstr "Ungültiges Rekontra"
-
-#: ../src/bridge.c:491
-msgid "Insufficient bid"
-msgstr "Ungenügendes Gebot"
-
-#: ../src/callbacks.c:450 ../src/callbacks.c:476
-msgid "No board"
-msgstr "Kein Board"
-
-#: ../src/callbacks.c:492
-msgid "Cut buffer is empty"
-msgstr "Zwischenablage ist leer"
-
-#: ../src/callbacks.c:498 ../src/window_board.c:675
+#. newly created board
+#: ../src/bridge.c:141 ../src/callbacks.c:501 ../src/window_board.c:674
 #, c-format
 msgid "Board %d"
 msgstr ""
 
-#: ../src/callbacks.c:641
+#: ../src/bridge.c:341
+msgid "Card is not in your hand"
+msgstr "Karte ist nicht in Ihrer Hand"
+
+#: ../src/bridge.c:346
+msgid "Not your turn"
+msgstr "Nicht Ihr Zug"
+
+#: ../src/bridge.c:356
+msgid "Please follow suit"
+msgstr "Bitte Farbe bekennen"
+
+#: ../src/bridge.c:410
+msgid "Nothing to undo"
+msgstr "Nichts zurück zu nehmen"
+
+#: ../src/bridge.c:456
+msgid "No cards left to play"
+msgstr "Keine weiteren Karten zu spielen"
+
+#: ../src/bridge.c:460
+msgid "Which card should I play?"
+msgstr "Welche Karte soll ich spielen?"
+
+#: ../src/bridge.c:466
+#, c-format
+msgid "Declarer claims %d tricks"
+msgstr "Alleinspieler claimt %d Stiche"
+
+#: ../src/bridge.c:471
+msgid "Card was already played"
+msgstr "Karte wurde schon gespielt"
+
+#: ../src/bridge.c:475
+msgid "Card belongs to wrong player"
+msgstr "Karte gehört falschem Spieler"
+
+#: ../src/bridge.c:512
+msgid "Bidding is over"
+msgstr "Reizung ist zu Ende"
+
+#: ../src/bridge.c:518
+msgid "Invalid double"
+msgstr "Ungültiges Kontra"
+
+#: ../src/bridge.c:524
+msgid "Invalid redouble"
+msgstr "Ungültiges Rekontra"
+
+#: ../src/bridge.c:529
+msgid "Insufficient bid"
+msgstr "Ungenügendes Gebot"
+
+#: ../src/callbacks.c:452 ../src/callbacks.c:479
+msgid "No board"
+msgstr "Kein Board"
+
+#: ../src/callbacks.c:495
+msgid "Cut buffer is empty"
+msgstr "Zwischenablage ist leer"
+
+#: ../src/callbacks.c:644
 msgid "No previous board"
 msgstr "Kein vorheriges Board"
 
-#: ../src/callbacks.c:657
+#: ../src/callbacks.c:660
 msgid "No next board"
 msgstr "Kein nächstes Board"
 
@@ -588,14 +589,14 @@ msgstr "keiner"
 
 #. EW vulnerable
 #. parscore for EW
-#: ../src/functions.c:226 ../src/solve.c:482
+#: ../src/functions.c:226 ../src/solve.c:484
 msgid "EW"
 msgstr "OW"
 
 #. EW
 #. NS vulnerable
 #. parscore for NS
-#: ../src/functions.c:230 ../src/solve.c:475
+#: ../src/functions.c:230 ../src/solve.c:477
 msgid "NS"
 msgstr ""
 
@@ -604,12 +605,12 @@ msgstr ""
 msgid "all"
 msgstr "alle"
 
-#: ../src/main.c:74 ../src/print.c:412
-#, c-format
-msgid "Could not find interface definition file: %s"
+#: ../src/main.c:74 ../src/print.c:405
+#, fuzzy, c-format
+msgid "Could not find interface definition file: %s\n"
 msgstr "Konnte Interface-Definitionsdatei nicht finden: %s"
 
-#: ../src/main.c:81 ../src/print.c:420
+#: ../src/main.c:81 ../src/print.c:413
 #, c-format
 msgid "Could not load builder file: %s"
 msgstr "Konnte Builder-Datei nicht finden: %s"
@@ -626,7 +627,7 @@ msgstr ""
 msgid "Title"
 msgstr "Titel"
 
-#: ../src/print.c:519
+#: ../src/print.c:512
 msgid "Labels"
 msgstr "Etiketten"
 
@@ -636,41 +637,41 @@ msgid "Error: hands have different numbers of cards"
 msgstr "Fehler: Hände haben unterschiedlich viele Karten"
 
 #. struct timeval tv1, tv2;
-#: ../src/solve.c:175 ../src/solve.c:327
+#: ../src/solve.c:177 ../src/solve.c:329
 msgid "Thinking..."
 msgstr "Denke..."
 
-#: ../src/solve.c:413
+#: ../src/solve.c:415
 msgid "Error: board must be fully dealt"
 msgstr "Fehler: Board muss vollständig geteilt sein"
 
 #. parscore is pass
-#: ../src/solve.c:462
+#: ../src/solve.c:464
 msgid "Par: PASS (0)\n"
 msgstr ""
 
-#: ../src/solve.c:464
+#: ../src/solve.c:466
 #, c-format
 msgid "Par: %s %s (%+d)\n"
 msgstr ""
 
 #. North; translation should be a single letter
-#: ../src/solve.c:479 ../src/unused.c:8
+#: ../src/solve.c:481 ../src/unused.c:8
 msgid "N"
 msgstr ""
 
 #. South; translation should be a single letter
-#: ../src/solve.c:479 ../src/unused.c:12
+#: ../src/solve.c:481 ../src/unused.c:12
 msgid "S"
 msgstr ""
 
 #. East; translation should be a single letter
-#: ../src/solve.c:486 ../src/unused.c:10
+#: ../src/solve.c:488 ../src/unused.c:10
 msgid "E"
 msgstr "O"
 
 #. West; translation should be a single letter
-#: ../src/solve.c:486 ../src/unused.c:6
+#: ../src/solve.c:488 ../src/unused.c:6
 msgid "W"
 msgstr ""
 
@@ -683,48 +684,48 @@ msgstr "Kontrakt auf %s gesetzt"
 msgid "Suit was already bid from wrong side"
 msgstr "Farbe wurde schon von der falschen Seite geboten"
 
-#: ../src/window_board.c:146 ../src/window_board.c:210
+#: ../src/window_board.c:145 ../src/window_board.c:209
 msgid "Dealer"
 msgstr "Teiler"
 
-#: ../src/window_board.c:157
+#: ../src/window_board.c:156
 msgid "*"
 msgstr ""
 
-#: ../src/window_board.c:157
+#: ../src/window_board.c:156
 msgid "!"
 msgstr ""
 
-#: ../src/window_board.c:194
+#: ../src/window_board.c:193
 #, c-format
 msgid " - %s vs. %s"
 msgstr " - %s gegen %s"
 
-#: ../src/window_board.c:211
+#: ../src/window_board.c:210
 msgid "Vulnerable"
 msgstr "Gefahr"
 
-#: ../src/window_board.c:431
+#: ../src/window_board.c:430
 msgid "Card is in play and cannot be moved"
 msgstr "Karte ist im Spiel und kann nicht bewegt werden"
 
-#: ../src/window_board.c:438
+#: ../src/window_board.c:437
 msgid "Card is in play and cannot be exchanged"
 msgstr "Karte ist im Spiel und kann nicht ausgetauscht werden"
 
-#: ../src/window_board.c:450 ../src/window_card.c:72 ../src/window_card.c:103
+#: ../src/window_board.c:449 ../src/window_card.c:72 ../src/window_card.c:103
 msgid "Hand has already 13 cards"
 msgstr "Hand hat schon 13 Karten"
 
-#: ../src/window_board.c:506
+#: ../src/window_board.c:505
 msgid "(no explanation)"
 msgstr "(keine Erklärung)"
 
-#: ../src/window_board.c:770
+#: ../src/window_board.c:775
 msgid "Cannot change declarer while cards are in play"
 msgstr "Kann Alleinspieler nicht ändern wenn Karten im Spiel sind"
 
-#: ../src/window_board.c:803
+#: ../src/window_board.c:808
 msgid "Cannot change trumps while cards are in play"
 msgstr "Kann Trumpf nicht ändern wenn Karten im Spiel sind"
 
