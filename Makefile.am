@@ -3,7 +3,7 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = contrib dds doc examples handdisplay lib src po
 
-dist_pkgdata_DATA = tenace.ui tenace.glade magic.ui
+dist_pkgdata_DATA = tenace.desktop tenace.png tenace.ui tenace.glade magic.ui
 
 EXTRA_DIST = autogen.sh m4/gnulib-cache.m4 m4/gnulib-tool.m4
 

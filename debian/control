@@ -2,11 +2,11 @@ Source: tenace
 Section: games
 Priority: extra
 Maintainer: Christoph Berg <myon@debian.org>
-Build-Depends: debhelper (>> 7), libgtk2.0-dev, libdds-dev (>= 2.1.1), intltool
-Standards-Version: 3.9.4
-XS-Vcs-Browser: http://git.debian.org/?p=collab-maint/tenace.git
-XS-Vcs-Git: git://git.debian.org/collab-maint/tenace.git
-Homepage: http://www.df7cb.de/bridge/tenace/
+Build-Depends: debhelper (>> 9), libgtk2.0-dev, libdds-dev (>= 2.1.1), intltool
+Standards-Version: 3.9.8
+Vcs-Browser: https://github.com/ChristophBerg/tenace
+Vcs-Git: https://github.com/ChristophBerg/tenace.git
+Homepage: https://www.df7cb.de/bridge/tenace/
 
 Package: tenace
 Architecture: any

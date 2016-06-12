@@ -1,3 +1,10 @@
+tenace (0.14) upstream; urgency=medium
+
+  * Various minor build system and gtk compatibility tweaks.
+  * Add desktop menu and icon.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 12 Jun 2016 15:40:13 +0200
+
 tenace (0.13) upstream; urgency=low
 
   * Support reading compressed svg files (.svgz).
