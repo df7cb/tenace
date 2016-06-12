@@ -621,9 +621,9 @@ msgid "all"
 msgstr "alle"
 
 #: ../src/main.c:74 ../src/print.c:405
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find interface definition file: %s\n"
-msgstr "Fann ikkje grensesnittdefinisjonsfila: %s"
+msgstr "Fann ikkje grensesnittdefinisjonsfila: %s\n"
 
 #: ../src/main.c:81 ../src/print.c:413
 #, c-format
