@@ -6,10 +6,6 @@ set -ex
 test -d lib || mkdir lib
 
 gnulib-tool --update
+autoreconf --force --install --verbose --warnings=all "$srcdir"
 intltoolize --copy --force --automake
-libtoolize --force --copy
-aclocal -I m4
-autoheader
-automake --add-missing --copy --foreign
-autoreconf
 ./configure "$@"

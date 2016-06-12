@@ -1,5 +1,9 @@
 # List of source files containing translatable strings.
 
+# the file is actually called tenace.ui, but I haven't yet figured out how to
+# make gettext/intltool-update actually extract strings from it. tenace.glade
+# is a symlink and makes things mostly work (though there seems to be a problem
+# with menu items containing _underscores.)
 tenace.glade
 
 src/bridge.c
