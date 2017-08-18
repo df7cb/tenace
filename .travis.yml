@@ -1,14 +1,20 @@
+dist: trusty
+sudo: required
+language: C
+compiler:
+  - gcc
+  #- clang
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get build-dep tenace
   - sudo apt-get install -y gnulib
-language: c
-compiler:
-  - gcc
-  #- clang
 script:
   - ./autogen.sh
   - make
   - make distcheck
+  - TAR=$(ls *.tar.*); TAR2=${TAR/-/_}; mv $TAR ../${TAR2/tar/orig.tar}
+  - dpkg-buildpackage -uc -us
+  - sudo apt-get install gnome-cards-data librsvg2-common
+  - sudo dpkg -i ../tenace_*.deb
 
 # vim:sw=2:
