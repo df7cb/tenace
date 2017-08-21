@@ -6,8 +6,7 @@ compiler:
   #- clang
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get build-dep tenace
-  - sudo apt-get install -y gnulib
+  - sudo apt-get install -y debhelper libgtk2.0-dev libdds-dev intltool gnulib fakeroot
 script:
   - ./autogen.sh
   - make
