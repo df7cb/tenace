@@ -2,7 +2,7 @@ tenace (0.15) upstream; urgency=medium
 
   * Adapt glib-genmarshal call to new syntax.
 
- -- Christoph Berg <myon@debian.org>  Thu, 17 Aug 2017 21:18:09 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 21 Aug 2017 20:04:11 +0200
 
 tenace (0.14) upstream; urgency=medium
 
