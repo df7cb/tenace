@@ -1,1 +1,10 @@
 extend-diff-ignore = tenace.glade
+extend-diff-ignore = m4/*
+extend-diff-ignore = po/Makevars.template
+extend-diff-ignore = po/Rules-quot
+extend-diff-ignore = po/boldquot.sed
+extend-diff-ignore = po/en@boldquot.header
+extend-diff-ignore = po/en@quot.header
+extend-diff-ignore = po/insert-header.sin
+extend-diff-ignore = po/quot.sed
+extend-diff-ignore = po/remove-potcdate.sin
