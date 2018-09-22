@@ -1,6 +1,6 @@
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2013 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2018 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,13 +15,12 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <dds.h>
+#include <dds/dll.h>
 #include <stdlib.h> /* system */
 #include <sys/time.h> /* gettimeofday */
 
 /* gnulib */
 #include "../lib/nproc.h"
-#include "../lib/physmem.h"
 
 #include "bridge.h"
 #include "file.h" /* board_format_line */
@@ -33,14 +32,10 @@ void init_solve()
 #if DDS_VERSION < 20101
 #error "DDS minimum version required is 2.1.1"
 #endif
-	/* get RAM size in GB */
-	int physmem = round (physmem_total () / 1000000000.0);
-	if (!physmem)
-		physmem = 1;
 	/* cores to use */
 	int nproc = num_processors (NPROC_CURRENT_OVERRIDABLE);
-	g_debug ("Using %d GB RAM, %d cores\n", physmem, nproc);
-	InitStart(physmem, nproc);
+	g_debug ("Using %d cores\n", nproc);
+	SetMaxThreads(nproc);
 }
 
 static const char *dds_error[] = {

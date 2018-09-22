@@ -14,11 +14,7 @@ gl_EARLY
 AM_PROG_LIBTOOL
 AM_PROG_CC_STDC
 AC_HEADER_STDC
-AC_CHECK_LIB([dds], [SolveBoard], [havelibdds=yes],
-	     [echo Using internal dds library
-	      CFLAGS="$CFLAGS -I../dds"
-	      LDFLAGS="$LDFLAGS -L../dds"], [-lgomp])
-AM_CONDITIONAL(HAVE_LIBDDS, [test x$havelibdds = xyes])
+AC_SEARCH_LIBS([SolveBoard], [dds], [], [AC_MSG_ERROR([Unable to find dds library])])
 
 pkg_modules="gtk+-2.0 >= 2.0.0"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
@@ -42,7 +38,6 @@ gl_INIT
 AC_CONFIG_FILES([
 Makefile
 contrib/Makefile
-dds/Makefile
 doc/Makefile
 examples/Makefile
 handdisplay/Makefile

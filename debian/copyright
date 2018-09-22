@@ -6,7 +6,7 @@ Upstream website: http://www.df7cb.de/bridge/tenace/
 License and copyright:
 /*
  *  tenace - bridge hand viewer and editor
- *  Copyright (C) 2005-2009 Christoph Berg <cb@df7cb.de>
+ *  Copyright (C) 2005-2018 Christoph Berg <cb@df7cb.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,15 +24,3 @@ found in the file /usr/share/common-licenses/GPL.
 
 The shipped bonded.svg file has been copied from gnome-cards-data and has been
 around for at least 10 years, author unknown. It is also GPL-licensed.
-
-The dds/ directory contains a copy of the double dummy solver library:
-(Not used for Debian builds.)
-
-/* DDS 1.1.9   A bridge double dummy solver.                                  */
-/* Copyright (C) 2006-2008 by Bo Haglund                                      */
-/* Cleanups and porting to Linux and MacOSX (C) 2006 by Alex Martelli         */
-/*                                                                            */
-/* This program is free software; you can redistribute it and/or              */
-/* modify it under the terms of the GNU General Public License                */
-/* as published by the Free software Foundation; either version 2             */
-/* of the License, or (at your option) any later version.                     */
