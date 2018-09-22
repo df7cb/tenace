@@ -1,6 +1,0 @@
-skip-dll-build
-dds.cpp-autoconfig
-dds.cpp-fixes
-dds.cpp-openmp
-dll.h-__int64
-dll.h-extern_c
