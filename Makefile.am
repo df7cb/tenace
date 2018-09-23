@@ -3,7 +3,10 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = contrib doc examples handdisplay lib src po
 
-dist_pkgdata_DATA = tenace.desktop tenace.png tenace.ui tenace.glade magic.ui
+dist_pkgdata_DATA = tenace.desktop tenace.png tenace.ui tenace.glade magic.ui \
+		    screenshots/board_cards.png \
+		    screenshots/board_editor.png \
+		    screenshots/board_text.png
 
 EXTRA_DIST = \
 	     README.md \

@@ -1,10 +1,10 @@
-tenace (0.16-1) UNRELEASED; urgency=medium
+tenace (0.16-1) unstable; urgency=medium
 
   * New upstream version.
     + Update to dds 2.9.0, remove our dds copy, remove gnulib physmem module.
     + Fix handling of board numbers in menu callback. Closes: #879455.
 
- -- Christoph Berg <myon@debian.org>  Sat, 22 Sep 2018 22:35:05 +0200
+ -- Christoph Berg <myon@debian.org>  Sun, 23 Sep 2018 15:04:05 +0200
 
 tenace (0.15-1) unstable; urgency=medium
 
