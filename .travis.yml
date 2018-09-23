@@ -6,14 +6,17 @@ compiler:
   #- clang
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y debhelper libgtk2.0-dev libdds-dev intltool gnulib fakeroot
+  - sudo apt-get install -y libboost-thread-dev
+  - sudo apt-get install -y libgtk2.0-dev libdds-dev intltool gnulib
 script:
+  - test -d dds/.git || git clone https://github.com/dds-bridge/dds.git
+  - ( cd dds && git pull )
+  - make -C dds/src -f Makefiles/Makefile_linux_shared
+  - sed -i -e 's/bool/int/' dds/include/dll.h # missing <stdbool.h>
+  - sudo install -m644 dds/src/libdds.so /usr/lib/libdds.so
+  - sudo install -m644 -D dds/include/dll.h /usr/include/dds/dll.h
   - ./autogen.sh
   - make
   - make distcheck
-  - TAR=$(ls *.tar.*); TAR2=${TAR/-/_}; mv $TAR ../${TAR2/tar/orig.tar}
-  - dpkg-buildpackage -uc -us
-  - sudo apt-get install gnome-cards-data librsvg2-common
-  - sudo dpkg -i ../tenace_*.deb
 
 # vim:sw=2:
