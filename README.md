@@ -5,6 +5,21 @@ Tenace is a Bridge hand viewer and editor.
 
 * https://www.df7cb.de/bridge/tenace/
 
+Screen Shots
+------------
+
+Main window
+
+![Tenace main window](screenshots/board_cards.png)
+
+Main window with textual cards
+
+![Main window with textual cards](screenshots/board_text.png)
+
+Board editor
+
+![Board editor](screenshots/board_editor.png)
+
 Requirements
 ------------
 
