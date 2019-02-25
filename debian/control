@@ -3,7 +3,7 @@ Section: games
 Priority: optional
 Maintainer: Christoph Berg <myon@debian.org>
 Build-Depends: debhelper (>> 11), libgtk2.0-dev, libdds-dev (>= 2.9), intltool
-Standards-Version: 4.2.0
+Standards-Version: 4.3.0
 Vcs-Browser: https://github.com/ChristophBerg/tenace
 Vcs-Git: https://github.com/ChristophBerg/tenace.git
 Homepage: https://www.df7cb.de/bridge/tenace/
