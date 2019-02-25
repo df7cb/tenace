@@ -4,7 +4,7 @@ D=$(CURDIR)/debian/tenace
 
 configure: configure-stamp
 configure-stamp:
-	./configure --prefix=/usr --bindir=/usr/games
+	dh_auto_configure -- --bindir=/usr/games
 	touch $@
 
 build-indep:
