@@ -1,29 +1,13 @@
 #!/usr/bin/make -f
 
-D=$(CURDIR)/debian/tenace
+override_dh_autoreconf:
 
-configure: configure-stamp
-configure-stamp:
+override_dh_auto_configure:
 	dh_auto_configure -- --bindir=/usr/games
-	touch $@
 
-build-indep:
-build build-arch: build-stamp
-build-stamp: configure-stamp
-	$(MAKE)
-	touch $@
+override_dh_auto_install:
+	dh_auto_install
+	install -m644 -D contrib/mailcap debian/tenace/usr/lib/mime/packages/tenace
 
-install: build-stamp
-	dh_prep
-	$(MAKE) install DESTDIR=$D
-	install -m644 -D contrib/mailcap $D/usr/lib/mime/packages/tenace
-
-binary-indep:
-binary binary-arch: install
+%:
 	dh $@
-
-clean:
-	dh_auto_clean
-	dh_clean build-stamp configure-stamp
-
-.PHONY: build build-indep build-arch clean binary binary-indep binary-arch install configure
