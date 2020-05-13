@@ -1,7 +1,17 @@
+tenace (0.16-3) UNRELEASED; urgency=medium
+
+  * Wrap long lines in changelog entries: 0.16-2.
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+  * Update standards version to 4.5.0, no changes needed.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Tue, 05 May 2020 09:36:31 +0000
+
 tenace (0.16-2) unstable; urgency=medium
 
   [ Helmut Grohne ]
-  * Fix FTCBFS: Let dh_auto_configure pass --host to ./configure. (Closes: #923147)
+  * Fix FTCBFS: Let dh_auto_configure pass --host to ./configure.
+    (Closes: #923147)
 
   [ Christoph Berg ]
   * Simplify debian/rules. (Don't run dh_autoreconf, doesn't work yet.)
