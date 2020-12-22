@@ -1,6 +1,9 @@
 dist: xenial
 sudo: required
 language: C
+arch:
+  - amd64
+  - ppc64le
 compiler:
   - gcc
   #- clang
