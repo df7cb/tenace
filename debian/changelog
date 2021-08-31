@@ -1,9 +1,13 @@
 tenace (0.16-3) UNRELEASED; urgency=medium
 
+  [ Debian Janitor ]
   * Wrap long lines in changelog entries: 0.16-2.
   * Bump debhelper from old 11 to 12.
   * Set debhelper-compat version in Build-Depends.
   * Update standards version to 4.5.0, no changes needed.
+
+  [ Christoph Berg ]
+  * Update package URLs.
 
  -- Debian Janitor <janitor@jelmer.uk>  Tue, 05 May 2020 09:36:31 +0000
 

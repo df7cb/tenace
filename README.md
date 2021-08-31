@@ -74,7 +74,7 @@ Development
 
 The Tenace source code is maintained on GitHub:
 
-* https://github.com/ChristophBerg/tenace
+* https://github.com/df7cb/tenace
 
 Feedback and Bugs
 -----------------
