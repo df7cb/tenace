@@ -4,6 +4,7 @@ aclocal.m4
 autom4te.cache/
 config/
 configure
+configure~
 config.*
 lib/
 libtool
@@ -14,6 +15,7 @@ po/POTFILES
 po/*.gmo
 po/stamp-it
 po/Makefile.in.in
+po/Makefile.in.in~
 po/Makevars.template
 po/Rules-quot
 po/boldquot.sed

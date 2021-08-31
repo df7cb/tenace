@@ -1,4 +1,4 @@
-tenace (0.16-3) UNRELEASED; urgency=medium
+tenace (0.17-1) unstable; urgency=medium
 
   [ Debian Janitor ]
   * Wrap long lines in changelog entries: 0.16-2.
@@ -9,7 +9,7 @@ tenace (0.16-3) UNRELEASED; urgency=medium
   [ Christoph Berg ]
   * Update package URLs.
 
- -- Debian Janitor <janitor@jelmer.uk>  Tue, 05 May 2020 09:36:31 +0000
+ -- Christoph Berg <myon@debian.org>  Tue, 31 Aug 2021 17:00:32 +0200
 
 tenace (0.16-2) unstable; urgency=medium
 

@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(tenace, 0.16, [cb@df7cb.de])
+AC_INIT(tenace, 0.17, [cb@df7cb.de])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AM_CONFIG_HEADER(config.h)
