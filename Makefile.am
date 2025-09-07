@@ -8,10 +8,7 @@ dist_pkgdata_DATA = tenace.desktop tenace.png tenace.ui tenace.glade magic.ui \
 		    screenshots/board_editor.png \
 		    screenshots/board_text.png
 
-EXTRA_DIST = \
-	     README.md \
-	     autogen.sh \
-	     .travis.yml
+EXTRA_DIST = README.md
 
 install-data-local:
 	@$(NORMAL_INSTALL)
