@@ -24,6 +24,7 @@ po/en@quot.header
 po/insert-header.sin
 po/quot.sed
 po/remove-potcdate.sin
+po/tenace.pot
 src/.deps
 stamp-h1
 intltool-*
