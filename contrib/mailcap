@@ -1,1 +1,1 @@
-application/bbolin; tenace '%s'; test=test -n "$DISPLAY"
+application/bbolin; tenace %s; test=test -n "$DISPLAY"
