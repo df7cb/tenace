@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
-override_dh_autoreconf:
+execute_before_dh_autoreconf:
+	gnulib-tool --update
 
 override_dh_auto_configure:
 	dh_auto_configure -- --bindir=/usr/games
