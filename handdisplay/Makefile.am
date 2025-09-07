@@ -7,7 +7,7 @@ EXTRA_DIST = hand_display.c hand_display.h int_int_marshal.def
 all: hand_display.o
 
 hand_display.o: hand_display.c hand_display.h int_int_marshal.h
-	$(CC) $(CFLAGS) -I. -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -I. -c -o $@ $<
 
 int_int_marshal.h: int_int_marshal.def
 	glib-genmarshal --header $< > $@
