@@ -3,6 +3,7 @@ tenace (0.18-1) unstable; urgency=medium
   * Fix board_window_init prototype. (Closes: #1097982)
   * Remove quotes from mailcap file. (Closes: #987416)
   * Run gnulib-tool and autoreconf at build time.
+  * Pull tarball from github tags.
 
  -- Christoph Berg <myon@debian.org>  Sun, 07 Sep 2025 17:06:43 +0000
 

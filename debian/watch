@@ -1,2 +1,2 @@
-version=3
-http://www.df7cb.de/bridge/tenace/source/tenace-(.*).tar.gz
+version=4
+https://github.com/df7cb/tenace/tags .*/v@ANY_VERSION@@ARCHIVE_EXT@
