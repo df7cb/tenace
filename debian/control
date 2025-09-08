@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Christoph Berg <myon@debian.org>
 Build-Depends:
  debhelper-compat (= 13),
+ gnulib,
  intltool,
  libdds-dev (>= 2.9),
  libgtk2.0-dev,

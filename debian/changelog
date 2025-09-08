@@ -1,3 +1,9 @@
+tenace (0.18-2) unstable; urgency=medium
+
+  * Add missing gnulib B-D.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 08 Sep 2025 10:51:36 +0000
+
 tenace (0.18-1) unstable; urgency=medium
 
   * Fix board_window_init prototype. (Closes: #1097982)
