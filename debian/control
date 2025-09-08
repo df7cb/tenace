@@ -2,7 +2,11 @@ Source: tenace
 Section: games
 Priority: optional
 Maintainer: Christoph Berg <myon@debian.org>
-Build-Depends: debhelper-compat (= 13), libgtk2.0-dev, libdds-dev (>= 2.9), intltool
+Build-Depends:
+ debhelper-compat (= 13),
+ intltool,
+ libdds-dev (>= 2.9),
+ libgtk2.0-dev,
 Standards-Version: 4.6.0
 Vcs-Browser: https://github.com/df7cb/tenace
 Vcs-Git: https://github.com/df7cb/tenace.git
@@ -10,7 +14,11 @@ Homepage: https://www.df7cb.de/bridge/tenace/
 
 Package: tenace
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, gnome-cards-data, librsvg2-common
+Depends:
+ gnome-cards-data,
+ librsvg2-common,
+ ${misc:Depends},
+ ${shlibs:Depends},
 Description: Bridge hand viewer and editor
  Tenace is a Bridge hand viewer and editor. Hand records are read using
  BBO's .lin format. The board editor allows one to easily move cards around to
