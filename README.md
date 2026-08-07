@@ -24,11 +24,8 @@ Requirements
 ------------
 
 Tenace was written on Debian GNU/Linux, but should run on any platform
-that features GTK+. Recommended minimum version is 2.12 due to the usage of
-GtkTooltip. Tenace will still compile with older versions, but some features
-will be disabled, notably the recently-used boards menu and tooltip popups for
-alert explanations. To render images of cards, librsvg is used (other image
-formats to display cards work as well). The GUI is rendered using libglade.
+that features GTK+ 3. To render images of cards, librsvg is used (other image
+formats to display cards work as well). The GUI is rendered using GtkBuilder.
 
 * http://www.gtk.org/
 * http://library.gnome.org/devel/rsvg/

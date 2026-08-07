@@ -52,7 +52,6 @@ main (int argc, char *argv[])
   textdomain (GETTEXT_PACKAGE);
 #endif
 
-  gtk_set_locale ();
   gtk_init (&argc, &argv);
 
   init_solve();
@@ -62,7 +61,7 @@ main (int argc, char *argv[])
   char *xml_file = NULL;
 
   int i;
-  for (i = 0; i < sizeof (xml_files); i++) {
+  for (i = 0; i < G_N_ELEMENTS (xml_files); i++) {
 	  struct stat buf;
 	  if (stat (xml_files[i], &buf) != -1) {
 		  xml_file = xml_files[i];

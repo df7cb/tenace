@@ -72,7 +72,7 @@ typedef struct _HandDisplayClass       HandDisplayClass;
 
 struct _HandDisplay
 {
-	GtkDrawingArea parent;
+	GtkWidget parent;
 	int mode;
 	int style;
 	int want_width;
@@ -96,7 +96,7 @@ struct _HandDisplay
 
 struct _HandDisplayClass
 {
-       GtkDrawingAreaClass parent_class;
+       GtkWidgetClass parent_class;
 };
 
 GType hand_display_get_type (void);

@@ -53,8 +53,8 @@ static char *svg_files[] = {
 window_board_t *win; // FIXME static?
 int protect = 0;
 
-static GdkColor bidding_non_vuln = { 0, 0.8*65535, 0.8*65535, 0.8*65535 };
-static GdkColor bidding_vuln = { 0, 0.8*65535, 0, 0 };
+static GdkRGBA bidding_non_vuln = { 0.8, 0.8, 0.8, 1.0 };
+static GdkRGBA bidding_vuln = { 0.8, 0.0, 0.0, 1.0 };
 
 static void
 board_menu_select (GtkWidget *menuitem, int *n)
@@ -75,7 +75,7 @@ static void
 board_window_rebuild_board_menu (window_board_t *win)
 {
 	if (gtk_menu_item_get_submenu (GTK_MENU_ITEM (win->board_menu)))
-		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (win->board_menu));
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (win->board_menu), NULL);
 
 	GtkWidget *submenu = gtk_menu_new ();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (win->board_menu), submenu);
@@ -131,9 +131,9 @@ bidding_update (window_board_t *win, board *b, int scroll)
 
 	int i;
 	for (i = 0; i < 2; i++) {
-		GdkColor *color = b->vuln[!i] ? &bidding_vuln : &bidding_non_vuln;
-		gtk_widget_modify_bg (win->bidding_header[i], GTK_STATE_NORMAL, color);
-		gtk_widget_modify_bg (win->bidding_header[i+2], GTK_STATE_NORMAL, color);
+		GdkRGBA *color = b->vuln[!i] ? &bidding_vuln : &bidding_non_vuln;
+		gtk_widget_override_background_color (win->bidding_header[i], GTK_STATE_FLAG_NORMAL, color);
+		gtk_widget_override_background_color (win->bidding_header[i+2], GTK_STATE_FLAG_NORMAL, color);
 	}
 	/*
 	for (i = 0; i < 4; i++) {
@@ -619,10 +619,6 @@ create_bidding_widget (window_board_t *win)
 	}
 
 	gtk_container_forall (GTK_CONTAINER (win->bidding), (GtkCallback) create_bidding_widget_cb, win);
-
-	GdkColormap *cmap = gdk_colormap_get_system ();
-	gdk_colormap_alloc_color (cmap, &bidding_non_vuln, FALSE, TRUE);
-	gdk_colormap_alloc_color (cmap, &bidding_vuln, FALSE, TRUE);
 }
 
 void board_window_set_style (window_board_t *win, int style, int card_width)
@@ -739,9 +735,8 @@ board_window_init (window_board_t *win)
 
 	win->cur = 0;
 
-	GdkColor bg = { 0, HAND_DISPLAY_TABLE_GDK_BG };
-	gdk_colormap_alloc_color (gdk_colormap_get_system (), &bg, FALSE, TRUE);
-	gtk_widget_modify_bg (win->window, GTK_STATE_NORMAL, &bg);
+	GdkRGBA bg = { HAND_DISPLAY_TABLE_BG, 1.0 };
+	gtk_widget_override_background_color (win->window, GTK_STATE_FLAG_NORMAL, &bg);
 
 	gtk_widget_show (win->window);
 }

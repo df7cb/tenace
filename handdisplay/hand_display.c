@@ -200,20 +200,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 		if (handdisp->style == HAND_DISPLAY_STYLE_CARDS) {
 			if (card_width != handdisp->want_width) { /* adjust window */
 				handdisp->want_width = card_width;
-				gdk_window_resize (gtk_widget_get_parent_window (hand),
-						card_width, card_height);
-
-				/* shaped drag icon
-				 * credits to Mirco "MacSlow" Mueller <macslow@bangang.de>
-				 * http://macslow.thepimp.net/?p=26 */
-				GdkBitmap *pShapeBitmap = (GdkBitmap*) gdk_pixmap_new (NULL, card_width, card_height, 1);
-				assert (pShapeBitmap);
-				cairo_t *pCairoContext = gdk_cairo_create (pShapeBitmap);
-				assert (cairo_status (pCairoContext) == CAIRO_STATUS_SUCCESS);
-				render_card (pCairoContext, 0, 0, handdisp->table_card[0], HAND_DISPLAY_CARD);
-				cairo_destroy (pCairoContext);
-				gdk_window_shape_combine_mask (gtk_widget_get_parent_window (hand), pShapeBitmap, 0, 0);
-				g_object_unref ((gpointer) pShapeBitmap);
+				gtk_widget_queue_resize (hand);
 			}
 			render_card (cr, 0, 0, handdisp->table_card[0], HAND_DISPLAY_CARD);
 			return;
@@ -248,7 +235,7 @@ draw (GtkWidget *hand, cairo_t *cr)
 
 		if (w + 2 != handdisp->want_width) { /* adjust window */
 			handdisp->want_width = w + 2;
-			gdk_window_resize (gtk_widget_get_parent_window (hand), w + 2, h + 2);
+			gtk_widget_queue_resize (hand);
 		}
 
 		return;
@@ -569,7 +556,7 @@ hand_display_motion (GtkWidget *hand, GdkEventMotion *event)
 			g_signal_emit_by_name (handdisp, "card-enter", card);
 		}
 	}
-	gdk_window_get_pointer(gtk_widget_get_window (hand), NULL, NULL, NULL); /* request more pointer hints */
+	gdk_window_get_device_position (gtk_widget_get_window (hand), event->device, NULL, NULL, NULL); /* request more pointer hints */
 	return FALSE;
 }
 
@@ -636,57 +623,35 @@ hand_display_realize (GtkWidget *widget)
 		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
 		GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK;
 	attributes.visual = gtk_widget_get_visual (widget);
-	attributes.colormap = gtk_widget_get_colormap (widget);
 
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 	GdkWindow *window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
 	gtk_widget_set_window (widget, window);
-	gtk_widget_style_attach (widget);
 
 	gdk_window_set_user_data (window, widget);
-
-	gtk_style_set_background (gtk_widget_get_style (widget), window, GTK_STATE_ACTIVE);
 }
 
 static gboolean
-hand_display_expose (GtkWidget *hand, GdkEventExpose *event)
+hand_display_draw_cb (GtkWidget *hand, cairo_t *cr)
 {
-	cairo_t *cr;
-
-	/* get a cairo_t */
-	cr = gdk_cairo_create (gtk_widget_get_window (hand));
-
-	/* set a clip region for the expose event */
-	cairo_rectangle (cr, event->area.x, event->area.y,
-			event->area.width, event->area.height);
-	cairo_clip (cr);
 	draw (hand, cr);
-	cairo_destroy (cr);
-
 	return FALSE;
 }
 
 static void
-hand_display_size_request (GtkWidget *hand, GtkRequisition *requisition)
+hand_display_get_preferred_width (GtkWidget *hand, gint *minimum_width,
+		gint *natural_width)
 {
 	HandDisplay *handdisp = HAND_DISPLAY(hand);
-	requisition->width = handdisp->want_width;
-	requisition->height = handdisp->mode != HAND_DISPLAY_MODE_CARD ? 90 : 10;
+	*minimum_width = *natural_width = handdisp->want_width;
 }
 
 static void
-hand_display_size_allocate (GtkWidget *hand, GtkAllocation *allocation)
+hand_display_get_preferred_height (GtkWidget *hand, gint *minimum_height,
+		gint *natural_height)
 {
-	g_return_if_fail (hand != NULL);
-	g_return_if_fail (IS_HAND_DISPLAY (hand));
-	g_return_if_fail (allocation != NULL);
-
-	gtk_widget_set_allocation (hand, allocation);
-	if (gtk_widget_get_realized (hand)) {
-		gdk_window_move_resize (gtk_widget_get_window (hand),
-				allocation->x, allocation->y,
-				allocation->width, allocation->height);
-	}
+	HandDisplay *handdisp = HAND_DISPLAY(hand);
+	*minimum_height = *natural_height = handdisp->mode != HAND_DISPLAY_MODE_CARD ? 90 : 10;
 }
 
 /* drag-and-drop interface */
@@ -828,22 +793,20 @@ setup_dnd (HandDisplay *handdisp)
 		GDK_ACTION_COPY
 	);
 
-	g_signal_connect (GTK_OBJECT(hand), "drag-begin",
-			GTK_SIGNAL_FUNC(hand_display_drag_begin), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag-leave",
-			GTK_SIGNAL_FUNC(hand_display_drag_leave), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag-motion",
-			GTK_SIGNAL_FUNC(hand_display_drag_motion), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag-drop",
-			GTK_SIGNAL_FUNC(hand_display_drag_drop), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag-data-get",
-			GTK_SIGNAL_FUNC(hand_display_drag_data_get), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag-data-received",
-			GTK_SIGNAL_FUNC(hand_display_drag_data_received), NULL);
-	//g_signal_connect (GTK_OBJECT(hand), "drag_data_delete",
-			//GTK_SIGNAL_FUNC(hand_display_drag_data_delete), NULL);
-	g_signal_connect (GTK_OBJECT(hand), "drag-end",
-			GTK_SIGNAL_FUNC(hand_display_drag_end), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-begin",
+			G_CALLBACK(hand_display_drag_begin), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-leave",
+			G_CALLBACK(hand_display_drag_leave), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-motion",
+			G_CALLBACK(hand_display_drag_motion), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-drop",
+			G_CALLBACK(hand_display_drag_drop), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-data-get",
+			G_CALLBACK(hand_display_drag_data_get), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-data-received",
+			G_CALLBACK(hand_display_drag_data_received), NULL);
+	g_signal_connect (G_OBJECT(hand), "drag-end",
+			G_CALLBACK(hand_display_drag_end), NULL);
 }
 
 /* initializers */
@@ -862,9 +825,9 @@ hand_display_class_init (HandDisplayClass *class)
 	//object_class->destroy = hand_display_destroy;
 
 	widget_class->realize = hand_display_realize;
-	widget_class->expose_event = hand_display_expose;
-	widget_class->size_request = hand_display_size_request;
-	widget_class->size_allocate = hand_display_size_allocate;
+	widget_class->draw = hand_display_draw_cb;
+	widget_class->get_preferred_width = hand_display_get_preferred_width;
+	widget_class->get_preferred_height = hand_display_get_preferred_height;
 	widget_class->motion_notify_event = hand_display_motion;
 	widget_class->leave_notify_event = hand_display_leave;
 	widget_class->button_press_event = hand_display_button_press;

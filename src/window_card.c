@@ -174,7 +174,7 @@ window_card_init (int style)
 	window_card = get_widget ("window_card");
 	GtkWidget *vbox = get_widget ("vbox2");
 	gtk_widget_show (w);
-	gtk_box_pack_start_defaults (GTK_BOX (vbox), w);
+	gtk_box_pack_start (GTK_BOX (vbox), w, TRUE, TRUE, 0);
 	gtk_widget_show (window_card);
 	card_window_update(CUR_BOARD->dealt_cards);
 
