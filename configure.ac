@@ -16,7 +16,7 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_SEARCH_LIBS([SolveBoard], [dds], [], [AC_MSG_ERROR([Unable to find dds library])])
 
-pkg_modules="gtk+-2.0 >= 2.0.0"
+pkg_modules="gtk+-3.0 >= 3.0.0"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)

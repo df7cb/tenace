@@ -457,8 +457,8 @@ board_load_dialog (window_board_t *win, int append)
 	dialog = gtk_file_chooser_dialog_new (_("Open File"),
 			GTK_WINDOW (win->window),
 			GTK_FILE_CHOOSER_ACTION_OPEN,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Open"), GTK_RESPONSE_ACCEPT,
 			NULL);
 	add_filters (GTK_FILE_CHOOSER (dialog));
 
@@ -725,8 +725,8 @@ board_save_dialog (window_board_t *win, int save_as)
 	dialog = gtk_file_chooser_dialog_new (_("Save File"),
 			GTK_WINDOW (win->window),
 			GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Save"), GTK_RESPONSE_ACCEPT,
 			NULL);
 	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 	add_filters (GTK_FILE_CHOOSER (dialog));
@@ -855,7 +855,7 @@ on_menu_file_web_activate ()
 	printf ("%s\n", url->str);
 
 	GError *error = NULL;
-	gtk_show_uri (gdk_screen_get_default (), url->str, GDK_CURRENT_TIME, &error);
+	gtk_show_uri_on_window (GTK_WINDOW (win->window), url->str, GDK_CURRENT_TIME, &error);
 	if (error) {
 		printf ("%s\n", error->message);
 		g_error_free (error);

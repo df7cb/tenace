@@ -7,7 +7,7 @@ Build-Depends:
  gnulib,
  intltool,
  libdds-dev (>= 2.9),
- libgtk2.0-dev,
+ libgtk-3-dev,
 Standards-Version: 4.6.0
 Vcs-Browser: https://github.com/df7cb/tenace
 Vcs-Git: https://github.com/df7cb/tenace.git

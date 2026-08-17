@@ -455,11 +455,11 @@ magic_custom_apply (GtkPrintOperation *operation, GtkWidget *table, gpointer use
 	mc.to = gtk_spin_button_get_value_as_int (mc.magic_to);
 	if (mc.to < mc.from)
 		mc.to = mc.from;
-	mc.border = PTMM * gtk_spin_button_get_value_as_float (mc.magic_border);
-	mc.horiz_margin = PTMM * gtk_spin_button_get_value_as_float (mc.magic_horiz_margin);
-	mc.vert_margin = PTMM * gtk_spin_button_get_value_as_float (mc.magic_vert_margin);
-	mc.horiz_sep = PTMM * gtk_spin_button_get_value_as_float (mc.magic_horiz_sep);
-	mc.vert_sep = PTMM * gtk_spin_button_get_value_as_float (mc.magic_vert_sep);
+	mc.border = PTMM * gtk_spin_button_get_value (mc.magic_border);
+	mc.horiz_margin = PTMM * gtk_spin_button_get_value (mc.magic_horiz_margin);
+	mc.vert_margin = PTMM * gtk_spin_button_get_value (mc.magic_vert_margin);
+	mc.horiz_sep = PTMM * gtk_spin_button_get_value (mc.magic_horiz_sep);
+	mc.vert_sep = PTMM * gtk_spin_button_get_value (mc.magic_vert_sep);
 }
 
 static void
