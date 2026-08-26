@@ -1,2 +1,5 @@
-version=4
-https://github.com/df7cb/tenace/tags .*/v@ANY_VERSION@@ARCHIVE_EXT@
+Version: 5
+
+Template: Github
+Owner: df7cb
+Project: tenace
